@@ -1,4 +1,4 @@
 # QHG4
 An Agent-Based Simulation framework
 
-// more to follow soon
+// more to follow soon!
