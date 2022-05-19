@@ -1,0 +1,29 @@
+#include "PopBase.h"
+#include "SCellGrid.h"
+#include "IDGen.h"
+#include "PopFinder.h"
+#include "@@@xxx@@@.h"
+#include "@@@xxx@@@Wrapper.h"
+
+
+//----------------------------------------------------------------------------
+// getInfo
+//   returns type name of mover 
+//
+extern "C" {
+    const std::string getInfo() { return "@@@xxx@@@"; };
+}
+
+
+//----------------------------------------------------------------------------
+// createPop
+//   creates and returns new Mover for specified data
+//
+extern "C" {
+    PopBase *createPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState, uint *aiSeeds) {
+
+                
+        PopBase *pPB = new @@@xxx@@@(pCG, pPopFinder, iLayerSize, apIDG, aulState, aiSeeds);
+        return pPB;
+    }
+}

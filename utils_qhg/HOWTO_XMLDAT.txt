@@ -1,0 +1,190 @@
+This is how to create xml and dat files from a population qdf file and csv file containing species and agent data.
+This pertains to simulations with NPersAOoANavSHybRelPop and NPersZOoANavSHybRelPop.
+
+The agents need to have the standard set of variables.
+ 
+
+# create a template for the agent positions from in pop_location_{sap,nea}.qdf 
+  ./extract_agent_data2.py pop_location_sap.qdf:sapiens  'Longitude:Latitude:LifeState:AgentID:BirthTime:Gender:Age:LastBirth:Species#0' template_sap.dat
+  ./extract_agent_data2.py pop_location_nea.qdf:neander  'Longitude:Latitude:LifeState:AgentID:BirthTime:Gender:Age:LastBirth:Species#1' template_nea.dat
+# this can take quite some time if there are a lot of agents
+
+Now we have dat templates containing coordinates and basic agent properties plus a column 'Species' containing 0 (sap) or 1 (nea).
+
+
+# create xml and dat files
+  ./csv2xmldat.py  ../work/zolli_ali/xmldat_Amulti/hyb_small_A_0.00001.xml template_sap.dat pop1.csv ali xmldat_sap
+  ./csv2xmldat.py  ../work/zolli_ali/xmldat_Amulti/hyb_small_A_0.00001.xml template_nea.dat pop1.csv ali xmldat_nea
+(these are xml files serving as xml templates for  NPersAOoANavSHybRelPop or NPersZOoANavSHybRelPop)
+
+
+#make a single qdf pop+geo file:
+for f in 00000 00001 00002 00003
+do
+  ../tools_io/QDF4Convert \
+     --grid=gridpreparation/env_world_400_kya_256.qdf \
+     --pops=xmldat_nea_${f}.xml:xmldat_nea_${f}.dat,xmldat_sap_${f}.xml:xmldat_sap_${f}.dat \
+     --output-name=bigsim_${f}.qdf \
+     --select=grid+geo+pop:pop-sapiens 
+done
+
+
+The csv file for cvs2xmldat needs to have the following columns:
+
+  NPPCap_K_max_sapiens
+  NPPCap_K_min_sapiens
+  NPPCap_NPP_max_sapiens
+  NPPCap_NPP_min_sapiens
+  NPPCap_coastal_sapiens
+  NPPCap_water_factor_sapiens
+  Fertility_interbirth_sapiens
+  Fertility_max_age_sapiens
+  Fertility_min_age_sapiens
+  NPersWeightedMove_sapiens
+  OAD_max_age_sapiens
+  OAD_uncertainty_sapiens
+  NPersHybBirthDeathRel_b0_sapiens
+  NPersHybBirthDeathRel_d0_sapiens
+  NPersHybBirthDeathRel_theta_sapiens
+  NPPCap_K_max_neander
+  NPPCap_K_min_neander
+  NPPCap_NPP_max_neander
+  NPPCap_NPP_min_neander
+  NPPCap_coastal_neander
+  NPPCap_water_factor_neander
+  Fertility_interbirth_neander
+  Fertility_max_age_neander
+  Fertility_min_age_neander
+  NPersWeightedMove_neander
+  OAD_max_age_neander
+  OAD_uncertainty_neander
+  NPersHybBirthDeathRel_b0_neander
+  NPersHybBirthDeathRel_d0_neander
+  NPersHybBirthDeathRel_theta_neander
+  Navigate_decay
+  Navigate_dist0
+  Navigate_min_dens
+  Navigate_prob0
+  general_species_name
+  general_species_id
+  general_hybminprob
+  general_PrivParamMix_mode
+
+The columns ending with '_neander' or '_sapiens' are pop-specific values,
+'Navigate_XXX' is for both (not relevant for the nea/sap sims because we don't go to australia),
+'general_XXX' are general attributes. 
+Important: 
+  general_hybminprob:        the minimal hybridisation factor (influences the fertility of a child)
+  general_PrivParamMix_mode  how to assign the parent's values to a child:
+                             1 (MODE_ALLMOTHER):   child gets all values from the mother
+                             2 (MODE_ALLFATHER):   child gets all values from the father   
+                             3 (MODE_AVGPARENTS):  child gets averages of the parents' values
+                             4 (MODE_WEIGHTEDMIX): child gets weighted averages of the parents' values
+                             5 (MODE_PUREMIX):     child gets weighted average of the pure sap/nea values     
+
+
+
+
+
+                             
+:::::::
+# have files fsn_{nea,sap}{0143,3620,4594,4744}.qdf
+grid="../../useful_stuff/gridpreparation/env_world_002_kya_256.qdf"
+
+for f in fsn_nea[0-9][0-9][0-9][0-9].qdf; 
+do 
+  h=`echo $f | sed 's/fsn_//' | sed 's/.qdf//'` ; 
+  ../../useful_stuff/extract_agent_data2.py ${f}:neander  ${grid} 'Longitude:Latitude:LifeState:AgentID:BirthTime:Gender:Age:LastBirth:Species#1' template_${h}.dat; 
+done; 
+for f in fsn_sap[0-9][0-9][0-9][0-9].qdf; 
+do 
+  h=`echo $f | sed 's/fsn_//' | sed 's/.qdf//'` ; 
+  ../../useful_stuff/extract_agent_data2.py ${f}:sapiens  ${grid} 'Longitude:Latitude:LifeState:AgentID:BirthTime:Gender:Age:LastBirth:Species#0' template_${h}.dat;
+done
+ (actually in this case all template_nea and template_sap are equal)
+
+# create an xml for each qdf
+for f in fsn_sap*[0-9][0-9][0-9][0-9].qdf; do ../../useful_stuff/qdf2xml.py ${f}:sapiens NPersZOoANavSHybRelPop.xml; done
+for f in fsn_nea*[0-9][0-9][0-9][0-9].qdf; do ../../useful_stuff/qdf2xml.py ${f}:neander NPersZOoANavSHybRelPop.xml; done
+
+# make pair_list
+   fsn_nea0143.qdf,fsn_sap0143.qdf
+   fsn_nea3620.qdf,fsn_sap3620.qdf
+   fsn_nea4077.qdf,fsn_sap4077.qdf
+   fsn_nea4594.qdf,fsn_sap4594.qdf
+   fsn_nea4744.qdf,fsn_sap4744.qdf
+
+# make attr_list.txt
+  Navigate_decay                 Navigate_decay                
+  Navigate_dist0                 Navigate_dist0                
+  Navigate_min_dens              Navigate_min_dens             
+  Navigate_prob0                 Navigate_prob0                
+  NPPCap_K_max_                  NPPCap_K_max                 
+  NPPCap_K_min_                  NPPCap_K_min                 
+  NPPCap_NPP_max_                NPPCap_NPP_max               
+  NPPCap_NPP_min_                NPPCap_NPP_min               
+  NPPCap_coastal_                NPPCap_coastal_factor        
+  NPPCap_coastal_                NPPCap_coastal_max_latitude  
+  NPPCap_coastal_                NPPCap_coastal_min_latitude  
+  NPPCap_water_factor_           NPPCap_water_factor          
+  Fertility_interbirth_          Fertility_interbirth         
+  Fertility_max_age_             Fertility_max_age            
+  Fertility_min_age_             Fertility_min_age            
+  NPersWeightedMove_             WeightedMove_prob            
+  OAD_max_age_                   OAD_max_age                   
+  OAD_uncertainty_               OAD_uncertainty              
+  NPersHybBirthDeathRel_b0_      BirthDeathRelComp_b0         
+  NPersHybBirthDeathRel_d0_      BirthDeathRelComp_d0         
+  NPersHybBirthDeathRel_theta_   BirthDeathRelComp_theta      
+  general_species_name           sapiens
+  general_species_id             117
+  general_hybminprob             0.0
+  general_PrivParamMix_mode      5     
+
+# create a csv file from the qdf popspecific attrs
+../../useful_stuff/extract_pop_data.py  pair_list.txt attr_list.txt sim.csv
+
+#make xml and dat files for each line in sim.csv
+../../useful_stuff/csv2xmldat.py  NPersZOoANavSHybRelPop.xml template_sap0143.dat sim.csv zolli xmldat_ori_sap
+../../useful_stuff/csv2xmldat.py  NPersZOoANavSHybRelPop.xml template_nea0143.dat sim.csv zolli xmldat_ori_nea
+
+
+# cerate hybminprob nav_prob variants (create_hmp_nav_variant.sh)
+for f in xmldat_ori*.xml
+do 
+  for nav in 0.0000 0.0001
+  do 
+    for hmp in 0.00000 0.00010 0.00100 0.01000 0.10000 0.50000 1.00000
+    do 
+      g="${f%%.xml}_H${hmp}_N${nav}.xml"
+      g=`echo ${g} | sed 's/_ori//'`  
+      cp $f $g
+      sed -i "s/name=\"Navigate_prob0\" value=\"[0-9\.]*\"/name=\"Navigate_prob0\" value=\"${nav}\"/" $g; 
+      sed -i "s/name=\"HybBirthDeathRel_hybminprob\" value=\"[0-9\.]*\"/name=\"HybBirthDeathRel_hybminprob\" value=\"${hmp}\"/" $g
+    done
+  done
+done
+
+# we now have xmldat_{nea,sap}_*_H*_N*.xml and 
+# create a pairlist for simulations 
+
+rm pair_list_sim.txt; 
+touch pair_list_sim.txt; 
+for x in xmldat_nea_*_H*_N*.xml; 
+do 
+  n=`echo $x | gawk -F_ '{ print $1 "_" $2 "_" $3}'`; 
+  y=${x/nea/sap};
+  echo "${x}:${n}.dat,${y}:${n/nea/sap}.dat"  >>pair_list_sim.txt; 
+done
+
+# create qdfs from the pairlist
+grid=../../useful_stuff/gridpreparation/pilot_085.0_kya_256.qdf
+while read line
+do 
+  fgh=`echo ${line} | gawk -F: '{ print $1 }' | gawk -F_ '{ print $3 "_" $4 "_" $5}'`
+  ../../tools_io/QDF4Convert --grid=${grid}  --pops=${line} --output-name="sim_${fgh}.qdf" --select=pop:pop-sapiens
+  echo sim_${fgh}.qdf
+done < pair_list_sim.txt
+
+
+

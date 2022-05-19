@@ -1,0 +1,2 @@
+#!/bin/sh
+pop_attrs2.py show $*
