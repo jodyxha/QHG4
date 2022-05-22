@@ -30,7 +30,7 @@ ARFL=rv
 
 all: core
 
-lib: lbCore.a
+lib: libCore.a
 
 core:  libCore.a
 
