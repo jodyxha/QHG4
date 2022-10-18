@@ -1,0 +1,46 @@
+group agents also need
+- m_fHealth
+
+FoodManager and AgentEnv anf GroupMemberMove
+============================================
+
+FoodManager
+ - grows food logistically 
+ - exports available food in array provided by population
+ - takes registrations for food
+ - hands out food, reduces food amount in internal food array
+
+AgentEnv
+ - counts agents per cell, exports count in array provided by population
+ - fills local arrays in m_aEnvVals based on values from FoodManger and agent counts
+ - should decrease each agents health by m_dReequirement and kill if 0
+
+GroupMemberMove
+ - choose direction based on AgentEnv's local arrays
+ - child movements are managed by population´s registerMove: does only adult moves, children must go with their parents
+ - later: handle "follow the leader"
+
+action sequence
+ AgentEnv                        FoodManager               GroupMemberMove (has pointer to AgentEnv)(
+++++++++++++ initialize ++++++++++++
+ get counts                           -                         -
+ -                                 grow food                    -
+ -                                 calc available food          -
++++++++++++++++ step +++++++++++++++
+ calc local env arrs                   -                        -
+ (to be used by move action)                              
+ -                                     -                       move agents 
++++++++++++++ finalize +++++++++++++                   
+                                                       
+ register for food                    -                         -
+                                 hand out food                  -
+
+
+Prios
+ AgentEnv before FoodManager
+ AGentEnv before Move
+
+
+ChildManager:
+children have exactly one parent,
+each child appears in exactly on children vector

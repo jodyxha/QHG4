@@ -1,0 +1,78 @@
+ #include <stdio.h>
+#include <string.h>
+
+//#include "ids.h"
+#include "strutils.h"
+#include "stdstrutilsT.h"
+#include "LineReader.h"
+#include "StatPopFactory.h"
+#include "PopBase.h"
+#include "PopFinder.h"
+#include "ParamProvider2.h"
+#include "SCellGrid.h"
+#include "SPopulation.h"
+
+#include "IDGen.h"
+
+// include headers for populations
+// CONFIGURE INCLUDE: DO NOT DELETE THIS COMMENT LINE
+
+
+
+//----------------------------------------------------------------------------
+// constructor
+//
+StatPopFactory::StatPopFactory(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, 
+                                     IDGen **apIDG, uint32_t *aulState, uint *aiSeeds)
+    : m_pCG(pCG),
+      m_iLayerSize(iLayerSize),
+      m_pPopFinder(pPopFinder),
+      m_apIDG(apIDG),
+      m_aulState(aulState),
+      m_aiSeeds(aiSeeds) {
+
+        printf("[StatPopFactory] LayerSize %d\n", m_iLayerSize);
+}
+
+
+//----------------------------------------------------------------------------
+// createPopulation
+//
+PopBase *StatPopFactory::createPopulationByName(const std::string sClassName) {
+    PopBase *pPop = NULL;
+
+    bool bVerbose = true;
+    if (m_pCG != NULL) {
+        if (sClassName.empty()) {
+            stdprintf("empty Class ID\n");
+// CONFIGURE POPS: DO NOT DELETE THIS COMMENT LINE
+        } else {
+            stdprintf("unknown  Class Name [%s]\n", sClassName);
+        }
+    }
+    return pPop;
+}
+       
+
+
+//----------------------------------------------------------------------------
+// readPopulation
+//
+PopBase *StatPopFactory::readPopulation(ParamProvider2 *pPP) {
+    PopBase *pPop = NULL;
+
+    pPop = createPopulationByName(pPP->getSelected());
+    if (pPop != NULL) {
+        int iResult = pPop->readSpeciesData(pPP);   //<-new
+        if (iResult != 0) {
+            stdprintf("error while reading xml config file\n");
+            delete pPop;
+            pPop = NULL;
+        } else {
+        }
+    } else {
+        stdprintf("Couldn't cretae class [%s]\n", pPP->getSelected());
+        
+    } 
+    return pPop;
+}

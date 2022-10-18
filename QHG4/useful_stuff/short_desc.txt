@@ -1,0 +1,317 @@
+
+
+AgentCounter.{h,xml}   AgentCounter class; provides access to all important geo arrays, and array of agent cell+id
+                       used by PseudoPopCounts.cpp, QDFDataExtracor.cpp, count_cell_agents.cpp, count_region_agents.cpp
+
+AgentHybCollector.{h,cpp} AgentHybCollector class;
+                          used by collect_agent_hybs.cpp
+
+AgentItemCollector.{h,cpp} AgentItemCollector class; create arrays of particular agent items
+                           used by HybHDFWriter.cpp, bin_agent_items.cpp, hyb_extract.cpp
+
+ArrayExtractor.py   Extract array from a qdf file
+
+
+CellSampler.{h,cpp}   CellSamplerClass; create arrays of cell ids close to locations from loc file
+                      used by HybHDFWriter.h, hyb_extract.cpp, cell_samp_test.cpp
+
+FilenameMaker.py  Simple fiule name creation based on template  
+
+
+GeneVariation.cpp           calculate gene variation
+
+
+HDataSetCollector.{h,cpp}   HDataSetCollector class; collects name of QDF datasets
+                            used by PseudoPopCounts.cpp, QDF2Rect.cpp, hdstest.cpp
+
+HybChecker.{h,cpp}      HybChecker class; create histogram data for hybridisation
+                        used by check_hybrids.cpp
+
+HybHDFWriter.{h,cpp}    HybHDFWriter class; writes HDF file of hybridisation values
+                        used by hyb_extract.cpp
+
+HybPCO_collect_data.cpp  extract agents' data from a rectangular area
+
+
+LinkQDFGroups.py         Link groups from another qdf 
+
+
+LonLat2Node.cpp          convert longitude and latitude to a node ID on 
+
+
+OpenDAPReader.py         reading from OpenDAP (netcdf)
+
+
+PopAttrs.py              utilities for pop attributes
+                         used by comp_attrs.py, pop_attrs2.py
+
+PseudoPopArray.{h,cpp}   abstract base class PseudoPopArray
+                         used by PseudoPopCounts.h, PseudoPopManager.h
+
+PseudoPopCounts.{h,cpp}  PseudoPopCounts class; arrays containing population counts
+                         used by PseudoPopManager
+
+PseudoPopManager.{h,cpp} PseudoPPopManager class; manages Pseudo arrays
+                         used by QDF2Rect
+
+QDF2Rect.cpp             extract data from qdf files into a rectangular asci array of numbers
+
+
+QDF4translate.py         convert the population part of a version 3 qdf to a pure QDF4 population qdf (without data set?)
+
+
+QDFAllGenomes.{h,cpp}    QDFAllGenomes class; extract all genomes from a qdf 
+                         used by GeneVariation.cpp 
+
+QDFDataExtractor.{h,cpp} QDFDataExtractor class; extracts data from qdf files
+                         used by QDF2Rect
+
+QDFInterpolator.py       interpolate numeric arrays of 2 qdf files
+
+
+QDF_density.py           calculate density of agents
+
+
+QHGError.py              exception fo QHG errora
+
+
+RegionRemover.{h,cpp}    RegionRemover class; removes  of regions (speified  by names, or coordinate arrays) 
+                         used by RemoveRegions.cpp
+
+RegionTester.{h,cpp}     RegionTester class; function pointInPoly 
+                         used by count_agents.cpp, count_region_agents.cpp
+
+RemoveRegions.cpp        remove regions from a qdf file
+
+
+SimPar2Table.py          c
+
+
+SimParExtractor.py       ???
+                         used by SimPar2Table.py
+
+WaterFinder.{h,cpp}      find nodes with water
+                         used by findwater.cpp
+
+add_attr                shell script to add an attribute to a qdf file 
+
+
+agent_props.cpp               lists agent properties
+
+
+agentprops_overview.py        writes CSV line of population attributes
+
+
+analyze_bilevel_pairs.py      analysis tools for various output structures 
+analyze_full_sens_comb.py        |
+analyze_full_sens_pairs.py       |
+analyze_hybsmallworld.py         |
+analyze_indexed_pairs.py         |
+analyze_smallworld.py            |
+analyze_tuple_sims.py            |
+bilevel.sh                       |
+createFlatOverview_cloud.py      |
+createFlatOverview_cloud.sh      |
+createFlatOverview_cloud_new.py  |
+createFlatOverview_kraken.sh     |
+
+
+arrival_checker.py             python version of ArrivalCheck (slower)
+
+
+attr_tools.py                  tools concerning qdf attributes             
+
+
+bighyb_overview.sh          script to run a single simulation and extract the hybridisation data
+                            used by run_and_extract.sh
+
+bin_agent_items.cpp          creates distribution for an element of a population's AgentDataSet
+
+
+calc_avg_hyb.py             lists minimum and maximum of hybridisations in qdf file
+
+
+cell_samp_test.cpp          test program for CellSampler
+
+
+change_attr                 change an attribute of a qdf file 
+    
+
+check_hybrids.cpp           wrapper for HybChecker
+
+
+clear_stats.py              clears the move stats of a population    
+
+
+collect_agent_hybs.cpp      creates a histogram of hybridisations 
+
+
+collect_all_attr_names.sh   lists all attribute names found in the header files in modular
+
+
+colors.py                   color definition
+                            used by comp_attrs.py, varitest.py
+
+column_merger.py            merge columns of CSV files
+                            used by bighyb_overview.sh
+
+combine_xml.py              combine two xml files
+
+
+comp_attrs.py               display and compare qdf files
+
+
+convertLongsToGenome.cpp    converts longs to ACGT-strings
+
+
+count_cell_agents.cpp       counts agents by cells
+
+
+count_region_agents.cpp     counts agents in regions
+
+
+create_hybqdfs.sh           creates template dats and xml+dat for csv files
+
+
+csv2xml.py                  creates xml+dat for csv files (don't use)
+
+
+csv2xmldat.py               creates xml+dat for csv files (ali or zolli approach)
+                            used by create_hybqdfs.sh, prepare_xmldat_from_csv.sh
+
+csvnpp2xml.py               also some csv to xml conversion
+
+
+del_attr                    delete an attibute from a qdf file
+
+
+extract_agent_data.py       (don't use)
+
+
+extract_agent_data2.py     extracts the agent data from a qdf file and writes csv file
+                           used by create_hybqdfs.sh
+
+extract_pop_data.py        extracts pop data for pairs of qdf files
+
+
+findwater.cpp              creates c++,python and bash code fragments containing the id of water nodes
+
+
+flatten.py                 set alt, npp or ice to uniform value
+
+
+fromlist.py                create (simple) qdf files from csv
+
+
+getSampleIDs.cpp           find IDs for nodes in sampling region given by lon, lat and radius
+
+
+get_hyb_details.py         get hybridization distribution for a file
+
+
+get_hyb_dist.py            get hybridization distribution for various pop-files over different times
+
+
+hdf_catenate.cpp           combine hybridisation hdf files
+
+
+hdstest.cpp               testing HDataSetCollector
+
+
+hyb_csv2xmldat.py         create xml+dat from csv for zolli approach
+
+hyb_extract.cpp           extract hybridsation data by region; writes HDF and csv file
+                          used by bighyb_overview.sh, loopy.sh
+
+hyb_extract_ico3.cpp      extract hybridsation data by cell (designed for ico3); writes HDF and csv file 
+
+
+hyb_pco.py                create data set intended for pco of location and hybridisation
+
+
+hybhist.py                make hybridisation histogram from HDF file as created by HybHDFWriter
+
+
+inifile_maker.py          create random ini file data based on a simple specification syntax
+
+
+interpolate_ice.py        interpolate ice values between files
+
+
+linkcheckpata.sh          create image of patagonia (using VisIt)
+                          uses patagoniacheck.py, LinkSGCqdf.py (doesn't exist anymore  -> replace by LinkQDFGroups) 
+
+longlatforid.py           get longitude and latitude for a list of  cell IDs
+
+
+loopy.sh                  fragment of bighyb_overview.sh
+
+
+make_locfile.py          make a loc file consisting of regionsfor every node; designed for ico3
+
+
+makeimgs.py              extract images fromqf files and make a movie
+
+
+makeisland.py            create a rectangular island in a qdf
+
+
+miami_calc.py            calculate NPPP using the miami formular
+
+  
+nice_dump.py             nicely structured list of all attributes and datasets in a qdf file
+
+
+numdie.sh                lists simulation name, total count, die-out time
+
+
+parhyb_overview.sh       attempt for parallel version of bighyb_overview
+
+
+patagoniacheck.py        use VisIt to make an image of patagonia
+
+
+pop_attrs.py             old version of pop_attrs2; don't use
+
+
+pop_attrs2.py            show, modify,add item delete item from qdf attributes
+                         used by add_attr, change_attr, del_attr, show_attr
+   
+pop_mutator.py           changes a population's attributes according to a job description (don't have syntax for job-description in usage text)
+
+
+pop_transformer.py       transforms a breeding population to an initial population (from a Confined move simulation using Verhulst -> very old)
+
+
+popop_analyze_full_sens_pairs.py   analyzing result from simulation dne woth population pairs
+
+
+ppc_test.cpp                   test PseudoPopManager
+
+
+prepare_xmldat_from_csv.sh     creates one xml and one dat for neander and sapiens together
+                  
+             
+prio_edit.py                   Priorities editor for qdf files 
+
+qdf2xml.py
+qdf2xml4.py
+reduce_pop.py
+regextest.cpp
+region_agents.py
+region_count.py
+region_utils.py
+removeGenome.py
+remove_region.py
+rename_attr.py
+run_and_extract.sh
+run_and_extract_par.sh
+select_sap_in_europe.py
+setAttributeQDF.py
+shift_birth.py
+simpleDef2QDF.cpp
+startQHG.py
+strip_colorcodes.py
+variate.py
+varitest.py
+

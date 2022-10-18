@@ -1,0 +1,17 @@
+#ifndef __@@@XXX@@@WRAPPER_H__
+#define __@@@XXX@@@WRAPPER_H__
+
+#include <string>
+
+class PopBase;
+
+extern "C" {
+    PopBase *createPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState, uint *aiSeeds);
+}
+
+extern "C" {
+    const std::string getInfo();
+}
+
+
+#endif
