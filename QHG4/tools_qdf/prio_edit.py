@@ -29,7 +29,7 @@ class PrioEditor:
     def __init__(self, qdf_file, species):
         try:
             self.qdf_file = qdf_file
-            self.hfile    = h5py.File(qdf_file)
+            self.hfile    = h5py.File(qdf_file, "r+")
             if not species:
                 species = self.find_first_spc()
                 print("no species provided - using species [%s]"%species)

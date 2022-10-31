@@ -71,7 +71,7 @@ class AttrComparator:
         #    self.max_col_w[i] = 0
         #-- end for
         iCol = 0
-
+       
         max_l_names = 0
         for f0 in self.qdfs:
             singlepop = ''
@@ -88,8 +88,8 @@ class AttrComparator:
                 pop_list = pa.get_pop_names()
                 if not pop_list:
                     raise QHGError("[collect_attrs] No [Populations] group in %s"%f)
-                else:
-                    stderr.write("got list: %s\n" % pop_list)
+                #else:
+                    #stderr.write("got list: %s\n" % pop_list)
                 #-- end if
             #--end if
             i=0
@@ -100,7 +100,7 @@ class AttrComparator:
                 loc_attrs = {}
                 vals      = {}
                 popkey = "%s:%s" % (f, pop)
-                stderr.write("popkey: [%s]\n" % popkey)
+                #stderr.write("popkey: [%s]\n" % popkey)
                 self.keys.append(popkey)
                 num = pa.get_num_agents(pop)
                 self.num_agents[popkey] = str(num)
@@ -145,13 +145,13 @@ class AttrComparator:
             
                     #-- end if
                 #--end for
-                stderr.write("finished attr loop for [%s]\n" % popkey)
+                # stderr.write("finished attr loop for [%s]\n" % popkey)
                 self.all_attrs[popkey] = vals
                 iCol = iCol + 1
             #-- end for
-            stderr.write("finished pop loop for [%s]\n" % f0)
+            # stderr.write("finished pop loop for [%s]\n" % f0)
         #-- end for
-        stderr.write("finished file loop\n")
+        # stderr.write("finished file loop\n")
 
         if do_equalsize:
             iColW = max([self.max_col_w[x] for x in self.max_col_w])
@@ -160,7 +160,7 @@ class AttrComparator:
             #-- end for
         #-- end if
 
-        stderr.write("finished collect_attrs\n")
+        # stderr.write("finished collect_attrs\n")
     #-- end def
 
 

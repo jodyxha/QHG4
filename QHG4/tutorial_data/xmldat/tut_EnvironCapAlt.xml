@@ -1,0 +1,55 @@
+<class name="tut_EnvironCapAltPop" species_name="sapiens" species_id="104">
+
+  <module name="OldAgeDeath">
+    <param  name="OAD_max_age" value="60.0"/>
+    <param  name="OAD_uncertainty" value="0.1"/>
+  </module>
+  <module name="WeightedMove">
+    <param  name="WeightedMove_prob" value="0.07"/>
+  </module>
+  
+  <module name="Fertility">
+    <param  name="Fertility_interbirth" value="2.0"/>
+    <param  name="Fertility_max_age" value="50.0"/>
+    <param  name="Fertility_min_age" value="15.0"/>
+  </module>
+
+  <module name="NPPCapacity">
+    <param  name="NPPCap_K_max" value="38.4716796875"/>
+    <param  name="NPPCap_K_min" value="0.0"/>
+    <param  name="NPPCap_NPP_max" value="1.0576171875"/>
+    <param  name="NPPCap_NPP_min" value="0.0"/>
+    <param  name="NPPCap_coastal_factor" value="0.4"/>
+    <param  name="NPPCap_coastal_max_latitude" value="66.0"/>
+    <param  name="NPPCap_coastal_min_latitude" value="50.0"/>
+    <param  name="NPPCap_water_factor" value="0.5349609375"/>
+    <param  name="NPPCap_efficiency" value="1"/>
+  </module>
+
+  <module name="MultiEvaluator" id="NPP+Alt" >
+    <param  name="Multi_weight_alt" value="0.2" />
+    <param  name="Multi_weight_npp" value="0.8" />
+    <module name="SingleEvaluator" id="Alt" >
+      <param  name="AltPref" value="-0.1 0 0.1 0.01 1500 1.0 2000 1 3000 -9999" />
+    </module>
+    <module name="SingleEvaluator" id="NPP" >
+    </module>
+  </module>
+
+  <module name="VerhulstVarK">
+    <param  name="Verhulst_b0" value="0.8" />
+    <param  name="Verhulst_d0" value="0.001" />
+    <param  name="Verhulst_theta" value="0.1" />
+   </module>
+
+  <priorities>
+    <prio  name="NPPCapacity" value="1"/>
+    <prio  name="GetOld" value="2"/>
+    <prio  name="OldAgeDeath" value="3"/>
+    <prio  name="WeightedMove" value="4"/>
+    <prio  name="MultiEvaluator[NPP+Alt]" value="5"/>
+    <prio  name="Fertility" value="6"/>
+    <prio  name="RandomPair" value="7"/>
+    <prio  name="VerhulstVarK" value="8"/>
+  </priorities>
+</class>

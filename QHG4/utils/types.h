@@ -40,7 +40,7 @@ typedef FILE *PFILE;
 
 typedef ushort coord;
 typedef ushort ssize;
-typedef ushort spcid;
+//typedef ushort spcid;
 
 
 typedef std::pair<int, int>        IPOINT;
@@ -70,9 +70,9 @@ typedef std::set<std::string>     SET_STRINGS;
 
 typedef std::map<FPOINT, SET_UCHARS/ *, FPointComp* /> TRBACC;
 typedef std::map<FPOINT, SET_UCHARS > TESTMAP;q
-*/
-typedef std::map<std::string, spcid> MAP_STR2SPC;
 
+typedef std::map<std::string, spcid> MAP_STR2SPC;
+*/
 
 
 #endif

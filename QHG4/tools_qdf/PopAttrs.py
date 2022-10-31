@@ -32,7 +32,11 @@ class PopAttrs:
             self.hf = h5py.File(qdf_file, 'r+')
             self.pop_names = attr_tools.get_pop_names(self.hf)
             self.read_all_attrs()
-            
+
+            #@@TODO remove this - it's not nice
+            #for p in self.all_attrs:
+            #    self.all_attrs[p]['global'] = { **self.all_attrs[p]['global'], "file":[qdf_file]}
+            #-- end for
         except Exception as e:
             raise  QHGError(e)
         #-- end try
@@ -75,19 +79,7 @@ class PopAttrs:
     #-- end def
 
     
-    #-----------------------------------------------------------------------------
-    #--  get_qdf_ver
-    #--
-    def get_qdf_ver(self, pop_name):
-        if pop_name in self.all_attrs:
-            return self.all_attrs[pop_name][0]
-        else:
-            return self.all_attrs[get_pop_names()[0]]
-            #raise QHGError("Name [%s] does not exist"%pop_name)
-        #-- end if
-    #-- end def
-
-
+ 
     #-----------------------------------------------------------------------------
     #--  read_pop_attrs
     #--    
@@ -98,7 +90,7 @@ class PopAttrs:
             pop_name = self.pop_names[0]
         #-- end if
         if (pop_name in list(self.all_attrs.keys())):
-            return self.all_attrs[pop_name][1]
+            return self.all_attrs[pop_name]
         else:
             raise QHGError("No [%s] not found in populations" % pop_name)
         #-- end if
@@ -117,45 +109,13 @@ class PopAttrs:
             if (cur_qdf_version < 0):
                 raise QHGError("Couldn't get QDF version for ['%p']" % p)
             else:
-                if cur_qdf_version < 4:
-                    print("reading for v 3")
-                    attrs3 = self.read_attrs3(self.hf, p) 
-                    self.all_attrs[p] = [3, { DEF_GROUP_V3: attrs3 }]
-                else:
-                    attrs4 = self.read_attrs4(self.hf, p) 
-                    self.all_attrs[p] = [4, attrs4]
-                #-- end if
+                attrs4 = self.read_attrs4(self.hf, p) 
+                self.all_attrs[p] = attrs4
             #-- end if
         #-- end for
     #-- end def
 
 
-    #-----------------------------------------------------------------------------
-    #--  read_attrs3
-    #--    
-    #--
-    def read_attrs3(self, hf, pop_name):
-        attr3 = None
-
-        if POP_GROUP_NAME in list(hf.keys()):
-            pop_group = hf[POP_GROUP_NAME]
-            if (len(list(pop_group.keys())) > 0):
-                if pop_name == '':
-                    pop_name = pop_group[list(pop_group.keys())[0]]
-                #-- end if
-                if pop_name in list(pop_group.keys()):
-                    attr3 = pop_group[pop_name].attrs
-                else:
-                    raise QHGError("[get_attrs] No population ["+pop_name+"] found")
-                #-- end if               
-            else:
-                raise QHGError("[get_attrs] No population subgroups found")
-            #-- end if
-        else:
-            raise QHGError("[get_attrs] No group ['%s'] found" % POP_GROUP_NAME)
-        #-- end if 
-        return attr3
-    #-- end def
 
 
     #-----------------------------------------------------------------------------
@@ -175,10 +135,14 @@ class PopAttrs:
                     else:
                         raise QHGError("[get_attrs] No population ["+pop_name+"] found")
                     #-- end if
-
-                #attr4 = {**spc_group.attrs}
+                #-- end if
+               
                 attr4['global'] = spc_group.attrs
-          
+                if "PrioInfo" in  attr4['global']:
+                    del attr4['global']["PrioInfo"]
+                if "QDFVersion" in  attr4['global']:
+                    del attr4['global']["QDFVersion"]
+
                 for link in list(spc_group):
                     if isinstance(spc_group[link], h5py.Group):
                         #attr4 = { **attr4, **(spc_group[link].attrs)}
@@ -194,6 +158,7 @@ class PopAttrs:
         return attr4
     #-- end def
 
+ 
 
     #-----------------------------------------------------------------------------
     #--  listify_attrs
@@ -242,13 +207,25 @@ class PopAttrs:
 
 
     #-----------------------------------------------------------------------------
+    #--  get_all_attrs (used by comp_attr.py)
+    #--
+    def get_all_attrs(self, pop_list):
+        pop_attrs = {}
+        for pop in pop_list:
+            pop_attrs = { **pop_attrs, pop:self.all_attrs[pop]}
+
+        #-- end for
+        return pop_attrs
+    #-- end def
+
+    #-----------------------------------------------------------------------------
     #--  get_flat_attrs (used by comp_attr.py)
     #--
     def get_flat_attrs(self, pop_name):
         if pop_name in self.all_attrs:
             flatatt = {}
-            for x in self.all_attrs[pop_name][1]:
-                y = self.listify_attrs(self.all_attrs[pop_name][1][x])
+            for x in self.all_attrs[pop_name]:
+                y = self.listify_attrs(self.all_attrs[pop_name][x])
                 flatatt = {**flatatt, **y}
             #-- end for
             return flatatt
@@ -267,11 +244,7 @@ class PopAttrs:
             print("using population %s"%pop_name)
         #-- end if
         if pop_name in self.all_attrs:
-            if self.get_qdf_ver(pop_name) < 4:
-                attr_tools.del_attr(self.all_attrs[pop_name][1][DEF_GROUP_V3], attr_names)
-            else:
-                self.del_attrs4(self.all_attrs[pop_name][1], attr_names)
-            #-- end if
+            self.del_attrs4(self.all_attrs[pop_name], attr_names)
             print("successfully deleted %d attribute%s"%(len(attr_names), "" if (len(attr_names)==1) else "s"))
         else:
             raise QHGError("Name [%s] does not exist"%pop_name)
@@ -332,11 +305,7 @@ class PopAttrs:
             print("using population %s"%pop_name)
         #-- end if
         if pop_name in self.all_attrs:
-            if self.get_qdf_ver(pop_name) < 4:
-                attr_tools.change_attr(self.all_attrs[pop_name][1][DEF_GROUP_V3], attr_names, attr_vals)
-            else:
-                self.change_attrs4(self.all_attrs[pop_name][1], attr_names, attr_vals)
-            #-- end if
+            self.change_attrs4(self.all_attrs[pop_name], attr_names, attr_vals)
             print("successfully changed %d attribute%s: %s"%(len(attr_names), "" if (len(attr_names)==1) else "s", attr_names))
         else:
             raise QHGError("Name [%s] does not exist"%pop_name)
@@ -404,14 +373,8 @@ class PopAttrs:
             print("using population %s"%pop_name)
         #-- end if
 
-        #print("attrs:[%s]"%(dict(self.all_attrs[pop_name][1][DEF_GROUP_V3])))   
         if pop_name in self.all_attrs:
-            if self.get_qdf_ver(pop_name) < 4:
-                attr_tools.add_attr(self.all_attrs[pop_name][1][DEF_GROUP_V3], attr_name, attr_val, val_type)
-            else:
-          
-                self.add_attr4(self.all_attrs[pop_name][1], attr_name, attr_val, val_type)
-            #-- end if
+            self.add_attr4(self.all_attrs[pop_name], attr_name, attr_val, val_type)
             print("successfully added attribute [%s]"%(attr_name))
         else:
             raise QHGError("Name [%s] does not exist"%pop_name)
@@ -445,11 +408,11 @@ class PopAttrs:
     #--
     def show_all(self):
         for pop_name in self.all_attrs:
-            print("species [%s] (v%d)"%(pop_name, self.all_attrs[pop_name][0]))
+            print("species [%s]"%(pop_name))
 
-            for g in self.all_attrs[pop_name][1]:
+            for g in self.all_attrs[pop_name]:
                 print("--group [%s]----------------"%g)
-                ag =  self.all_attrs[pop_name][1][g]
+                ag =  self.all_attrs[pop_name][g]
                 for a in ag:
                     print("    %s -> %s"%(a, ag[a]))
                 #-- end for
@@ -462,9 +425,9 @@ class PopAttrs:
     #--
     def list_attrs(self):
         for p in self.all_attrs:
-            print("species [%s] (v%d)"%(p, self.all_attrs[p][0]))
-            for g in self.all_attrs[p][1]:
-                ag =  self.all_attrs[p][1][g]
+            print("species [%s] (v%d)"%(p))
+            for g in self.all_attrs[p]:
+                ag =  self.all_attrs[p][g]
                 for a in ag:
                     print("    %s/%s [%s]"%(g, a, type(ag[a][0])))
                 #-- end for
