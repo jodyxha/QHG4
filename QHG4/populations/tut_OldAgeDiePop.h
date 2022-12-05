@@ -2,7 +2,7 @@
 #define __TUT_OLDAGEDIEPOP_H__
 
 //#include "OldAgeDeath.h"
-#include "AtanDeath.h"
+#include "ATanDeath.h"
 #include "GetOld.h"
 
 
@@ -28,7 +28,7 @@ class tut_OldAgeDiePop : public SPopulation<tut_OldAgeDieAgent> {
 protected:
  
     GetOld<tut_OldAgeDieAgent> *m_pGO;
-    AtanDeath<tut_OldAgeDieAgent> *m_pAD;
+    ATanDeath<tut_OldAgeDieAgent> *m_pAD;
     
 
 };

@@ -1,5 +1,0 @@
-DATA_DIR  ${QHG4_RES}/useful_stuff/core_data, ${QHG4_RES}/useful_stuff/gridpreparation
-GRID_TYPE ICO eq:64
-ALT NETCDF ETOPO1_Bed_g_gmt4.grd 0
-NPP NETCDF npp_timmermann.nc -20
-

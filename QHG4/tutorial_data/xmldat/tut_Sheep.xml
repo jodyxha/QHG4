@@ -1,0 +1,28 @@
+<class name="SheepPop" species_name="sheep" species_id="105">
+
+  <module name="WeightedMove">
+    <param  name="WeightedMove_prob" value="0.1"/>
+  </module>
+  
+  <module name="SingleEvaluator" id="Grass" >
+  </module>
+
+  <module name="Starver">
+    <param  name="StarveMass" value="0.4"/>
+    <param  name="MassDecay" value="0.1"/>
+  </module>
+
+  <module name="AnimalReproducer">
+    <param  name="MassFert" value="6.0"/>
+    <param  name="MassBaby" value="3.0"/>
+    <param  name="BirthProb" value="0.2"/>
+  </module>
+
+  <priorities>
+    <prio  name="SheepManager" value="2"/>
+    <prio  name="AnimalReproducer" value="4"/>
+    <prio  name="SingleEvaluator[Grass]" value="5"/>
+    <prio  name="WeightedMove" value="6"/>
+    <prio  name="Starver" value="7"/>
+  </priorities>
+</class>

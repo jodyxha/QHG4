@@ -35,10 +35,12 @@ const std::string ROOT_INFO_NAME = "Info";
     
 
 const std::string GRID_STYPE_ICO  = "ICO";
+const std::string GRID_STYPE_IEQ  = "IEQ";
 const std::string GRID_STYPE_HEX  = "HEX";
 const std::string GRID_STYPE_RECT = "RECT";
 
 const std::string GRID_ATTR_NUM_CELLS   = "NumCells";
+const std::string GRID_ATTR_SURF_TYPE   = "SURF_TYPE";
 const std::string GRID_ATTR_TYPE        = "GridType";
 const std::string GRID_ATTR_FORMAT      = "GridFormat";
 const std::string GRID_ATTR_PERIODIC    = "Periodic";

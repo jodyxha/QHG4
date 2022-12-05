@@ -53,17 +53,18 @@ int WeightedMove<T>::execute(int iAgentIndex, float fT) {
         int iThread = omp_get_thread_num();
         
         double dR =  m_apWELL[iThread]->wrandd();
-
         if (dR < m_dMoveProb) {
 
             // some aliases
             int &iMaxNeighbors = this->m_pCG->m_iConnectivity;
             int iRealNeighbors = this->m_pCG->m_aCells[iCellIndex].m_iNumNeighbors;
             int iOffset = iCellIndex*(iMaxNeighbors+1);
-
+            
+            
             int iNewNeighborIndex = -1; 
             if (m_adEnvWeights[iOffset] == m_adEnvWeights[iOffset+iRealNeighbors]) {
-                iNewNeighborIndex = m_apWELL[iThread]->wrandi(0, iRealNeighbors);
+                iNewNeighborIndex = m_apWELL[iThread]->wrandi(0, iRealNeighbors+1);
+                printf("[WM] allvalues equal (%f) -> newneighindex: %d\n", m_adEnvWeights[iOffset], iNewNeighborIndex);
             } else {
                 // get a random number between 0 and maximum env value
                 double dR2 = m_apWELL[iThread]->wrandd() * (m_adEnvWeights[iOffset + iRealNeighbors]);
@@ -78,6 +79,9 @@ int WeightedMove<T>::execute(int iAgentIndex, float fT) {
                         iI++;
                     }
                 }
+                
+                //    printf("[WM] Dir %d\n", iNewNeighborIndex);
+		
             }
 
             if (iNewNeighborIndex > 0) {

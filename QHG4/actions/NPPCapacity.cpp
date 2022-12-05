@@ -25,16 +25,16 @@ const double REG_OCEANIA_LATMIN = -12.0;
 const double REG_OCEANIA_LATMAX =   1.0;
 
 template<typename T>
-const char *NPPCapacity<T>::asNames[] = {//ATTR_NPPCAPACITY_VEGSELECTION_NAME, 
-                         ATTR_NPPCAPACITY_WATERFACTOR_NAME,
-                         ATTR_NPPCAPACITY_COASTALFACTOR_NAME,
-                         ATTR_NPPCAPACITY_COASTAL_MIN_LAT_NAME,
-                         ATTR_NPPCAPACITY_COASTAL_MAX_LAT_NAME,
-                         ATTR_NPPCAPACITY_NPPMIN_NAME,
-                         ATTR_NPPCAPACITY_NPPMAX_NAME,
-                         ATTR_NPPCAPACITY_KMIN_NAME,
-                         ATTR_NPPCAPACITY_KMAX_NAME,
-                         ATTR_NPPCAPACITY_EFFICIENCY_NAME};
+const char *NPPCapacity<T>::asNames[] = {//ATTR_NPPCAP_VEGSELECTION_NAME, 
+                         ATTR_NPPCAP_WATERFACTOR_NAME,
+                         ATTR_NPPCAP_COASTALFACTOR_NAME,
+                         ATTR_NPPCAP_COASTAL_MIN_LAT_NAME,
+                         ATTR_NPPCAP_COASTAL_MAX_LAT_NAME,
+                         ATTR_NPPCAP_NPPMIN_NAME,
+                         ATTR_NPPCAP_NPPMAX_NAME,
+                         ATTR_NPPCAP_KMIN_NAME,
+                         ATTR_NPPCAP_KMAX_NAME,
+                         ATTR_NPPCAP_EFFICIENCY_NAME};
 
 //#define NPP_CC_CONST   1e-4
 //#define NPP_MAX 2600
@@ -45,7 +45,7 @@ const char *NPPCapacity<T>::asNames[] = {//ATTR_NPPCAPACITY_VEGSELECTION_NAME,
 //
 template<typename T>
 NPPCapacity<T>::NPPCapacity(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, WELL512 **apWELL, double *adCapacities, int iStride) 
-    : Action<T>(pPop, pCG,ATTR_NPPCAPACITY_NAME,sID),
+    : Action<T>(pPop, pCG,ATTR_NPPCAP_NAME,sID),
       m_apWELL(apWELL),
       m_adCapacities(adCapacities),
       m_iStride(iStride),
@@ -218,15 +218,15 @@ void NPPCapacity<T>::recalculate() {
 // extractAttributesQDF
 //
 //   tries to load the attributes
-//      ATTR_NPPCAPACITY_WATERFACTOR_NAME
-//      ATTR_NPPCAPACITY_COASTALFACTOR_NAME
-//      ATTR_NPPCAPACITY_COASTAL_MIN_LAT_NAME
-//      ATTR_NPPCAPACITY_COASTAL_MAX_LAT_NAME
-//      ATTR_NPPCAPACITY_NPPMIN_NAME
-//      ATTR_NPPCAPACITY_NPPMAX_NAME
-//      ATTR_NPPCAPACITY_KMAX_NAME
-//      ATTR_NPPCAPACITY_KMIN_NAME
-//      ATTR_NPPCAPACITY_EFFICIENCY_NAME
+//      ATTR_NPPCAP_WATERFACTOR_NAME
+//      ATTR_NPPCAP_COASTALFACTOR_NAME
+//      ATTR_NPPCAP_COASTAL_MIN_LAT_NAME
+//      ATTR_NPPCAP_COASTAL_MAX_LAT_NAME
+//      ATTR_NPPCAP_NPPMIN_NAME
+//      ATTR_NPPCAP_NPPMAX_NAME
+//      ATTR_NPPCAP_KMAX_NAME
+//      ATTR_NPPCAP_KMIN_NAME
+//      ATTR_NPPCAP_EFFICIENCY_NAME
 //
 template<typename T>
 int NPPCapacity<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
@@ -235,77 +235,77 @@ int NPPCapacity<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
     
     /*
     if (iResult == 0) {
-    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_VEGSELECTION_NAME, 3, m_adSelection);
+    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAP_VEGSELECTION_NAME, 3, m_adSelection);
         if (iResult != 0) {
-            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAPACITY_VEGSELECTION_NAME);
+            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAP_VEGSELECTION_NAME);
         }
     }
     */
     if (iResult == 0) {
-    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_WATERFACTOR_NAME, 1, &m_dWaterFactor);
+    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAP_WATERFACTOR_NAME, 1, &m_dWaterFactor);
         if (iResult != 0) {
-            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAPACITY_WATERFACTOR_NAME);
+            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAP_WATERFACTOR_NAME);
         }
     }
 
     if (iResult == 0) {
-    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_COASTALFACTOR_NAME, 1, &m_dCoastalFactor);
+    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAP_COASTALFACTOR_NAME, 1, &m_dCoastalFactor);
         if (iResult != 0) {
-            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAPACITY_COASTALFACTOR_NAME);
+            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAP_COASTALFACTOR_NAME);
         }
     }
 
     if (iResult == 0) {
-    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_COASTAL_MIN_LAT_NAME, 1, &m_dCoastalMinLatitude);
+    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAP_COASTAL_MIN_LAT_NAME, 1, &m_dCoastalMinLatitude);
         if (iResult != 0) {
-            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAPACITY_COASTAL_MIN_LAT_NAME);
+            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAP_COASTAL_MIN_LAT_NAME);
         }
     }
 
     if (iResult == 0) {
-    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_COASTAL_MAX_LAT_NAME, 1, &m_dCoastalMaxLatitude);
+    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAP_COASTAL_MAX_LAT_NAME, 1, &m_dCoastalMaxLatitude);
         if (iResult != 0) {
-            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAPACITY_COASTAL_MAX_LAT_NAME);
+            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAP_COASTAL_MAX_LAT_NAME);
         }
     }
 
     if (iResult == 0) {
-    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_NPPMIN_NAME, 1, &m_dNPPMin);
+    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAP_NPPMIN_NAME, 1, &m_dNPPMin);
         if (iResult != 0) {
-            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAPACITY_NPPMIN_NAME);
+            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAP_NPPMIN_NAME);
         }
     }
 
     if (iResult == 0) {
-    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_NPPMAX_NAME, 1, &m_dNPPMax);
+    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAP_NPPMAX_NAME, 1, &m_dNPPMax);
         if (iResult != 0) {
-            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAPACITY_NPPMAX_NAME);
+            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAP_NPPMAX_NAME);
         }
     }
 
     if (iResult == 0) {
-        iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_KMAX_NAME, 1, &m_dKMax);
+        iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAP_KMAX_NAME, 1, &m_dKMax);
         if (iResult != 0) {
-            iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_OLD_KMAX_NAME, 1, &m_dKMax);
+            iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAP_OLD_KMAX_NAME, 1, &m_dKMax);
             if (iResult == 0) {
-                LOG_WARNING("[NPPCapacity] used old KMax name [%s]", ATTR_NPPCAPACITY_OLD_KMAX_NAME);
+                LOG_WARNING("[NPPCapacity] used old KMax name [%s]", ATTR_NPPCAP_OLD_KMAX_NAME);
             } else {
-                LOG_ERROR("[NPPCapacity] couldn't read attributes [%s] or [%s]", ATTR_NPPCAPACITY_KMAX_NAME, ATTR_NPPCAPACITY_OLD_KMAX_NAME);
+                LOG_ERROR("[NPPCapacity] couldn't read attributes [%s] or [%s]", ATTR_NPPCAP_KMAX_NAME, ATTR_NPPCAP_OLD_KMAX_NAME);
             }
         }
     }
 
     if (iResult == 0) {
-    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_KMIN_NAME, 1, &m_dKMin);
+    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAP_KMIN_NAME, 1, &m_dKMin);
         if (iResult != 0) {
-            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAPACITY_KMIN_NAME);
+            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAP_KMIN_NAME);
         }
     }
 
     if (iResult == 0) {
-    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_EFFICIENCY_NAME, 1, &m_dEfficiency);
+    iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_NPPCAP_EFFICIENCY_NAME, 1, &m_dEfficiency);
         if (iResult != 0) {
-            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAPACITY_EFFICIENCY_NAME);
+            LOG_ERROR("[NPPCapacity] couldn't read attribute [%s]", ATTR_NPPCAP_EFFICIENCY_NAME);
         }
     }
 
@@ -320,32 +320,32 @@ int NPPCapacity<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
 // writeAttributesQDF
 //
 //   tries to write the attributes
-//      ATTR_NPPCAPACITY_VEGSELECTION_NAME
-//      ATTR_NPPCAPACITY_WATERFACTOR_NAME
-//      ATTR_NPPCAPACITY_COASTALFACTOR_NAME
-//      ATTR_NPPCAPACITY_COASTAL_MIN_LAT_NAME
-//      ATTR_NPPCAPACITY_COASTAL_MAX_LAT_NAME
-//      ATTR_NPPCAPACITY_NPPMIN_NAME
-//      ATTR_NPPCAPACITY_NPPMAX_NAME
-//      ATTR_NPPCAPACITY_KMAX_NAME
-//      ATTR_NPPCAPACITY_KMIN_NAME
-//      ATTR_NPPCAPACITY_EFFICIENCY_NAME
+//      ATTR_NPPCAP_VEGSELECTION_NAME
+//      ATTR_NPPCAP_WATERFACTOR_NAME
+//      ATTR_NPPCAP_COASTALFACTOR_NAME
+//      ATTR_NPPCAP_COASTAL_MIN_LAT_NAME
+//      ATTR_NPPCAP_COASTAL_MAX_LAT_NAME
+//      ATTR_NPPCAP_NPPMIN_NAME
+//      ATTR_NPPCAP_NPPMAX_NAME
+//      ATTR_NPPCAP_KMAX_NAME
+//      ATTR_NPPCAP_KMIN_NAME
+//      ATTR_NPPCAP_EFFICIENCY_NAME
 //
 template<typename T>
 int NPPCapacity<T>::writeAttributesQDF(hid_t hSpeciesGroup) {
     
     int iResult = 0;
    
-    //    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_VEGSELECTION_NAME, 3, m_adSelection);
-    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_WATERFACTOR_NAME, 1, &m_dWaterFactor);
-    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_COASTALFACTOR_NAME, 1, &m_dCoastalFactor);
-    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_COASTAL_MIN_LAT_NAME, 1, &m_dCoastalMinLatitude);
-    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_COASTAL_MAX_LAT_NAME, 1, &m_dCoastalMaxLatitude);
-    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_NPPMIN_NAME, 1, &m_dNPPMin);
-    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_NPPMAX_NAME, 1, &m_dNPPMax);
-    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_KMAX_NAME, 1, &m_dKMax);
-    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_KMIN_NAME, 1, &m_dKMin);
-    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAPACITY_EFFICIENCY_NAME, 1, &m_dEfficiency);
+    //    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAP_VEGSELECTION_NAME, 3, m_adSelection);
+    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAP_WATERFACTOR_NAME, 1, &m_dWaterFactor);
+    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAP_COASTALFACTOR_NAME, 1, &m_dCoastalFactor);
+    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAP_COASTAL_MIN_LAT_NAME, 1, &m_dCoastalMinLatitude);
+    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAP_COASTAL_MAX_LAT_NAME, 1, &m_dCoastalMaxLatitude);
+    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAP_NPPMIN_NAME, 1, &m_dNPPMin);
+    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAP_NPPMAX_NAME, 1, &m_dNPPMax);
+    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAP_KMAX_NAME, 1, &m_dKMax);
+    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAP_KMIN_NAME, 1, &m_dKMin);
+    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_NPPCAP_EFFICIENCY_NAME, 1, &m_dEfficiency);
 
     return iResult;
 }
@@ -362,16 +362,16 @@ int NPPCapacity<T>::tryGetAttributes(const ModuleComplex *pMC) {
     const stringmap &mParams = pMC->getAttributes();
     if (this->checkAttributes(mParams) == 0) {
         iResult = 0;
-        //        iResult += getParamArr(mParams, ATTR_NPPCAPACITY_VEGSELECTION_NAME, 3,  m_adSelection);             
-        iResult += getAttributeVal(mParams, ATTR_NPPCAPACITY_WATERFACTOR_NAME,      &m_dWaterFactor);            
-        iResult += getAttributeVal(mParams, ATTR_NPPCAPACITY_COASTALFACTOR_NAME,    &m_dCoastalFactor);        
-        iResult += getAttributeVal(mParams, ATTR_NPPCAPACITY_COASTAL_MIN_LAT_NAME,  &m_dCoastalMinLatitude); 
-        iResult += getAttributeVal(mParams, ATTR_NPPCAPACITY_COASTAL_MAX_LAT_NAME,  &m_dCoastalMaxLatitude); 
-        iResult += getAttributeVal(mParams, ATTR_NPPCAPACITY_NPPMIN_NAME,           &m_dNPPMin);                      
-        iResult += getAttributeVal(mParams, ATTR_NPPCAPACITY_NPPMAX_NAME,           &m_dNPPMax);                      
-        iResult += getAttributeVal(mParams, ATTR_NPPCAPACITY_KMAX_NAME,             &m_dKMax);                          
-        iResult += getAttributeVal(mParams, ATTR_NPPCAPACITY_KMIN_NAME,             &m_dKMin);                          
-        iResult += getAttributeVal(mParams, ATTR_NPPCAPACITY_EFFICIENCY_NAME,       &m_dEfficiency);              
+        //        iResult += getParamArr(mParams, ATTR_NPPCAP_VEGSELECTION_NAME, 3,  m_adSelection);             
+        iResult += getAttributeVal(mParams, ATTR_NPPCAP_WATERFACTOR_NAME,      &m_dWaterFactor);            
+        iResult += getAttributeVal(mParams, ATTR_NPPCAP_COASTALFACTOR_NAME,    &m_dCoastalFactor);        
+        iResult += getAttributeVal(mParams, ATTR_NPPCAP_COASTAL_MIN_LAT_NAME,  &m_dCoastalMinLatitude); 
+        iResult += getAttributeVal(mParams, ATTR_NPPCAP_COASTAL_MAX_LAT_NAME,  &m_dCoastalMaxLatitude); 
+        iResult += getAttributeVal(mParams, ATTR_NPPCAP_NPPMIN_NAME,           &m_dNPPMin);                      
+        iResult += getAttributeVal(mParams, ATTR_NPPCAP_NPPMAX_NAME,           &m_dNPPMax);                      
+        iResult += getAttributeVal(mParams, ATTR_NPPCAP_KMAX_NAME,             &m_dKMax);                          
+        iResult += getAttributeVal(mParams, ATTR_NPPCAP_KMIN_NAME,             &m_dKMin);                          
+        iResult += getAttributeVal(mParams, ATTR_NPPCAP_EFFICIENCY_NAME,       &m_dEfficiency);              
     }
     return iResult;
 }
@@ -384,23 +384,23 @@ template<typename T>
 int NPPCapacity<T>::modifyAttributes(const std::string sAttrName, double dValue) {
     
     int iResult = 0;
-    if (sAttrName == ATTR_NPPCAPACITY_WATERFACTOR_NAME) {
+    if (sAttrName == ATTR_NPPCAP_WATERFACTOR_NAME) {
         m_dWaterFactor = dValue;
-    } else if (sAttrName == ATTR_NPPCAPACITY_COASTALFACTOR_NAME) {
+    } else if (sAttrName == ATTR_NPPCAP_COASTALFACTOR_NAME) {
         m_dCoastalFactor = dValue;
-    } else if (sAttrName == ATTR_NPPCAPACITY_COASTAL_MAX_LAT_NAME) {
+    } else if (sAttrName == ATTR_NPPCAP_COASTAL_MAX_LAT_NAME) {
         m_dCoastalMinLatitude = dValue;
-    } else if (sAttrName == ATTR_NPPCAPACITY_COASTAL_MIN_LAT_NAME) {
+    } else if (sAttrName == ATTR_NPPCAP_COASTAL_MIN_LAT_NAME) {
         m_dCoastalMaxLatitude = dValue;
-    } else if (sAttrName == ATTR_NPPCAPACITY_NPPMIN_NAME) {
+    } else if (sAttrName == ATTR_NPPCAP_NPPMIN_NAME) {
         m_dNPPMin = dValue;
-    } else if (sAttrName == ATTR_NPPCAPACITY_NPPMAX_NAME) {
+    } else if (sAttrName == ATTR_NPPCAP_NPPMAX_NAME) {
         m_dNPPMax = dValue;
-    } else if (sAttrName == ATTR_NPPCAPACITY_KMAX_NAME) {
+    } else if (sAttrName == ATTR_NPPCAP_KMAX_NAME) {
         m_dKMax = dValue;
-    } else if (sAttrName == ATTR_NPPCAPACITY_KMIN_NAME) {
+    } else if (sAttrName == ATTR_NPPCAP_KMIN_NAME) {
         m_dKMin = dValue;
-    } else if (sAttrName == ATTR_NPPCAPACITY_EFFICIENCY_NAME) {
+    } else if (sAttrName == ATTR_NPPCAP_EFFICIENCY_NAME) {
         m_dEfficiency = dValue;
     } else {
         iResult = -1;

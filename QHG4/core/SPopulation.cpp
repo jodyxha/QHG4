@@ -161,7 +161,7 @@ void SPopulation<T>::prepareLists(int iAgentLayerSize,int iListLayerSize, uint32
     m_vDeathList = new std::vector<int>*[m_iNumThreads];
     m_apWELL = new WELL512*[m_iNumThreads];
 
-    m_aiTempAgentsPerCell = new ulong*[m_iNumThreads];;
+    m_aiTempAgentsPerCell = new ulong*[m_iNumThreads];
 
 #pragma omp parallel 
     {

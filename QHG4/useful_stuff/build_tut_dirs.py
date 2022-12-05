@@ -17,7 +17,7 @@ tutorial_info  = [
     {
         'name':     'tutorial_01',
         'code':     ['tut_StaticPop.h', 'tut_StaticPop.cpp'],
-        'xmldat':   ['tut_Static.xml',  'tut_Static.dat'],
+        'xmldat':   [('tut_Static.xml',  'tut_Static.dat')],
         'grid':      'ico32s.qdf',
         'num_iters': '200',
         'events':    'write|grid+geo+pop:sapiens@20000'
@@ -26,7 +26,7 @@ tutorial_info  = [
     {
         'name':   'tutorial_02',
         'code':   ['tut_OldAgeDiePop.h', 'tut_OldAgeDiePop.cpp'],
-        'xmldat': ['tut_OldAgeDie.xml',  'tut_OldAgeDie.dat'],
+        'xmldat': [('tut_OldAgeDie.xml',  'tut_OldAgeDie.dat')],
         'grid':   'ico32s.qdf',
         'num_iters': '200',
         'events':    'write|grid+geo+pop:sapiens@20000'
@@ -35,7 +35,7 @@ tutorial_info  = [
     {
         'name':     'tutorial_03',
         'code':     ['tut_MovePop.h', 'tut_MovePop.cpp'],
-        'xmldat':   ['tut_Move.xml',  'tut_Move.dat'],
+        'xmldat':   [('tut_Move.xml',  'tut_Move.dat')],
         'grid':     'ico32s.qdf',
         'num_iters': '200',
         'events':    'write|grid+geo+pop:sapiens@20000'
@@ -44,7 +44,7 @@ tutorial_info  = [
     {
         'name':     'tutorial_04',
         'code':     ['tut_ParthenoPop.h', 'tut_ParthenoPop.cpp'],
-        'xmldat':   ['tut_Partheno.xml',  'tut_Partheno.dat'],
+        'xmldat':   [('tut_Partheno.xml',  'tut_Partheno.dat')],
         'grid':     'ico32s.qdf',
         'num_iters': '3000',
         'events':    'write|grid+geo+pop:sapiens@20000'
@@ -53,7 +53,7 @@ tutorial_info  = [
     {
         'name':     'tutorial_05',
         'code':     ['tut_SexualPop.h', 'tut_SexualPop.cpp'],
-        'xmldat':   ['tut_Sexual.xml',  'tut_Sexual.dat'],
+        'xmldat':   [('tut_Sexual.xml',  'tut_Sexual.dat')],
         'grid':     'ico32s.qdf',
         'num_iters': '10000',
         'events':    'write|grid+geo+pop:sapiens@20000'
@@ -62,7 +62,7 @@ tutorial_info  = [
     {
         'name':     'tutorial_06',
         'code':     ['tut_EnvironAltPop.h', 'tut_EnvironAltPop.cpp'],
-        'xmldat':   ['tut_EnvironAlt.xml',  'tut_EnvironAlt.dat'],
+        'xmldat':   [('tut_EnvironAlt.xml',  'tut_EnvironAlt.dat')],
         'grid':     'eq64Alt.qdf',
         'num_iters': '10000',
         'events':    'write|grid+geo+pop:sapiens@1000'
@@ -70,11 +70,22 @@ tutorial_info  = [
    
     {
         'name':     'tutorial_07',
-        'code':     ['tut_EnvironNPPAltPop.h', 'tut_EnvironNPPAltPop.cpp'],
-        'xmldat':   ['tut_EnvironNPPAlt.xml',  'tut_EnvironNPPAlt.dat'],
-        'grid':     'eq64NPPAlt.qdf',
+        'code':     ['tut_EnvironCapAltPop.h', 'tut_EnvironCapAltPop.cpp'],
+        'xmldat':   [('tut_EnvironCapAlt.xml',  'tut_EnvironCapAlt.dat')],
+        'grid':     'eq64CapAlt.qdf',
         'num_iters': '80000',
         'events':    'write|grid+geo+pop:sapiens@1000'
+    },
+   
+    {
+        'name':     'tutorial_08',
+        'code':     ['GrassPop.h', 'GrassPop.cpp',
+                     'SheepPop.h', 'Sheepop.cpp'],
+        'xmldat':   [('tut_Grass.xml', 'tut_Grass.dat'),
+                     ('tut_Sheep.xml', 'tut_Sheep.dat')],
+        'grid':     'torus_500x500.qdf',
+        'num_iters': '10000',
+        'events':    'write|grid+geo+pop:grass~+pop:sheep#@10'
     }
 ]
 
@@ -84,13 +95,18 @@ tutorial_info  = [
 #--
 def create_config_file(full_path, tut_info, num_iters):
 
+    pops = []
+    for x in tut_info['xmldat']:
+        pops.append("%s:%s"%x);
+    #-- end for
+    pops_line = ",".join(pops)
+    
     repls = {
         '+++GRID+++':     tut_info['grid'],
         '+++OUTBODY+++':  tut_info['name'],
         '+++NUMITERS+++': tut_info['num_iters'],
         '+++EVENTS+++':   tut_info['events'],
-        '+++XML+++':      tut_info['xmldat'][0],
-        '+++DAT+++':      tut_info['xmldat'][1]
+        '+++XMLDAT+++':   pops_line
     }
 
     
@@ -126,8 +142,10 @@ def create_and_fill_subdir(top_dir, tut_info, num_iters):
         shutil.copy(qhg_pops+"/"+tut_info['code'][0], full_path)
         shutil.copy(qhg_pops+"/"+tut_info['code'][1], full_path)
 
-        shutil.copy(tut_data_xmldat+"/"+tut_info['xmldat'][0], full_path)
-        shutil.copy(tut_data_xmldat+"/"+tut_info['xmldat'][1], full_path)
+        for x in tut_info['xmldat']:
+            shutil.copy(tut_data_xmldat+"/"+x[0], full_path)
+            shutil.copy(tut_data_xmldat+"/"+x[1], full_path)
+        #-- end for
 
         #shutil.copy(tut_data_grids+"/"+tut_info['grid'], full_path)
 
@@ -187,7 +205,8 @@ if len(argv) > 1:
     if bOK:
         os.mkdir(top_tut)
         for t in tutorial_info:
-            print("t:%s"%t)
+            #print("t:%s"%t)
+            print("creating and filling %s"%t['name'])
             create_and_fill_subdir(top_tut, t, num_iters)
         #-- end for
         print("To facilitate the use of the tutorials, add the line")

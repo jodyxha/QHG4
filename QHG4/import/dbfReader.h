@@ -18,7 +18,7 @@ class dbfReader {
 public:
     dbfReader(FILE *fIn);
 
-    int read(const char *pFieldName, vecdouble &vVals);
+    int read(const std::string sFieldName, vecdouble &vVals);
     void display(const char *pCaption);
 
     int   getNumRecords() const { return m_iNumRecords;};

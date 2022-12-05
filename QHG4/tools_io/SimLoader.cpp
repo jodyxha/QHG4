@@ -1551,10 +1551,10 @@ int SimLoader::write() {
     
     stringvec vParts;
     uint iNum = splitString(m_sDesc, vParts, "+");
-    output_flags iWhat = output_flags::WR_NONE;
+    in iWhat = WR_NONE;
 
     for (uint i = 0; (iResult == 0) && (i < iNum); ++i) {
-        uint iWhat = WR_output_flags::NONE;
+        uint iWhat = WR_NONE;
         std::string sCur = vParts[i];
         std::string sSub;
         if (sCur.substr(EVENT_PARAM_WRITE_POP.size()) == EVENT_PARAM_WRITE_POP) {
@@ -1564,38 +1564,38 @@ int SimLoader::write() {
                 sSub = vSub[1];
             }
         } else if (sCur == EVENT_PARAM_WRITE_GRID) {
-            iWhat |= output_flags::WR_GRID;
+            iWhat |= WR_GRID;
             sOther += "S";
         } else if (sCur == EVENT_PARAM_WRITE_GEO) {
-            iWhat |= output_flags::WR_GEO;
+            iWhat |= WR_GEO;
             sOther += "G";
         } else if (sCur == EVENT_PARAM_WRITE_CLIMATE) {
-            iWhat |= output_flags::WR_CLI;
+            iWhat |= WR_CLI;
             sOther += "C";
         } else if (sCur == EVENT_PARAM_WRITE_VEG) {
-            iWhat |= output_flags::WR_VEG;
+            iWhat |= WR_VEG;
             sOther += "V";
         } else if (sCur == EVENT_PARAM_WRITE_NAV) {
-            iWhat |= output_flags::WR_NAV;
+            iWhat |= WR_NAV;
             sOther += "N";
         } else if (sCur == EVENT_PARAM_WRITE_ENV) {
-            iWhat |= output_flags::WR_ALL;
+            iWhat |= WR_ALL;
             sOther += "env";
         } else if (sCur == EVENT_PARAM_WRITE_OCC) {
-            iWhat |= output_flags::WR_OCC;
+            iWhat |= WR_OCC;
             sOther += "O";
         } else {
-            iWhat = output_flags::WR_NONE;
+            iWhat = WR_NONE;
             iResult = -1;
             stdprintf("Unknown output type [%s] (%s)\n", sCur, m_sDesc);
             LOG_ERROR("Unknown output type [%s] (%s)\n", sCur, m_sDesc);
         }
         
-        if  (iWhat != output_flags::WR_NONE) {
+        if  (iWhat != WR_NONE) {
             if (iResult == 0) {
                 popwrite_flags iWS = popwrite_flags::PW_NONE;
                 
-                if  (!sSub.empty() && (iWhat >= output_flags::WR_POP)) {
+                if  (!sSub.empty() && (iWhat >= WR_POP)) {
                     sPops += "_pop-";
                     size_t iPosSpecial = sSub.find_first_of("#%~*");
                     std::string sD = "_";
@@ -1663,7 +1663,7 @@ int SimLoader::write() {
 // writeState
 //  write output
 //
-int SimLoader::writeState(output_flags iWhat) {
+int SimLoader::writeState(int iWhat) {
     int iResult = 0;
     
    

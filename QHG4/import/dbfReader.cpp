@@ -1,10 +1,13 @@
 #include <cstdio>
 #include <cstring>
-#include <cstdlib>
+
 
 #include <string>
 #include <vector>
 #include <map>
+
+#include "stdstrutils.h"
+#include "stdstrutilsT.h"
 
 #include "shpUtils.h"
 #include "dbfReader.h"
@@ -24,7 +27,7 @@ dbfReader::dbfReader(FILE *fIn) :
 //----------------------------------------------------------------------------
 // read
 //
-int dbfReader::read(const char *pFieldName, vecdouble &vVals) {
+int dbfReader::read(const std::string sFieldName, vecdouble &vVals) {
     int iResult = 0;
 
     if (iResult == 0) {
@@ -34,17 +37,17 @@ int dbfReader::read(const char *pFieldName, vecdouble &vVals) {
     if (iResult == 0) {
         nameoffsets::const_iterator it;
         /*
-        printf("Field names, offsets + lengths\n");
+        stdprintf("Field names, offsets + lengths\n");
         for (it = m_mOffsets.begin(); it != m_mOffsets.end(); ++it) {
-            printf("%12s: %d %d\n", it->first.c_str(), it->second.first, it->second.second);
+            stdprintf("%12s: %d %d\n", it->first.c_str(), it->second.first, it->second.second);
         }
         */
-        if (pFieldName != NULL) {
-            it = m_mOffsets.find(pFieldName);
+        if (!sFieldName.empty()) {
+            it = m_mOffsets.find(sFieldName);
             if (it != m_mOffsets.end()) {
                 iResult = readRecords(it->second.first, it->second.second, vVals);
             } else {
-                printf("No field with name [%s] found\n", pFieldName);
+                stdprintf("No field with name [%s] found\n", sFieldName);
                 iResult =-1;
             }
         }
@@ -68,12 +71,12 @@ int dbfReader::readHeader() {
         p = shpUtils::getNum(p, &m_iHeaderSize, LITTLEENDIAN);
         p = shpUtils::getNum(p, &m_iRecordSize, LITTLEENDIAN);
         iResult = 0;
-        //        printf("DBF: %d records of size %d starting at pos %d\n", m_iNumRecords, m_iRecordSize, m_iHeaderSize);
+        //        stdprintf("DBF: %d records of size %d starting at pos %d\n", m_iNumRecords, m_iRecordSize, m_iHeaderSize);
         
         m_mOffsets.clear();
         iResult = readFieldDescriptors();
     } else {
-        printf("Only read [%d] instead of [%d] bytes\n", iRead, DBF_HEADER_SIZE);
+        stdprintf("Only read [%d] instead of [%d] bytes\n", iRead, DBF_HEADER_SIZE);
     }
     return iResult;
 }
@@ -98,7 +101,7 @@ int dbfReader::readFieldDescriptors() {
         uchar cLen  = *p++;
         //unused        uchar cDec  = *p++;
 
-        //        printf("Field [%10s] offs[%3d], type %c, addr %d, len %3d, count %3d\n", sName, iOffs, cType, iAddr, cLen, cDec);
+        //        stdprintf("Field [%10s] offs[%3d], type %c, addr %d, len %3d, count %3d\n", sName, iOffs, cType, iAddr, cLen, cDec);
         if (cType == 'N') {
             m_mOffsets[sName] = std::pair<int,int>(iOffs, cLen);
         }
@@ -119,7 +122,7 @@ int dbfReader::readFieldDescriptors() {
 //
 int dbfReader::readRecords(int iFieldOffset, int iLen, vecdouble &vVals) {
     int iResult = 0;  
-    printf("Reading records\n");
+    stdprintf("Reading records\n");
     uchar *pBuf = new uchar[m_iRecordSize];
 
     int iCount = 0;
@@ -137,14 +140,14 @@ int dbfReader::readRecords(int iFieldOffset, int iLen, vecdouble &vVals) {
         if (*pEnd == '\0') {
             vVals.push_back(dVal);
         } else {
-            printf("Non-numeric value found in record #%d: [%s]\n", iCount, pVal);
+            stdprintf("Non-numeric value found in record #%d: [%s]\n", iCount, pVal);
             iResult = -1;
         }
         iRead = fread(pBuf, 1, m_iRecordSize, m_fIn);
         iCount++;
     }
     //    if (iResult == 0) {
-    //        printf("extracted from %d records\n", iCount);
+    //        stdprintf("extracted from %d records\n", iCount);
     //    }
     return iResult;
 }

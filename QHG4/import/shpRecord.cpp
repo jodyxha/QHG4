@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 
+#include "stdstrutils.h"
+#include "stdstrutilsT.h"
 #include "shpUtils.h"
 #include "shpRecord.h"
 
@@ -60,7 +62,7 @@ int shpRecord::readHeader() {
         if (feof(m_fIn)) {
             iResult = 1;
         } else {
-            printf("Only read [%d] bytes instead of [%d] from header\n", iRead, REC_HEADER_SIZE);
+            stdprintf("Only read [%d] bytes instead of [%d] from header\n", iRead, REC_HEADER_SIZE);
         }
     }
     return iResult;
@@ -71,10 +73,10 @@ int shpRecord::readHeader() {
 // display
 //
 void shpRecord::display(const char*pCaption) {
-    printf("%s\n", pCaption);
-    printf("Record #%d:\n", m_iRecNumber);
-    printf("  size: %d bytes\n", m_iRecLen);
-    printf("  shape:%d [%s]\n", m_iShape, shpUtils::getShapeName(m_iShape)); 
+    stdprintf("%s\n", pCaption);
+    stdprintf("Record #%d:\n", m_iRecNumber);
+    stdprintf("  size: %d bytes\n", m_iRecLen);
+    stdprintf("  shape:%d [%s]\n", m_iShape, shpUtils::getShapeName(m_iShape)); 
     /*
     if (m_pShape != NULL) {
         m_pShape->display("");
@@ -147,11 +149,11 @@ int shpRecord::readShape(vecdoubledouble &vCoords) {
             // [optional M range, M array]
             break;
         default:
-            printf("Unknown type [%d]\n", m_iShape); 
+            stdprintf("Unknown type [%d]\n", m_iShape); 
             iResult = -1;
         }
         if (iResult == 2) {
-            printf("shape [%s] not yet supported\n", shpUtils::getShapeName(m_iShape));
+            stdprintf("shape [%s] not yet supported\n", shpUtils::getShapeName(m_iShape));
         }
 
         
@@ -209,12 +211,12 @@ int shpRecord::readPolyLine(vecdoubledouble &vCoords) {
             }
         }
         /*
-        printf("Total theor: %zd (actually: %d\n", 4*sizeof(double) + 2*sizeof(int) + iNumParts*sizeof(int)+iNumPoints*2*sizeof(double), iBufSize);
-        printf("left: %ld\n", p-pBuf);
+          stdprintf("Total theor: %zd (actually: %d\n", 4*sizeof(double) + 2*sizeof(int) + iNumParts*sizeof(int)+iNumPoints*2*sizeof(double), iBufSize);
+          stdprintf("left: %ld\n", p-pBuf);
         */
         iResult = 0;
     } else {
-        printf("Couldn't read shape data\n");
+        stdprintf("Couldn't read shape data\n");
     }
     delete[] pBuf;
     return iResult;

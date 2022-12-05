@@ -8,18 +8,18 @@
 class WELL512;
 class NPPCalc;
 
-#define ATTR_NPPCAPACITY_NAME "NPPCapacity"
+#define ATTR_NPPCAP_NAME "NPPCapacity"
 //#define ATTR_NPPCAPACITY_VEGSELECTION_NAME    "NPPCap_veg_selection"
-#define ATTR_NPPCAPACITY_WATERFACTOR_NAME     "NPPCap_water_factor"
-#define ATTR_NPPCAPACITY_COASTALFACTOR_NAME   "NPPCap_coastal_factor"
-#define ATTR_NPPCAPACITY_COASTAL_MIN_LAT_NAME "NPPCap_coastal_min_latitude"
-#define ATTR_NPPCAPACITY_COASTAL_MAX_LAT_NAME "NPPCap_coastal_max_latitude"
-#define ATTR_NPPCAPACITY_NPPMIN_NAME          "NPPCap_NPP_min"
-#define ATTR_NPPCAPACITY_NPPMAX_NAME          "NPPCap_NPP_max"
-#define ATTR_NPPCAPACITY_KMAX_NAME            "NPPCap_K_max"
-#define ATTR_NPPCAPACITY_KMIN_NAME            "NPPCap_K_min"
-#define ATTR_NPPCAPACITY_EFFICIENCY_NAME      "NPPCap_efficiency"
-#define ATTR_NPPCAPACITY_OLD_KMAX_NAME        "NPPCap_max_capacity"
+#define ATTR_NPPCAP_WATERFACTOR_NAME     "NPPCap_water_factor"
+#define ATTR_NPPCAP_COASTALFACTOR_NAME   "NPPCap_coastal_factor"
+#define ATTR_NPPCAP_COASTAL_MIN_LAT_NAME "NPPCap_coastal_min_latitude"
+#define ATTR_NPPCAP_COASTAL_MAX_LAT_NAME "NPPCap_coastal_max_latitude"
+#define ATTR_NPPCAP_NPPMIN_NAME          "NPPCap_NPP_min"
+#define ATTR_NPPCAP_NPPMAX_NAME          "NPPCap_NPP_max"
+#define ATTR_NPPCAP_KMAX_NAME            "NPPCap_K_max"
+#define ATTR_NPPCAP_KMIN_NAME            "NPPCap_K_min"
+#define ATTR_NPPCAP_EFFICIENCY_NAME      "NPPCap_efficiency"
+#define ATTR_NPPCAP_OLD_KMAX_NAME        "NPPCap_max_capacity"
 
 #define NPPCAPACITY_SEL_GRASS 1
 #define NPPCAPACITY_SEL_BUSH  2

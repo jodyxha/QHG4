@@ -22,7 +22,7 @@ $(warning DEFS in actions is $(DEFS))
 ARFL=rv
 
 ifneq ("X$(SHORT)", "X")
-    POST0=cp lActions.a ../actions/; echo "copied"
+    POST0=cp libActions.a ../actions/; echo "copied"
 else
     POST0=echo "ok"
 endif

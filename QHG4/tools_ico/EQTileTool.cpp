@@ -113,7 +113,7 @@ int splitGrid(BasicTiling *pBT, const char *sQDFBody, const char *sIGNBody, int 
                     std::vector<PopBase *> vDummy;
                     StatusWriter *pSW = StatusWriter::createInstance(pCG, vDummy);
                     if (pSW != NULL) {
-                        iResult = pSW->write(sQDFOut, -1, -1.0, "EQsahedron", output_flags::WR_GRID |output_flags::WR_GEO);
+                        iResult = pSW->write(sQDFOut, -1, -1.0, "EQsahedron", WR_GRID | WR_GEO);
                         if (iResult != 0) {
 			    printf("%s\n", pSW->getError().c_str());
                             printf("Couldn't save QDF file [%s]\n", sQDFOut);

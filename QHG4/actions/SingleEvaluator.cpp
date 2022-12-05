@@ -16,7 +16,6 @@
 #include "Evaluator.h"
 #include "SingleEvaluator.h"
 
-#define MAX_PL_NAME 512
 
 //-----------------------------------------------------------------------------
 // constructor
@@ -24,7 +23,7 @@
 //              can cause strange effects (icosahdral artefacts,  swimming)
 //
 template<typename T>
-SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, double *adOutputWeights, double *adInputData, const char *sPLParName, bool bCumulate, intset &sTriggerIDs) 
+SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, double *adOutputWeights, double *adInputData, const char *sPLParName, bool bCumulate, intset &sTriggerIDs, bool bAlwaysUpdate) 
     : Evaluator<T>(pPop,pCG,ATTR_SINGLEEVAL_NAME, sID), 
       m_sPLParName(sPLParName),
       m_pPL(NULL),
@@ -32,12 +31,13 @@ SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::s
       m_adInputData(adInputData),
       m_bCumulate(bCumulate), 
       m_sTriggerIDs(sTriggerIDs),
-      m_bAlwaysUpdate(false),
+      m_bAlwaysUpdate(bAlwaysUpdate),
       m_sInputArrayName(""),
       m_bFirst(true) {
     
     // the PolyLine is created when the parameters are read
 
+    this->m_bNeedUpdate = m_bAlwaysUpdate;
     m_iMaxNeighbors = this->m_pCG->m_iConnectivity;
     m_sTriggerIDs.insert(sTriggerIDs.begin(), sTriggerIDs.end());
 }
@@ -51,17 +51,18 @@ SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::s
 //              can cause strange effects (icosahdral artefacts,  swimming)
 //
 template<typename T>
-SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, double *adOutputWeights, double *adInputData, const char *sPLParName, bool bCumulate, int iTriggerID)
+SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, double *adOutputWeights, double *adInputData, const char *sPLParName, bool bCumulate, int iTriggerID, bool bAlwaysUpdate)
     : Evaluator<T>(pPop,pCG,ATTR_SINGLEEVAL_NAME, sID),
       m_sPLParName(sPLParName),
       m_pPL(NULL),
       m_adOutputWeights(adOutputWeights),
       m_adInputData(adInputData),
       m_bCumulate(bCumulate),
-      m_bAlwaysUpdate(false),
+      m_bAlwaysUpdate(bAlwaysUpdate),
       m_sInputArrayName(""),
       m_bFirst(true) {
     
+    this->m_bNeedUpdate = m_bAlwaysUpdate;
     if (iTriggerID == EVENT_ID_NONE) {
         m_bAlwaysUpdate = true;
     } else {
@@ -71,13 +72,16 @@ SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::s
     m_iMaxNeighbors = this->m_pCG->m_iConnectivity;
 }
 
+
+
+
 //-----------------------------------------------------------------------------
 // constructor
 //   ATTENTION: using bCumulate=true for SingleEvaluators in a MultiEvaluator
 //              can cause strange effects (icosahdral artefacts,  swimming)
 //
 template<typename T>
-SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, double *adOutputWeights, const char *pInputArrayName, const char *sPLParName, bool bCumulate, intset &sTriggerIDs) 
+SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, double *adOutputWeights, const char *pInputArrayName, const char *sPLParName, bool bCumulate, intset &sTriggerIDs, bool bAlwaysUpdate) 
     : Action<T>(pPop,pCG,ATTR_SINGLEEVAL_NAME, sID),
       m_sPLParName(sPLParName),
       m_pPL(NULL),
@@ -85,9 +89,10 @@ SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::s
       m_adInputData(NULL),
       m_bCumulate(bCumulate), 
       m_sTriggerIDs(sTriggerIDs),
+      m_bAlwaysUpdate(bAlwaysUpdate),
       m_sInputArrayName(pInputArrayName) {
     
-    
+    this->m_bNeedUpdate = m_bAlwaysUpdate;
     m_iMaxNeighbors = this->m_pCG->m_iConnectivity;
     m_sTriggerIDs.insert(sTriggerIDs.begin(), sTriggerIDs.end());
 }
@@ -143,7 +148,7 @@ int SingleEvaluator<T>::initialize(float fT) {
         if (this->m_bNeedUpdate || (m_bFirst)) {   // need for sure at first step
 
             m_bFirst = false;
-            stdprintf("SingleEvaluator::initialize is updating weights for %s\n", m_sPLParName); 
+            if (!m_sPLParName.empty()) {stdprintf("SingleEvaluator::initialize is updating weights for %s\n", m_sPLParName);} 
             
             calcValues(); // get cell values from PolyLine
             
@@ -164,8 +169,8 @@ int SingleEvaluator<T>::initialize(float fT) {
 //
 template<typename T>
 void SingleEvaluator<T>::calcValues() {
- 
-    if (m_pPL != NULL) {
+    memset(m_adOutputWeights, 0, this->m_pCG->m_iNumCells*(m_iMaxNeighbors+1)*sizeof(double));
+    if (m_pPL != NULL) {  
         //        printf("[SingleEvaluator<T>::calcValues] Creating modified output\n");
 
 #pragma omp parallel for
@@ -195,6 +200,7 @@ void SingleEvaluator<T>::calcValues() {
             }
         }
     }
+
 }
 
 
@@ -230,6 +236,7 @@ void SingleEvaluator<T>::exchangeAndCumulate() {
             m_adOutputWeights[iCellIndex*(m_iMaxNeighbors+1) + i + 1] = dW;
         }
     }
+
 }
 
 

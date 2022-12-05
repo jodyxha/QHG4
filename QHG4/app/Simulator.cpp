@@ -477,7 +477,7 @@ int Simulator::handleWriteEvent(const std::string sDesc, int iDumpMode) {
     std::string sOther = "";
     std::vector<std::pair<std::string, popwrite_flags>> vSubs;
 
-    output_flags iWhat = output_flags::WR_NONE;
+    int iWhat = WR_NONE;
 
     stringvec vEvents;
     uint iNum = splitString(sDesc, vEvents, "+");
@@ -491,46 +491,46 @@ int Simulator::handleWriteEvent(const std::string sDesc, int iDumpMode) {
                 stringvec vSub;
                 uint iNumSub = splitString(sEvent, vSub, ":");
                 if (iNumSub  >= 2) { 
-                    iWhat += output_flags::WR_POP;
+                    iWhat += WR_POP;
                     sSub = vSub[1];
                 } else {
                     stdprintf("Invalid event param [%s]\n", vEvents[i]);
                     iResult = -1;
                 }
             } else if (sEvent ==  EVENT_PARAM_WRITE_GRID) {
-                iWhat |= output_flags::WR_GRID;
-                iWhat = iWhat | output_flags::WR_GRID;
+                iWhat |= WR_GRID;
+                iWhat = iWhat | WR_GRID;
                 sOther += "S";
             } else if (sEvent == EVENT_PARAM_WRITE_GEO) {
-                iWhat |= output_flags::WR_GEO;
+                iWhat |= WR_GEO;
                 sOther += "G";
             } else if (sEvent == EVENT_PARAM_WRITE_CLIMATE) {
-                iWhat |= output_flags::WR_CLI;
+                iWhat |= WR_CLI;
                 sOther += "C";
             } else if (sEvent == EVENT_PARAM_WRITE_VEG) {
-                iWhat |= output_flags::WR_VEG;
+                iWhat |= WR_VEG;
                 sOther += "V";
             } else if (sEvent == EVENT_PARAM_WRITE_NAV) {
-                iWhat |= output_flags::WR_NAV;
+                iWhat |= WR_NAV;
                 sOther += "N";
             } else if (sEvent == EVENT_PARAM_WRITE_ENV) {
-                iWhat |= output_flags::WR_ALL;
+                iWhat |= WR_ALL;
                 sOther += "env";
             } else if (sEvent == EVENT_PARAM_WRITE_OCC) {
-                iWhat |= output_flags::WR_OCC;
+                iWhat |= WR_OCC;
                 sOther += "O";
             } else {
-                iWhat = output_flags::WR_NONE;
+                iWhat = WR_NONE;
                 iResult = -1;
                 //stdprintf("Unknown output type [%s] (%s)\n", sEvent, sDesc);
                 LOG_ERROR2("Unknown output type [%s] (%s)\n", sEvent, sDesc);
             }
     
-            if  (iWhat != output_flags::WR_NONE) {
+            if  (iWhat != WR_NONE) {
                 if (iResult == 0) {
                     popwrite_flags iWS = popwrite_flags::PW_NONE;
                 
-                    if  ((!sSub.empty()) && (iWhat >= output_flags::WR_POP)) {
+                    if  ((!sSub.empty()) && (iWhat >= WR_POP)) {
                         sPops += "_pop-";
  
                         size_t iPosSpecial = sSub.find_first_of("#%~*");
@@ -544,6 +544,7 @@ int Simulator::handleWriteEvent(const std::string sDesc, int iDumpMode) {
                             } else {  
 
                                 size_t iPos = sSub.find_first_of("#%~", iPosSpecial);
+                                size_t iPos0 = iPos; 
                                 while (iPos != std::string::npos) {
                                     char c = sSub.at(iPos);
                                     switch(c) {
@@ -561,6 +562,9 @@ int Simulator::handleWriteEvent(const std::string sDesc, int iDumpMode) {
                                         break;
                                     }
                                     iPos = sSub.find_first_of("#%~", iPos+1);
+                                }
+                                if (iPos0 != std::string::npos) {
+                                    sSub = sSub.substr(0, iPos0);
                                 }
                             }
         
@@ -1327,7 +1331,7 @@ int Simulator::processEvent(EventData *pData) {
 // writeState
 //  write output
 //
-int Simulator::writeState(const std::string sQDFOut, output_flags iWhat, std::vector<std::pair<std::string, popwrite_flags>> &vSub, int iDumpMode) {
+int Simulator::writeState(const std::string sQDFOut, int iWhat, std::vector<std::pair<std::string, popwrite_flags>> &vSub, int iDumpMode) {
     int iResult = 0;
 
     double dStartW = omp_get_wtime();

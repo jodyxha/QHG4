@@ -2043,17 +2043,26 @@ int SimParams::readAgentData(PopBase *pPop, const std::string sAgentDataFile) {
         while ((iResult == 0) && !pLR->isEoF()) {
             char *pLine = pLR->getNextLine(GNL_IGNORE_ALL);
             if (pLine != NULL) {
-
+                gridtype lNode=-1;
                 double dLon;
                 double dLat;
                 //we don't use sscanf so we can handle different kinds of separators
                 char *pTemp = nextWord(&pLine, " ,;:");
                 if (*pTemp != '\0') {
-                    if (strToNum(pTemp, &dLon)) {
+                    if ((*pTemp == '(') && (pTemp[strlen(pTemp)-1] == ')')) {
+                        pTemp[strlen(pTemp)-1] = '\0';
+                        pTemp++;
+                        if (strToNum(pTemp, &lNode)) {
+                            // ok
+                        } else {
+                            LOG_ERROR2("Not a valid numbe for lnoder [%s]\n", pTemp);
+                        }
+                    } else if (strToNum(pTemp, &dLon)) {
                         pTemp = nextWord(&pLine, " ,;:");
                         if (*pTemp != '\0') {
                             if (strToNum(pTemp, &dLat)) {
                                 iResult = 0;
+                                lNode = m_pSurface->findNode(dLon, dLat);
                             } else {
                                 LOG_ERROR2("Not a valid number [%s]\n", pTemp);
                                 iResult = -1;
@@ -2074,7 +2083,8 @@ int SimParams::readAgentData(PopBase *pPop, const std::string sAgentDataFile) {
                 if (iResult == 0) {
                 //                int iNum = sscanf(pLine, "%lf %lf", &dLon, &dLat);
                 //                if (iNum == 2) {
-                    gridtype lNode = m_pSurface->findNode(dLon, dLat);
+
+
                     if (lNode >= 0) {
                         //                        stdprintf("%f %f -> %d\n", dLon, dLat, lNode);
                         int iIndex = m_pCG->m_mIDIndexes[lNode];

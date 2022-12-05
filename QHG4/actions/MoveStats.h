@@ -9,9 +9,9 @@
 #define ATTR_MOVESTATS_MODE_NAME     "MoveStats_Mode"
 
 
-static const std::string MOVESTAT_DS_HOPS = "Hops_new";
-static const std::string MOVESTAT_DS_DIST = "Dist_new";
-static const std::string MOVESTAT_DS_TIME = "Time_new";
+static const std::string MOVESTAT_DS_HOPS = "HopsNew";
+static const std::string MOVESTAT_DS_DIST = "DistNew";
+static const std::string MOVESTAT_DS_TIME = "TimeNew";
 
 
 template<typename T>

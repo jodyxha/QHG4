@@ -109,8 +109,10 @@ int ProjType::fromString(const std::string sLine, bool bDegrees) {
                     iResult = -1;
                 }
             } else {
-                // negative number of addiionals
-                iResult = -1;
+                if (iNumAdd < 0) {
+                    // negative number of addiionals
+                    iResult = -1;
+                }
             }
         } else {
             // couldn't convert to numbers

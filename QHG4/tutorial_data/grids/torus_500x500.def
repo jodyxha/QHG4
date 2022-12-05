@@ -1,0 +1,4 @@
+DATA_DIR  /home/jody/progs/multi_spc_QHG3/useful_stuff/core_data
+GRID_TYPE HEX 500x500 PERIODIC
+ALT FLAT 100
+NPP FLAT 10

@@ -15,7 +15,7 @@ public:
     shpHeader(FILE *fIn);
 
     int read();
-    void display(const char *pCaption);
+    void display(const std::string sCaption);
 
     int  getFileLenWords() const { return m_iFileLenWords;};
     long getFileLen() const { return m_iFileLen;};

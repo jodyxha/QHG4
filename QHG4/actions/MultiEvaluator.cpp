@@ -113,7 +113,7 @@ MultiEvaluator<T>::~MultiEvaluator() {
 //
 template<typename T>
 int MultiEvaluator<T>::preLoop() {
-    int iResult = 0;
+    int iResult = 0; 
     for (int iEval = 0; (iResult == 0) && (iEval < m_iNumEvals); iEval++) {
         iResult = m_aEvaluators[iEval]->preLoop();
     }
@@ -143,6 +143,11 @@ int MultiEvaluator<T>::initialize(float fT) {
 
     int iResult = 0;
 
+    this->m_bNeedUpdate = false;
+    for (int iEval = 0; (iResult == 0) && (iEval < m_iNumEvals); iEval++) {
+        this->m_bNeedUpdate |= m_aEvaluators[iEval]->needUpdate();
+    }
+
     // previously    if (m_bNeedUpdate || (fT==0)) {
     if (this->m_bNeedUpdate || m_bFirst) {
         m_bFirst = false;
@@ -169,6 +174,7 @@ int MultiEvaluator<T>::initialize(float fT) {
             break;
         default:
             stdprintf("Unknown mode [%d]\n", m_iMode);
+            iResult = -1;
         }
     }
 
@@ -227,12 +233,20 @@ int MultiEvaluator<T>::addSingleWeights(float fT) {
         memset(m_adSingleEvalWeights, 0, iArrSize*sizeof(double));
         
         iResult = m_aEvaluators[iEval]->initialize(fT); // this will fill m_adSingleEvalWeights
-        
 #pragma omp parallel for
         for (int iArrIndex = 0; iArrIndex < iArrSize; iArrIndex++) {
             m_adOutputWeights[iArrIndex] += m_adSingleEvalWeights[iArrIndex] * m_adCombinationWeights[iEval];
         }
         
+    }
+	// cumulate output weights
+
+#pragma omp parallel for
+    for (int iArrIndex = 0; iArrIndex < iArrSize; iArrIndex += m_iMaxNeighbors+1) {
+        for (int iC = iArrIndex + 1; iC < iArrIndex + m_iMaxNeighbors + 1; iC++) {
+            m_adOutputWeights[iC] += m_adOutputWeights[iC-1];
+        }
+
     }
 
     return iResult;

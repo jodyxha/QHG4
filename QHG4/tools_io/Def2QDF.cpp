@@ -72,31 +72,31 @@ void usage(char *pApp) {
 // parseSpecs
 //   the specs describe whiich environment groups to aadd to the QDF file
 //
-output_flags parseSpecs(char *pSpecs) {
-    output_flags iSpecs = output_flags::WR_NONE;
+int parseSpecs(char *pSpecs) {
+    int iSpecs = WR_NONE;
     char *p = pSpecs;
     bool bOK = true;
     while (bOK && (*p != '\0')) {
         switch (*p) {
         case 'S':
-            iSpecs |= output_flags::WR_GRID;
+            iSpecs |= WR_GRID;
             break;
         case 'G':
-            iSpecs |= output_flags::WR_GEO;
+            iSpecs |= WR_GEO;
             break;
         case 'C':
-            iSpecs |= output_flags::WR_CLI;
+            iSpecs |= WR_CLI;
             break;
         case 'V':
-            iSpecs |= output_flags::WR_VEG;
+            iSpecs |= WR_VEG;
             break;
         case 'N':
-            iSpecs |= output_flags::WR_NAV;
+            iSpecs |= WR_NAV;
             break;
         default:
             printf("Unknown specifier: [%c]\n", *p);
             bOK = false;
-            iSpecs = output_flags::WR_NONE;
+            iSpecs = WR_NONE;
         }
         p++;
     }
@@ -157,13 +157,13 @@ int main(int iArgC, char *apArgV[]) {
     if (iArgC > 2) {
         char *pDef = apArgV[1];
         char *pOutput = apArgV[2];
-        output_flags iSpecs = output_flags::WR_ALL;
+        int iSpecs = WR_ALL;
         
         if (iArgC > 3) {
             pOutput = apArgV[3];
             iSpecs = parseSpecs(apArgV[2]);
         }
-        if (iSpecs != output_flags::WR_NONE) {
+        if (iSpecs != WR_NONE) {
             GridFactory *pGF = createGridFactory(pDef);
             if (pGF != NULL) {
                 float fNoTime = -1.0;
@@ -179,19 +179,19 @@ int main(int iArgC, char *apArgV[]) {
                         /*
                         if (iResult > 0) {
                             printf("couldn't write:\n");
-                            if ((iResult & output_flag::WR_POP) != 0) {
+                            if ((iResult & WR_POP) != 0) {
                                 printf("- Populations\n");
                             }
-                            if ((iResult & output_flag::WR_GRID) != 0) {
+                            if ((iResult & WR_GRID) != 0) {
                                 printf("- Grid\n");
                             }
-                            if ((iResult & output_flag::WR_GEO) != 0) {
+                            if ((iResult & WR_GEO) != 0) {
                                 printf("- Geography\n");
                             }
-                            if ((iResult & output_flag::WR_CLI) != 0) {
+                            if ((iResult & WR_CLI) != 0) {
                                 printf("- Climate\n");
                             }
-                            if ((iResult & output_flag::WR_VEG) != 0) {
+                            if ((iResult & WR_VEG) != 0) {
                                 printf("- Vegetation\n");
                             }
                             if (iResult < (int)iSpecs) {

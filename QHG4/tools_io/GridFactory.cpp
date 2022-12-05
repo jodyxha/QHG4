@@ -560,24 +560,31 @@ int GridFactory::setGridFlat(const stringvec &vParams) {
     int iResult = -1;
 
     bool bPeriodic = false;
-    int m_iNumCells = 0;
     bool bHex = false;
 
-    if (vParams.size() > 3) {
+    m_iNumCells = 0;
+
+    printf("params (%zd):", vParams.size());
+    for (uint i = 0; i < vParams.size(); i++) {
+        printf("  %s", vParams[i].c_str());
+    }
+    printf("\n");
+    if (vParams.size() > 1) {
         int iW = 0;
         int iH = 0;
 
-        if ((vParams.size() > 4) && (vParams[4].compare("PERIODIC") == 0)) {
+        if ((vParams.size() > 2) && (vParams[2].compare("PERIODIC") == 0)) {
             bPeriodic = true;
         }
 
         // find size
         stringvec vParts;
-        uint iNum = splitString(vParams[2], vParts, "x");
+        uint iNum = splitString(vParams[1], vParts, "x");
         if (iNum == 2) {
             if (strToNum(vParts[0], &iW) && strToNum(vParts[1], &iH)) {
                 m_iNumCells = iW*iH;
                 iResult = 0;
+                stdfprintf(stderr, "got iW %d, iH %d -> %d\n", iW, iH, m_iNumCells);
 
             } else {
                 stdfprintf(stderr, "invalid number in  size: [%s]\n", vParams[2]);
@@ -588,13 +595,13 @@ int GridFactory::setGridFlat(const stringvec &vParams) {
 
         // find type 
         if (iResult == 0) {
-            if (vParams[1].compare("HEX") == 0) {
+            if (vParams[0].compare("HEX") == 0) {
                 bHex = true;
                 if ((iH%2) == 1) {
                     stdfprintf(stderr,"[GridFactory::readDef] you need an even number of rows for a HEX grid\n");
                     iResult = -1;
                 }
-            } else if (vParams[1].compare("RECT") == 0) {
+            } else if (vParams[0].compare("RECT") == 0) {
                 bHex = false;
             } else {
                 stdfprintf(stderr,"[GridFactory::readDef] unknown grid type  [%s]\n", vParams[1]);
@@ -774,7 +781,9 @@ int GridFactory::handleAltLine() {
                 
         } else if ((vParams[0].compare("FLAT") == 0)  && (vParams.size() > 1)) {
             double dAlt;
-            if (strToNum(vParams[2], &dAlt)) {
+            stdfprintf(stderr, "converting [%s] to uint\n", vParams[1]);
+            if (strToNum(vParams[1], &dAlt)) {
+                stdfprintf(stderr, "-> %f (for all %d cells\n", dAlt, m_iNumCells);
                 for (unsigned int i = 0; i < m_iNumCells; i++) {
                     m_pGeo->m_adAltitude[i]    = dAlt;
                 }
@@ -1130,105 +1139,147 @@ int GridFactory::createCells(IcoGridNodes *pIGN) { // THIS IS FOR ICOSAHEDRON GR
     return 0;
 }
  
+
 //-----------------------------------------------------------------------------
 // createCellsHexPeriodic
 //   create cells
 //   link cells
 //
-int GridFactory::createCellsHexPeriodic(uint iX, uint iY) {
+//    2 1       NW NE
+//   3 X 0     W  X  E
+//    4 5       SW SE
+// 
+// connecctions:
+// row 4   - X - X - X - X-       E - X - W       |
+//           |\  |\  |\  |\           |\          |
+//          \| \ | \ | \ |            | \         |
+// row 2   - X - X - X - X -      NW  NE          |
+//           |  /|  /|  /|          \ |           |
+//         \ | / | / | / |/          \|           |
+// row 1   - X - X - X - X-       E - X - W       |
+//           |\  |\  |\  |\           |\          |
+//           | \ | \ | \ | \          | \         |
+// row 0   - X - X - X - X -         SW  SE       |
+//          /|  /|  /|  /|
+//
+//               even rows     odd rows
+//         0     x+1, y        x+1, y         0,0
+//         1     x,   y+1      x+1, y+1       1,0  
+//         2     x-1, y+1      x,   y+1       1,0
+//         3     x-1, y        x-1, y         1,0
+//         4     x-1, y-1      x,   y-1       1,0
+//         5     x,   y-1      x+1, y-1     
+//
+int GridFactory::createCellsHexPeriodic(uint iW, uint iH) {
+  
+    //x, y, W and H should be ints, because some intermediate results can be negative-
+    int W = (int)(iW);
+    int H = (int)(iH);
+   
+    for (int y = 0; y < H; y++) {
+        for (int x = 0; x < W; x++) {
 
-    for(uint i=0; i<m_iNumCells; i++) {
-        m_pCG->m_aCells[i].m_iNumNeighbors = 0;
+            int i = y*W + x;
+            m_pCG->m_aCells[i].m_iNumNeighbors = 6;
+            int iX;
+            int iY;
 
-        for (int j = 0; j < MAX_NEIGH; j++) {
-            m_pCG->m_aCells[i].m_aNeighbors[j] = -1;
+            // E and W are the same for all rows
+            iX = (x+1) % W;
+            iY = y;
+            m_pCG->m_aCells[i].m_aNeighbors[0] = iY*W + iX;
+
+            iX = (x-1+W) % W;
+            iY = y;
+            m_pCG->m_aCells[i].m_aNeighbors[3] = iY*W + iX;
+
+            // for the other directions, odd and even differ
+            iX = (x +   W + y%2) % W;
+            iY = (y+1 + H) % H;
+            m_pCG->m_aCells[i].m_aNeighbors[1] = iY*W + iX;
+
+            iX = (x-1 + W + y%2) % W;
+            iY = (y+1 + H) % H;
+            m_pCG->m_aCells[i].m_aNeighbors[2] = iY*W + iX;
+
+            iX = (x-1 + W + y%2) %W;
+            iY = (y-1 + H) % H;
+            m_pCG->m_aCells[i].m_aNeighbors[4] = iY*W + iX;
+
+            iX = (x +   W + y%2) % W;
+            iY = (y-1 + H) % H;
+            m_pCG->m_aCells[i].m_aNeighbors[5] = iY*W + iX;
         }
-
-        //                  1 2           NW NE
-        //                 0 X 3         W  X  E
-        //                  5 4           SW SE
-        
-        //  . . . . 
-        //  3rd row:     X X X X X X 
-        //  2nd row:    X X X X X X 
-        //  1st row:     X X X X X X
-        //  0th row:    X X X X X X 
-
-        // let's first deal with boundary rows and north-south neighbors:
-        
-        if (i < iX) { // first row
-            
-            if (i==0) {
-                m_pCG->m_aCells[i].m_aNeighbors[1] = 2*iX - 1;       // NW                
-                m_pCG->m_aCells[i].m_aNeighbors[2] = iX;             // NE               
-                m_pCG->m_aCells[i].m_aNeighbors[4] = iX * (iY-1);    // SE             
-                m_pCG->m_aCells[i].m_aNeighbors[5] = iX * iY - 1;    // SW
-            } else {
-                m_pCG->m_aCells[i].m_aNeighbors[1] = i + iX - 1;     // NW
-                m_pCG->m_aCells[i].m_aNeighbors[2] = i + iX;         // NE
-                m_pCG->m_aCells[i].m_aNeighbors[4] = i + iX * (iY-1); // SE
-                m_pCG->m_aCells[i].m_aNeighbors[5] = i + iX - 1;     // SW
-            } 
-            
-        } else if (i >= (iY-1)*iX) { // last row
-            
-            if (i== (iX*iY - 1)) {
-                m_pCG->m_aCells[i].m_aNeighbors[1] = iX - 1;         // NW
-                m_pCG->m_aCells[i].m_aNeighbors[2] = 0;              // NE
-                m_pCG->m_aCells[i].m_aNeighbors[4] = iX*(iY-2);      // SE
-                m_pCG->m_aCells[i].m_aNeighbors[5] = iX*(iY-1) - 1;  // SW
-            } else { 
-                m_pCG->m_aCells[i].m_aNeighbors[1] = i - iX*(iY-1);  // NW
-                m_pCG->m_aCells[i].m_aNeighbors[2] = i - iX*(iY-1) + 1; // NE
-                m_pCG->m_aCells[i].m_aNeighbors[4] = i - 2*iX + 1;   // SE
-                m_pCG->m_aCells[i].m_aNeighbors[5] = i - iX;         // SW
-            }
-            
-        } else if ( (i/iY)%2 == 0 ) { // rows 0, 2, 4, 6...
-            if ( (i%iX) == 0 ) { // first column
-                m_pCG->m_aCells[i].m_aNeighbors[1] = i + 2*iX - 1;   // NW
-                m_pCG->m_aCells[i].m_aNeighbors[2] = i + iX;         // NE
-                m_pCG->m_aCells[i].m_aNeighbors[4] = i - iX;         // SE
-                m_pCG->m_aCells[i].m_aNeighbors[5] = i - 1;          // SW
-            } else {
-                m_pCG->m_aCells[i].m_aNeighbors[1] = i + iX - 1;     // NW
-                m_pCG->m_aCells[i].m_aNeighbors[2] = i + iX;         // NE
-                m_pCG->m_aCells[i].m_aNeighbors[4] = i - iX;         // SE
-                m_pCG->m_aCells[i].m_aNeighbors[5] = i - iX - 1;     // SW
-            }
-            
-        } else { // rows 1, 3, 5...
-            if ( (i%iX) == iX-1 ) { // last column
-                m_pCG->m_aCells[i].m_aNeighbors[1] = i + iX;         // NW          
-                m_pCG->m_aCells[i].m_aNeighbors[2] = i + 1;          // NE
-                m_pCG->m_aCells[i].m_aNeighbors[4] = i - 2*iX + 1;   // SE
-                m_pCG->m_aCells[i].m_aNeighbors[5] = i - iX;         // SW
-            } else {
-                m_pCG->m_aCells[i].m_aNeighbors[1] = i + iX;         // NW
-                m_pCG->m_aCells[i].m_aNeighbors[2] = i + iX + 1;     // NE
-                m_pCG->m_aCells[i].m_aNeighbors[4] = i - iX + 1;     // SE
-                m_pCG->m_aCells[i].m_aNeighbors[5] = i - iX;         // SW
-            }
-        }
-        
-        
-        // now deal with boundary columns and left-right neighbors:
-        
-        if ( (i%iX) == 0) { // first column
-            m_pCG->m_aCells[i].m_aNeighbors[0] = i + iX - 1;      // W                 
-            m_pCG->m_aCells[i].m_aNeighbors[3] = i + 1;           // E
-            
-        } else if ( (i%iX) == iX-1 ) { // last column 
-            m_pCG->m_aCells[i].m_aNeighbors[0] = i - 1;           // W                 
-            m_pCG->m_aCells[i].m_aNeighbors[3] = i - iX + 1;      // E
-            
-        } else {
-            m_pCG->m_aCells[i].m_aNeighbors[0] = i - 1;   // W                 
-            m_pCG->m_aCells[i].m_aNeighbors[3] = i + 1;   // E
-        }               
     }
-    return 0;    
+    return 0;
 }
+/*
+//-----------------------------------------------------------------------------
+// createCellsHexNonPeriodic
+//   create cells
+//   link cells
+//
+//    2 1       NW NE
+//   3 X 0     W  X  E
+//    4 5       SW SE
+// 
+// connecctions:
+// row 2 X - X - X - X - X -      NW  NE          |
+//        \  |\  |\  |\  |\         \ |           |
+//         \ | \ | \ | \ | \         \|           |
+// row 1     X - X - X - X-       E - X - W       |
+//           |\  |\  |\  |\           |\          |
+//           | \ | \ | \ | \          | \         |
+// row 0     X - X - X - X -         SW  SE       |
+//           |\  |\  |\  |\                       |
+//
+
+//MAYBE BETTER: make torus coinnection and remove unneeded connsctions
+//
+int GridFactory::createCellsHexPeriodic(uint iW, uint iH) {
+  
+    //x, y, W and H should be ints, because some intermediate results can be negative-
+    int W = (int)(iW);
+    int H = (int)(iH);
+   
+     for (int x = 0; x < W; x++) {
+        for (int y = 0; y < H; y++) {
+            int i = y*W + x;
+
+            for (int j = 0; j < MAX_NEIGH; j++) {
+                m_pCG->m_aCells[i].m_aNeighbors[j] = -1;
+            }
+
+            if ((y%2) == 0) {
+                // even rows
+                if (x == 0) {
+                    // left
+                    if (y == 0) {
+                        //bottom left
+                        // E, NE
+                    } else if    
+                } else if (x == W-1) {
+                    // right
+                } else {
+                    // bottom normal
+                }
+            } else {
+                // uneven rows
+
+                if (x == 0) {
+                    // left
+                    
+                } else if (x == W-1) {
+                    // right
+                } else {
+                    // bottom normal
+                }
+            }
+        }
+     }
+     return 0;
+}
+*/
 
 //-----------------------------------------------------------------------------
 // createCellsHexNonPeriodic
@@ -1437,7 +1488,7 @@ int GridFactory::createCellsRectNonPeriodic(uint iW, uint iH) {
 //   create cells
 //   link cells
 //
-int GridFactory::createCells(int iX, int iY, bool bPeriodic, bool bHex) {  // THIS IS FOR RECT OR HEX GRID
+int GridFactory::createCells(int iW, int iH, bool bPeriodic, bool bHex) {  // THIS IS FOR RECT OR HEX GRID
 
     int iResult = 0;
     m_pCG->m_aCells = new SCell[m_iNumCells];
@@ -1450,15 +1501,15 @@ int GridFactory::createCells(int iX, int iY, bool bPeriodic, bool bHex) {  // TH
     
     if (bPeriodic) {
         if (bHex) {
-            iResult = createCellsHexPeriodic(iX, iY);
+            iResult = createCellsHexPeriodic(iW, iH);
         } else {
-            iResult = createCellsRectPeriodic(iX, iY);
+            iResult = createCellsRectPeriodic(iW, iH);
         }
     } else {
         if (bHex) {
-            iResult = createCellsHexNonPeriodic(iX, iY);
+            iResult = createCellsHexNonPeriodic(iW, iH);
         } else {
-            iResult = createCellsRectNonPeriodic(iX, iY);
+            iResult = createCellsRectNonPeriodic(iW, iH);
         }
     }
     

@@ -7,8 +7,7 @@
 #include "Action.cpp"
 
 #include "GetOld.cpp"
-//#include "OldAgeDeath.cpp"
-#include "AtanDeath.cpp"
+#include "ATanDeath.cpp"
 
 #include "tut_OldAgeDiePop.h"
 
@@ -20,7 +19,7 @@ tut_OldAgeDiePop::tut_OldAgeDiePop(SCellGrid *pCG, PopFinder *pPopFinder, int iL
     
     m_pGO = new GetOld<tut_OldAgeDieAgent>(this, m_pCG, "");
 
-    m_pAD = new AtanDeath<tut_OldAgeDieAgent>(this, m_pCG, "", m_apWELL);
+    m_pAD = new ATanDeath<tut_OldAgeDieAgent>(this, m_pCG, "", m_apWELL);
  
     m_prio.addAction(m_pAD);
     m_prio.addAction(m_pGO);

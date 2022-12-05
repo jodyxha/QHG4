@@ -7,6 +7,8 @@
 
 #include "types.h"
 #include "strutils.h"
+#include "stdstrutils.h"
+#include "stdstrutilsT.h"
 #include "ParamReader.h"
 
 #include "QDFUtils.h"
@@ -22,26 +24,26 @@
 //----------------------------------------------------------------------------
 // usage
 //
-void usage(const char *pApp) {
-    printf("%s - finding coastal cells and write to QDF\n", pApp);
-    printf("Usage:\n");
-    printf("  %s -i <input_qdf> -d <distance> -o <output_qdf>\n", pApp);
-    printf("where\n");
-    printf("  input_qdf   qdf file with Geography (Altitude) in which to search for coastal cells\n");
-    printf("  distance    max distance to sea (in cell hops)\n");
-    printf("  output_qdf  output file (coastals written to DS 'Coastal')\n");
-    printf("\n");
+void usage(const std::string sApp) {
+    stdprintf("%s - finding coastal cells and write to QDF\n", sApp);
+    stdprintf("Usage:\n");
+    stdprintf("  %s -i <input_qdf> -d <distance> -o <output_qdf>\n", sApp);
+    stdprintf("where\n");
+    stdprintf("  input_qdf   qdf file with Geography (Altitude) in which to search for coastal cells\n");
+    stdprintf("  distance    max distance to sea (in cell hops)\n");
+    stdprintf("  output_qdf  output file (coastals written to DS 'Coastal')\n");
+    stdprintf("\n");
 }
 
 //----------------------------------------------------------------------------
 // createCellGrid
 //
-SCellGrid *createCellGrid(const char *pQDFFile) {
+SCellGrid *createCellGrid(const std::string sQDFFile) {
     SCellGrid *pCG = NULL;
     int iResult = -1;
-    hid_t hFile = qdf_openFile(pQDFFile);
+    hid_t hFile = qdf_openFile(sQDFFile);
     if (hFile > 0) {
-        //        printf("File opened\n");
+        //        stdntf("File opened\n");
 
         GridGroupReader *pGR = GridGroupReader::createGridGroupReader(hFile);
         if (pGR != NULL) {
@@ -49,7 +51,7 @@ SCellGrid *createCellGrid(const char *pQDFFile) {
             GridAttributes gridatt;
             iResult = pGR->readAttributes(&gridatt);
             if (iResult == 0) {
-                //                printf("num cells: %d\n", iNumCells);
+                //                stdntf("num cells: %d\n", iNumCells);
                 pCG = new SCellGrid(0, gridatt.m_iNumCells, gridatt.smData);
                 pCG->m_aCells = new SCell[gridatt.m_iNumCells];
                 
@@ -66,27 +68,27 @@ SCellGrid *createCellGrid(const char *pQDFFile) {
                             if (iResult == 0) {
                                 pCG->setGeography(pGeo);
                             } else {
-                                printf("Couldn't read geo data from [%s]\n", pQDFFile);
+                                stdprintf("Couldn't read geo data from [%s]\n", sQDFFile);
                             }
                         } else {
-                            printf("Couldn't read geo attributes from [%s]\n", pQDFFile);
+                            stdprintf("Couldn't read geo attributes from [%s]\n", sQDFFile);
                         }
                         delete pGeoR;
                     } else {
-                        printf("Couldn't create GeoGroupReader for QDF file [%s]\n", pQDFFile);
+                        stdprintf("Couldn't create GeoGroupReader for QDF file [%s]\n", sQDFFile);
                     }
                 } else {
-                    printf("Couldn't read geo attributes from [%s]\n", pQDFFile);
+                    stdprintf("Couldn't read geo attributes from [%s]\n", sQDFFile);
                 }
             } else {
-                printf("Couldn't get number of cells from [%s]\n", pQDFFile);
+                stdprintf("Couldn't get number of cells from [%s]\n", sQDFFile);
             }
             delete pGR;
         } else {
-            printf("Couldn't create GridGroupReader for QDF file [%s]\n", pQDFFile);
+            stdprintf("Couldn't create GridGroupReader for QDF file [%s]\n", sQDFFile);
         }
     } else {
-        printf("Couldn't open QDF file [%s]\n", pQDFFile);
+        stdprintf("Couldn't open QDF file [%s]\n", sQDFFile);
     }
     
     if (iResult != 0) {
@@ -166,8 +168,8 @@ int findCoastal(SCellGrid *pCG, int iDistance, bool *pCoastal, int *piCCount) {
 //
 int main(int iArgC, char*apArgV[]) {
     int iResult = -1;
-    char *sInputQDF  = NULL;
-    char *sOutputQDF = NULL;
+    std::string sInputQDF  = "";
+    std::string sOutputQDF = "";
     int   iDistance  = 0;
 
     ParamReader *pPR = new ParamReader();
@@ -203,15 +205,15 @@ int main(int iArgC, char*apArgV[]) {
                             pGeoW->write(hFile);
                             qdf_closeFile(hFile);
                             iResult = 0;
-                            //                            printf("Written to QDF file [%s]\n", sOutputQDF);
+                            //                            stdprintf("Written to QDF file [%s]\n", sOutputQDF);
                         } else {
-                            printf("Couldn't open QDF file [%s]\n", sOutputQDF);
+                            stdprintf("Couldn't open QDF file [%s]\n", sOutputQDF);
                             iResult = -1;
                         }
 
                         if (iResult == 0) {
-                            printf("Coastal checked %d cells, %d coastal\n", iNumCells, iCCount);
-                            printf("+++ success +++\n");
+                            stdprintf("Coastal checked %d cells, %d coastal\n", iNumCells, iCCount);
+                            stdprintf("+++ success +++\n");
                         }
                     }
                     delete pCG;

@@ -16,9 +16,9 @@ template<typename T>
 class SingleEvaluator : public Evaluator<T> {
     
  public:
-    SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, double *adOutputWeights, double *adInputData, const char *sPLParName, bool bCumulate, intset &sTriggerIDs);
-    SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, double *adOutputWeights, double *adInputData, const char *sPLParName, bool bCumulate, int iTriggerID);
-    SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, double *adOutputWeights, const char *pInputArrayName, const char *sPLParName, bool bCumulate, intset &sTriggerIDs);
+    SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, double *adOutputWeights, double *adInputData, const char *sPLParName, bool bCumulate, intset &sTriggerIDs, bool bAlwaysUpdate=false);
+    SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, double *adOutputWeights, double *adInputData, const char *sPLParName, bool bCumulate, int iTriggerID, bool bAlwaysUpdate=false);
+    SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, double *adOutputWeights, const char *pInputArrayName, const char *sPLParName, bool bCumulate, intset &sTriggerIDs, bool bAlwaysUpdate=false);
     ~SingleEvaluator();
     virtual int initialize(float fT);
     virtual int finalize(float fT);
@@ -27,6 +27,7 @@ class SingleEvaluator : public Evaluator<T> {
 
     virtual int tryGetAttributes(const ModuleComplex *pMC);  
     void setOutputWeights(double *adOutput) { m_adOutputWeights = adOutput; };
+    void setInputData(double *adInput) { m_adInputData = adInput; };
 
     void notify(Observable *pObs, int iEvent, const void *pData);
 

@@ -368,11 +368,11 @@ int MoveStats<T>::writeAdditionalDataQDF(hid_t hSpeciesActionGroup) {
 printf("[MoveStats<T>::writeAdditionalDataQDF] starting\n");
     iResult = qdf_writeArray(hSpeciesActionGroup, MOVESTAT_DS_HOPS, m_iNumCells, m_aiHops, H5T_NATIVE_INT);
     if (iResult != 0) {
-        LOG_ERROR("[MoveStats<T>::writeAdditionalDataQDF] couldn't write ChildManager data");
+        LOG_ERROR("[MoveStats<T>::writeAdditionalDataQDF] couldn't write hops data");
     } else {
         iResult = qdf_writeArray(hSpeciesActionGroup, MOVESTAT_DS_DIST, m_iNumCells, m_adDist, H5T_NATIVE_DOUBLE);
         if (iResult != 0) {
-            LOG_ERROR(" MoveStats<T>::writeAdditionalDataQDF] couldn't dist array");
+            LOG_ERROR(" MoveStats<T>::writeAdditionalDataQDF] couldn't write dist array");
         } else {
             iResult = qdf_writeArray(hSpeciesActionGroup, MOVESTAT_DS_TIME, m_iNumCells, m_adTime, H5T_NATIVE_DOUBLE);
             if (iResult != 0) {

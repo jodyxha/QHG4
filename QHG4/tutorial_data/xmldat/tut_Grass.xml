@@ -1,0 +1,14 @@
+<class name="GrassPop" species_name="grass" species_id="104">
+
+  <module name="GrassManager">
+    <param  name="MinMass"    value="1.0"/>
+    <param  name="MaxMass"    value="10.0"/>
+    <param  name="GrowthRate" value="0.008"/>
+  </module>
+
+<priorities>
+    <prio  name="GrassManager" value="1"/>
+</priorities>
+
+</class>
+

@@ -22,7 +22,7 @@ public:
     int runSimulation(); // prepare(); run();cleanup();
     
 
-    int writeState(const std::string sQDFOut, output_flags iWhat, std::vector<std::pair<std::string, popwrite_flags>> &vSub, int iDumpMode);
+    int writeState(const std::string sQDFOut, int iWhat, std::vector<std::pair<std::string, popwrite_flags>> &vSub, int iDumpMode);
 
     void showInputs();
     void setInterrupt() { m_bInterrupt = true;};
