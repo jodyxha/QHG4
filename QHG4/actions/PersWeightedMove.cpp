@@ -19,7 +19,8 @@ template<typename T>
 PersWeightedMove<T>::PersWeightedMove(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, WELL512 **apWELL, double *adEnvWeights) 
     : Action<T>(pPop,pCG,ATTR_PERSWEIGHTEDMOVE_NAME, sID),
       m_apWELL(apWELL),
-      m_adEnvWeights(adEnvWeights) {
+      m_adEnvWeights(adEnvWeights),
+      m_pGeography(pCG->m_pGeography) {
 
 }
 
@@ -96,7 +97,7 @@ int PersWeightedMove<T>::execute(int iAgentIndex, float fT) {
                 if (iNewIndex > 0) {
                     int iNewCellIndex = this->m_pCG->m_aCells[iCellIndex].m_aNeighbors[iNewIndex-1];
                     if (iNewCellIndex >= 0) {
-                        if ((this->m_pCG->m_pGeography == NULL) || (!this->m_pCG->m_pGeography->m_abIce[iCellIndex])) {
+                        if ((m_pGeography == NULL) || (!m_pGeography->m_abIce[iNewCellIndex])) {
                             this->m_pPop->registerMove(iCellIndex, iAgentIndex, iNewCellIndex);
                         }
                     } else {

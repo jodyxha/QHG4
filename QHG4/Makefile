@@ -22,6 +22,7 @@ TOOLS_ICO := tools_ico
 TOOLS_QDF := tools_qdf
 BIOMES    := biomes
 USEFUL    := useful_stuff
+PLUGIN_STUB := plugin_stub
 
 export CRAY_OMP=-h omp
 export GNU_OMP=-fopenmp
@@ -69,7 +70,11 @@ endif
 ifdef CRAY
   LIBRARIES := $(UTILS) $(UTILS_QHG) $(CORE) $(ACTIONS) $(GEOINFO) $(ICOSA) $(IO) $(GENES) $(POPS)
 else
-  LIBRARIES := $(UTILS) $(UTILS_QHG) $(CORE) $(ACTIONS) $(GEOINFO) $(ICOSA) $(IO) $(GENES) $(POPS) $(DYNPOPS) 
+    ifdef DYNAMIC_POPS
+        LIBRARIES := $(UTILS) $(UTILS_QHG) $(CORE) $(GEOINFO) $(ICOSA) $(IO) $(GENES) $(PLUGIN_STUB) 
+    else
+        LIBRARIES := $(UTILS) $(UTILS_QHG) $(CORE) $(ACTIONS) $(GEOINFO) $(ICOSA) $(IO) $(GENES) $(POPS) $(DYNPOPS) 
+    endif
 endif
 
 MAINAPP   := app
@@ -208,4 +213,14 @@ tools:
         $(MAKE) --directory=$(USEFUL) app && \
         $(MAKE) --directory=$(GENES) app;
 
+plugins:
+	$(MAKE) --directory=$(CORE) lib && \
+	$(MAKE) --directory=$(UTILS) lib && \
+	$(MAKE) --directory=$(UTILS_QHG) lib && \
+	$(MAKE) --directory=$(ICOSA) lib && \
+	$(MAKE) --directory=$(IO) lib && \
+	$(MAKE) --directory=$(ACTIONS) lib && \
+	$(MAKE) --directory=$(POPS) lib && \
+	$(MAKE) --directory=$(DYNPOPS) lib
+        
 endif

@@ -1,6 +1,7 @@
 #include "PopBase.h"
 #include "SCellGrid.h"
 #include "IDGen.h"
+#include "ArrayShare.h"
 #include "PopFinder.h"
 #include "@@@xxx@@@.h"
 #include "@@@xxx@@@Wrapper.h"
@@ -20,10 +21,11 @@ extern "C" {
 //   creates and returns new Mover for specified data
 //
 extern "C" {
-    PopBase *createPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState, uint *aiSeeds) {
-
-                
+    PopBase *createPop(ArrayShare *pAS, SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState, uint *aiSeeds) {
+        // set the ArrayDhare pointer to the one of the application's ArrayShare 
+        ArrayShare::setInstance(pAS);           
         PopBase *pPB = new @@@xxx@@@(pCG, pPopFinder, iLayerSize, apIDG, aulState, aiSeeds);
         return pPB;
     }
 }
+

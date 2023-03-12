@@ -288,7 +288,7 @@ int main(int iArgC, char *apArgV[]) {
             
                     delete pIDG;
 
-                    delete m_pCG->m_pGeography;
+                    m_pCG->delGeography();
                     delete pCG;
                 } else {
             

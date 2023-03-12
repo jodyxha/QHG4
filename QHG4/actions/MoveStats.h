@@ -4,6 +4,7 @@
 
 #include "Action.h"
 #include "ParamProvider2.h"
+#include "Geography.h"
 
 #define ATTR_MOVESTATS_NAME          "MoveStats"
 #define ATTR_MOVESTATS_MODE_NAME     "MoveStats_Mode"
@@ -63,5 +64,7 @@ protected:
     int initializeOccupied();
  
     static const char *asNames[];
+
+    Geography *m_pGeography;
 };
 #endif

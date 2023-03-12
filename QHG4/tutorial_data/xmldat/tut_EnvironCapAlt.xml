@@ -1,9 +1,11 @@
 <class name="tut_EnvironCapAltPop" species_name="sapiens" species_id="104">
 
-  <module name="OldAgeDeath">
-    <param  name="OAD_max_age" value="60.0"/>
-    <param  name="OAD_uncertainty" value="0.1"/>
+  <module name="ATanDeath">
+    <param  name="ATanDeath_max_age" value="60.0"/>
+    <param  name="ATanDeath_range" value="6.0"/>
+    <param  name="ATanDeath_slope" value="1.0"/>
   </module>
+
   <module name="WeightedMove">
     <param  name="WeightedMove_prob" value="0.07"/>
   </module>
@@ -45,7 +47,7 @@
   <priorities>
     <prio  name="NPPCapacity" value="1"/>
     <prio  name="GetOld" value="2"/>
-    <prio  name="OldAgeDeath" value="3"/>
+    <prio  name="ATanDeath" value="3"/>
     <prio  name="WeightedMove" value="4"/>
     <prio  name="MultiEvaluator[NPP+Alt]" value="5"/>
     <prio  name="Fertility" value="6"/>

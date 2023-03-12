@@ -167,6 +167,7 @@ public:
     virtual void randomize(int i);
     virtual int flushDeadSpace();
     virtual int setParams(const std::string sParams){ return 0;};
+    virtual int  getPopParams(const stringmap &mVarDefs);
 
     // the array of agent structs
     LayerBuf<T> m_aAgents; 
@@ -269,7 +270,9 @@ protected:
     int insertPrioDataAttribute(hid_t hSpeciesGroup);
     int extractPrioDataAttribute(hid_t hSpeciesGroup);
     virtual uint getPrios(std::set<uint> &vPrios) { return m_prio.getPrios(vPrios);};
-    virtual int  removeAction(std::string name) {return m_prio.removeAction(name);};
+    virtual int  removeAction(std::string name)   { return m_prio.removeAction(name);};
+    virtual int  disableAction(std::string name)  { return m_prio.disableAction(name);};
+    virtual int  enableAction(std::string name)   { return m_prio.enableAction(name);};
 
     virtual int getNumCells() { return m_iNumCells; };
 

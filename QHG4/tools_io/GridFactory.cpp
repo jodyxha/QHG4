@@ -68,6 +68,18 @@ static std::string DEF_NPP_LAT   = "YAXLEVITR";
 static std::string DEF_NPP_TIME  = "TAXI";
 static std::string DEF_NPP_NPP   = "NPPHRS";
 
+static uint PERIODIC_NONE = 0;
+static uint PERIODIC_X    = 1;
+static uint PERIODIC_Y    = 2;
+static uint PERIODIC_XY   = 3;
+
+static std::string sPeriodicityNames[] = {
+    "PERIODIC_NONE",
+    "PERIODIC_X",
+    "PERIODIC_Y",
+    "PERIODIC_XY"
+};
+
 #define RADIUS 6371.3
 
 
@@ -173,6 +185,54 @@ int GridFactory::createEmptyQDF(const std::string sIGNFile) {
     }
 
     return iResult;
+}
+
+//-----------------------------------------------------------------------------
+// createEQGrid
+//    pVL = EQsahedron::getLinkage()
+//
+IcoGridNodes *createEQGrid(VertexLinkage *pVL) {
+    
+    IcoGridNodes *pIGN = new IcoGridNodes();
+    
+    std::map<gridtype, Vec3D *>::const_iterator iti;
+    for (iti = pVL->m_mI2V.begin(); iti != pVL->m_mI2V.end(); iti++) {
+        Vec3D *pV = iti->second;
+
+        // calc theta and phi
+        double dPhi = 0;
+        double dTheta = 0;
+        if (pV != NULL) {
+            double dArea = 0; // get it from a vertexlinkage thingy
+            cart2Sphere(pV, &dTheta, &dPhi);
+            IcoNode *pIN = new IcoNode(iti->first, dTheta, dPhi, dArea);
+            intset vLinks = pVL->getLinksFor(iti->first);
+            if (vLinks.size() > MAX_ICO_NEIGHBORS) {
+                intset::iterator st;
+                stdprintf("Vertex #%d (%f,%f) has %zd links\n", iti->first, pV->m_fX, pV->m_fY,vLinks.size());
+                for (st = vLinks.begin(); st != vLinks.end(); ++st) {
+                    stdprintf("  %d", *st);
+                }
+                stdprintf("\n");
+            }
+            
+                    
+            intset::iterator st;
+            for (st = vLinks.begin(); st != vLinks.end(); ++st) {
+                Vec3D *pN = pVL->getVertex(*st);
+                double dDist = spherdist(pV, pN, 1.0);
+                pIN->m_dArea = pVL->calcArea(pIN->m_lID);
+
+                pIN->addLink(*st, dDist);
+
+            }
+            pIGN->m_mNodes[iti->first] = pIN;
+        } else {
+            pIGN = NULL;
+        }
+    }
+
+    return pIGN;
 }
 
 
@@ -321,352 +381,55 @@ int GridFactory::collectLines() {
     return iResult;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+// line handlers
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
-// createEQGrid
-//    pVL = EQsahedron::getLinkage()
+// readDef
 //
-IcoGridNodes *createEQGrid(VertexLinkage *pVL) {
-    
-    IcoGridNodes *pIGN = new IcoGridNodes();
-    
-    std::map<gridtype, Vec3D *>::const_iterator iti;
-    for (iti = pVL->m_mI2V.begin(); iti != pVL->m_mI2V.end(); iti++) {
-        Vec3D *pV = iti->second;
-
-        // calc theta and phi
-        double dPhi = 0;
-        double dTheta = 0;
-        if (pV != NULL) {
-            double dArea = 0; // get it from a vertexlinkage thingy
-            cart2Sphere(pV, &dTheta, &dPhi);
-            IcoNode *pIN = new IcoNode(iti->first, dTheta, dPhi, dArea);
-            intset vLinks = pVL->getLinksFor(iti->first);
-            if (vLinks.size() > MAX_ICO_NEIGHBORS) {
-                intset::iterator st;
-                stdprintf("Vertex #%d (%f,%f) has %zd links\n", iti->first, pV->m_fX, pV->m_fY,vLinks.size());
-                for (st = vLinks.begin(); st != vLinks.end(); ++st) {
-                    stdprintf("  %d", *st);
-                }
-                stdprintf("\n");
-            }
-            
-                    
-            intset::iterator st;
-            for (st = vLinks.begin(); st != vLinks.end(); ++st) {
-                Vec3D *pN = pVL->getVertex(*st);
-                double dDist = spherdist(pV, pN, 1.0);
-                pIN->m_dArea = pVL->calcArea(pIN->m_lID);
-
-                pIN->addLink(*st, dDist);
-
-            }
-            pIGN->m_mNodes[iti->first] = pIN;
-        } else {
-            pIGN = NULL;
-        }
-    }
-
-    return pIGN;
-}
-
-IcoGridNodes *GridFactory::readIGNFile(const std::string sFileName) {
-    IcoGridNodes *pIGN = NULL;
-    
-    std::string sRealFile;
-    if (exists(sFileName, sRealFile)) {
-        pIGN = new IcoGridNodes();
-        int iResult = pIGN->read(sRealFile);
-        if(iResult==0) {
-            m_iNumCells = (uint)pIGN->m_mNodes.size();
-        } else {
-            delete pIGN;
-            stdprintf("The file [%s] is not an IGN file\n", sRealFile); 
-        }
-    } else {
-        stdprintf("IGN file does not exist [%s]\n", sFileName);
-    }
-    return pIGN;
-}
-
-
-//-----------------------------------------------------------------------------
-// setGridIco
-//
-int GridFactory::setGridIco(const stringvec &vParams) {
+int GridFactory::readDef() {
     int iResult = -1;
 
-    IcoGridNodes *pIGN = NULL;
-    int iSubDivs = -1;
-    
-    bool bEqual = true;
-    
-    double dRadius = RADIUS;
-    
-    if (vParams.size() > 1) {
+    iResult = collectLines();
+    printf("Collected lines: %d\n", iResult);
 
-        if (vParams.size() >= 2) {
-            // <ignfile> or <type>:<subdiv>
-            stringvec vArg;
-            int iNum = splitString(vParams[1], vArg, ":");
-            if (iNum == 1) {
-                pIGN = readIGNFile(vParams[1]);
-                if (pIGN != NULL) {
-                    m_iNumCells = (uint)pIGN->m_mNodes.size();
-                    iResult = 0;
-                }
-            } else {
-                if (strToNum(vArg[1], &iSubDivs)) {
-                    iResult = 0;
-                    if (vArg[0].compare("std") == 0)  {
-                        bEqual = false;
-                        stdprintf("Without tegmark\n");
-                    } else if (vArg[0].compare("eq") == 0)  {
-                        bEqual = true;
-                        stdprintf("With tegmark\n");
-                    } else {
-                        stdprintf("expected  \"<type>:<subdivs>\"\n");
-                        iResult = -1;
-                    }
-                } else {
-                    stdprintf("expected  number for \"<subdivs>\", not [%s]\n", vArg[1]);
-                    iResult = -1;
-                }
-            }
-            if (vParams.size() == 3) {
-                // trailing <radius>
-                if (strToNum(vParams[2], &dRadius)) {
-                    m_dRadius = dRadius;
-                }
-            } else if (vParams.size() > 3) {
-                stdprintf("too many arguments\n");
-                iResult = -1;
-            } 
-            /*
-        } else if (vParams.size() == 3) {
-                // <ignfile> <radius> | <type>:<subdiv> <type>
-            if (strToNum(vParams[1], &iSubDivs)) {
-                iResult = 0;
-                if (vParams[2].compare("std") == 0)  {
-                    bEqual = false;
-                    stdprintf("Without tegmark\n");
-                } else if (vParams[2].compare("eq") == 0)  {
-                    bEqual = true;
-                    stdprintf("With tegmark\n");
-                } else {
-                    stdprintf("expected \"<ignfile> <radius>\" or \"<subdivs> <type>\"\n");
-                    iResult = -1;
-                }
-            } else {
-                pIGN = readIGNFile(vParams[1]);
-                if (pIGN != NULL) {
-                    if (strToNum(vParams[2], &dRadius)) {
-                        m_dRadius = dRadius;
-                        m_iNumCells = (uint)pIGN->m_mNodes.size();
-                        iResult = 0;
-                    } else {
-                        stdprintf("expected <radius>, not [%s]\n", vParams[2]);
-                        iResult = -1;
-                    }
-                } else {
-                    iResult = -1;
-                }
-            }
-            
-        } else if (vParams.size() == 4) {
-            // <subdiv> <type> <radius>
-            if (strToNum(vParams[1], &iSubDivs)) {
-                iResult = 0;
-                if (vParams[2].compare("std") == 0)  {
-                    bEqual = false;
-                    stdprintf("Without tegmark\n");
-                } else if (vParams[2].compare("eq") == 0)  {
-                    bEqual = true;
-                    stdprintf("With tegmark\n");
-                } else {
-                    stdprintf("unknown type [%s]- only know 'eq' or 'std'\n", vParams[2]);
-                    iResult = -1;
-                }
-                if (iResult == 0) {
-                    if (strToNum(vParams[3], &dRadius)) {
-                        m_dRadius = dRadius;
-                        iResult = 0;
-                    } else {
-                        stdprintf("expected <radius>, not [%s]\n", vParams[3]);
-                        iResult = -1;
-                    }
-                }
-            } else {
-                stdprintf("expected <subdivs>, not [%s]\n", vParams[1]);
-                iResult = -1;
-            }
-        } else {
-            // too many parameters
-            iResult = -1;
-        }
-         */
-        }
-    } else {
-        stdprintf("need parameters\n");
-        iResult = -1;
-    }
-
-
+    //----- data dirs
     if (iResult == 0) {
-        if (iSubDivs > 0)  {
-            EQsahedron *pEQNodes = EQsahedron::createInstance(iSubDivs, bEqual);
-            pEQNodes->relink();
-            VertexLinkage *pVL = pEQNodes->getLinkage();
-            pIGN = createEQGrid(pVL);
-            m_iNumCells = (uint)pIGN->m_mNodes.size();
-            delete pEQNodes;
-            iResult = 0;
-        }
-
-        // build grid
-        if (iResult == 0) {
-            stringmap smSurfaceData;
-            smSurfaceData[SURF_TYPE] = SURF_EQSAHEDRON;
-            smSurfaceData[SURF_IEQ_SUBDIVS] = stdsprintf("%d", iSubDivs);
-            pIGN->setData(smSurfaceData);
-            // here the SCellGrid class is created
-            //        m_pCG = new SCellGrid(0, m_iNumCells, iGridType, iW, iH, bPeriodic);
-            m_pCG = new SCellGrid(0, m_iNumCells, pIGN->getData());
-            iResult = createCells(pIGN);
-            
-        }
-        
-        // build geography
-        if (iResult == 0) {
-            int iMaxNeigh = MAX_ICO_NEIGHBORS;
-            m_pGeo = new Geography(m_iNumCells, iMaxNeigh, m_dRadius);  // create geography
-            m_pCG->setGeography(m_pGeo);
-            initializeGeography(pIGN);
-        }
-        
-        delete pIGN;
-
+        iResult = handleDDirLine();
     }
 
-
-    return iResult;
-}
-
-//-----------------------------------------------------------------------------
-// setGridFlat
-//   ("HEX" | "RECT") <iW>"x"<iH> ["PERIODIC"]
-//
-int GridFactory::setGridFlat(const stringvec &vParams) {
-    int iResult = -1;
-
-    bool bPeriodic = false;
-    bool bHex = false;
-
-    m_iNumCells = 0;
-
-    printf("params (%zd):", vParams.size());
-    for (uint i = 0; i < vParams.size(); i++) {
-        printf("  %s", vParams[i].c_str());
-    }
-    printf("\n");
-    if (vParams.size() > 1) {
-        int iW = 0;
-        int iH = 0;
-
-        if ((vParams.size() > 2) && (vParams[2].compare("PERIODIC") == 0)) {
-            bPeriodic = true;
-        }
-
-        // find size
-        stringvec vParts;
-        uint iNum = splitString(vParams[1], vParts, "x");
-        if (iNum == 2) {
-            if (strToNum(vParts[0], &iW) && strToNum(vParts[1], &iH)) {
-                m_iNumCells = iW*iH;
-                iResult = 0;
-                stdfprintf(stderr, "got iW %d, iH %d -> %d\n", iW, iH, m_iNumCells);
-
-            } else {
-                stdfprintf(stderr, "invalid number in  size: [%s]\n", vParams[2]);
-            }
-        } else {
-            stdfprintf(stderr, "invalid size: [%s]\n", vParams[2]);
-        }
-
-        // find type 
-        if (iResult == 0) {
-            if (vParams[0].compare("HEX") == 0) {
-                bHex = true;
-                if ((iH%2) == 1) {
-                    stdfprintf(stderr,"[GridFactory::readDef] you need an even number of rows for a HEX grid\n");
-                    iResult = -1;
-                }
-            } else if (vParams[0].compare("RECT") == 0) {
-                bHex = false;
-            } else {
-                stdfprintf(stderr,"[GridFactory::readDef] unknown grid type  [%s]\n", vParams[1]);
-                iResult = -1;
-            }
-        }
-
-        // build grid
-        if (iResult == 0) {
-
-            stringmap smSurfaceData;
-
-            smSurfaceData[SURF_TYPE] = "LTC";
-            smSurfaceData[SURF_LTC_W] = stdsprintf("%d", iW);
-            smSurfaceData[SURF_LTC_H] = stdsprintf("%d", iH);
-            smSurfaceData[SURF_LTC_LINKS] = stdsprintf("%d", bHex?HEX_NEIGHBORS:RECT_NEIGHBORS);
-            smSurfaceData[SURF_LTC_PERIODIC] = bPeriodic?"1":"0";
-
-            smSurfaceData[SURF_LTC_PROJ_TYPE] = stdsprintf("%d [Linear] %f %f %d", PR_LINEAR, 0.0, 0.0, 0);
-
-            double dW = (bHex) ? (iW - 0.5) : (iW - 1);
-            double dH = (bHex) ? (iH - 1) * 0.8660254 : (iH - 1);
-            smSurfaceData[SURF_LTC_PROJ_GRID] = stdsprintf("%d %d %lf %lf %lf %lf %lf", iW-1, iH-1, dW, dH, 0.0, 0.0, 1.0);
-
-            m_pCG = new SCellGrid(0, m_iNumCells, smSurfaceData);
-            // initialize the cells depending for flat grids
-            iResult = createCells(iW, iH, bPeriodic, bHex);
-        }
-
-        // build geography
-        if (iResult == 0) {
-            geonumber dRadius = 0.0;
-            int iMaxNeigh =bHex ? HEX_NEIGHBORS : RECT_NEIGHBORS;
-            m_pGeo = new Geography(m_iNumCells, iMaxNeigh, dRadius);  // create geography
-            m_pCG->setGeography(m_pGeo);
-            initializeGeography(iW, iH, bHex);
-            
-        }
-    } else {
-        stdfprintf(stderr, "Invalid flat grid definition [%s]\n", join(vParams, " "));
-    }
-    return iResult;
-}
-
-
-//-----------------------------------------------------------------------------
-// setGrid
-//
-int GridFactory::setGrid(const stringvec &vParams) {
-    int iResult = -1;
-
-    if (vParams[0].compare("ICO") == 0)  {
-        iResult = setGridIco(vParams);
-    } else  {
-        iResult = setGridFlat(vParams);
-    }
-
+    //----- grid
     if (iResult == 0) {
-        m_pClimate = new Climate(m_iNumCells, 0, m_pGeo);
-        m_pCG->setClimate(m_pClimate);
-        m_pVeg = new Vegetation(m_iNumCells, 0, m_pGeo, m_pClimate);
-        m_pCG->setVegetation(m_pVeg);
-        m_pNav = new Navigation();
-        m_pCG->setNavigation(m_pNav);
+        iResult = handleGridLine();
     }
+
+    //----- altitude
+    if (iResult == 0) {
+        iResult = handleAltLine();
+    }
+
+    //----- ice
+    if (iResult == 0) {
+        iResult = handleIceLine();
+    }
+
+    //----- temp
+    if (iResult == 0) {
+        iResult = handleTempLine();
+    }
+
+    //----- rain
+    if (iResult == 0) {
+        iResult = handleRainLine();
+    }
+
+
+    //----- npp
+    if (iResult == 0) {
+        iResult = handleNPPLine();
+    }
+
     return iResult;
 }
 
@@ -710,48 +473,6 @@ int GridFactory::handleGridLine() {
     if (iResult != 0) stdfprintf(stderr, "handleGridLine: %d\n", iResult);
     return iResult;
 }
-
-
-//-----------------------------------------------------------------------------
-// createNETCDFCommands
-//
-int GridFactory::createNETCDFCommands(stringvec &vParams, const std::string sApp, const std::string sDefaultFile, const std::string sCommandTemplate) {
-    int iResult = -1;
-    int    iTime;
-
-    if  (vParams.size() > 2) {
-        if (strToNum(vParams[2], &iTime)) {
-            std::string sRealFile = "";
-            if (vParams[1].compare("DEFAULT") == 0) {
-                vParams[1] = sDefaultFile;
-            }
-            if (exists(vParams[1], sRealFile)) {
-                // call alt interpolator
-                std::string sCommand;
-                std::string sRealCommand;
-                if (exists(sApp, sRealCommand)) {
-                    sCommand = stdsprintf(sCommandTemplate, sRealCommand, sRealFile, iTime);
-                    m_vShellCommands.push_back(sCommand);
-                    iResult = 0;
-                } else {
-                    stdfprintf(stderr, "Couldnt find path for [alt_interpolator]\n");
-                    iResult = -1;
-                }
-            } else {
-                iResult = -1;
-                stdfprintf(stderr, "File [%s] does not exist\n", sRealFile);
-            }
-        } else {
-            iResult = -1;
-            stdfprintf(stderr, "Expected integer time in command [%s]\n", join(vParams, " "));
-        }
-    } else {
-        iResult = -1;
-        stdfprintf(stderr, "Expected 3 parameters [%s]\n", join(vParams, " "));
-    }        
-    return iResult;
-}
-
 
 //-----------------------------------------------------------------------------
 // handleAltLine
@@ -1020,125 +741,547 @@ int GridFactory::handleNPPLine() {
     return iResult;
 }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////
+// grid creation
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
-// readDef
+// setGrid
 //
-int GridFactory::readDef() {
+int GridFactory::setGrid(const stringvec &vParams) {
     int iResult = -1;
 
-    iResult = collectLines();
-    printf("Collected lines: %d\n", iResult);
-
-    //----- data dirs
-    if (iResult == 0) {
-        iResult = handleDDirLine();
+    if (vParams[0].compare("ICO") == 0)  {
+        iResult = setGridIco(vParams);
+    } else  {
+        iResult = setGridFlat(vParams);
     }
 
-    //----- grid
     if (iResult == 0) {
-        iResult = handleGridLine();
+        m_pClimate = new Climate(m_iNumCells, 0, m_pGeo);
+        m_pCG->setClimate(m_pClimate);
+        m_pVeg = new Vegetation(m_iNumCells, 0, m_pGeo, m_pClimate);
+        m_pCG->setVegetation(m_pVeg);
+        m_pNav = new Navigation();
+        m_pCG->setNavigation(m_pNav);
     }
-
-    //----- altitude
-    if (iResult == 0) {
-        iResult = handleAltLine();
-    }
-
-    //----- ice
-    if (iResult == 0) {
-        iResult = handleIceLine();
-    }
-
-    //----- temp
-    if (iResult == 0) {
-        iResult = handleTempLine();
-    }
-
-    //----- rain
-    if (iResult == 0) {
-        iResult = handleRainLine();
-    }
+    return iResult;
+}
 
 
-    //----- npp
-    if (iResult == 0) {
-        iResult = handleNPPLine();
+//-----------------------------------------------------------------------------
+// setGridIco
+//
+int GridFactory::setGridIco(const stringvec &vParams) {
+    int iResult = -1;
+
+    IcoGridNodes *pIGN = NULL;
+    int iSubDivs = -1;
+    
+    bool bEqual = true;
+    
+    double dRadius = RADIUS;
+    
+    if (vParams.size() > 1) {
+
+        if (vParams.size() >= 2) {
+            // <ignfile> or <type>:<subdiv>
+            stringvec vArg;
+            int iNum = splitString(vParams[1], vArg, ":");
+            if (iNum == 1) {
+                /* no more N for now
+                pIGN = readIGNFile(vParams[1]);
+                if (pIGN != NULL) {
+                    m_iNumCells = (uint)pIGN->m_mNodes.size();
+                    iResult = 0;
+                }
+                */
+            } else {
+                if (strToNum(vArg[1], &iSubDivs)) {
+                    iResult = 0;
+                    if (vArg[0].compare("std") == 0)  {
+                        bEqual = false;
+                        stdprintf("Without tegmark\n");
+                    } else if (vArg[0].compare("eq") == 0)  {
+                        bEqual = true;
+                        stdprintf("With tegmark\n");
+                    } else {
+                        stdprintf("expected  \"<type>:<subdivs>\"\n");
+                        iResult = -1;
+                    }
+                } else {
+                    stdprintf("expected  number for \"<subdivs>\", not [%s]\n", vArg[1]);
+                    iResult = -1;
+                }
+            }
+            if (vParams.size() == 3) {
+                // trailing <radius>
+                if (strToNum(vParams[2], &dRadius)) {
+                    m_dRadius = dRadius;
+                }
+            } else if (vParams.size() > 3) {
+                stdprintf("too many arguments\n");
+                iResult = -1;
+            } 
+            /*
+        } else if (vParams.size() == 3) {
+                // <ignfile> <radius> | <type>:<subdiv> <type>
+            if (strToNum(vParams[1], &iSubDivs)) {
+                iResult = 0;
+                if (vParams[2].compare("std") == 0)  {
+                    bEqual = false;
+                    stdprintf("Without tegmark\n");
+                } else if (vParams[2].compare("eq") == 0)  {
+                    bEqual = true;
+                    stdprintf("With tegmark\n");
+                } else {
+                    stdprintf("expected \"<ignfile> <radius>\" or \"<subdivs> <type>\"\n");
+                    iResult = -1;
+                }
+            } else {
+                pIGN = readIGNFile(vParams[1]);
+                if (pIGN != NULL) {
+                    if (strToNum(vParams[2], &dRadius)) {
+                        m_dRadius = dRadius;
+                        m_iNumCells = (uint)pIGN->m_mNodes.size();
+                        iResult = 0;
+                    } else {
+                        stdprintf("expected <radius>, not [%s]\n", vParams[2]);
+                        iResult = -1;
+                    }
+                } else {
+                    iResult = -1;
+                }
+            }
+            
+        } else if (vParams.size() == 4) {
+            // <subdiv> <type> <radius>
+            if (strToNum(vParams[1], &iSubDivs)) {
+                iResult = 0;
+                if (vParams[2].compare("std") == 0)  {
+                    bEqual = false;
+                    stdprintf("Without tegmark\n");
+                } else if (vParams[2].compare("eq") == 0)  {
+                    bEqual = true;
+                    stdprintf("With tegmark\n");
+                } else {
+                    stdprintf("unknown type [%s]- only know 'eq' or 'std'\n", vParams[2]);
+                    iResult = -1;
+                }
+                if (iResult == 0) {
+                    if (strToNum(vParams[3], &dRadius)) {
+                        m_dRadius = dRadius;
+                        iResult = 0;
+                    } else {
+                        stdprintf("expected <radius>, not [%s]\n", vParams[3]);
+                        iResult = -1;
+                    }
+                }
+            } else {
+                stdprintf("expected <subdivs>, not [%s]\n", vParams[1]);
+                iResult = -1;
+            }
+            */
+        
+        } else {
+            // too many parameters
+            iResult = -1;
+        }
+         
+       
+    } else {
+        stdprintf("need parameters\n");
+        iResult = -1;
     }
+
+
+    if (iResult == 0) {
+        if (iSubDivs > 0)  {
+            EQsahedron *pEQNodes = EQsahedron::createInstance(iSubDivs, bEqual);
+            pEQNodes->relink();
+            VertexLinkage *pVL = pEQNodes->getLinkage();
+            pIGN = createEQGrid(pVL);
+            m_iNumCells = (uint)pIGN->m_mNodes.size();
+            delete pEQNodes;
+            iResult = 0;
+        }
+
+        // build grid
+        if (iResult == 0) {
+            stringmap smSurfaceData;
+            smSurfaceData[SURF_TYPE] = SURF_EQSAHEDRON;
+            smSurfaceData[SURF_IEQ_SUBDIVS] = stdsprintf("%d", iSubDivs);
+            pIGN->setData(smSurfaceData);
+            // here the SCellGrid class is created
+            //        m_pCG = new SCellGrid(0, m_iNumCells, iGridType, iW, iH, bPeriodic);
+            m_pCG = new SCellGrid(0, m_iNumCells, pIGN->getData());
+            iResult = createCells(pIGN);
+            
+        }
+        
+        // build geography
+        if (iResult == 0) {
+            int iMaxNeigh = MAX_ICO_NEIGHBORS;
+            m_pGeo = new Geography(m_iNumCells, iMaxNeigh, m_dRadius);  // create geography
+            m_pCG->setGeography(m_pGeo);
+            initializeGeography(pIGN);
+        }
+        
+        delete pIGN;
+
+    }
+
 
     return iResult;
 }
 
 
 //-----------------------------------------------------------------------------
-// applyShellCommands
-//   apply the various netcdf-interpolation commands
-//   to the existing QWDF file
+// setGridFlat
+//   ("HEX" | "RECT") <iW>"x"<iH> ["PERIODIC"]
 //
-int GridFactory::applyShellCommands(const char *pQDFFile) {
-    int iResult = 0;
-    if (m_vShellCommands.size() > 0) {
-        for (uint i = 0; (iResult == 0) && (i <m_vShellCommands.size()); i++) {
-            std::string sComm(m_vShellCommands[i]);
-            size_t start_pos = sComm.find(PLACEHOLDER);
-            if(start_pos != std::string::npos) {
-                sComm.replace(start_pos, PLACEHOLDER.length(), pQDFFile);
-                stdprintf("Command %02u: [%s]\n", i, sComm);
-                stringvec vOutputLines;
-                iResult =  executeCommand(sComm, vOutputLines);
-                if (iResult != 0) {
-                    for (unsigned int i = 0; i < vOutputLines.size(); i++) {
-                        stdprintf("%s\n", vOutputLines[i]);
-                    }
-                }
+int GridFactory::setGridFlat(const stringvec &vParams) {
+    int iResult = -1;
+
+    uint iPeriodicity = PERIODIC_NONE;
+    bool bHex = false;
+
+    m_iNumCells = 0;
+
+    printf("params (%zd):", vParams.size());
+    for (uint i = 0; i < vParams.size(); i++) {
+        printf("  %s", vParams[i].c_str());
+    }
+    printf("\n");
+    if (vParams.size() > 1) {
+        int iW = 0;
+        int iH = 0;
+
+        if (vParams.size() > 2) { 
+            if (vParams[2].compare("PERIODIC_NONE") == 0) {
+                iPeriodicity = PERIODIC_NONE;
+            } else if (vParams[2].compare("PERIODIC_X") == 0) {
+                iPeriodicity = PERIODIC_X;
+            } else if (vParams[2].compare("PERIODIC_Y") == 0) {
+                iPeriodicity = PERIODIC_Y;
+            } else if (vParams[2].compare("PERIODIC_XY") == 0) {
+                iPeriodicity = PERIODIC_XY;
+            } else if (vParams[2].compare("PERIODIC") == 0) {
+                iPeriodicity = PERIODIC_XY;
             }
-        }    
+        }
+
+        // find size
+        stringvec vParts;
+        uint iNum = splitString(vParams[1], vParts, "x");
+        if (iNum == 2) {
+            if (strToNum(vParts[0], &iW) && strToNum(vParts[1], &iH)) {
+                m_iNumCells = iW*iH;
+                iResult = 0;
+                stdfprintf(stderr, "got iW %d, iH %d -> %d\n", iW, iH, m_iNumCells);
+
+            } else {
+                stdfprintf(stderr, "invalid number in  size: [%s]\n", vParams[2]);
+            }
+        } else {
+            stdfprintf(stderr, "invalid size: [%s]\n", vParams[2]);
+        }
+
+        // find type 
+        if (iResult == 0) {
+            if (vParams[0].compare("HEX") == 0) {
+                bHex = true;
+                if (((iPeriodicity & PERIODIC_Y) != 0)&&((iH%2) == 1)) {
+                    stdfprintf(stderr,"[GridFactory::readDef] WARNING: You need an even of rows for a regularY-periodic HEX grid\n");
+                    stdfprintf(stderr,"[GridFactory::readDef] Using an odd number of rows results in a grid with torsion!\n");
+                    
+                }
+            } else if (vParams[0].compare("RECT") == 0) {
+                bHex = false;
+            } else {
+                stdfprintf(stderr,"[GridFactory::readDef] unknown grid type  [%s]\n", vParams[1]);
+                iResult = -1;
+            }
+        }
+
+        // build grid
+        if (iResult == 0) {
+
+            stringmap smSurfaceData;
+
+            smSurfaceData[SURF_TYPE] = "LTC";
+            smSurfaceData[SURF_LTC_W] = stdsprintf("%d", iW);
+            smSurfaceData[SURF_LTC_H] = stdsprintf("%d", iH);
+            smSurfaceData[SURF_LTC_LINKS] = stdsprintf("%d", bHex?HEX_NEIGHBORS:RECT_NEIGHBORS);
+            smSurfaceData[SURF_LTC_PERIODIC] = sPeriodicityNames[iPeriodicity];
+
+            smSurfaceData[SURF_LTC_PROJ_TYPE] = stdsprintf("%d [Linear] %f %f %d", PR_LINEAR, 0.0, 0.0, 0);
+
+            double dW = (bHex) ? (iW - 0.5) : (iW - 1);
+            double dH = (bHex) ? (iH - 1) * 0.8660254 : (iH - 1);
+            smSurfaceData[SURF_LTC_PROJ_GRID] = stdsprintf("%d %d %lf %lf %lf %lf %lf", iW-1, iH-1, dW, dH, 0.0, 0.0, 1.0);
+
+            m_pCG = new SCellGrid(0, m_iNumCells, smSurfaceData);
+            // initialize the cells depending for flat grids
+            iResult = createCells(iW, iH, iPeriodicity, bHex);
+            
+        }
+
+        // build geography
+        if (iResult == 0) {
+            geonumber dRadius = 0.0;
+            int iMaxNeigh =bHex ? HEX_NEIGHBORS : RECT_NEIGHBORS;
+            m_pGeo = new Geography(m_iNumCells, iMaxNeigh, dRadius);  // create geography
+            m_pCG->setGeography(m_pGeo);
+            initializeGeography(iW, iH, bHex);
+            
+        }
+    } else {
+        stdfprintf(stderr, "Invalid flat grid definition [%s]\n", join(vParams, " "));
     }
     return iResult;
 }
-
-
 
 //-----------------------------------------------------------------------------
 // createCells
 //   create cells
 //   link cells
 //
-int GridFactory::createCells(IcoGridNodes *pIGN) { // THIS IS FOR ICOSAHEDRON GRID
- 
-    LOG_STATUS("[GridFactory::createCells] allocating %d cells\n", m_iNumCells);
-    
-    uint iC = 0;
+int GridFactory::createCells(int iW, int iH, uint iPeriodicity, bool bHex) {  // THIS IS FOR RECT OR HEX GRID
+    //printf("[GridFactory::createCells] %dx%d, p:%d, t:%s\n", iW, iH, iPeriodicity, bHex?"Hex":"Rect");
+
+    int iResult = 0;
     m_pCG->m_aCells = new SCell[m_iNumCells];
-    std::map<gridtype, IcoNode*>::const_iterator it;
-    for (it = pIGN->m_mNodes.begin(); it != pIGN->m_mNodes.end(); ++it) {
-        m_pCG->m_mIDIndexes[it->first]=iC;
-
-        m_pCG->m_aCells[iC].m_iGlobalID    = it->first;
-        m_pCG->m_aCells[iC].m_iNumNeighbors = (uchar)it->second->m_iNumLinks;
-        //        pCF->setGeography(m_pGeography, iC, it->second);
-        iC++;
+    
+    // use simplest ID scheme
+    for(uint i=0; i<m_iNumCells; ++i) {
+        m_pCG->m_aCells[i].m_iGlobalID = i;
+        m_pCG->m_mIDIndexes[i] = i;
     }
-    if (iC != m_iNumCells) {
-        stdfprintf(stderr, "[GridFactory::createCells] numcells: %d, actually set %dn", m_iNumCells, iC);
+    
+    if (bHex) {
+        iResult = createCellsHex(iW, iH, iPeriodicity);
+    } else {
+        iResult = createCellsRect(iW, iH, iPeriodicity);
     }
-    LOG_STATUS("[GridFactory::createCells] linking cells\n");
 
-    // linking and distances
-    for (uint i =0; i < m_iNumCells; ++i) {
-        // get link info from IcCell
-        IcoNode *pIN = pIGN->m_mNodes[m_pCG->m_aCells[i].m_iGlobalID];
-        for (int j = 0; j < pIN->m_iNumLinks; ++j) {
-            m_pCG->m_aCells[i].m_aNeighbors[j] = m_pCG->m_mIDIndexes[pIN->m_aiLinks[j]];
+    return iResult;
+ 
+}
+
+
+
+//-----------------------------------------------------------------------------
+// createCellsRectPeriodic
+//   link cells
+//
+int GridFactory::createCellsRect(uint iW, uint iH, uint iPeriodicity) {
+    int iResult = 0;
+    printf("[GridFactory::createCellsRect] %dx%d, p:%d\n", iW, iH, iPeriodicity);
+    
+    iResult =  createCellsRectPeriodic(iW, iH);
+    
+    // now remove bad neighbors if nnot periodic 
+    //x, y, W and H should be ints, because some intermediate results can be negative-
+    int W = (int)(iW);
+    int H = (int)(iH);
+   
+    // remove links forbidden by non-periodicity in x direction (left and right border elements=
+    printf("[GridFactory::createCellsRect] iPeriodicity:%d, PERIODIC_X:%d. &:%d\n", iPeriodicity, PERIODIC_X, iPeriodicity & PERIODIC_X);
+    if ((iPeriodicity & PERIODIC_X) == 0) {
+        printf("[GridFactory::createCellsRect] removing horizontal border links\n");
+        
+        for (int y = 0; y < H; y++) {
+            int x = W-1;
+            int i = y*W + x;
+            m_pCG->m_aCells[i].m_aNeighbors[0] = -1; 
+            m_pCG->m_aCells[i].m_iNumNeighbors--;
+            
+            x = 0;
+            i = y*W + x;
+            m_pCG->m_aCells[i].m_aNeighbors[2] = -1; 
+            m_pCG->m_aCells[i].m_iNumNeighbors--;
         }
-        for (int j = pIN->m_iNumLinks; j < MAX_NEIGH; ++j) {
+    }
+    // remove links forbidden by non-periodicity in y direction (top and bottom border elements=
+    // here we must make sure we don't double-delete
+
+    printf("[GridFactory::createCellsRect] iPeriodicity:%d, PERIODIC_Y:%d, &:%d\n", iPeriodicity, PERIODIC_Y, iPeriodicity & PERIODIC_Y);
+    if ((iPeriodicity & PERIODIC_Y) == 0) {
+        printf("[GridFactory::createCellsRect] removing vertical horizontal border links\n");
+        // top
+        int y = H - 1;   
+        for (int x = 0; x < W; x++) {
+            int i = y*W + x;
+            m_pCG->m_aCells[i].m_aNeighbors[1] = -1; 
+            m_pCG->m_aCells[i].m_iNumNeighbors--;   
+        }
+   
+        // bottom
+        y = 0;   
+        for (int x = 0; x < W; x++) {
+            int i = y*W + x;
+            m_pCG->m_aCells[i].m_aNeighbors[3] = -1; 
+            m_pCG->m_aCells[i].m_iNumNeighbors--;
+        }   
+    }
+
+    return iResult;
+}
+
+//-----------------------------------------------------------------------------
+// createCellsRectPeriodic
+//   link cells
+//
+int GridFactory::createCellsRectPeriodic(uint iW, uint iH) {
+    printf("[GridFactory::createCellsRectPeriodic] %dx%d\n", iW, iH);
+    for(uint i=0; i<m_iNumCells; i++) {
+
+        // clear all neighbor links
+        m_pCG->m_aCells[i].m_iNumNeighbors = (uchar)RECT_NEIGHBORS;
+        for (int j = 0; j < MAX_NEIGH; j++) {
             m_pCG->m_aCells[i].m_aNeighbors[j] = -1;
         }
+
+        int x  = i % iW;
+        int y  = i / iW;
+        int x1 = x;
+        int y1 = y;
+
+        //    1
+        //  2 X 0
+        //    3
+
+        // dir 0: x' = (x+1)%W, y' = y
+        // dir 1: x' = x, y' = (y+1)%H     
+        // dir 2: x' = (x-1+W)%W, y' = y   ("+iW" to make the result positive)
+        // dir 3: x' = x, y' = (y-1+H)%H   ("+iH" to make the result positive)
+        // let's first deal with boundary rows and up-down neighbors:
+        
+        // dir 0:
+        x1 = (x+1)%iW;
+        y1 = y;
+        m_pCG->m_aCells[i].m_aNeighbors[0] = y1*iW + x1;
+        // dir 1:
+        x1 = x;
+        y1 = (y+1)%iH;
+        m_pCG->m_aCells[i].m_aNeighbors[1] = y1*iW + x1;
+        // dir 2:
+        x1 = (x-1+iW)%iW;
+        y1 = y;
+        m_pCG->m_aCells[i].m_aNeighbors[2] = y1*iW + x1;
+        // dir 3:
+        x1 = x;
+        y1 = (y-1+iH)%iH;
+        m_pCG->m_aCells[i].m_aNeighbors[3] = y1*iW + x1;
+
     }
     return 0;
 }
- 
+
+
+//-----------------------------------------------------------------------------
+// createCellsHex
+//   create hexagonal grid of cells with optionl non-periodicity
+//
+//   PERIODIC_X: the links 1 and 2 in the top row and 
+//               the links 4 and 5 in the bottom row must be deleted
+//
+//   PERIODIC_Y: in even-numbered rows the links 2,3 and 4 of the leftmost elements
+//               and link 0 of the rightmost elements must be deleted.
+//               in odd-numbered rows the link 3 of the leftmodt element,
+//               and the links 0, 1 and 5 of the rightmst element must be deleted.
+//
+int GridFactory::createCellsHex(uint iW, uint iH, uint iPeriodicity) {
+  
+    int iResult = 0;
+    //printf("[GridFactory::createCellsHex] %ux%u, p:%d\n", iW, iH, iPeriodicity);
+
+    iResult = createCellsHexPeriodic(iW, iH);
+
+    // now remove bad neighbors if nnot periodic 
+    //x, y, W and H should be ints, because some intermediate results can be negative-
+    int W = (int)(iW);
+    int H = (int)(iH);
+   
+    
+    //  . . . . 
+    //  3rd row:     X X X X X X 
+    //  2nd row:    X X X X X X 
+    //  1st row:     X X X X X X
+    //  0th row:    X X X X X X 
+
+
+    // remove links forbidden by non-periodicity in x direction (left and right border elements=
+    if ((iPeriodicity & PERIODIC_X) == 0) {
+        printf("[GridFactory::createCellsHex] removing horizontal border links\n");
+        
+        for (int y = 0; y < H; y++) {
+            int x = 0;
+            int i = y*W + x;
+            
+            if ((y%2) == 1) {
+                m_pCG->m_aCells[i].m_aNeighbors[3] = -1; 
+                m_pCG->m_aCells[i].m_iNumNeighbors--;
+            } else {
+                m_pCG->m_aCells[i].m_aNeighbors[2] = -1; 
+                m_pCG->m_aCells[i].m_iNumNeighbors--;
+                m_pCG->m_aCells[i].m_aNeighbors[3] = -1; 
+                m_pCG->m_aCells[i].m_iNumNeighbors--;
+                m_pCG->m_aCells[i].m_aNeighbors[4] = -1; 
+                m_pCG->m_aCells[i].m_iNumNeighbors--;
+            }
+            x = W-1;
+            i = y*W + x;
+            if ((y%2) == 1) {
+                m_pCG->m_aCells[i].m_aNeighbors[0] = -1; 
+                m_pCG->m_aCells[i].m_iNumNeighbors--;
+                m_pCG->m_aCells[i].m_aNeighbors[1] = -1; 
+                m_pCG->m_aCells[i].m_iNumNeighbors--;
+                m_pCG->m_aCells[i].m_aNeighbors[5] = -1; 
+                m_pCG->m_aCells[i].m_iNumNeighbors--;
+            } else {
+                m_pCG->m_aCells[i].m_aNeighbors[0] = -1; 
+                m_pCG->m_aCells[i].m_iNumNeighbors--;
+            }
+        }
+    }
+
+    // remove links forbidden by non-periodicity in y direction (top and bottom border elements=
+    // here we must make sure we don't double-delete
+
+    if ((iPeriodicity & PERIODIC_Y) == 0) {
+        printf("[GridFactory::createCellsHex] removing vertical border links\n");
+        // top
+        int y = H - 1;   
+        for (int x = 0; x < W; x++) {
+            int i = y*W + x;
+            if (m_pCG->m_aCells[i].m_aNeighbors[1]>= 0) {
+                m_pCG->m_aCells[i].m_aNeighbors[1] = -1; 
+                m_pCG->m_aCells[i].m_iNumNeighbors--;   
+            }
+            if (m_pCG->m_aCells[i].m_aNeighbors[2]>= 0) {
+                m_pCG->m_aCells[i].m_aNeighbors[2] = -1; 
+                m_pCG->m_aCells[i].m_iNumNeighbors--;   
+            }
+        }   
+        // bottom
+        y = 0;   
+        for (int x = 0; x < W; x++) {
+            int i = y*W + x;
+            if (m_pCG->m_aCells[i].m_aNeighbors[4]>= 0) {
+                m_pCG->m_aCells[i].m_aNeighbors[4] = -1; 
+                m_pCG->m_aCells[i].m_iNumNeighbors--;
+            }
+            if (m_pCG->m_aCells[i].m_aNeighbors[5]>= 0) {
+                m_pCG->m_aCells[i].m_aNeighbors[5] = -1; 
+                m_pCG->m_aCells[i].m_iNumNeighbors--;
+            }  
+        }   
+    }
+
+    return iResult;
+}
 
 //-----------------------------------------------------------------------------
 // createCellsHexPeriodic
@@ -1171,7 +1314,8 @@ int GridFactory::createCells(IcoGridNodes *pIGN) { // THIS IS FOR ICOSAHEDRON GR
 //         5     x,   y-1      x+1, y-1     
 //
 int GridFactory::createCellsHexPeriodic(uint iW, uint iH) {
-  
+
+    //printf("[GridFactory::createCellsHexPeriodic] %ux%u\n", iW, iH);
     //x, y, W and H should be ints, because some intermediate results can be negative-
     int W = (int)(iW);
     int H = (int)(iH);
@@ -1213,310 +1357,92 @@ int GridFactory::createCellsHexPeriodic(uint iW, uint iH) {
     }
     return 0;
 }
-/*
+
+
+
+
+
+
+
+
+
+
 //-----------------------------------------------------------------------------
-// createCellsHexNonPeriodic
-//   create cells
-//   link cells
+// createNETCDFCommands
 //
-//    2 1       NW NE
-//   3 X 0     W  X  E
-//    4 5       SW SE
-// 
-// connecctions:
-// row 2 X - X - X - X - X -      NW  NE          |
-//        \  |\  |\  |\  |\         \ |           |
-//         \ | \ | \ | \ | \         \|           |
-// row 1     X - X - X - X-       E - X - W       |
-//           |\  |\  |\  |\           |\          |
-//           | \ | \ | \ | \          | \         |
-// row 0     X - X - X - X -         SW  SE       |
-//           |\  |\  |\  |\                       |
-//
+int GridFactory::createNETCDFCommands(stringvec &vParams, const std::string sApp, const std::string sDefaultFile, const std::string sCommandTemplate) {
+    int iResult = -1;
+    int    iTime;
 
-//MAYBE BETTER: make torus coinnection and remove unneeded connsctions
-//
-int GridFactory::createCellsHexPeriodic(uint iW, uint iH) {
-  
-    //x, y, W and H should be ints, because some intermediate results can be negative-
-    int W = (int)(iW);
-    int H = (int)(iH);
-   
-     for (int x = 0; x < W; x++) {
-        for (int y = 0; y < H; y++) {
-            int i = y*W + x;
-
-            for (int j = 0; j < MAX_NEIGH; j++) {
-                m_pCG->m_aCells[i].m_aNeighbors[j] = -1;
+    if  (vParams.size() > 2) {
+        if (strToNum(vParams[2], &iTime)) {
+            std::string sRealFile = "";
+            if (vParams[1].compare("DEFAULT") == 0) {
+                vParams[1] = sDefaultFile;
             }
-
-            if ((y%2) == 0) {
-                // even rows
-                if (x == 0) {
-                    // left
-                    if (y == 0) {
-                        //bottom left
-                        // E, NE
-                    } else if    
-                } else if (x == W-1) {
-                    // right
+            if (exists(vParams[1], sRealFile)) {
+                // call alt interpolator
+                std::string sCommand;
+                std::string sRealCommand;
+                if (exists(sApp, sRealCommand)) {
+                    sCommand = stdsprintf(sCommandTemplate, sRealCommand, sRealFile, iTime);
+                    m_vShellCommands.push_back(sCommand);
+                    iResult = 0;
                 } else {
-                    // bottom normal
+                    stdfprintf(stderr, "Couldnt find path for [alt_interpolator]\n");
+                    iResult = -1;
                 }
             } else {
-                // uneven rows
-
-                if (x == 0) {
-                    // left
-                    
-                } else if (x == W-1) {
-                    // right
-                } else {
-                    // bottom normal
-                }
+                iResult = -1;
+                stdfprintf(stderr, "File [%s] does not exist\n", sRealFile);
             }
-        }
-     }
-     return 0;
-}
-*/
-
-//-----------------------------------------------------------------------------
-// createCellsHexNonPeriodic
-//   create cells
-//   link cells
-//
-int GridFactory::createCellsHexNonPeriodic(uint iX, uint iY) {
-
-    for(uint i=0; i<m_iNumCells; i++) {
-
-        for (int j = 0; j < MAX_NEIGH; j++) {
-            m_pCG->m_aCells[i].m_aNeighbors[j] = -1;
-        }
-  
-        //                  1 2           NW NE
-        //                 0 X 3         W  X  E
-        //                  5 4           SW SE
-
-        //  . . . . 
-        //  3rd row:     X X X X X X 
-        //  2nd row:    X X X X X X 
-        //  1st row:     X X X X X X
-        //  0th row:    X X X X X X 
-
-        m_pCG->m_aCells[i].m_iNumNeighbors = 0;
-
-        // let's first deal with boundary rows and north-south neighbors:
-
-        if (i < iX) { // first row
-            
-            if (i==0) {
-                m_pCG->m_aCells[i].m_iNumNeighbors += 1;
-                m_pCG->m_aCells[i].m_aNeighbors[2] = iX;             // NE               
-            } else {
-                m_pCG->m_aCells[i].m_iNumNeighbors += 2;
-                m_pCG->m_aCells[i].m_aNeighbors[1] = i + iX - 1;     // NW
-                m_pCG->m_aCells[i].m_aNeighbors[2] = i + iX;         // NE
-            } 
-            
-        } else if (i >= (iY-1)*iX) { // last row
-            
-            if (i== (iX*iY - 1)) {
-                m_pCG->m_aCells[i].m_iNumNeighbors += 1;
-                m_pCG->m_aCells[i].m_aNeighbors[5] = iX*(iY-1) - 1;  // SW
-            } else { 
-                m_pCG->m_aCells[i].m_iNumNeighbors += 2;
-                m_pCG->m_aCells[i].m_aNeighbors[4] = i - 2*iX + 1;   // SE
-                m_pCG->m_aCells[i].m_aNeighbors[5] = i - iX;         // SW
-            }
-            
-        } else if ( (i/iY)%2 == 0 ) { // rows 0, 2, 4, 6...
-            if ( (i%iX) == 0 ) { // first column
-                m_pCG->m_aCells[i].m_iNumNeighbors += 2;
-                m_pCG->m_aCells[i].m_aNeighbors[2] = i + iX;         // NE
-                m_pCG->m_aCells[i].m_aNeighbors[4] = i - iX;         // SE
-            } else {
-                m_pCG->m_aCells[i].m_iNumNeighbors += 4;
-                m_pCG->m_aCells[i].m_aNeighbors[1] = i + iX - 1;     // NW
-                m_pCG->m_aCells[i].m_aNeighbors[2] = i + iX;         // NE
-                m_pCG->m_aCells[i].m_aNeighbors[4] = i - iX;         // SE
-                m_pCG->m_aCells[i].m_aNeighbors[5] = i - iX - 1;     // SW
-            }
-            
-        } else { // rows 1, 3, 5...
-            if ( (i%iX) == iX-1 ) { // last column
-                m_pCG->m_aCells[i].m_iNumNeighbors += 2;
-                m_pCG->m_aCells[i].m_aNeighbors[1] = i + iX;         // NW          
-                m_pCG->m_aCells[i].m_aNeighbors[5] = i - iX;         // SW
-            } else {
-                m_pCG->m_aCells[i].m_iNumNeighbors += 4;
-                m_pCG->m_aCells[i].m_aNeighbors[1] = i + iX;         // NW
-                m_pCG->m_aCells[i].m_aNeighbors[2] = i + iX + 1;     // NE
-                m_pCG->m_aCells[i].m_aNeighbors[4] = i - iX + 1;     // SE
-                m_pCG->m_aCells[i].m_aNeighbors[5] = i - iX;         // SW
-            }
-        }
-        
-        
-        // now deal with boundary columns and left-right neighbors:
-        
-        if ( (i%iX) == 0) { // first column
-            m_pCG->m_aCells[i].m_iNumNeighbors += 1;
-            m_pCG->m_aCells[i].m_aNeighbors[3] = i + 1;           // E
-            
-        } else if ( (i%iX) == iX-1 ) { // last column 
-            m_pCG->m_aCells[i].m_iNumNeighbors += 1;
-            m_pCG->m_aCells[i].m_aNeighbors[0] = i - 1;           // W                 
-            
         } else {
-            m_pCG->m_aCells[i].m_iNumNeighbors += 2;
-            m_pCG->m_aCells[i].m_aNeighbors[0] = i - 1;   // W                 
-            m_pCG->m_aCells[i].m_aNeighbors[3] = i + 1;   // E
-        }               
-    }
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// createCellsRectPeriodic
-//   link cells
-//
-int GridFactory::createCellsRectPeriodic(uint iX, uint iY) {
-    for(uint i=0; i<m_iNumCells; i++) {
-
-        m_pCG->m_aCells[i].m_iNumNeighbors = (uchar)RECT_NEIGHBORS;
-        for (int j = 0; j < MAX_NEIGH; j++) {
-            m_pCG->m_aCells[i].m_aNeighbors[j] = -1;
-        }
-
-        //    1
-        //  0 X 2
-        //    3
-
-        // let's first deal with boundary rows and up-down neighbors:
-
-        if (i<iX) { // first row
-
-            m_pCG->m_aCells[i].m_aNeighbors[1] = ((iY - 1) * iX) + i;  // up
-            m_pCG->m_aCells[i].m_aNeighbors[3] = i + iX;               // down
-
-        } else if (i >= (iY-1) * iX) {  // last row
-                    
-            m_pCG->m_aCells[i].m_aNeighbors[1] = i - iX;               // up
-            m_pCG->m_aCells[i].m_aNeighbors[3] = i - ((iY - 1) * iX);  // down
-                    
-        } else {
-
-            m_pCG->m_aCells[i].m_aNeighbors[1] = i - iX;  // up
-            m_pCG->m_aCells[i].m_aNeighbors[3] = i + iX;  // down
-        }
-
-
-        // now we deail with boundary columns and left-right neighbors:
-
-        if ( (i%iX) == 0) { // first column
-
-            m_pCG->m_aCells[i].m_aNeighbors[0] = i + iX - 1;  // left
-            m_pCG->m_aCells[i].m_aNeighbors[2] = i + 1;       // right
-
-        } else if ( (i%iX) == (iX-1) ) { // last column
-
-            m_pCG->m_aCells[i].m_aNeighbors[0] = i - 1;       // left
-            m_pCG->m_aCells[i].m_aNeighbors[2] = i - iX + 1;  // right
-
-        } else {
-
-            m_pCG->m_aCells[i].m_aNeighbors[0] = i - 1;   // left
-            m_pCG->m_aCells[i].m_aNeighbors[2] = i + 1;   // right
-        }
-    }
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// createCellsRectNonPeriodic
-//   link cells
-//
-int GridFactory::createCellsRectNonPeriodic(uint iW, uint iH) {
-
-    for (uint iY = 0; iY < iH; iY++) {
-        for (uint iX = 0; iX < iW; iX++) {
-            int i = iY*iW + iX;
-            
-            m_pCG->m_aCells[i].m_aNeighbors[4] = -1;
-            m_pCG->m_aCells[i].m_aNeighbors[5] = -1;
-
-            if (iY == 0) {
-                m_pCG->m_aCells[i].m_aNeighbors[1] = -1;      //  no up
-            } 
-            if (iY > 0) {
-                m_pCG->m_aCells[i].m_iNumNeighbors += 1;
-                m_pCG->m_aCells[i].m_aNeighbors[1] = i - iW;  //  up
-            } 
-            if (iY < iH-1) {
-                m_pCG->m_aCells[i].m_iNumNeighbors += 1;
-                m_pCG->m_aCells[i].m_aNeighbors[3] = i + iW;  //  down
-            }
-            if (iY == iH-1) {
-                m_pCG->m_aCells[i].m_aNeighbors[3] = -1;      //  no down
-            }
-
-            if (iX == 0) {
-                m_pCG->m_aCells[i].m_aNeighbors[0] = -1;      //  no left
-            } 
-            if (iX > 0) {
-                m_pCG->m_aCells[i].m_iNumNeighbors += 1;
-                m_pCG->m_aCells[i].m_aNeighbors[0] = i - 1;  //  left
-            } 
-            if (iX < iW-1) {
-                m_pCG->m_aCells[i].m_iNumNeighbors += 1;
-                m_pCG->m_aCells[i].m_aNeighbors[2] = i + 1;  //  right
-            }
-            if (iX == iW-1) {
-                m_pCG->m_aCells[i].m_aNeighbors[2] = -1;      //  no right
-            }
-
-        }
-    }
-
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// createCells
-//   create cells
-//   link cells
-//
-int GridFactory::createCells(int iW, int iH, bool bPeriodic, bool bHex) {  // THIS IS FOR RECT OR HEX GRID
-
-    int iResult = 0;
-    m_pCG->m_aCells = new SCell[m_iNumCells];
-    
-    // use simplest ID scheme
-    for(uint i=0; i<m_iNumCells; ++i) {
-        m_pCG->m_aCells[i].m_iGlobalID = i;
-        m_pCG->m_mIDIndexes[i] = i;
-    }
-    
-    if (bPeriodic) {
-        if (bHex) {
-            iResult = createCellsHexPeriodic(iW, iH);
-        } else {
-            iResult = createCellsRectPeriodic(iW, iH);
+            iResult = -1;
+            stdfprintf(stderr, "Expected integer time in command [%s]\n", join(vParams, " "));
         }
     } else {
-        if (bHex) {
-            iResult = createCellsHexNonPeriodic(iW, iH);
-        } else {
-            iResult = createCellsRectNonPeriodic(iW, iH);
-        }
-    }
-    
-    
+        iResult = -1;
+        stdfprintf(stderr, "Expected 3 parameters [%s]\n", join(vParams, " "));
+    }        
     return iResult;
- 
 }
+
+
+
+
+//-----------------------------------------------------------------------------
+// applyShellCommands
+//   apply the various netcdf-interpolation commands
+//   to the existing QWDF file
+//
+int GridFactory::applyShellCommands(const char *pQDFFile) {
+    int iResult = 0;
+    if (m_vShellCommands.size() > 0) {
+        for (uint i = 0; (iResult == 0) && (i <m_vShellCommands.size()); i++) {
+            std::string sComm(m_vShellCommands[i]);
+            size_t start_pos = sComm.find(PLACEHOLDER);
+            if(start_pos != std::string::npos) {
+                sComm.replace(start_pos, PLACEHOLDER.length(), pQDFFile);
+                stdprintf("Command %02u: [%s]\n", i, sComm);
+                stringvec vOutputLines;
+                iResult =  executeCommand(sComm, vOutputLines);
+                if (iResult != 0) {
+                    for (unsigned int i = 0; i < vOutputLines.size(); i++) {
+                        stdprintf("%s\n", vOutputLines[i]);
+                    }
+                }
+            }
+        }    
+    }
+    return iResult;
+}
+
+
+
+
+ 
+
+
 //-----------------------------------------------------------------------------
 // initializeGeography
 // for HEX and RECT grids
@@ -1644,3 +1570,66 @@ int GridFactory::initializeGeography(IcoGridNodes *pIGN) {
 
 
 
+
+
+//-----------------------------------------------------------------------------
+// readIGNFile
+//  (probably obsolete, because nowadays we don't use IGN files a lot)
+//
+IcoGridNodes *GridFactory::readIGNFile(const std::string sFileName) {
+    IcoGridNodes *pIGN = NULL;
+    
+    std::string sRealFile;
+    if (exists(sFileName, sRealFile)) {
+        pIGN = new IcoGridNodes();
+        int iResult = pIGN->read(sRealFile);
+        if(iResult==0) {
+            m_iNumCells = (uint)pIGN->m_mNodes.size();
+        } else {
+            delete pIGN;
+            stdprintf("The file [%s] is not an IGN file\n", sRealFile); 
+        }
+    } else {
+        stdprintf("IGN file does not exist [%s]\n", sFileName);
+    }
+    return pIGN;
+}
+
+//-----------------------------------------------------------------------------
+// createCells
+//   create cells
+//   link cells
+//
+int GridFactory::createCells(IcoGridNodes *pIGN) { // THIS IS FOR ICOSAHEDRON GRID
+ 
+    LOG_STATUS("[GridFactory::createCells] allocating %d cells\n", m_iNumCells);
+    
+    uint iC = 0;
+    m_pCG->m_aCells = new SCell[m_iNumCells];
+    std::map<gridtype, IcoNode*>::const_iterator it;
+    for (it = pIGN->m_mNodes.begin(); it != pIGN->m_mNodes.end(); ++it) {
+        m_pCG->m_mIDIndexes[it->first]=iC;
+
+        m_pCG->m_aCells[iC].m_iGlobalID    = it->first;
+        m_pCG->m_aCells[iC].m_iNumNeighbors = (uchar)it->second->m_iNumLinks;
+        //        pCF->setGeography(m_pGeography, iC, it->second);
+        iC++;
+    }
+    if (iC != m_iNumCells) {
+        stdfprintf(stderr, "[GridFactory::createCells] numcells: %d, actually set %dn", m_iNumCells, iC);
+    }
+    LOG_STATUS("[GridFactory::createCells] linking cells\n");
+
+    // linking and distances
+    for (uint i =0; i < m_iNumCells; ++i) {
+        // get link info from IcCell
+        IcoNode *pIN = pIGN->m_mNodes[m_pCG->m_aCells[i].m_iGlobalID];
+        for (int j = 0; j < pIN->m_iNumLinks; ++j) {
+            m_pCG->m_aCells[i].m_aNeighbors[j] = m_pCG->m_mIDIndexes[pIN->m_aiLinks[j]];
+        }
+        for (int j = pIN->m_iNumLinks; j < MAX_NEIGH; ++j) {
+            m_pCG->m_aCells[i].m_aNeighbors[j] = -1;
+        }
+    }
+    return 0;
+}

@@ -3,7 +3,7 @@
 
 
 #include "GetOld.h"
-#include "OldAgeDeath.h"
+#include "ATanDeath.h"
 #include "RandomMove.h"
 #include "Fertility.h"
 #include "Verhulst.h"
@@ -33,7 +33,7 @@ public:
 
 protected:
     GetOld<tut_SexualAgent>       *m_pGO;
-    OldAgeDeath<tut_SexualAgent>  *m_pOAD;
+    ATanDeath<tut_SexualAgent>    *m_pAD;
     RandomMove<tut_SexualAgent>   *m_pRM;
     Fertility<tut_SexualAgent>    *m_pFert;
     Verhulst<tut_SexualAgent>     *m_pVerhulst;

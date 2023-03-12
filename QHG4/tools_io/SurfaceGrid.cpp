@@ -41,9 +41,9 @@ SurfaceGrid::~SurfaceGrid() {
 
     if (m_pCG != NULL) {
         // delete[]  m_pCG->m_aCells;
-        delete m_pCG->m_pGeography;
-        delete m_pCG->m_pClimate;
-        delete m_pCG->m_pVegetation;
+        m_pCG->delGeography();
+        m_pCG->delClimate();
+        m_pCG->delVegetation();
         delete m_pCG;
     }
 

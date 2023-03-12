@@ -33,18 +33,19 @@ MoveStats<T>::MoveStats(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID)
       m_asChanged(NULL),
       m_vMoveList(pPop->getMoveList()),
       m_fCalcDist(NULL),
-      m_dDistScale(0)  {
+    m_dDistScale(0),
+    m_pGeography(pCG->m_pGeography)  {
 
 
     this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
 
-    if (pCG->m_pGeography != NULL) {
+    if (m_pGeography != NULL) {
         if (pCG->isCartesian()) {
             m_fCalcDist = &cartdist;
             m_dDistScale = 1.0;
         } else { 
             m_fCalcDist = &spherdistDeg;
-            m_dDistScale = pCG->m_pGeography->m_dRadius;
+            m_dDistScale = m_pGeography->m_dRadius;
         }
     }
 }
@@ -208,10 +209,10 @@ int MoveStats<T>::finalize(float fT) {
             int iNewHops = m_aiHops[iCellFrom] + 1;
 
             double dOldDist = m_adDist[iCellFrom];
-            double dLon1 = this->m_pCG->m_pGeography->m_adLongitude[iCellFrom];
-            double dLat1 = this->m_pCG->m_pGeography->m_adLatitude[iCellFrom];
-            double dLon2 = this->m_pCG->m_pGeography->m_adLongitude[iCellTo];
-            double dLat2 = this->m_pCG->m_pGeography->m_adLatitude[iCellTo];
+            double dLon1 = m_pGeography->m_adLongitude[iCellFrom];
+            double dLat1 = m_pGeography->m_adLatitude[iCellFrom];
+            double dLon2 = m_pGeography->m_adLongitude[iCellTo];
+            double dLat2 = m_pGeography->m_adLatitude[iCellTo];
             double dNewDist = dOldDist + m_fCalcDist(dLon1, dLat1, dLon2, dLat2, m_dDistScale);
 
             double dNewTime = fT;

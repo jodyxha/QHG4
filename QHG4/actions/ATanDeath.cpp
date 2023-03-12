@@ -79,6 +79,7 @@ int ATanDeath<T>::execute(int iAgentIndex, float fT) {
         double dR =  this->m_apWELL[omp_get_thread_num()]->wrandd();
 
         if (dR < dDeathProb) {
+            // printf("[ATanDeath::execute] have a deady (%d)\n", iAgentIndex);
             this->m_pPop->registerDeath(pa->m_iCellIndex, iAgentIndex);
         }
         // variation:

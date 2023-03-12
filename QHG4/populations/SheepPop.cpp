@@ -24,7 +24,7 @@ SheepPop::SheepPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen 
     : SPopulation<SheepAgent>(pCG, pPopFinder, iLayerSize, apIDG, aulState, aiSeeds),
     m_pSEGrass(NULL),
     m_pWM(NULL),
-    m_pRM(NULL),
+    m_pSM(NULL),
     m_pRS(NULL),
     m_pAR(NULL),
     m_pdGrassMassAvailable(NULL),
@@ -32,7 +32,6 @@ SheepPop::SheepPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen 
     m_adPreferences(NULL) {
 
     
-    ArrayShare *pAS = ArrayShare::getInstance();
     int iMaxNeighbors = this->m_pCG->m_iConnectivity;
     int iArrSize = this->m_pCG->m_iNumCells * (iMaxNeighbors + 1);
 
@@ -45,20 +44,19 @@ SheepPop::SheepPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen 
     m_pWM   = new WeightedMove<SheepAgent>(this, m_pCG, "", m_apWELL, m_adPreferences);
     
 
-    m_pRM = new SheepManager<SheepAgent>(this, m_pCG, "",
-                                         SHARE_GRASS_MASS_AVAILABLE, SHARE_GRASS_MASS_CONSUMED,
-                                         m_adPreferences);
+    m_pSM = new SheepManager<SheepAgent>(this, m_pCG, "",
+                                         SHARE_GRASS_MASS_AVAILABLE, SHARE_GRASS_MASS_CONSUMED);
     
     m_pRS   = new Starver<SheepAgent>(this, m_pCG, "");
  
     m_pAR = new AnimalReproducer<SheepAgent>(this, m_pCG, "", m_apWELL);
 
   
-    m_prio.addAction(m_pRM);
-    m_prio.addAction(m_pRS);
-    m_prio.addAction(m_pWM);
-    m_prio.addAction(m_pAR);
     m_prio.addAction(m_pSEGrass);
+    m_prio.addAction(m_pWM);
+    m_prio.addAction(m_pSM);
+    m_prio.addAction(m_pRS);
+    m_prio.addAction(m_pAR);
    
 
 }
@@ -67,20 +65,26 @@ SheepPop::SheepPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen 
 // destructor
 //
 SheepPop::~SheepPop() {
-    if (m_pWM != NULL) {
-        delete m_pWM;
+    if (m_adPreferences != NULL) {
+        delete[] m_adPreferences;
     }
     if (m_pSEGrass != NULL) {
         delete m_pSEGrass;
     }
-    if (m_pRM != NULL) {
-        delete m_pRM;
+    if (m_pWM != NULL) {
+        delete m_pWM;
+    }
+    if (m_pSM != NULL) {
+        delete m_pSM;
     }
     if (m_pRS != NULL) {
         delete m_pRS;
     }
+    if (m_pAR != NULL) {
+        delete m_pAR;
+    }
 
-    ArrayShare::freeInstance();
+
 }
 
 //----------------------------------------------------------------------------
@@ -89,8 +93,10 @@ SheepPop::~SheepPop() {
 //
 int SheepPop::preLoop() {
     int iResult = 0;
+    printf("[SheepPop::preLoop] ArrayShare is [%p]\n", ArrayShare::getInstance());
     m_pdGrassMassAvailable = (double *) ArrayShare::getInstance()->getArray(SHARE_GRASS_MASS_AVAILABLE);
     if (m_pdGrassMassAvailable == NULL) {
+        printf("[SheepPop::preLoop] couldn't get shared array [%s]\n", SHARE_GRASS_MASS_AVAILABLE);
         iResult = -1; 
     } else {
         m_pSEGrass->setInputData(m_pdGrassMassAvailable);

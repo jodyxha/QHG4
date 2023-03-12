@@ -18,19 +18,16 @@
 //
 template<typename T>
 SheepManager<T>::SheepManager(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID,
-                                const std::string sNameGrassMassAvail, const std::string sNameGrassMassConsumed, 
-                                double *pdPreferences)
+                                const std::string sNameGrassMassAvail, const std::string sNameGrassMassConsumed)
     : Action<T>(pPop,pCG,ATTR_SHEEPMAN_NAME,sID),
       m_pAS(ArrayShare::getInstance()),
       m_iNumCells(pCG->m_iNumCells),
       m_adGrassMassAvail(NULL),
       m_adGrassMassConsumed(NULL),
       m_avSheepLocIDs(NULL),
-      m_pdPreferences(pdPreferences),
 
-    m_sNameGrassMassAvail(sNameGrassMassAvail),
-    m_sNameGrassMassConsumed(sNameGrassMassConsumed)/*,
-                                                      m_sNameSheepLocIDs(sNameSheepLocIDs)*/ {
+      m_sNameGrassMassAvail(sNameGrassMassAvail),
+      m_sNameGrassMassConsumed(sNameGrassMassConsumed) {
 
     m_aRLocks = new omp_lock_t[m_iNumCells];
     for (int i = 0; i < m_iNumCells; i++) {

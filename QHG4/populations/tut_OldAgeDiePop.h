@@ -1,7 +1,6 @@
 #ifndef __TUT_OLDAGEDIEPOP_H__
 #define __TUT_OLDAGEDIEPOP_H__
 
-//#include "OldAgeDeath.h"
 #include "ATanDeath.h"
 #include "GetOld.h"
 

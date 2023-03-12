@@ -96,6 +96,8 @@ const std::string EVENT_PARAM_INTERPOL_STOP  = "stop";
 
 const std::string CMD_SET_ITERS             = "SET ITERS";
 const std::string CMD_REMOVE_ACTION         = "REMOVE ACTION";
+const std::string CMD_DISABLE_ACTION        = "DISABLE ACTION";
+const std::string CMD_ENABLE_ACTION         = "ENABLE ACTION";
 const std::string CMD_MOD_POP               = "MOD POP";
 const std::string CMD_FREEZE                = "FREEZE";
 

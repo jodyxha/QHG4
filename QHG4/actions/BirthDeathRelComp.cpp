@@ -72,8 +72,6 @@ BirthDeathRelComp<T>::~BirthDeathRelComp() {
     if (m_pTotalCounts != NULL) {
         delete[] m_pTotalCounts;
     }
-
-    ArrayShare::freeInstance();
 }
 
 

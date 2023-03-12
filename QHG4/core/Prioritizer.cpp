@@ -58,39 +58,115 @@ int Prioritizer<A>::removeAction(std::string name) {
     typename namelist::iterator itN = m_names.find(name);
     if (itN != m_names.end()) {
 
+        bool bRemoved = false;
         std::set<uint> sDeletable;
         Action<A> *pAction = itN->second;
 
         // loop through action list  erasing action from every vector
         typename actlist::iterator itM;
-        for (itM = m_prios.begin(); itM != m_prios.end(); ++itM) {
+        for (itM = m_prios.begin(); !bRemoved && (itM != m_prios.end()); ++itM) {
             typename std::vector<Action<A> *>::iterator itV;
-            for (itV = itM->second.begin(); itV != itM->second.end(); ) {
+            for (itV = itM->second.begin(); !bRemoved && (itV != itM->second.end()); itV++) {
                 if (*itV == pAction) {
                     itM->second.erase(itV);
-                } else {
-                    itV++;
+                    bRemoved = true;
                 }
             }
             if (itM->second.size()==0) {
                 // if vector is empty, this entry may be deleted
                 sDeletable.insert(itM->first);
             }
+                
         }
+        if (bRemoved) {
 
-        // delete entries with empty vectors
-        std::set<uint>::const_iterator itS;
-        for (itS = sDeletable.begin(); itS != sDeletable.end(); itS++) {
-            m_prios.erase(*itS);
+            // delete entries with empty vectors
+            std::set<uint>::const_iterator itS;
+            for (itS = sDeletable.begin(); itS != sDeletable.end(); itS++) {
+                m_prios.erase(*itS);
+            }
+            m_names.erase(itN);
+            iResult = 0;
+        } else {
+            stdprintf("[Prioritizer<A>::removeAction] couldn't remove Action [%s] /should not happen\n", name);
         }
-	m_names.erase(itN);
-        iResult = 0;
     } else {
         stdprintf("[Prioritizer<A>::removeAction] Action [%s] not found\n", name);
     }
     return iResult;
 }
 
+//-----------------------------------------------------------------------------
+// disableAction
+//
+template<typename A>
+int Prioritizer<A>::disableAction(std::string name) {
+    int iResult = -1;
+    // find the action for the name
+    typename namelist::iterator itN = m_names.find(name);
+    if (itN != m_names.end()) {
+
+        bool bDisabled = false;
+        Action<A> *pAction = itN->second;
+
+        // loop through action list  erasing action from every vector
+        typename actlist::iterator itM;
+        for (itM = m_prios.begin(); !bDisabled && (itM != m_prios.end()); ++itM) {
+            typename std::vector<Action<A> *>::iterator itV;
+            for (itV = itM->second.begin(); !bDisabled && (itV != itM->second.end()); itV++) {
+                if (*itV == pAction) {
+                    m_disabled[itM->first].push_back(pAction);
+                    itM->second.erase(itV);
+                    bDisabled = true;
+                }
+            }
+        }
+
+        if (bDisabled) {
+            iResult = 0;
+        } else {
+            stdprintf("[Prioritizer<A>::disableAction] couldn't diaable Action [%s] /should not happen\n", name);
+        }
+    } else {
+        stdprintf("[Prioritizer<A>::disableAction] Action [%s] not found\n", name);
+    }
+    return iResult;
+}
+
+//-----------------------------------------------------------------------------
+// enableAction
+//
+template<typename A>
+int Prioritizer<A>::enableAction(std::string name) {
+    int iResult = -1;
+    // find the action for the name
+    typename namelist::iterator itN = m_names.find(name);
+    if (itN != m_names.end()) {
+
+        bool bEnabled = false;
+        Action<A> *pAction = itN->second;
+        
+        // loop through disables list  erasing action from every vector
+        typename actlist::iterator itM;
+        for (itM = m_disabled.begin(); !bEnabled && (itM != m_prios.end()); ++itM) {
+            typename std::vector<Action<A> *>::iterator itV;
+            for (itV = itM->second.begin(); !bEnabled && (itV != itM->second.end()); itV++) {
+                if (*itV == pAction) {
+                    m_prios[itM->first].push_back(pAction);
+                    itM->second.erase(itV);
+                    bEnabled = true;
+                }
+            }
+        }
+
+     
+        iResult = 0;
+    } else {
+        // this should never happen
+        stdprintf("[Prioritizer<A>::removeAction] Action [%s] not found\n", name);
+    }
+    return iResult;
+}
 
 //-----------------------------------------------------------------------------
 // hasAction
@@ -410,6 +486,9 @@ bool Prioritizer<A>::isEqual(Prioritizer<A> *pP, bool bStrict) {
             if (it2 != pP->m_names.end()) {
                 bIsEqual &= it->second->isEqual(it2->second, bStrict);
                 stdprintf("[Prioritizer<A>::isEqual] prioritizer equal for [%s]: %s\n", it->first, (bIsEqual ? "yes":"no")); 
+                if (!bIsEqual) {
+                    stdprintf("[Prioritizer<A>::isEqual] difference for [%s]: [%s] - [%s]\n", it->first, it->second->getActionName(), it2->second->getActionName());
+                }
             } else {
                 stdprintf("[Prioritizer<A>::isEqual] prioritizer: action not found in other: [%s]\n", it->first); 
                 bIsEqual = false;

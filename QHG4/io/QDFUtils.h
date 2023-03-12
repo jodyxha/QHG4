@@ -205,10 +205,12 @@ int qdf_getDataExtents(hid_t hGroup, const std::string sName, std::vector<hsize_
 const std::string qdf_getFirstPopulation(const std::string sPopQDF);
 const std::string qdf_checkForPop(const std::string sPopQDF, const std::string sSpeciesName);
 bool  qdf_hasGeo(const std::string sQDF);
-    
+
 PolyLine *qdf_createPolyLine(hid_t hSpeciesGroup, const std::string sPLParName);
 int qdf_writePolyLine(hid_t hSpeciesGroup, PolyLine *pPL, const std::string sPLParName);
 int qdf_compareDataTypes(hid_t t1, hid_t t2);
 
 int qdf_checkPathExists(const std::string sQDF, const std::string sPath);
+int qdf_getSurfType(const std::string sQDF, std::string &sSurfType);
+
 #endif

@@ -10,9 +10,12 @@ else
   CC=~/utils/cgcc
 endif
 
-include ../craydefs.mk
-include ../cflags.mk
-include ../codedirs.mk
+ifndef QHG4_DIR
+  QHG4_DIR=..
+endif
+include ${QHG4_DIR}/mk_includes/craydefs.mk
+include ${QHG4_DIR}/mk_includes/cflags.mk
+include ${QHG4_DIR}/mk_includes/codedirs.mk
 
 ifndef ARFL
   ARFL=-rv

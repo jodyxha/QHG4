@@ -1,6 +1,8 @@
 #ifndef __VEGETATION_H__
 #define __VEGETATION_H__
 
+#include "Environment.h"
+
 class Geography;
 class Climate;
 class SCellGrid;
@@ -8,7 +10,7 @@ class SCellGrid;
 typedef double         veginumber;
 
 
-class Vegetation {
+class Vegetation : public Environment {
  public:
     Vegetation(uint iNumCells, int iNumVegSpecies, Geography *pGeography, Climate *pClimate);
     virtual ~Vegetation();

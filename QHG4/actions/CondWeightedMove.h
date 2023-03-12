@@ -5,6 +5,7 @@
 #include "ParamProvider2.h"
 #include "PolyLine.h"
 #include "MoveCondition.h"
+#include "Geography.h"
 
 #define ATTR_CONDWEIGHTEDMOVE_NAME "CondWeightedMove"
 #define ATTR_CONDWEIGHTEDMOVE_PROB_NAME "CondWeightedMove_prob"
@@ -33,6 +34,8 @@ class CondWeightedMove : public Action<T> {
     double *m_adEnvWeights;
     double m_dMoveProb;
     MoveCondition *m_pMC;
+
+    Geography *m_pGeography;
 };
 
 #endif

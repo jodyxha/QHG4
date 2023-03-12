@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "Observable.h"
+#include "Environment.h"
 
 typedef uchar   climatecount;
 typedef double  climatenumber;
@@ -12,7 +13,7 @@ class Geography;
 
 #define EVT_CLIMATE_CHANGE 1001
 
-class Climate : public Observable {
+class Climate : public Environment, public Observable {
 public:
     Climate(uint iNumCells, climatecount iNumSeasons, Geography *pGeography);
 

@@ -1,3 +1,4 @@
+
 #include <cstdio>
 #include <cstring>
 #include <sys/types.h>
@@ -54,7 +55,9 @@
 #include "PopLooper.h"
 #include "PopReader.h"
 #include "PopulationFactory.h"
-#include "StatPopFactory.h"
+#ifndef DYNAMIC_POPS
+    #include "StatPopFactory.h"
+#endif
 #include "DynPopFactory.h"
 #include "StatusWriter.h"
 #include "IDGen.h"
@@ -403,12 +406,6 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                 int iRes2=0;
                 stringvec vsErrorInfo;
 
-                iRes2 = setLayerSize(iLayerSize);
-                if (iRes2 != 0) {
-                    iResult = iRes2;
-                    vsErrorInfo.push_back("setLayerSIze");
-                }
-
                 // m_pPR->display();
                 // use config file if given
                 if (sConfigIn != "") {
@@ -416,6 +413,9 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                     if (exists(sConfigIn, sTemp)) {
                         LOG_STATUS2("[SimParams::readOptions] using config file [%s]\n", sConfigIn);
                         int iResult2 = m_pPR->getParams(sConfigIn);
+                        if (iResult2 == 0) {
+                            m_pPR->display(); // show theomit "read-config"
+                        }
                         if (bOnProbation && (iResult2 < 0)) {
                             iResult = iResult2;
                         }
@@ -424,6 +424,13 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("readConfig");
                     }
                 }
+
+                iRes2 = setLayerSize(iLayerSize);
+                if (iRes2 != 0) {
+                    iResult = iRes2;
+                    vsErrorInfo.push_back("setLayerSIze");
+                }
+
 
                 stdprintf("numiters: %d\n", m_iNumIters);
                 if (m_iNumIters < 0) {
@@ -871,7 +878,10 @@ int SimParams::setGrid(hid_t hFile, bool bUpdate /* = false */) {
 //----------------------------------------------------------------------------
 // setPopParams
 //  set special population parameters
-//
+//  either as a string with format
+//     pop_pars ::= <par_def> [ "," <var_def>]*
+//     par_def  ::= <species_name> ":" <par_string>
+//  or as an xml file
 int SimParams::setPopParams(const std::string sParams) {
     int iResult = 0;
     
@@ -1281,6 +1291,15 @@ int SimParams::setPops(const std::string sFile) {
     }
 
     if (m_pPopFac == NULL) {
+#ifdef DYNAMIC_POPS
+        m_pPopFac = DynPopFactory::createInstance(m_vSODirs, m_pCG, m_pPopLooper, m_iLayerSize, m_apIDG, m_aulState, m_aiSeeds);
+        if (m_pPopFac == NULL) {
+            stdprintf("[setPops} couldn't create DynPopFactory\n");
+            iResult = -1;
+        } else {
+            iResult = 0;
+        }
+#else
         if (m_bDynPops) {
             m_pPopFac = DynPopFactory::createInstance(m_vSODirs, m_pCG, m_pPopLooper, m_iLayerSize, m_apIDG, m_aulState, m_aiSeeds);
             if (m_pPopFac == NULL) {
@@ -1293,6 +1312,8 @@ int SimParams::setPops(const std::string sFile) {
             m_pPopFac = new StatPopFactory(m_pCG, m_pPopLooper, m_iLayerSize, m_apIDG, m_aulState, m_aiSeeds);
             iResult = 0;
         }
+#endif
+
     }
     
     if (iResult == 0) {
@@ -2509,7 +2530,7 @@ void SimParams::showTopicHelp(const std::string sTopic) {
     if (bAll || (sTopic == "layer-size")) {
         printHeaderLine(iL, "layer-size");
         stdprintf("  %s--layer-size=<size>%s    %s(technical)%s set layer size of data structures\n", colors::BOLDBLUE, colors::OFF, colors::BOLDRED, colors::OFF);
-        stdprintf("                                                     (default: %d)\n", DEF_LAYERSIZE);
+        stdprintf("                                                     (should be a power of 2; default: %d)\n", DEF_LAYERSIZE);
         stdprintf("    Only change this option if you know what you are doing\n");
         bFound = true;
     }

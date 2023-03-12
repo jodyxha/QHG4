@@ -21,7 +21,8 @@ template<typename T>
 NPersWeightedMove<T>::NPersWeightedMove(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, WELL512 **apWELL, LocEnv<T> *pLE) 
     : Action<T>(pPop,pCG,ATTR_NPERSWEIGHTEDMOVE_NAME, sID),
     m_apWELL(apWELL),
-    m_pLE(pLE) {
+    m_pLE(pLE),
+    m_pGeography(pCG->m_pGeography) {
 
    }
 
@@ -91,7 +92,7 @@ printf("T:%f: ag:%d mp %f, r:%f\n", fT, iAgentIndex, pa->m_dMoveProb, dR);
                 iNewCellIndex = this->m_pCG->m_aCells[iCellIndex].m_aNeighbors[iNewNeighborIndex-1];
 
                 if (iNewCellIndex >= 0) {
-                    if ((this->m_pCG->m_pGeography == NULL) || (!this->m_pCG->m_pGeography->m_abIce[iCellIndex])) {
+                    if ((m_pGeography == NULL) || (!m_pGeography->m_abIce[iCellIndex])) {
                         this->m_pPop->registerMove(iCellIndex, iAgentIndex, iNewCellIndex);
                     }
                 } else {

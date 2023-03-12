@@ -3,6 +3,7 @@
 
 #include "BitGeneUtils.h"
 #include "SPopulation.h"
+#include "Geography.h"
 #include "WeightedMove.h"
 #include "SingleEvaluator.h"
 #include "MultiEvaluator.h"
@@ -53,6 +54,7 @@ public:
     bool m_bPendingEvents;
 
     bool m_bUpdateNeeded;
+    Geography *m_pGeography;
 };
 
 

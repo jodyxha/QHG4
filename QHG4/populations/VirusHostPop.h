@@ -1,0 +1,51 @@
+#ifndef __TUT_VIRUSHOSTPOP_H__
+#define __TUT_VIRUSHOSTPOP_H__
+
+
+#include "GetOld.h"
+#include "ATanDeath.h"
+#include "RandomMove.h"
+#include "Fertility.h"
+#include "Verhulst.h"
+#include "RandomPair.h"
+#include "Virus.h"
+#include "SPopulation.h"
+
+#define VAR_VIURUSHOST_MUT_RATE_NAME "MutationRate"
+
+struct VirusHostAgent : Agent {
+
+    float m_fAge;
+    float m_fLastBirth;
+    int m_iMateIndex;
+        
+    float m_fViralLoad;
+    float m_fImmunity;
+    float m_fIncoming;
+};
+
+class VirusHostPop : public  SPopulation<VirusHostAgent> {
+
+public:
+    VirusHostPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState, uint *aiSeeds);
+    virtual ~VirusHostPop();
+
+    int  getPopParams(const stringmap &mVarDefs);
+
+    int addPopSpecificAgentData(int iAgentIndex, char **ppData);
+    void addPopSpecificAgentDataTypeQDF(hid_t *hAgentDataType);
+
+    int makePopSpecificOffspring(int iAgent, int iMother, int iFather);
+protected:
+    GetOld<VirusHostAgent>      *m_pGO;
+    ATanDeath<VirusHostAgent>   *m_pAD;
+    RandomMove<VirusHostAgent>  *m_pRM;
+    Fertility<VirusHostAgent>    *m_pFert;
+    Verhulst<VirusHostAgent>     *m_pVerhulst;
+    RandomPair<VirusHostAgent>   *m_pPair;
+    Virus<VirusHostAgent>        *m_pVirus;
+
+    float m_fMutationRate;         
+};
+
+#endif 

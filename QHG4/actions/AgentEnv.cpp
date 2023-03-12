@@ -284,25 +284,7 @@ int AgentEnv<T>::calculateEnvArr(int iAgentIndex) {
         }
     }
     //pA.m_dCC = m_pEnvArr[0];
-       
-    // combine with alt
-    /*
-    for (int iN = 0; iN <= this->m_pCG->m_aCells[iCurCell].m_iNumNeighbors; iN++) {
-        int iC = iCurCell;
-        if (iN > 0) {
-            iC = this->m_pCG->m_aCells[iC].m_aNeighbors[iN-1];
-        }
-        
-        double fAltFactor = m_pAltPrefPoly->getVal(this->m_pCG->m_pGeography->m_adAltitude[iC]);
-        // here without interpolation
-        fAltFactor = m_pAltPrefPoly->getVal((float)this->m_pCG->m_pGeography->m_adAltitude[iC]);
-        if ((fAltFactor < 0) || (this->m_pCG->m_pGeography->m_abIce[iC]>0)) {  
-            fAltFactor = 0;
-        }  
-        m_pEnvArr[iN] *= fAltFactor;
-    }
-    */
-
+  
     // accumulate for wighted move
     for (int iN = 1; iN < m_iLocArrSize; iN++) {
         pLocEnvArr[iN] += pLocEnvArr[iN -1];

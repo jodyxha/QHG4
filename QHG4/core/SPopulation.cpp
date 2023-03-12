@@ -1157,9 +1157,20 @@ int SPopulation<T>::readSpeciesData(ParamProvider2 *pPP) {
            stdprintf("Couldn't extract action params\n");
         }
     } else {
-        stdprintf("Couldn0t extract prios\n");
+        stdprintf("Couldn't extract prios\n");
         iResult = -1;
     }
+
+    if (iResult == 0) {
+        // read pop_params from XML (***new***)
+        iResult = getPopParams(pPP->getClassInfo()->vardefs);
+  
+        if (iResult == 0) {
+           // success
+        } else {
+           stdprintf("Couldn't extract vardefs\n");
+        }
+    }          
     return iResult;
 }
 
@@ -1316,8 +1327,10 @@ int  SPopulation<T>::mergePop(PopBase *pBPop) {
     if ((m_sClassName   == pPop->getClassName()) && 
         (m_sSpeciesName == pPop->getSpeciesName()))  {
         if (m_prio.isEqual(&(pPop->m_prio), false)) {
-            hid_t t1 = m_hAgentDataType;
-            hid_t t2 = pPop->getAgentQDFDataType();
+            //hid_t t1 = m_hAgentDataType;
+            hid_t t1 = getAgentQDFDataType();
+            hid_t t2 = pPop->createAgentDataTypeQDF();
+                //            hid_t t2 = pPop->getAgentQDFDataType();
             iResult = qdf_compareDataTypes(t1, t2);
             if (iResult == 0) {
                 // types match, we can copy the agents
@@ -1758,6 +1771,18 @@ int  SPopulation<T>::getPrioInfos(const stringmap &mPrios) {
         }
     }
     return iResult;
+}
+
+
+//----------------------------------------------------------------------------
+// getPrioInfos
+//  Get priority info 
+//  and fill m_mPrioInfo (map<string, uint>)
+//
+template<typename T>
+int  SPopulation<T>::getPopParams(const stringmap &mVarDefsPrios) {
+   int iResult = 0;
+   return iResult;
 }
 
 

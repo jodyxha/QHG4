@@ -3,7 +3,7 @@
 
 
 #include "GetOld.h"
-#include "OldAgeDeath.h"
+#include "ATanDeath.h"
 #include "RandomMove.h"
 
 #include "Fertility.h"
@@ -32,7 +32,7 @@ public:
 
 protected:
     GetOld<tut_ParthenoAgent>       *m_pGO;
-    OldAgeDeath<tut_ParthenoAgent>  *m_pOAD;
+    ATanDeath<tut_ParthenoAgent>    *m_pAD;
     RandomMove<tut_ParthenoAgent>   *m_pRM;
 
     Verhulst<tut_ParthenoAgent>     *m_pVerhulst;

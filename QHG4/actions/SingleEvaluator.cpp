@@ -33,7 +33,8 @@ SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::s
       m_sTriggerIDs(sTriggerIDs),
       m_bAlwaysUpdate(bAlwaysUpdate),
       m_sInputArrayName(""),
-      m_bFirst(true) {
+      m_bFirst(true),
+      m_pGeography(pCG->m_pGeography) {
     
     // the PolyLine is created when the parameters are read
 
@@ -60,7 +61,8 @@ SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::s
       m_bCumulate(bCumulate),
       m_bAlwaysUpdate(bAlwaysUpdate),
       m_sInputArrayName(""),
-      m_bFirst(true) {
+      m_bFirst(true),
+      m_pGeography(pCG->m_pGeography) {
     
     this->m_bNeedUpdate = m_bAlwaysUpdate;
     if (iTriggerID == EVENT_ID_NONE) {
@@ -90,7 +92,8 @@ SingleEvaluator<T>::SingleEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::s
       m_bCumulate(bCumulate), 
       m_sTriggerIDs(sTriggerIDs),
       m_bAlwaysUpdate(bAlwaysUpdate),
-      m_sInputArrayName(pInputArrayName) {
+      m_sInputArrayName(pInputArrayName),
+      m_pGeography(pCG->m_pGeography) {
     
     this->m_bNeedUpdate = m_bAlwaysUpdate;
     m_iMaxNeighbors = this->m_pCG->m_iConnectivity;
@@ -177,7 +180,7 @@ void SingleEvaluator<T>::calcValues() {
         for (uint iCellIndex = 0; iCellIndex < this->m_pCG->m_iNumCells; iCellIndex++) {
             
             // please do not hard-code here things that can be set as parameters :-)
-            if ((this->m_pCG->m_pGeography == NULL) || ( ! this->m_pCG->m_pGeography->m_abIce[iCellIndex] )) {
+            if ((m_pGeography == NULL) || ( ! m_pGeography->m_abIce[iCellIndex] )) {
                 
                 double dV = this->m_pPL->getVal((float)m_adInputData[iCellIndex]);
                 m_adOutputWeights[iCellIndex*(m_iMaxNeighbors+1)] = (dV > 0) ? dV : 0;
@@ -192,7 +195,7 @@ void SingleEvaluator<T>::calcValues() {
         for (uint iCellIndex = 0; iCellIndex < this->m_pCG->m_iNumCells; iCellIndex++) {
             
             // please do not hard-code here things that can be set as parameters :-)
-            if ((this->m_pCG->m_pGeography == NULL) || ( ! this->m_pCG->m_pGeography->m_abIce[iCellIndex] )) {
+            if ((m_pGeography == NULL) || ( ! m_pGeography->m_abIce[iCellIndex] )) {
                 double dV = m_adInputData[iCellIndex];
                 m_adOutputWeights[iCellIndex*(m_iMaxNeighbors+1)] = (dV > 0) ? dV : 0;
             } else {

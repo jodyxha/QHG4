@@ -28,7 +28,7 @@
 //  tag    ::= <start_tag> <tag>* <end_tag> | <empty_tag>  
 //
 // qhg XML DTD
-//   <class>       contains <module>* and one <priorities>
+//   <class>       contains <module>* and one <priorities>, or <pop_params>*
 //                 has  atttributes "name", "species_name", "species_id"
 //   <module>      contains <param>* and <module>*
 //                 has attribute "name"
@@ -38,12 +38,18 @@
 //                 has no attributes"
 //   <prio>        empty tag
 //                 has attributes "name" and "value"
-// DTD
-//   <!ELEMENT class  (module+, priorities?) >
+//   <pop_params>  contains <vardef>*
+//                 has no attributes"
+//   <vardef>      empty tag
+//                 has attributes "name" and "value"
+// DTD 
+//   <!ELEMENT class  ((module+, priorities?, vardefs?) >
 //   <!ELEMENT module (param*) (module*) >
 //   <!ELEMENT param EMPTY >
 //   <!ELEMENT priorities (prio*) >
 //   <!ELEMENT prio  EMPTY >
+//   <!ELEMENT vardefs (var*) >
+//   <!ELEMENT vardef  EMPTY >
 //   <!ATTLIST class     name         CDATA #REQUIRED >
 //   <!ATTLIST class     species_name CDATA #REQUIRED >
 //   <!ATTLIST class     species_id   CDATA #REQUIRED >
@@ -53,6 +59,8 @@
 //   <!ATTLIST param     value        CDATA #REQUIRED >
 //   <!ATTLIST prio      name         CDATA #REQUIRED >
 //   <!ATTLIST prio      value        CDATA #REQUIRED >
+//   <!ATTLIST var       name         CDATA #REQUIRED >
+//   <!ATTLIST var       value        CDATA #REQUIRED >
 
 // the symbols
 #define SYM_NONE            0

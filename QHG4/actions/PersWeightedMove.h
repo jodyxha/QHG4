@@ -4,6 +4,7 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 #include "PolyLine.h"
+#include "Geography.h"
 
 #define ATTR_PERSWEIGHTEDMOVE_NAME "PersWeightedMove"
 
@@ -25,6 +26,7 @@ class PersWeightedMove : public Action<T> {
     WELL512 **m_apWELL;
     double *m_adEnvWeights;
 
+    Geography *m_pGeography;
 };
 
 #endif

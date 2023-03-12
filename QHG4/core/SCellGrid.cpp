@@ -9,10 +9,11 @@
 #include "IcoNode.h"
 
 #include "SCell.h"
+#include "SCellGrid.h"
 #include "Geography.h"
 #include "Climate.h"
 #include "Navigation.h"
-#include "SCellGrid.h"
+#include "OccTracker.h"
 #include "MessLoggerT.h"
 
 
@@ -115,6 +116,51 @@ SCellGrid::~SCellGrid() {
 
 }
 
+//-----------------------------------------------------------------------------
+// delGeography
+//
+void SCellGrid::delGeography() {
+    if (m_pGeography != NULL) {
+        delete m_pGeography;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// delClimate
+//
+void SCellGrid::delClimate() {
+    if (m_pClimate != NULL) {
+        delete m_pClimate;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// delVegetation
+//
+void SCellGrid::delVegetation() {
+    if (m_pVegetation != NULL) {
+        delete m_pVegetation;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// delNavigation
+//
+void SCellGrid::delNavigation() {
+    if (m_pNavigation != NULL) {
+        delete m_pNavigation;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// destructor
+//
+void SCellGrid::delOckTracker() {
+    if (m_pOccTracker != NULL) {
+        delete m_pOccTracker;
+    }
+}
+
 
 //-----------------------------------------------------------------------------
 // setGeography
@@ -156,9 +202,9 @@ void SCellGrid::setNavigation(Navigation* pNav) {
 
 
 //-----------------------------------------------------------------------------
-// setNavigation
+// setOccTracker
 //
-void SCellGrid::setOckTracker(OccTracker* pOcc) {
+void SCellGrid::setOccTracker(OccTracker* pOcc) {
     m_pOccTracker = pOcc; 
 };
 

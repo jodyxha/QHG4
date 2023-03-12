@@ -1,14 +1,14 @@
 <class name="tut_OldAgeDiePop" species_name="sapiens" species_id="104">
 
-  <module name="AtanDeath">
-    <param  name="AtanDeath_max_age" value="60.0"/>
-    <param  name="AtanDeath_range" value="6.0"/>
-    <param  name="AtanDeath_slope" value="1.0"/>
+  <module name="ATanDeath">
+    <param  name="ATanDeath_max_age" value="60.0"/>
+    <param  name="ATanDeath_range" value="6.0"/>
+    <param  name="ATanDeath_slope" value="1.0"/>
   </module>
 
 <priorities>
     <prio  name="GetOld" value="8"/>
-    <prio  name="OldAgeDeath" value="10"/>
+    <prio  name="ATanDeath" value="10"/>
 
 </priorities>
 

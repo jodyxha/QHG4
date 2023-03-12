@@ -1,11 +1,13 @@
 #ifndef __GEOGRAPHY_H__
 #define __GEOGRAPHY_H__
 
+#include "Environment.h"
+
 class SCellGrid;
 
 typedef double geonumber;
 
-class Geography {
+class Geography : public Environment {
 public:
     Geography(uint iNumCells, uint iMaxNeighbors, geonumber dRadius, geonumber dSeaLevel=0);
     Geography();

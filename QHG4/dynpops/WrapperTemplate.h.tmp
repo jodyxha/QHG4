@@ -4,14 +4,17 @@
 #include <string>
 
 class PopBase;
+class ArrayShare;
 
 extern "C" {
-    PopBase *createPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState, uint *aiSeeds);
+    PopBase *createPop(ArrayShare *pAS, SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState, uint *aiSeeds);
 }
 
 extern "C" {
     const std::string getInfo();
 }
+
+
 
 
 #endif

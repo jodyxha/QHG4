@@ -19,7 +19,8 @@ WeightedMoveRand<T>::WeightedMoveRand(SPopulation<T> *pPop, SCellGrid *pCG, std:
     : Action<T>(pPop,pCG,ATTR_WEIGHTEDMOVERAND_NAME, sID),
       m_apWELL(apWELL),
       m_adEnvWeights(adEnvWeights),
-      m_dMoveProb(0) {
+      m_dMoveProb(0),
+      m_pGeography(pCG->m_pGeography) {
 
     this->m_vNames.push_back(ATTR_WEIGHTEDMOVERAND_PROB_NAME);
 }
@@ -81,16 +82,16 @@ int WeightedMoveRand<T>::execute(int iAgentIndex, float fT) {
 
             if (iNewIndex > 0) {
                 int iNewCellIndex = this->m_pCG->m_aCells[iCellIndex].m_aNeighbors[iNewIndex-1];
-                if ((this->m_pCG->m_pGeography == NULL) || (!this->m_pCG->m_pGeography->m_abIce[iCellIndex])) {
-                    // on flat grid, some neighbo cells have "ID" -1
-                    if (iNewCellIndex >= 0) {
-                        this->m_pPop->registerMove(iCellIndex, iAgentIndex, iNewCellIndex);
+                // on flat grid, some neighbo cells have "ID" -1
+                if (iNewCellIndex >= 0) {
+                        if ((m_pGeography == NULL) || (!m_pGeography->m_abIce[iNewCellIndex])) {
+                            this->m_pPop->registerMove(iCellIndex, iAgentIndex, iNewCellIndex);
                         /*
-                        printf("Moving %p from (%f,%f) to (%f,%f)\n", pa,  
-                               this->m_pCG->m_pGeography->m_adLongitude[iCellIndex],
-                               this->m_pCG->m_pGeography->m_adLatitude[iCellIndex],
-                               this->m_pCG->m_pGeography->m_adLongitude[iNewCellIndex],
-                               this->m_pCG->m_pGeography->m_adLatitude[iNewCellIndex]);
+                            printf("Moving %p from (%f,%f) to (%f,%f)\n", pa,  
+                                   m_pGeography->m_adLongitude[iCellIndex],
+                                   m_pGeography->m_adLatitude[iCellIndex],
+                                   m_pGeography->m_adLongitude[iNewCellIndex],
+                                   m_pGeography->m_adLatitude[iNewCellIndex]);
                         */
                     }
 

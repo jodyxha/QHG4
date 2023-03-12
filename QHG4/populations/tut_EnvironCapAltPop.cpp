@@ -9,7 +9,7 @@
 #include "Action.cpp"
 
 #include "GetOld.cpp"
-#include "OldAgeDeath.cpp"
+#include "ATanDeath.cpp"
 #include "Fertility.cpp"
 #include "VerhulstVarK.cpp"
 #include "RandomPair.cpp"
@@ -25,7 +25,8 @@
 // constructor
 //
 tut_EnvironCapAltPop::tut_EnvironCapAltPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState, uint *aiSeeds) 
-    : SPopulation<tut_EnvironCapAltAgent>(pCG, pPopFinder, iLayerSize, apIDG, aulState, aiSeeds) {
+    : SPopulation<tut_EnvironCapAltAgent>(pCG, pPopFinder, iLayerSize, apIDG, aulState, aiSeeds),
+      m_pGeography(pCG->m_pGeography) {
 
     int iCapacityStride = 1;
     m_adCapacities = new double[m_pCG->m_iNumCells];
@@ -38,7 +39,7 @@ tut_EnvironCapAltPop::tut_EnvironCapAltPop(SCellGrid *pCG, PopFinder *pPopFinder
     MultiEvaluator<tut_EnvironCapAltAgent>::evaluatorinfos mEvalInfo;
 
     // add altitude evaluation - output is NULL because it will be set by MultiEvaluator
-    SingleEvaluator<tut_EnvironCapAltAgent> *pSEAlt = new SingleEvaluator<tut_EnvironCapAltAgent>(this, m_pCG, "Alt", NULL, (double*)m_pCG->m_pGeography->m_adAltitude, "AltPref", true, EVENT_ID_GEO);
+    SingleEvaluator<tut_EnvironCapAltAgent> *pSEAlt = new SingleEvaluator<tut_EnvironCapAltAgent>(this, m_pCG, "Alt", NULL, (double*)m_pGeography->m_adAltitude, "AltPref", true, EVENT_ID_GEO);
     mEvalInfo.push_back(std::pair<std::string, Evaluator<tut_EnvironCapAltAgent>*>("Multi_weight_alt", pSEAlt));
 
     // add NPP evaluation - output is NULL because it will be set by MultiEvaluator
@@ -51,7 +52,7 @@ tut_EnvironCapAltPop::tut_EnvironCapAltPop(SCellGrid *pCG, PopFinder *pPopFinder
     m_pWM       = new WeightedMove<tut_EnvironCapAltAgent>(this, m_pCG, "", m_apWELL, m_adEnvWeights);
 
     m_pGO       = new GetOld<tut_EnvironCapAltAgent>(this, m_pCG, "");
-    m_pOAD      = new OldAgeDeath<tut_EnvironCapAltAgent>(this, m_pCG, "", m_apWELL);
+    m_pAD       = new ATanDeath<tut_EnvironCapAltAgent>(this, m_pCG, "", m_apWELL);
     m_pFert     = new Fertility<tut_EnvironCapAltAgent>(this, m_pCG, "");
     m_pVerVarK  = new VerhulstVarK<tut_EnvironCapAltAgent>(this, m_pCG, "", m_apWELL, m_adCapacities, iCapacityStride);
     m_pPair     = new RandomPair<tut_EnvironCapAltAgent>(this, m_pCG, "", m_apWELL);
@@ -60,7 +61,7 @@ tut_EnvironCapAltPop::tut_EnvironCapAltPop(SCellGrid *pCG, PopFinder *pPopFinder
     // adding all actions to prioritizer
 
     m_prio.addAction(m_pGO);
-    m_prio.addAction(m_pOAD);
+    m_prio.addAction(m_pAD);
     m_prio.addAction(m_pFert);
     m_prio.addAction(m_pVerVarK);
     m_prio.addAction(m_pPair);
@@ -78,8 +79,8 @@ tut_EnvironCapAltPop::~tut_EnvironCapAltPop() {
     if (m_pGO != NULL) {
         delete m_pGO;
     }
-    if (m_pOAD != NULL) {
-        delete m_pOAD;
+    if (m_pAD != NULL) {
+        delete m_pAD;
     }
     if (m_pFert != NULL) {
         delete m_pFert;
@@ -128,8 +129,8 @@ int tut_EnvironCapAltPop::updateEvent(int iEventID, char *pData, float fT) {
             for (int iAgent = iFirstAgent; iAgent <= iLastAgent; iAgent++) {
                 if (m_aAgents[iAgent].m_iLifeState > LIFE_STATE_DEAD) {
                     int iCellIndex = m_aAgents[iAgent].m_iCellIndex;
-                    if ((this->m_pCG->m_pGeography->m_adAltitude[iCellIndex] < 0) ||
-                        (this->m_pCG->m_pGeography->m_abIce[iCellIndex] > 0)) {
+                    if ((m_pGeography->m_adAltitude[iCellIndex] < 0) ||
+                        (m_pGeography->m_abIce[iCellIndex] > 0)) {
                         registerDeath(iCellIndex, iAgent);
                     }
                 }

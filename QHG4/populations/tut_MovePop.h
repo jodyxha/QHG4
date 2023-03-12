@@ -2,7 +2,7 @@
 #define __TUT_MOVEPOP_H__
 
 
-#include "OldAgeDeath.h"
+#include "ATanDeath.h"
 #include "GetOld.h"
 
 #include "RandomMove.h"
@@ -29,8 +29,8 @@ public:
 
 protected:
  
-    GetOld<tut_MoveAgent> *m_pGO;
-    OldAgeDeath<tut_MoveAgent> *m_pOAD;
+    GetOld<tut_MoveAgent>     *m_pGO;
+    ATanDeath<tut_MoveAgent>  *m_pAD;
 
     RandomMove<tut_MoveAgent> *m_pRM;
  

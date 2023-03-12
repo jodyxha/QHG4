@@ -19,6 +19,7 @@
 #include "stdstrutils.h"
 #include "stdstrutilsT.h"
 #include "gzutils.h"
+#include "ArrayShare.h"
 #include "GeoGroupReader.h"
 #include "ClimateGroupReader.h"
 #include "VegGroupReader.h"
@@ -134,6 +135,7 @@ int Simulator::runSimulation() {
         LOG_ERROR2("[Simulator] Error during preLoop()");
     }
 
+    ArrayShare::freeInstance();
     return iResult;
 }
 
@@ -153,7 +155,7 @@ int Simulator::preLoop()  {
                 vCellIDs.push_back(i);
             }
             m_pOcc = OccTracker::createInstance(vCellIDs, m_pPopLooper);
-            m_pCG->setOckTracker(m_pOcc);
+            m_pCG->setOccTracker(m_pOcc);
         }
 
         // fast forward events to current start time
@@ -320,14 +322,14 @@ int Simulator::runLoop() {
 
         m_iCurStep++;
 
-        if (m_pCG->m_pVegetation != NULL) {
-            m_pCG->m_pVegetation->resetUpdated();
+        if (m_pVeg != NULL) {
+            m_pVeg->resetUpdated();
         } 
-        if (m_pCG->m_pClimate != NULL) {
-            m_pCG->m_pClimate->resetUpdated();
+        if (m_pCli != NULL) {
+            m_pCli->resetUpdated();
         }
-        if (m_pCG->m_pGeography != NULL) {
-            m_pCG->m_pGeography->resetUpdated();
+        if (m_pGeo != NULL) {
+            m_pGeo->resetUpdated();
         }
 
         // check the events
@@ -829,14 +831,16 @@ int Simulator::handlePopEvent(const std::string sDesc) {
     LOG_STATUS2("[Simulator::handlePopEvent] Handling populationEvent [%s] at step %d\n", sDesc, m_iCurStep);
     stringvec vParts;
     uint iNum = splitString(sDesc, vParts, ":");
+    double dStart = 0;
+    double dEnd = 0;
     if (iNum == 2) {
         std::string &sFile = vParts[1];
         stringvec vSpecies;
         uint iNumSpecies = splitString(vParts[0], vSpecies, "+");
         if (iNumSpecies > 0) {
-            double dStart = omp_get_wtime();
+            dStart = omp_get_wtime();
             std::string sExistingFile;
-            if (exists(sFile, sExistingFile)) {
+            if (exists(sFile, sExistingFile))  {
                 hid_t hFile = qdf_openFile(sExistingFile);
                 iResult = 0;
 
@@ -844,37 +848,54 @@ int Simulator::handlePopEvent(const std::string sDesc) {
                     iResult  = setPops(hFile, vSpecies[i],true);
                 }
                 
-                double dEnd = omp_get_wtime();
+                dEnd = omp_get_wtime();
                 qdf_closeFile(hFile);
 
-                if (m_bMergePops) {
-                    printf("[handlePopEvent] checking for mergeable pops\n");
-                    int iNumMerged = m_pPopLooper->tryMerge();
-                    if (iNumMerged >= 0) {
-                        printf("[handlePopEvent] merged %d pops\n", iNumMerged);
-                    } else {
-                        iResult = -1;
-                        LOG_WARNING2("[handlePopEvent] merge error\n");
-                    }
-                }
-            
-                LOG_WARNING2("[%d]population load took %f s\n", m_iCurStep, dEnd -dStart);
-                if (iResult == 0) {
-                    popmap::const_iterator it_pop;
-                    for (it_pop = m_pPopLooper->begin(); (iResult == 0) && (it_pop != m_pPopLooper->end()); ++it_pop) {
-                        iResult = it_pop->second->updateEvent(EVENT_ID_POP, NULL, m_iCurStep);
-                    }
-                }
             } else {
                 LOG_ERROR2("[handlePopEvent] couldn't find file [%s]\n", sFile);
             }
+            
         } else {
             LOG_ERROR2("[handlePopEvent] empty pop list? [%s]\n", sDesc);
         }
+        
+    } else if (iNum == 3) {
+        std::string sPop = vParts[0];
+        std::string sXML = vParts[1];
+        std::string sDat = vParts[2];
+        dStart = omp_get_wtime();
+        iResult = setPopsFromXMLFile(sXML, sDat);
+        dEnd = omp_get_wtime();
+        if (iResult == 0) {
+        } else {
+            LOG_ERROR2("[handlePopEvent] couldn't ceate populaion from xml [%s] and dat [%s]\n", sXML, sDat);
+        }
+        
     } else {
-        LOG_ERROR2("[handlePopEvent] expected exactlyx two ':'-separted params [%s]\n", sDesc);
+        LOG_ERROR2("[handlePopEvent] expected either two or three  ':'-separted params [%s]\n", sDesc);
+        iResult = -1;
     }
 
+    if (iResult == 0) {
+        if (m_bMergePops) {
+            printf("[handlePopEvent] checking for mergeable pops\n");
+            int iNumMerged = m_pPopLooper->tryMerge();
+            if (iNumMerged >= 0) {
+                printf("[handlePopEvent] merged %d pops\n", iNumMerged);
+            } else {
+                iResult = -1;
+                LOG_WARNING2("[handlePopEvent] merge error\n");
+            }
+        }
+        
+        LOG_WARNING2("[%d]population load took %f s\n", m_iCurStep, dEnd -dStart);
+        if (iResult == 0) {
+            popmap::const_iterator it_pop;
+            for (it_pop = m_pPopLooper->begin(); (iResult == 0) && (it_pop != m_pPopLooper->end()); ++it_pop) {
+                iResult = it_pop->second->updateEvent(EVENT_ID_POP, NULL, m_iCurStep);
+            }
+        }
+    }
     return iResult;
 }
 
@@ -1199,16 +1220,31 @@ int Simulator::handleCommLine(const std::string sLine) {
                 iResult = -1;
             }
 
-        } else if (sCommand == CMD_REMOVE_ACTION) {
+        } else if ((sCommand == CMD_REMOVE_ACTION) ||
+                   (sCommand == CMD_DISABLE_ACTION) ||
+                   (sCommand == CMD_ENABLE_ACTION)) {
             if (iNum == 3) {
                 std::string &sPopName = vParts[1];
                 std::string &sAction  = vParts[2];
 
                 PopBase *pPop = m_pPopLooper->getPopByName(sPopName);
                 if (pPop != NULL) {
-                    iResult = pPop->removeAction(sAction);
-                    if (iResult == 0) {
-                        stdprintf("[Simulator::handleCommLine] Successfully removed action [%s]\n", sAction);
+                    
+                    if (sCommand == CMD_REMOVE_ACTION){
+                        iResult = pPop->removeAction(sAction);
+                        if (iResult == 0) {
+                            stdprintf("[Simulator::handleCommLine] Successfully removed action [%s]\n", sAction);
+                        }
+                    } else if(sCommand == CMD_DISABLE_ACTION) {
+                        iResult = pPop->disableAction(sAction);
+                        if (iResult == 0) {
+                            stdprintf("[Simulator::handleCommLine] Successfully disabled action [%s]\n", sAction);
+                        }
+                    } else if(sCommand == CMD_ENABLE_ACTION) {
+                        iResult = pPop->enableAction(sAction);
+                        if (iResult == 0) {
+                            stdprintf("[Simulator::handleCommLine] Successfully enabled action [%s]\n", sAction);
+                        }
                     }
                     iResult = 0;
                 } else {

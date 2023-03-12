@@ -1025,4 +1025,28 @@ int qdf_checkPathExists(const std::string sQDF, const std::string sPath) {
 }
 
 
+//-----------------------------------------------------------------------------
+// qdf_getSurfType
+//
+int qdf_getSurfType(const std::string sQDF, std::string &sSurfType) {
+    int iResult = -1;
+    
+   hid_t hFile = qdf_openFile(sQDF);
+   if (hFile > 0) {
+       if (qdf_link_exists(hFile, GRIDGROUP_NAME)) {
+           hid_t hGrid = qdf_openGroup(hFile, GRIDGROUP_NAME);
+           sSurfType = qdf_extractSAttribute(hGrid, GRID_ATTR_SURF_TYPE); 
+           if (!sSurfType.empty()) {
+               iResult = 0;
+           }
+           qdf_closeGroup(hGrid);
+       } else {
+           stdprintf("QDF file [%s] has no grid group\n", sQDF);
+       }
+       qdf_closeFile(hFile);
+   } else {
+       stdprintf("Couldn't open [%s] as QDF file\n", sQDF);
+   }
+   return iResult;
+}
 #endif

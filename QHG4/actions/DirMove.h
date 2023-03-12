@@ -4,6 +4,7 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 #include "PolyLine.h"
+#include "Geography.h"
 
 #define ATTR_DIRMOVE_NAME "DirMove"
 
@@ -24,7 +25,7 @@ class DirMove : public Action<T> {
 
  protected:
  
-
+    Geography *m_pGeography;
 };
 
 #endif

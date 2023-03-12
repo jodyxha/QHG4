@@ -50,11 +50,13 @@ class Action {
     virtual int tryGetAttributes(const ModuleComplex * pMC) {return 0;};
 
     // virtual void showAttributes() = 0;
-    void showAttributes();
+    virtual void showAttributes();
 
     virtual bool hasAttribute(std::string sAtt);
 
-    virtual bool isEqual(Action *pAction, bool bStrict) = 0;
+    //virtual bool isEqual(Action *pAction, bool bStrict) = 0;
+    virtual bool isEqual(Action *pAction, bool bStrict) {return false;};;
+
     int checkAttributes(const stringmap &mParams);
 
     int getNumAttributes() { return m_vNames.size();};

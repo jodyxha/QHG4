@@ -13,6 +13,7 @@
 
 typedef std::map<std::string, stringvec>   commandmap;
 
+
 class GridFactory {
 public:
     GridFactory(const std::string sDefFile);
@@ -55,13 +56,18 @@ protected:
     int setGridFlat(const stringvec &vParams);
 
     int createCells(IcoGridNodes *pIGN);
-    int createCells(int iW, int iH, bool bPeriodic, bool bHex);
+    int createCells(int iW, int iH, uint iPeriodicity, bool bHex);
+    //    int createCellsOld(int iW, int iH, bool bPeriodic, bool bHex);
 
+    int createCellsHex(uint iW, uint iH, uint iPeriodicity);
     int createCellsHexPeriodic(uint iW, uint iH);
-    int createCellsHexNonPeriodic(uint iW, uint iH);
+    //    int createCellsOldHexPeriodic(uint iW, uint iH);
+    //    int createCellsOldHexNonPeriodic(uint iW, uint iH);
 
+    int createCellsRect(uint iW, uint iH, uint iPeriodicity);
     int createCellsRectPeriodic(uint iW, uint iH);
-    int createCellsRectNonPeriodic(uint iW, uint iH);
+    //    int createCellsOldRectPeriodic(uint iW, uint iH);
+    //    int createCellsOldRectNonPeriodic(uint iW, uint iH);
 
     int initializeGeography(IcoGridNodes *pIGN);
     int initializeGeography(int iW, int iH, bool bHex);

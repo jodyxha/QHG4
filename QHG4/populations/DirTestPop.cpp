@@ -19,7 +19,8 @@
 // constructor
 //
 DirTestPop::DirTestPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState, uint *aiSeeds) 
-    : SPopulation<DirTestAgent>(pCG, pPopFinder, iLayerSize, apIDG, aulState, aiSeeds) {
+    : SPopulation<DirTestAgent>(pCG, pPopFinder, iLayerSize, apIDG, aulState, aiSeeds),
+      m_pGeography(pCG->m_pGeography) {
   
     m_pDM = new DirMove<DirTestAgent>(this, m_pCG, "");
 
@@ -89,7 +90,7 @@ int DirTestPop::makePopSpecificOffspring(int iAgent, int iMother, int iFather) {
 int DirTestPop::preLoop() {
     int iResult = 0;
 
-    ;   if (m_pCG->m_pGeography->m_adAngles != NULL) {
+    ;   if (m_pGeography->m_adAngles != NULL) {
 
         int iFirstAgent = getFirstAgentIndex();
         if (iFirstAgent != LBController::NIL) {

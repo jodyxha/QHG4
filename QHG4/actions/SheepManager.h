@@ -17,9 +17,7 @@ template<typename T>
 class SheepManager : public Action<T> {
 public:
     SheepManager(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, 
-                  const std::string sNameGrassMassAvail, const std::string sNameGrassMassConsumed, 
-                 //const std::string sNameSheepLocIDs,    const std::string sNameWolfCount, 
-                 double *pdPreferences);
+                  const std::string sNameGrassMassAvail, const std::string sNameGrassMassConsumed);
    
     virtual ~SheepManager();
 
@@ -36,7 +34,7 @@ protected:
     double *m_adGrassMassConsumed;
     cellnmvec *m_avSheepLocIDs;
     
-    double *m_pdPreferences;
+    //    double *m_pdPreferences;
     const std::string m_sNameGrassMassAvail;
     const std::string m_sNameGrassMassConsumed;
    

@@ -6,6 +6,7 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 #include "Evaluator.h"
+#include "Geography.h"
 
 #define ATTR_SHAREEVAL_NAME "ShareEvaluator"
 #define ATTR_SHAREEVAL_ARRAYNAME "ShareEvaluator_%s_arrayname"
@@ -55,6 +56,8 @@ protected:
     std::string m_sID;
     std::string m_sArrayName;
     std::string m_sPolyName;
+
+    Geography *m_pGeography;
 };
 
 

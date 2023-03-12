@@ -4,6 +4,7 @@
 #include <hdf5.h>
 
 #include "SPopulation.h"
+#include "Geography.h"
 #include "DirMove.h"
 #include "Verhulst.h"
 #include "GetOld.h"
@@ -35,6 +36,7 @@ class DirTestPop : public SPopulation<DirTestAgent> {
     RandomPair<DirTestAgent> *m_pPair;
     GetOld<DirTestAgent>     *m_pGO;
 
+    Geography *m_pGeography;
 };
 
 

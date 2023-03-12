@@ -64,7 +64,13 @@ public:
     void setClimate(Climate* pClim);
     void setVegetation(Vegetation* pVeg);
     void setNavigation(Navigation* pNav);
-    void setOckTracker(OccTracker* pOcc);
+    void setOccTracker(OccTracker* pOcc);
+ 
+    void delGeography();
+    void delClimate();
+    void delVegetation();
+    void delNavigation();
+    void delOckTracker();
  
     bool isCartesian();   
 

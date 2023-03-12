@@ -12,8 +12,8 @@
 #include "SCell.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
-#include "Navigation.h"
 #include "Navigate.h"
+
 
 template<typename T>
 const char *Navigate<T>::asNames[] = {
@@ -36,7 +36,9 @@ Navigate<T>::Navigate(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, WEL
       m_dMinDens(0),
       m_dA(0),
       m_bNeedUpdate(true),
-      m_dBridgeProb(0) {
+      m_dBridgeProb(0),
+      m_pGeography(pCG->m_pGeography),
+      m_pNavigation(pCG->m_pNavigation) {
 
     pPop->addObserver(this);
 
@@ -98,7 +100,7 @@ void Navigate<T>::recalculate() {
         cleanup();
         int iResult = 0;
         distancemap::const_iterator it;
-        Navigation *pNav = this->m_pCG->m_pNavigation; 
+        Navigation *pNav = m_pNavigation; 
         for (it = pNav->m_mDestinations.begin(); (iResult == 0) && (it != pNav->m_mDestinations.end()); ++it) {
             targprob *pTP = new targprob[it->second.size()+1];
             distlist::const_iterator itl;
@@ -129,7 +131,7 @@ void Navigate<T>::recalculate() {
         }
 
         // now manual bridges
-        double *pAlt = this->m_pCG->m_pGeography->m_adAltitude;
+        double *pAlt = m_pGeography->m_adAltitude;
         bridgelist::const_iterator itb;
         for (itb = pNav->m_vBridges.begin(); itb != pNav->m_vBridges.end(); ++itb) {
             if ((pAlt[itb->first] > 0) && (pAlt[itb->second] > 0)) {
@@ -149,18 +151,18 @@ template<typename T>
 int Navigate<T>::preLoop() {
     int iResult = 0;
     // we need 
-    if ((this->m_pCG->m_pGeography != NULL) && 
-        (this->m_pCG->m_pNavigation != NULL)) {
+    if ((m_pGeography != NULL) && 
+        (m_pNavigation != NULL)) {
         cleanup();
         recalculate();
     } else {
         iResult = -1;
-        if (this->m_pCG->m_pGeography != NULL) {
+        if (m_pGeography != NULL) {
             printf("[Navigate] m_pGeography is NULL!\n");
             LOG_ERROR("[Navigate] m_pGeography is NULL!\n");
             printf("  Make sure your gridfile has a geography group!\n");
         }
-        if (this->m_pCG->m_pNavigation != NULL) {
+        if (m_pNavigation != NULL) {
             printf("[Navigate] m_pNavigation is NULL!\n");
             LOG_ERROR("[Navigate] m_pNavigation is NULL!\n");
             printf("  Make sure your gridfile has a navigation group!\n");
@@ -207,7 +209,7 @@ int Navigate<T>::execute(int iAgentIndex, float fT) {
             // i = 0 means we hit the 'stay home' region
             if (i > 0) {
                 int iNewCellIndex = it->second.second[i].first;
-                if ((this->m_pCG->m_pGeography == NULL) || (!this->m_pCG->m_pGeography->m_abIce[iNewCellIndex])) {
+                if ((m_pGeography == NULL) || (!m_pGeography->m_abIce[iNewCellIndex])) {
                     
                     if (iNewCellIndex < 0) {
                         printf("[Navigate<T>::execute] Attention: agent %d has cellindex %d\n", iAgentIndex, iNewCellIndex);

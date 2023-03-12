@@ -16,6 +16,7 @@
 #include "EventData.h"
 #include "PopBase.h"
 #include "PopLooper.h"
+#include "ParamProvider2.h"
 #include "QDFUtils.h"
 #include "EventChecker.h"
 
@@ -520,11 +521,11 @@ int EventChecker::checkPopParams(const std::string sParams) {
     
     size_t iC = sParams.find(":");
     if (iC != std::string::npos) {
-        std::string sQDFFile = sParams.substr(iC+1);
-        if (!sQDFFile.empty()) {
+        std::string sPopFile = sParams.substr(iC+1);
+        if (!sPopFile.empty()) {
             std::string sRealName;
-            if (checkFileExists(sQDFFile, sRealName)) {
-                std::string sPops = sParams.substr(0, iC+1);
+            if (checkFileExists(sPopFile, sRealName)) {
+                std::string sPops = sParams.substr(0, iC);
                 stringvec vParts;
                 uint iNum = splitString(sPops, vParts, "+", true);
                 for (uint i = 0; (iResult == 0) && (i < iNum); i++) {
@@ -532,26 +533,64 @@ int EventChecker::checkPopParams(const std::string sParams) {
                         if (checkQDFContainsGroup(sRealName, vParts[i])) {
                             iResult = 0;
                         } else {
-                            stdprintf("[checkArrParams] The file [%s] does not contain the population [%s]\n", sQDFFile, vParts[i]);
+                            stdprintf("[checkPoipParams] The file [%s] does not contain the population [%s]\n", sPopFile, vParts[i]);
                             iResult = -1;
                         }
                     } else {
-                        stdprintf("[checkArrParams] Empty pop: [%s]\n", vParts[i]);
+                        stdprintf("[checkPopParams] Empty pop: [%s]\n", vParts[i]);
                         iResult = -1;
                     }
                 }
             } else {
-                stdprintf("[checkArrParams] The file [%s] does not exist\n", sQDFFile);
-                iResult = -1;
+                // check for xml:dat
+                std::string sPops = sParams.substr(0, iC);
+                iC = sPopFile.find(":");
+                if (iC != std::string::npos) {
+                    std::string sXML = sPopFile.substr(0, iC);
+                    std::string sDat = sPopFile.substr(iC+1);
+                    std::string sRealXMLName;
+                    std::string sRealDATName;
+                    if (checkFileExists(sXML, sRealXMLName)) {
+                        if (checkFileExists(sDat, sRealDATName)) {
+                            iResult = 0;
+                        } else {
+                            stdprintf("[checkPopParams] The file [%s] does not exist\n", sDat);
+                            iResult = -1;
+                        }
+                    } else {
+                        stdprintf("[checkPopParams] The file [%s] does not exist\n", sXML);
+                        iResult = -1;
+                    }
+
+                    if (iResult == 0) {
+                        ParamProvider2 *pPP = ParamProvider2::createInstance(sXML);
+                        if (pPP != NULL) {
+                            std::string sSpeciesName = pPP->getSpeciesName();
+                            if (sPops == sSpeciesName) {
+                                iResult = 0;
+                            } else {
+                                stdprintf("[checkPopParams] The species name in the event [%s] does not match the species name in the XML file  [%s]\n", sPops, sSpeciesName);
+                                iResult = -1;
+                            }
+                            delete pPP;
+                        } else {
+                            stdprintf("[checkPopParams] The file [%s] is not a valid xml file\n", sXML);
+                            iResult = -1;
+                        }
+                    }
+                } else {
+                    stdprintf("[checkPopParams] The file [%s] does not exist\n", sPopFile);
+                    iResult = -1;
+                }
             }
 
         } else {
-            stdprintf("[checkEnvParams] Expected file name after ':': [%s]\n", sParams);
+            stdprintf("[checkPopParams] Expected file name after ':': [%s]\n", sParams);
             iResult = -1;
         }
     } else {
-        stdprintf("[checkEnvParams] Expected a ':': [%s]\n", sParams);
-        iResult = -1;
+        stdprintf("[checkPopParams] Expected a ':': [%s]\n", sParams);
+         iResult = -1;
     }
 
     return iResult;
@@ -668,7 +707,7 @@ int EventChecker::checkScrambleParams(const std::string sParams) {
             }
         } 
     } else {
-        stdprintf("[checkCheckParams] Empty params\n");
+        stdprintf("[checkScrambleParams] Empty params\n");
         iResult = -1;
     }
     return iResult;
@@ -704,9 +743,13 @@ int EventChecker::checkCheckParams(const std::string sParams) {
 //-----------------------------------------------------------------------------
 // checkCommParams
 //    event-params   ::= <cmd-file>  | <command>
-//    command        ::= <iter_cmd> | <del_action_cmd> | <mod_pop_cmd> | <event>
+//    command        ::= <iter_cmd>       | <del_action_cmd> | 
+//                       <dis_action_cmd> | <ena_action_cmd> | 
+//                       <mod_pop_cmd>    | <event>
 //    iter_cmd       ::= "SET ITERS:"<num_iters>
 //    del_action_cmd ::= "REMOVE ACTION:"<population>:<action_name>
+//    ena_action_cmd ::= "DISABLE ACTION:"<population>:<action_name>
+//    dus_action_cmd ::= "ENEABLE ACTION:"<population>:<action_name>
 //    mod_pop_cmd    ::= "MOD POP:"<population>:<param_name>:<value>
 //    event          : any event description; see definition above
 //
@@ -776,7 +819,9 @@ int EventChecker::checkCommLine(const std::string sLine) {
                 //SET_ITER need 1 param
                 iResult = -1;
             }
-        } else if (vParts[0] == CMD_REMOVE_ACTION) {
+        } else if ((vParts[0] == CMD_REMOVE_ACTION) |
+                   (vParts[0] == CMD_DISABLE_ACTION) |
+                   (vParts[0] == CMD_ENABLE_ACTION)){
             if (iNum == 3) {
                 std::string &sPopName    = vParts[1];
                 std::string &sActionName = vParts[2];
@@ -913,12 +958,12 @@ int EventChecker::addEventToManager(int iEventType, std::string sEventParams, st
             m_pEM->loadEventItem(pED, pT, m_bUpdateEventList);
             
         } else {
-            stdprintf("[processEvents] Bad trigger definition: [%s]\n", sEventTimes);
+            stdprintf("[addEventToManager] Bad trigger definition: [%s]\n", sEventTimes);
             iResult = -1;
         }
         
     } else {
-        stdprintf("[processEvents] Bad Event Data [%s]\n", sEventParams);
+        stdprintf("[addEventToManager] Bad Event Data [%s]\n", sEventParams);
         iResult = -1;
     }
 

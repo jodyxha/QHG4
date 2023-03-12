@@ -6,7 +6,6 @@
 #include "LayerBuf.cpp"
 #include "Prioritizer.cpp"
 #include "Action.cpp"
-
 #include "GrassManager.cpp"
 
 #include "GrassPop.h"
@@ -67,7 +66,7 @@ GrassPop::~GrassPop() {
     if (m_pdGrassConsumed != NULL) {
         delete[] m_pdGrassConsumed;
     }
-    ArrayShare::freeInstance();
+
 }
 
 

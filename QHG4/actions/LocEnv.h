@@ -10,6 +10,9 @@
 #include "LayerArrBuf.h"
 #include "WELL512.h"
 #include "NPPCalc.h"
+#include "Geography.h"
+#include "Climate.h"
+#include "Vegetation.h"
 
 class LBController;
 
@@ -86,7 +89,9 @@ protected:
     static const stringvec s_vNames;
     static const std::string asSpecies[];
 
-
+    Geography  *m_pGeography;
+    Climate    *m_pClimate;
+    Vegetation *m_pVegetation;
 };
 
 

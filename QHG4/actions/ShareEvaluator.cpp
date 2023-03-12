@@ -31,7 +31,8 @@ ShareEvaluator<T>::ShareEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::str
       m_bAlwaysUpdate(false),
       m_sID(NULL),
       m_sArrayName(""),
-      m_sPolyName("") {
+      m_sPolyName(""),
+      m_pGeography(pCG->m_pGeography) {
 
 
     m_iMaxNeighbors = this->m_pCG->m_iConnectivity;
@@ -54,7 +55,8 @@ ShareEvaluator<T>::ShareEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::str
       m_bAlwaysUpdate(false),
       m_sID(""),
       m_sArrayName(""),
-      m_sPolyName("") {
+      m_sPolyName(""),
+      m_pGeography(pCG->m_pGeography) {
 
 
     if (iTriggerID == EVENT_ID_NONE) {
@@ -177,7 +179,7 @@ void ShareEvaluator<T>::calcValues() {
         for (uint iCellIndex = 0; iCellIndex < this->m_pCG->m_iNumCells; iCellIndex++) {
             
             // please do not hard-code here things that can be set as parameters :-)
-            if ((this->m_pCG->m_pGeography == NULL) || ( ! this->m_pCG->m_pGeography->m_abIce[iCellIndex] )) {
+            if ((m_pGeography == NULL) || ( ! m_pGeography->m_abIce[iCellIndex] )) {
                 
                 double dV = this->m_pPL->getVal((float)m_adInputData[iCellIndex]);
                 m_adOutputWeights[iCellIndex*(m_iMaxNeighbors+1)] = (dV > 0) ? dV : 0;
@@ -193,7 +195,7 @@ void ShareEvaluator<T>::calcValues() {
             
 
             // please do not hard-code here things that can be set as parameters :-)
-            if ((this->m_pCG->m_pGeography == NULL) || ( ! this->m_pCG->m_pGeography->m_abIce[iCellIndex] )) {
+            if ((m_pGeography == NULL) || ( ! m_pGeography->m_abIce[iCellIndex] )) {
 
                 double dV = m_adInputData[iCellIndex];
                 m_adOutputWeights[iCellIndex*(m_iMaxNeighbors+1)] = (dV > 0) ? dV : 0;

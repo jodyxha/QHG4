@@ -43,16 +43,18 @@ void usage(char *pApp) {
     printf("  grid_def_file ::= <grid_cmd>[<NL> <def_cmd>]*\n");
     printf("  grid_def_line ::= <grid_cmd>[:<def_cmd>]*\n");
     printf("  grid_cmd      ::= <ico_cmd> | <flat_cmd>\n");
-    printf("  ico_cmd       ::= \"GRID_TYPE ICO\" (<type>:<subdivs> | <ignfile>) [<radius>] \n");
+    printf("  ico_cmd       ::= \"GRID_TYPE ICO\" <type>:<subdivs> [<radius>] \n");
+//  printf("  ico_cmd       ::= \"GRID_TYPE ICO\" (<type>:<subdivs> | <ignfile>) [<radius>] \n");
     printf("    subdivs     :   number of subdivisions\n");
     printf("    type        ::= \"eq\" | \"std\"\n");
-    printf("    ignfile     :   name of ico gridnode file\n");
+//  printf("    ignfile     :   name of ico gridnode file\n");
     printf("    radius      :   radius of icosahedron, default:6371.3\n");
-    printf("  flat_cmd      ::= \"GRID_TYPE\" <conn> <width>\"x\"<height> [\"PERIODIC\"]\n");
+    printf("  flat_cmd      ::= \"GRID_TYPE\" <conn> <width>\"x\"<height> [<periodicity>]\n");
     printf("    conn        ::= \"HEX\" | \"RECT\"\n");
     printf("    width       :   width of grid\n");
     printf("    height      :   height of grid\n");
-    printf("    PERIODIC    :   use periodic boundary conditions\n");
+    printf("    periodicity ::= \"PERIODIC_NONE\" | \"PERIODIC_X\" | \"PERIODIC_Y\" |\n");
+    printf("                    \"PERIODIC_XY\"   | \"PERIODIC_OLD_NONE\" | \"PERIODIC_OLD_XY\" \n");
     printf("  def_cmd ::= <ddir_cmd> | <env_cmd>\n");
     printf("  ddir_cmd ::= \"DATA_DIR\" <path>[:<path>]*\n");
     printf("  env_cmd ::= <env_type> \"FLAT\" <value> | <env_type> \"NETCDF\"  (<nc_file> | \"DEFAULT\") <time>  | <env_type> \"QMAP\"  <valqmap>\n");
@@ -64,6 +66,11 @@ void usage(char *pApp) {
     printf("  - the paths specified in DATA_DIR are search paths for applications and data\n");
     printf("  - if \"DEFAULT\" is specified in any of the env-commands, the files used by prepare_grids will be used.\n");
     printf("\n");
+    printf("Periodicities:\n");
+    printf("    PERIODIC_NONE   no periodic boundary condition\n");
+    printf("    PERIODIC_X      periodic x-boundary condition (topological cylinder with axis y)\n");
+    printf("    PERIODIC_Y      periodic y-boundary condition (topological cylinder with axis x)\n");
+    printf("    PERIODIC_XY     periodic boundary condition on x and y (topological torus)\n");
     printf("Example:\n");
     printf("  ./Def2QDF \"GRID_TYPE ICO eq:3\" SG blob.qdf\n"); 
 }
@@ -252,5 +259,7 @@ int main(int iArgC, char *apArgV[]) {
         usage(apArgV[0]);
     }
 
+
+    MessLogger::free();
     return iResult;
 }

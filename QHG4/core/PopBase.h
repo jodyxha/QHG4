@@ -20,6 +20,8 @@ public:
     virtual int  setPrioList() = 0;
     virtual uint getPrios(std::set<uint> &vPrios)=0;
     virtual int  removeAction(std::string name)=0;
+    virtual int  disableAction(std::string name)=0;
+    virtual int  enableAction(std::string name)=0;
 
     virtual int preLoop()=0;
     virtual int postLoop()=0;

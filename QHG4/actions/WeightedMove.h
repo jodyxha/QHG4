@@ -4,6 +4,7 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 #include "PolyLine.h"
+#include "Geography.h"
 
 #define ATTR_WEIGHTEDMOVE_NAME      "WeightedMove"
 #define ATTR_WEIGHTEDMOVE_PROB_NAME "WeightedMove_prob"
@@ -33,6 +34,7 @@ class WeightedMove : public Action<T> {
     double *m_adEnvWeights;
     double m_dMoveProb;
 
+    Geography *m_pGeography;
 };
 
 #endif

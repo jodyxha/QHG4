@@ -4,9 +4,12 @@ else
   CC=~/utils/cgcc
 endif
 
-include ../craydefs.mk
-include ../cflags.mk
-include ../codedirs.mk
+ifndef QHG4_DIR
+  QHG4_DIR=..
+endif
+include ${QHG4_DIR}/mk_includes/craydefs.mk
+include ${QHG4_DIR}/mk_includes/cflags.mk
+include ${QHG4_DIR}/mk_includes/codedirs.mk
 
 
 ifndef ARFL
@@ -37,25 +40,30 @@ COMP=$(GNU_OMP)
 
 
 #DEFS=-I 
-SO_DIR=./so_dir
-
+ifdef OUT
+    SO_DIR=$(OUT)
+else
+    SO_DIR=./so_dir
+endif
 
 WRPSRC=$(wildcard *Wrapper.cpp)
 WRPS=$(WRPSRC:.cpp=.so)
 
-
+clean:
+lib: libs0
 all: libs0
 
 test: libs0 plugtest
 
 libs0: 
-	make clean
+	rm -f *PopWrapper.*
 	./build_wrappers.py $(POPS)
 	make libs
 
 libs: $(WRPS)
+	touch dummy.so
 	mv *.so ${SO_DIR}
-
+	rm -f ${SO_DIR}/dummy.so
 clean:
 	rm -f *.o plugtest ${SO_DIR}/*.so *PopWrapper.*
 

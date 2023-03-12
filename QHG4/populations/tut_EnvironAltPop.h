@@ -2,7 +2,7 @@
 #define __TUT_ENVIRONALT_H__
 
 #include "GetOld.h"
-#include "OldAgeDeath.h"
+#include "ATanDeath.h"
 #include "Fertility.h"
 #include "Verhulst.h"
 #include "RandomPair.h"
@@ -11,6 +11,7 @@
 #include "WeightedMove.h"
 
 #include "SPopulation.h"
+#include "Geography.h"
 
 struct tut_EnvironAltAgent : Agent {
 
@@ -33,7 +34,7 @@ public:
 
  protected:
     GetOld<tut_EnvironAltAgent>          *m_pGO;
-    OldAgeDeath<tut_EnvironAltAgent>     *m_pOAD;
+    ATanDeath<tut_EnvironAltAgent>       *m_pAD;
     Fertility<tut_EnvironAltAgent>       *m_pFert;
     Verhulst<tut_EnvironAltAgent>        *m_pVerhulst;
     RandomPair<tut_EnvironAltAgent>      *m_pPair;
@@ -46,6 +47,7 @@ public:
 
     bool m_bUpdateNeeded;
 
+    Geography *m_pGeography;
 };
 
 

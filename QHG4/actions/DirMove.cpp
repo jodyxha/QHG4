@@ -15,7 +15,8 @@
 //
 template<typename T>
 DirMove<T>::DirMove(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID) 
-    : Action<T>(pPop,pCG,ATTR_DIRMOVE_NAME,sID) {
+    : Action<T>(pPop,pCG,ATTR_DIRMOVE_NAME,sID),
+    m_pGeography(pCG->m_pGeography) {
 
     this->m_vNames.clear();
     
@@ -61,7 +62,7 @@ int DirMove<T>::execute(int iAgentIndex, float fT) {
         // find direction closest to the corrected direction
         // we assume angles are in [-pi, pi]
         for (int i = 0; i < iMaxNeighbors; i++) {
-            double fAng = this->m_pCG->m_pGeography->m_adAngles[iMaxNeighbors*iCellIndex+i];
+            double fAng = m_pGeography->m_adAngles[iMaxNeighbors*iCellIndex+i];
             double d = 0;
             /*
             if (((fAngle >= 0) && (fAng >= 0)) ||
@@ -105,7 +106,7 @@ int DirMove<T>::execute(int iAgentIndex, float fT) {
             /*                       
             printf("C%6d T%3.0f: %7d -> % 2.4f (% 2.4f e % 2.4f  -> % 2.4f): %6d ( ", pa->m_ulID, fT, iCellIndex, fAng0, fDirection, pa->m_fOldError,  pa->m_fError, iNewCellIndex);
             for (int i = 0; i < iMaxNeighbors; i++) {
-                float fAng = this->m_pCG->m_pGeography->m_adAngles[iMaxNeighbors*iCellIndex+i];
+                float fAng = m_pGeography->m_adAngles[iMaxNeighbors*iCellIndex+i];
                 printf("% 2.3f ", fAng);
             }
             printf(")\n");
@@ -115,7 +116,7 @@ int DirMove<T>::execute(int iAgentIndex, float fT) {
             /*
             printf("X%d: %d -> %f (%f e %f -> %f):  ( ", pa->m_ulID, iCellIndex, fAng0, fDirection, pa->m_fOldError, fError);
             for (int i = 0; i < iMaxNeighbors; i++) {
-                float fAng = this->m_pCG->m_pGeography->m_adAngles[iMaxNeighbors*iCellIndex+i];
+                float fAng = m_pGeography->m_adAngles[iMaxNeighbors*iCellIndex+i];
                 printf("%f ", fAng);
             }
             printf(")\n");

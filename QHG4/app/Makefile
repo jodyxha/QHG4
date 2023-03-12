@@ -5,9 +5,12 @@ else
   CC=~/utils/cgcc
 endif
 
-include ../craydefs.mk
-include ../cflags.mk
-include ../codedirs.mk
+ifndef QHG4_DIR
+  QHG4_DIR=..
+endif
+include ${QHG4_DIR}/mk_includes/craydefs.mk
+include ${QHG4_DIR}/mk_includes/cflags.mk
+include ${QHG4_DIR}/mk_includes/codedirs.mk
 
 ifndef ARFL
   ARFL=-rv
@@ -21,15 +24,18 @@ endif
 FORCECLEAN=
 
 ifeq ("X$(SHORT)", "X1")
-    POPULATIONS := ../short_pop
-    MODULAR     := ../short_mod
+    POPULATIONS := ${QHG4_DIR}/short_pop
+    MODULAR     := ${QHG4_DIR}/short_mod
 else
     ifneq ("X$(SHORT)", "X")
-        POPULATIONS := ../$(SHORT)_pop
-        ACTIONS     := ../$(SHORT)_mod
+        POPULATIONS := ${QHG4_DIR}/$(SHORT)_pop
+        ACTIONS     := ${QHG4_DIR}/$(SHORT)_mod
     endif
 endif
 
+ifdef DYNAMIC_POPS
+    DEFS=-D DYNAMIC_POPS
+endif
 
 DYN_OPT=-ldl
 
@@ -41,11 +47,16 @@ COPT=-c $< -I $(UTILS) -o $@ $(CADD) $(CFLAGS) $(C_STD) $(CRAY_DEF) $(COMP) $(DY
 CORE_LIB:
 	$(MAKE) --directory=$(CORE) $(FORCECLEAN) $(LIBTARG)
 
+ifdef DYNAMIC_POPS
+PLUG_LIB:
+	$(MAKE) --directory=$(PLUGIN_STUB) lib
+else
 ACTIONS_LIB:
 	$(MAKE) --directory=$(ACTIONS) $(FORCECLEAN) $(LIBTARG)
 
 POPULATION_LIB:
 	$(MAKE) --directory=$(POPULATIONS) $(FORCECLEAN) $(LIBTARG)
+endif
 
 UTILS_LIB:
 	$(MAKE) --directory=$(UTILS) lib 
@@ -80,6 +91,9 @@ GridScrambler.o: GridScrambler.cpp GridScrambler.h
 SimParams.o: SimParams.cpp SimParams.h
 	$(CC) $(COPT) $(DEFS)  -I$(CORE)  -I$(ICOSA) -I$(IO) -I$(POPULATIONS) -I$(UTILS_QHG)
 
+SimParamsPlug.o: SimParamsPlug.cpp SimParams.h
+	$(CC) $(COPT) $(DEFS)  -I$(CORE)  -I$(ICOSA) -I$(IO) -I$(PLUG_STUB) -I$(UTILS_QHG)
+
 Simulator.o: Simulator.cpp Simulator.h SimParams.h
 	$(CC) $(COPT) $(DEFS)  -I$(CORE)  -I$(ICOSA) -I$(IO) -I$(POPULATIONS) -I$(UTILS_QHG)
 
@@ -88,6 +102,7 @@ QHGMain.o: QHGMain.cpp Simulator.h
 
 #QHGMain: QHGMain.o Simulator.o SimParams.o GridScrambler.o \
 #    IDS_AND_POPFACTORY 
+ifndef DYNAMIC_POPS
 QHGMain: QHGMain.o Simulator.o SimParams.o GridScrambler.o 
 	$(CC) $(CFLAGS) $(COMP) $(CADD)  $(DYN_OPT)  -o $(OUTFILE) \
 	QHGMain.o Simulator.o SimParams.o GridScrambler.o \
@@ -101,21 +116,21 @@ QHGMain: QHGMain.o Simulator.o SimParams.o GridScrambler.o
 	-L $(UTILS_QHG) -lUtilsQHG \
 	-L $(UTILS) -lUtils \
         -lz -lhdf5 -lm -lcrypto 
-
-QHGMainTemp: QHGMain.o Simulator.o SimParams.o GridScrambler.o \
+else
+QHGMain: QHGMain.o Simulator.o SimParams.o GridScrambler.o \
     IDS_AND_POPFACTORY 
-	$(CC) $(CFLAGS) $(COMP) $(DYN_OPT)  -o QHGMainTemp \
+	$(CC) $(CFLAGS) $(COMP) $(DYN_OPT)  -o $(OUTFILE)  \
 	QHGMain.o Simulator.o SimParams.o GridScrambler.o \
-	-L $(POPULATIONS) -lPopulations \
+	-L $(PLUGIN_STUB) -lPluginStub \
 	-L $(GENES) -lGenes \
 	-L $(CORE) -lCore \
-	-L $(ACTIONS) -lActions \
 	-L $(ICOSA) -lIcosa \
 	-L $(GEOINFO) -lGeoInfo \
 	-L $(IO) -lIO \
 	-L $(UTILS_QHG) -lUtilsQHG \
 	-L $(UTILS) -lUtils \
         -lz -lhdf5 -lm -lcrypto 
+endif
 
 SimSimpleParams.o: SimSimpleParams.cpp SimSimpleParams.h
 	$(CC) $(COPT) $(DEFS)  -I$(CORE)  -I$(ICOSA) -I$(IO) -I$(POPULATIONS)

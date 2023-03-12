@@ -4,6 +4,9 @@
 #include "Observer.h"
 #include "Action.h"
 #include "ParamProvider2.h"
+#include "Geography.h"
+#include "Climate.h"
+#include "Vegetation.h"
 
 class WELL512;
 class NPPCalc;
@@ -72,6 +75,10 @@ protected:
     double   m_dEfficiency;
 
     NPPCalc *m_pNPPCalc;
+    
+    Geography  *m_pGeography;
+    Climate    *m_pClimate;
+    Vegetation *m_pVegetation;
 
     static const char *asNames[];
 };    

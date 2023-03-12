@@ -64,7 +64,10 @@ LocEnv<T>::LocEnv(SPopulation<T> *pPop,  SCellGrid *pCG, std::string sID, WELL51
     : Action<T>(pPop, pCG, ATTR_LOCENV_NAME,sID),
       m_pAgentController(pAgentController),
     m_bNeedUpdate(true),
-      m_pNPPCalc(NULL) {
+    m_pNPPCalc(NULL),
+    m_pGeography(pCG->m_pGeography),
+    m_pClimate(pCG->m_pClimate),
+    m_pVegetation(pCG->m_pVegetation)  {
     
     m_iNumThreads = omp_get_max_threads();
     m_iLocArrSize = this->m_pCG->m_iConnectivity + 1;    
@@ -80,6 +83,7 @@ LocEnv<T>::LocEnv(SPopulation<T> *pPop,  SCellGrid *pCG, std::string sID, WELL51
 
     m_adCapacities[0] = NULL;
     m_adCapacities[1] = NULL;
+
 }
 
 //-----------------------------------------------------------------------------
@@ -133,9 +137,9 @@ int LocEnv<T>::init() {
     stdprintf("init called\n");
     
     if ((this->m_pCG != NULL) &&
-        (this->m_pCG->m_pGeography  != NULL) &&
-        (this->m_pCG->m_pClimate    != NULL) &&
-        (this->m_pCG->m_pVegetation != NULL)) {
+        (m_pGeography  != NULL) &&
+        (m_pClimate    != NULL) &&
+        (m_pVegetation != NULL)) {
 
         int iNumCells = this->m_pCG->m_iNumCells; 
         m_adCapacities[0] = new double[iNumCells];
@@ -157,13 +161,13 @@ int LocEnv<T>::init() {
         if (this->m_pCG == NULL) {
             stdprintf("[LocEnv] No cell grid!\n");
         } else {
-            if (this->m_pCG->m_pGeography  == NULL) {
+            if (m_pGeography  == NULL) {
                 stdprintf("[LocEnv] Cellgrid has no geography\n");
             }
-            if (this->m_pCG->m_pClimate    == NULL) {
+            if (m_pClimate    == NULL) {
                 stdprintf("[LocEnv] Cellgrid has no climate\n");
             }
-            if (this->m_pCG->m_pVegetation == NULL) {
+            if (m_pVegetation == NULL) {
                 stdprintf("[LocEnv] Cellgrid has no vegetation\n");
             }
         }
@@ -179,12 +183,12 @@ int LocEnv<T>::recalculateGlobalCapacities() {
     if (m_bNeedUpdate) {
         stdprintf("LocEnv::recalculateGlobalCapacities\n");
         int iNumCells = this->m_pCG->m_iNumCells; 
-        double *dT = this->m_pCG->m_pClimate->m_adAnnualMeanTemp;
-        double *dP = this->m_pCG->m_pClimate->m_adAnnualRainfall;
-        double *dW = this->m_pCG->m_pGeography->m_adWater;
-        double *dNPP = this->m_pCG->m_pVegetation->m_adBaseANPP;
-        double *dNPPTot = this->m_pCG->m_pVegetation->m_adTotalANPP;
-        double *dAlt = this->m_pCG->m_pGeography->m_adAltitude;
+        double *dT = m_pClimate->m_adAnnualMeanTemp;
+        double *dP = m_pClimate->m_adAnnualRainfall;
+        double *dW = m_pGeography->m_adWater;
+        double *dNPP    = m_pVegetation->m_adBaseANPP;
+        double *dNPPTot = m_pVegetation->m_adTotalANPP;
+        double *dAlt = m_pGeography->m_adAltitude;
         // fill m_adCapacities with npp miami-values for current climate
 
         for (int iGroup = 0; iGroup < 2; iGroup++) {
@@ -207,10 +211,10 @@ int LocEnv<T>::recalculateGlobalCapacities() {
                     // most of them have verey small or even zero NPP values.
                     // Therefore we use use the miami npp values in a lon-lat-rectangle 
                     // encompassing these islands
-                    if  ((this->m_pCG->m_pGeography->m_adLongitude[i] > REG_OCEANIA_LONMIN) &&
-                         (this->m_pCG->m_pGeography->m_adLatitude[i]  > REG_OCEANIA_LATMIN) &&
-                         (this->m_pCG->m_pGeography->m_adLongitude[i] < REG_OCEANIA_LONMAX) &&
-                         (this->m_pCG->m_pGeography->m_adLatitude[i]  < REG_OCEANIA_LATMAX)) {
+                    if  ((m_pGeography->m_adLongitude[i] > REG_OCEANIA_LONMIN) &&
+                         (m_pGeography->m_adLatitude[i]  > REG_OCEANIA_LATMIN) &&
+                         (m_pGeography->m_adLongitude[i] < REG_OCEANIA_LONMAX) &&
+                         (m_pGeography->m_adLatitude[i]  < REG_OCEANIA_LATMAX)) {
                         if (dNPP[i] < m_dNPPMin[iGroup]) {
                             dTempNPP = m_adCapacities[iGroup][i];
                         } 
@@ -230,9 +234,9 @@ int LocEnv<T>::recalculateGlobalCapacities() {
                     }
                     
                     // add coastal bonus
-                    if  ((this->m_pCG->m_pGeography->m_abCoastal[i]) &&
-                         (this->m_pCG->m_pGeography->m_adLatitude[i] > m_dCoastalMinLatitude[iGroup]) &&
-                         (this->m_pCG->m_pGeography->m_adLatitude[i] < m_dCoastalMaxLatitude[iGroup])) {
+                    if  ((m_pGeography->m_abCoastal[i]) &&
+                         (m_pGeography->m_adLatitude[i] > m_dCoastalMinLatitude[iGroup]) &&
+                         (m_pGeography->m_adLatitude[i] < m_dCoastalMaxLatitude[iGroup])) {
                         dTempCap += m_dCoastalFactor[iGroup]*m_dKMax[iGroup];
                     }
                     
@@ -312,11 +316,11 @@ int LocEnv<T>::initialize(float fTime) {
                 iC = this->m_pCG->m_aCells[iC].m_aNeighbors[iN-1];
             }
             
-            double fAltFactor = (1-fH)*m_pAltPrefPoly[0]->getVal(this->m_pCG->m_pGeography->m_adAltitude[iC]) +
-                                    fH*m_pAltPrefPoly[1]->getVal(this->m_pCG->m_pGeography->m_adAltitude[iC]);
+            double fAltFactor = (1-fH)*m_pAltPrefPoly[0]->getVal(m_pGeography->m_adAltitude[iC]) +
+                                    fH*m_pAltPrefPoly[1]->getVal(m_pGeography->m_adAltitude[iC]);
             // here without interpolation
-            fAltFactor = m_pAltPrefPoly[0]->getVal((float)this->m_pCG->m_pGeography->m_adAltitude[iC]);
-            if ((fAltFactor < 0) || (this->m_pCG->m_pGeography->m_abIce[iC]>0)) {  
+            fAltFactor = m_pAltPrefPoly[0]->getVal((float)m_pGeography->m_adAltitude[iC]);
+            if ((fAltFactor < 0) || (m_pGeography->m_abIce[iC]>0)) {  
                 fAltFactor = 0;
             }  
             pLocArr[iN] *= fAltFactor;

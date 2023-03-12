@@ -143,6 +143,7 @@ int LinearDeath<T>::execute(int iAgentIndex, float fT) {
     	double dR = this->m_apWELL[iThread]->wrandd();
 
     	if (dR < m_adD[iCellIndex]) {
+            //printf("[LinearDeath::execute] have a deady (%d)\n", iAgentIndex);
             this->m_pPop->registerDeath(iCellIndex, iAgentIndex);
             iResult = 1;
     	}

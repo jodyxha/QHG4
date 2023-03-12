@@ -59,7 +59,10 @@ NPPCapacity<T>::NPPCapacity(SPopulation<T> *pPop, SCellGrid *pCG, std::string sI
       m_dKMin(0),
       m_dKMax(0),
       m_dEfficiency(1.0), 
-      m_pNPPCalc(NULL) {
+      m_pNPPCalc(NULL),
+      m_pGeography(pCG->m_pGeography),
+      m_pClimate(pCG->m_pClimate),
+      m_pVegetation(pCG->m_pVegetation) {
 
     memset(m_adSelection, 0, 3*sizeof(double));
 
@@ -89,21 +92,21 @@ template<typename T>
 int NPPCapacity<T>::preLoop() {
     int iResult = 0;
     // we need 
-    if ((this->m_pCG->m_pGeography != NULL) && 
-        (this->m_pCG->m_pClimate != NULL) && 
-        (this->m_pCG->m_pVegetation != NULL)) {
+    if ((m_pGeography != NULL) && 
+        (m_pClimate != NULL) && 
+        (m_pVegetation != NULL)) {
         recalculate();
     } else {
         iResult = -1;
-        if (this->m_pCG->m_pGeography != NULL) {
+        if (m_pGeography != NULL) {
             printf("[NPPCapacity] m_pGeography is NULL!\n");
             printf("  Make sure your gridfile has a geography group!\n");
         }
-        if (this->m_pCG->m_pClimate != NULL) {
+        if (m_pClimate != NULL) {
             printf("[NPPCapacity] m_pClimate is NULL!\n");
             printf("  Make sure your gridfile has a climate group!\n");
         }
-        if (this->m_pCG->m_pVegetation != NULL) {
+        if (m_pVegetation != NULL) {
             printf("[NPPCapacity] m_pVegetation is NULL!\n");
             printf("  Make sure your gridfile has a vegetation group!\n");
         }
@@ -136,12 +139,12 @@ void NPPCapacity<T>::recalculate() {
     if (m_bNeedUpdate) {
         printf("NPPCapacity::recalculate\n");
         int iNumCells = this->m_pCG->m_iNumCells; 
-        double *dT = this->m_pCG->m_pClimate->m_adAnnualMeanTemp;
-        double *dP = this->m_pCG->m_pClimate->m_adAnnualRainfall;
-        double *dW = this->m_pCG->m_pGeography->m_adWater;
-        double *dNPP = this->m_pCG->m_pVegetation->m_adBaseANPP;
-        double *dNPPTot = this->m_pCG->m_pVegetation->m_adTotalANPP;
-        double *dAlt = this->m_pCG->m_pGeography->m_adAltitude;
+        double *dT = m_pClimate->m_adAnnualMeanTemp;
+        double *dP = m_pClimate->m_adAnnualRainfall;
+        double *dW = m_pGeography->m_adWater;
+        double *dNPP = m_pVegetation->m_adBaseANPP;
+        double *dNPPTot = m_pVegetation->m_adTotalANPP;
+        double *dAlt = m_pGeography->m_adAltitude;
         // fill m_adCapacities with npp miami-values for current climate
         memset(m_adCapacities, 0, iNumCells*m_iStride*sizeof(double));
         m_pNPPCalc->calcNPP(dT, dP, iNumCells, m_iStride, m_adCapacities, NULL);
@@ -162,10 +165,10 @@ void NPPCapacity<T>::recalculate() {
                 // most of them have verey small or even zero NPP values.
                 // Therefore we use use the miami npp values in a lon-lat-rectangle 
                 // encompassing these islands
-                if  ((this->m_pCG->m_pGeography->m_adLongitude[i] > REG_OCEANIA_LONMIN) &&
-                     (this->m_pCG->m_pGeography->m_adLatitude[i]  > REG_OCEANIA_LATMIN) &&
-                     (this->m_pCG->m_pGeography->m_adLongitude[i] < REG_OCEANIA_LONMAX) &&
-                     (this->m_pCG->m_pGeography->m_adLatitude[i]  < REG_OCEANIA_LATMAX)) {
+                if  ((m_pGeography->m_adLongitude[i] > REG_OCEANIA_LONMIN) &&
+                     (m_pGeography->m_adLatitude[i]  > REG_OCEANIA_LATMIN) &&
+                     (m_pGeography->m_adLongitude[i] < REG_OCEANIA_LONMAX) &&
+                     (m_pGeography->m_adLatitude[i]  < REG_OCEANIA_LATMAX)) {
                     if (dNPP[i] < m_dNPPMin) {
                         dTempNPP = m_adCapacities[i*m_iStride];
                     } 
@@ -185,9 +188,9 @@ void NPPCapacity<T>::recalculate() {
                 }
 
                 // add coastal bonus
-                if  ((this->m_pCG->m_pGeography->m_abCoastal[i]) &&
-                     (this->m_pCG->m_pGeography->m_adLatitude[i] > m_dCoastalMinLatitude) &&
-                     (this->m_pCG->m_pGeography->m_adLatitude[i] < m_dCoastalMaxLatitude)) {
+                if  ((m_pGeography->m_abCoastal[i]) &&
+                     (m_pGeography->m_adLatitude[i] > m_dCoastalMinLatitude) &&
+                     (m_pGeography->m_adLatitude[i] < m_dCoastalMaxLatitude)) {
                     dTempCap += m_dCoastalFactor*m_dKMax;
                 }
 

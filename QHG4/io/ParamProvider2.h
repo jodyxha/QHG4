@@ -38,6 +38,7 @@ typedef struct classinfo_t {
     stringmap   cattr;
     modulemap   mods;
     stringmap   prios;
+    stringmap   vardefs;
 } classinfo;
 
 
@@ -71,6 +72,7 @@ protected:
     int processParam(qhgXMLNode *pParam, const std::string subtag, stringmap &att_param);
     int processModule(qhgXMLNode *pModule, modulemap &m_Modules);
     int processPriorities(qhgXMLNode *pPrios, stringmap &pa);
+    int processVarDefs(qhgXMLNode *pPrios, stringmap &vd);
     int processClass(qhgXMLNode *pClass);
 
     classes  m_mClasses;

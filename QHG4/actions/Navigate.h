@@ -6,6 +6,8 @@
 #include "Observer.h"
 #include "Action.h"
 #include "ParamProvider2.h"
+#include "Geography.h"
+#include "Navigation.h"
 
 
 typedef std::pair<int, double> targprob;
@@ -65,6 +67,9 @@ class Navigate : public Action<T>, Observer {
     double    m_dBridgeProb;
     jumpprobmap m_mJumpProbs;
     bridgelist  m_vCurBridges;
+
+    Geography  *m_pGeography;
+    Navigation *m_pNavigation;
 
     static const char *asNames[];
 

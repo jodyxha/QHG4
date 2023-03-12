@@ -1,16 +1,18 @@
 <class name="tut_MovePop" species_name="sapiens" species_id="104">
 
-  <module name="OldAgeDeath">
-    <param  name="OAD_max_age" value="60.0"/>
-    <param  name="OAD_uncertainty" value="0.1"/>
+  <module name="ATanDeath">
+    <param  name="ATanDeath_max_age" value="60.0"/>
+    <param  name="ATanDeath_range" value="6.0"/>
+    <param  name="ATanDeath_slope" value="1.0"/>
   </module>
+
   <module name="RandomMove">
     <param  name="RandomMove_prob" value="0.1"/>
   </module>
   
   <priorities>
     <prio  name="GetOld" value="8"/>
-    <prio  name="OldAgeDeath" value="10"/>
+    <prio  name="ATanDeath" value="10"/>
     <prio  name="RandomMove" value="9"/>
   
   </priorities>

@@ -3,6 +3,7 @@
 
 #include "GeneUtils.h"
 #include "SPopulation.h"
+#include "Geography.h"
 #include "WeightedMove.h"
 #include "ConfinedMove.h"
 #include "SingleEvaluator.h"
@@ -55,6 +56,7 @@ public:
     double *m_adCapacities;
 
     bool m_bCreateGenomes;
+    Geography *m_pGeography;
 };
 
 

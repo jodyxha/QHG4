@@ -7,7 +7,7 @@
 #include "Action.cpp"
 
 #include "GetOld.cpp"
-#include "OldAgeDeath.cpp"
+#include "ATanDeath.cpp"
 
 #include "RandomMove.cpp"
 
@@ -20,12 +20,12 @@ tut_MovePop::tut_MovePop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, 
     : SPopulation(pCG, pPopFinder, iLayerSize, apIDG, aulState, aiSeeds) {
     
     m_pGO = new GetOld<tut_MoveAgent>(this, m_pCG, "");
-    m_pOAD = new OldAgeDeath<tut_MoveAgent>(this, m_pCG, "", m_apWELL);
+    m_pAD = new ATanDeath<tut_MoveAgent>(this, m_pCG, "", m_apWELL);
 
     m_pRM = new RandomMove<tut_MoveAgent>(this, m_pCG, "", m_apWELL);
 
     m_prio.addAction(m_pGO);
-    m_prio.addAction(m_pOAD);
+    m_prio.addAction(m_pAD);
 
     m_prio.addAction(m_pRM);
  
@@ -38,8 +38,8 @@ tut_MovePop::~tut_MovePop() {
     if (m_pGO != NULL) {
         delete m_pGO;
     }
-    if (m_pOAD != NULL) {
-        delete m_pOAD;
+    if (m_pAD != NULL) {
+        delete m_pAD;
     }
     if (m_pRM != NULL) {
         delete m_pRM;

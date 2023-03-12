@@ -8,7 +8,7 @@
 #include "Action.cpp"
 
 #include "GetOld.cpp"
-#include "OldAgeDeath.cpp"
+#include "ATanDeath.cpp"
 #include "Fertility.cpp"
 #include "Verhulst.cpp"
 #include "RandomPair.cpp"
@@ -22,17 +22,18 @@
 // constructor
 //
 tut_EnvironAltPop::tut_EnvironAltPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState, uint *aiSeeds) 
-    : SPopulation<tut_EnvironAltAgent>(pCG, pPopFinder, iLayerSize, apIDG, aulState, aiSeeds) {
+    : SPopulation<tut_EnvironAltAgent>(pCG, pPopFinder, iLayerSize, apIDG, aulState, aiSeeds),
+      m_pGeography(pCG->m_pGeography) {
 
     m_pGO       = new GetOld<tut_EnvironAltAgent>(this, m_pCG, "");
-    m_pOAD      = new OldAgeDeath<tut_EnvironAltAgent>(this, m_pCG, "", m_apWELL);
+    m_pAD       = new ATanDeath<tut_EnvironAltAgent>(this, m_pCG, "", m_apWELL);
     m_pFert     = new Fertility<tut_EnvironAltAgent>(this, m_pCG, "");
     m_pVerhulst = new Verhulst<tut_EnvironAltAgent>(this, m_pCG, "", m_apWELL);
     m_pPair     = new RandomPair<tut_EnvironAltAgent>(this, m_pCG, "", m_apWELL);
 
     m_adEnvWeights = new double[m_pCG->m_iNumCells * (m_pCG->m_iConnectivity + 1)];
     memset(m_adEnvWeights, 0, m_pCG->m_iNumCells * (m_pCG->m_iConnectivity + 1)*sizeof(double));
-    m_pSEAlt = new SingleEvaluator<tut_EnvironAltAgent>(this, m_pCG, "Alt", m_adEnvWeights, (double*)m_pCG->m_pGeography->m_adAltitude, "AltCapPref", true, EVENT_ID_GEO);
+    m_pSEAlt = new SingleEvaluator<tut_EnvironAltAgent>(this, m_pCG, "Alt", m_adEnvWeights, (double*)m_pGeography->m_adAltitude, "AltCapPref", true, EVENT_ID_GEO);
    
     m_pWM = new WeightedMove<tut_EnvironAltAgent>(this, m_pCG, "", m_apWELL, m_adEnvWeights);
 
@@ -43,7 +44,7 @@ tut_EnvironAltPop::tut_EnvironAltPop(SCellGrid *pCG, PopFinder *pPopFinder, int 
     // adding all actions to prioritizer
 
     m_prio.addAction(m_pGO);
-    m_prio.addAction(m_pOAD);
+    m_prio.addAction(m_pAD);
     m_prio.addAction(m_pFert);
     m_prio.addAction(m_pVerhulst);
     m_prio.addAction(m_pPair);
@@ -59,8 +60,8 @@ tut_EnvironAltPop::~tut_EnvironAltPop() {
     if (m_pGO != NULL) {
         delete m_pGO;
     }
-    if (m_pOAD != NULL) {
-        delete m_pOAD;
+    if (m_pAD != NULL) {
+        delete m_pAD;
     }
     if (m_pFert != NULL) {
         delete m_pFert;
@@ -100,8 +101,8 @@ int tut_EnvironAltPop::updateEvent(int iEventID, char *pData, float fT) {
             for (int iAgent = iFirstAgent; iAgent <= iLastAgent; iAgent++) {
                 if (m_aAgents[iAgent].m_iLifeState > LIFE_STATE_DEAD) {
                     int iCellIndex = m_aAgents[iAgent].m_iCellIndex;
-                    if ((this->m_pCG->m_pGeography->m_adAltitude[iCellIndex] < 0) ||
-                        (this->m_pCG->m_pGeography->m_abIce[iCellIndex] > 0)) {
+                    if ((m_pGeography->m_adAltitude[iCellIndex] < 0) ||
+                        (m_pGeography->m_abIce[iCellIndex] > 0)) {
                         registerDeath(iCellIndex, iAgent);
                     }
                 }

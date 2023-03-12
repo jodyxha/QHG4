@@ -31,7 +31,8 @@
 //
 OoASelPop::OoASelPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState, uint *aiSeeds) 
     : SPopulation<OoASelAgent>(pCG, pPopFinder, iLayerSize, apIDG, aulState, aiSeeds),
-      m_bCreateGenomes(true) {
+      m_bCreateGenomes(true),
+      m_pGeography(pCG->m_pGeography) {
 
     int iCapacityStride = 1;
     m_adCapacities = new double[m_pCG->m_iNumCells];
@@ -45,7 +46,7 @@ OoASelPop::OoASelPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGe
     MultiEvaluator<OoASelAgent>::evaluatorinfos mEvalInfo;
 
     // add altitude evaluation - output is NULL because it will be set by MultiEvaluator
-    SingleEvaluator<OoASelAgent> *pSEAlt = new SingleEvaluator<OoASelAgent>(this, m_pCG, "Alt", NULL, (double*)m_pCG->m_pGeography->m_adAltitude, "AltCapPref", true, EVENT_ID_GEO);
+    SingleEvaluator<OoASelAgent> *pSEAlt = new SingleEvaluator<OoASelAgent>(this, m_pCG, "Alt", NULL, (double*)m_pGeography->m_adAltitude, "AltCapPref", true, EVENT_ID_GEO);
     mEvalInfo.push_back(std::pair<std::string, Evaluator<OoASelAgent>*>("Multi_weight_alt", pSEAlt));
 
     // add NPP evaluation - output is NULL because it will be set by MultiEvaluator
@@ -196,7 +197,7 @@ int OoASelPop::updateEvent(int iEventID, char *pData, float fT) {
             for (int iAgent = iFirstAgent; iAgent <= iLastAgent; iAgent++) {
                 if (m_aAgents[iAgent].m_iLifeState > LIFE_STATE_DEAD) {
                     int iCellIndex = m_aAgents[iAgent].m_iCellIndex;
-                    if (this->m_pCG->m_pGeography->m_adAltitude[iCellIndex] < 0) {
+                    if (m_pGeography->m_adAltitude[iCellIndex] < 0) {
                         registerDeath(iCellIndex, iAgent);
                     }
                 }

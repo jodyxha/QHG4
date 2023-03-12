@@ -20,7 +20,8 @@ WeightedMove<T>::WeightedMove(SPopulation<T> *pPop, SCellGrid *pCG, std::string 
     : Action<T>(pPop,pCG,ATTR_WEIGHTEDMOVE_NAME, sID),
       m_apWELL(apWELL),
       m_adEnvWeights(adEnvWeights),
-      m_dMoveProb(0) {
+      m_dMoveProb(0),
+      m_pGeography(pCG->m_pGeography) {
 
     this->m_vNames.push_back(ATTR_WEIGHTEDMOVE_PROB_NAME);
 
@@ -87,7 +88,7 @@ int WeightedMove<T>::execute(int iAgentIndex, float fT) {
             if (iNewNeighborIndex > 0) {
                 iNewCellIndex = this->m_pCG->m_aCells[iCellIndex].m_aNeighbors[iNewNeighborIndex-1];
                 if (iNewCellIndex >= 0) {
-                    if ((this->m_pCG->m_pGeography == NULL) || (!this->m_pCG->m_pGeography->m_abIce[iNewCellIndex])) {
+                    if ((m_pGeography == NULL) || (!m_pGeography->m_abIce[iNewCellIndex])) {
                         this->m_pPop->registerMove(iCellIndex, iAgentIndex, iNewCellIndex);
                     }
                 } else {

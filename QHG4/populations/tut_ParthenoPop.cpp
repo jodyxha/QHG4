@@ -8,7 +8,7 @@
 #include "Action.cpp"
 
 #include "GetOld.cpp"
-#include "OldAgeDeath.cpp"
+#include "ATanDeath.cpp"
 #include "RandomMove.cpp"
 
 #include "Fertility.cpp"
@@ -24,7 +24,7 @@ tut_ParthenoPop::tut_ParthenoPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLay
 
 
     m_pGO  = new GetOld<tut_ParthenoAgent>(this, m_pCG, "");
-    m_pOAD = new OldAgeDeath<tut_ParthenoAgent>(this, m_pCG, "", m_apWELL);
+    m_pAD  = new ATanDeath<tut_ParthenoAgent>(this, m_pCG, "", m_apWELL);
     m_pRM  = new RandomMove<tut_ParthenoAgent>(this, m_pCG, "", m_apWELL);
 
     m_pFert     = new Fertility<tut_ParthenoAgent>(this, m_pCG, "");
@@ -34,7 +34,7 @@ tut_ParthenoPop::tut_ParthenoPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLay
     // adding all actions to prioritizer
 
     m_prio.addAction(m_pGO);
-    m_prio.addAction(m_pOAD);
+    m_prio.addAction(m_pAD);
     m_prio.addAction(m_pRM);
 
     m_prio.addAction(m_pVerhulst);
@@ -52,8 +52,8 @@ tut_ParthenoPop::~tut_ParthenoPop() {
     if (m_pGO != NULL) {
         delete m_pGO;
     }
-    if (m_pOAD != NULL) {
-        delete m_pOAD;
+    if (m_pAD != NULL) {
+        delete m_pAD;
     }
     if (m_pRM != NULL) {
         delete m_pRM;

@@ -39,7 +39,7 @@ class SheepPop : public SPopulation<SheepAgent> {
 
     SingleEvaluator<SheepAgent>   *m_pSEGrass;
     WeightedMove<SheepAgent>      *m_pWM;
-    SheepManager<SheepAgent>      *m_pRM;
+    SheepManager<SheepAgent>      *m_pSM;
     Starver<SheepAgent>           *m_pRS;
     AnimalReproducer<SheepAgent>  *m_pAR;
     

@@ -61,12 +61,15 @@ class QDFBirthShifter:
     #--     gridtype m_ulCellID;
     #--     float    m_fBirthTime;
     #--     uchar    m_iGender; 
+    #--     float    m_fAge
+    #--     float    m_fLastBirth; 
     #--     ...
     #--
     def shift_births(self, diff):
         for i in range(len(self.ags)):
             self.ags2.append(self.ags[i])
             self.ags2[i][4] = self.ags2[i][4] - diff
+            self.ags2[i][7] = self.ags2[i][7] - diff
         
         #-- end for
         del  self.pop[NAME_AGS]
@@ -97,7 +100,7 @@ if len(argv) > 2:
 
         shutil.copyfile(qdf_file, qdf_file+".bak");
         
-        t0 = time.clock()
+        t0 = time.time()
         
         qd = QDFBirthShifter(qdf_file, pop_name)
         qd.shift_births(diff)
@@ -106,7 +109,7 @@ if len(argv) > 2:
     except Exception as e:
         print("Error: [%s]" % (e))
     #-- end try
-    t1 = time.clock()
+    t1 = time.time()
     print("Used %f secs\n" % (t1-t0))
 else:
     print("Subtract a number of years from the birth time of each agent of a population")

@@ -36,7 +36,7 @@ class SelPair : public Action<T> {
 
     bool isEqual(Action<T> *pAction, bool bStrict);
     
-    void showAttributes();
+    //    void showAttributes();
  protected:
     int findMates();
     int findCompatiblePartner(int iCur, std::vector<int> &vAvailable);

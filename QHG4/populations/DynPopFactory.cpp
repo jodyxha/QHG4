@@ -9,12 +9,13 @@
 #include "PopBase.h"
 #include "ParamProvider2.h"
 #include "DynPopFactory.h"
+#include "ArrayShare.h"
 
 #define GETINFO_NAME    "getInfo"
 #define CREATEPOP_NAME  "createPop"
 
 typedef const std::string  (*getInfoFunc)();
-typedef PopBase           *(*createPopFunc)(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState);
+typedef PopBase           *(*createPopFunc)(ArrayShare *pAS, SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState);
 
 
 //----------------------------------------------------------------------------
@@ -140,10 +141,13 @@ PopBase *DynPopFactory::createPopulationByName(const std::string sName) {
     if (it != m_mNameFiles.end()) {
         void *hLibrary = dlopen(it->second.c_str(), RTLD_LAZY);
         if (hLibrary != NULL) {
+
             createPopFunc pCreatePop = (createPopFunc) dlsym(hLibrary, CREATEPOP_NAME);
             if (pCreatePop != NULL) {
+	        // we have to 'inject' the ARrayShare singleton
+                ArrayShare *pAS = ArrayShare::getInstance();
                 m_vLibHandles.push_back(hLibrary);
-                pPB = pCreatePop(m_pCG, m_pPopFinder, m_iLayerSize, m_apIDG, m_aulState);
+                pPB = pCreatePop(pAS, m_pCG, m_pPopFinder, m_iLayerSize, m_apIDG, m_aulState);
             } else {
                 stdprintf("Couldn't get function [%s] from [%s]\n", CREATEPOP_NAME, it->second);
                 dlclose(hLibrary);
@@ -176,6 +180,7 @@ PopBase *DynPopFactory::readPopulation(ParamProvider2 *pPP) {
             delete pPop;
             pPop = NULL;
         } else {
+           
         }
     } else {
         stdprintf("[DynPopFactory::readPopulation} Couldn't create class [%s]\n", pPP->getSelected());

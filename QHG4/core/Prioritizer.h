@@ -30,8 +30,14 @@ public:
     virtual int addAction(Action<A> *act);
     //    virtual int addAction(std::string name, Action<A> *act);
 
-    // remove an action completely (can't be undone - must call addAction() again)
+    // remove an action permanently (can't be undone - must call addAction() again)
     virtual int removeAction(std::string name);
+
+    // temporarily disable an action
+    virtual int disableAction(std::string name);
+
+    // enable a previously disabled action
+    virtual int enableAction(std::string name);
 
     // return true if action with given name exists
     virtual bool hasAction(std::string name);
@@ -68,6 +74,7 @@ public:
 protected:
     namelist m_names;
     actlist  m_prios;
+    actlist  m_disabled;
 };
 
 #endif

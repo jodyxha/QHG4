@@ -146,6 +146,7 @@ int LinearBirth<T>::execute(int iAgentIndex, float fT) {
                 double dR = this->m_apWELL[iThread]->wrandd();
                 
                 if (dR < m_adB[iCellIndex]) {
+                    //printf("[LinearBirth::execute] have a deady (%d)\n", iAgentIndex);
                     this->m_pPop->registerBirth(iCellIndex, iAgentIndex, iMateIndex);
                     iResult = 1;
             	} 

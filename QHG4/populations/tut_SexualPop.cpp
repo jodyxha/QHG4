@@ -8,7 +8,7 @@
 #include "Action.cpp"
 
 #include "GetOld.cpp"
-#include "OldAgeDeath.cpp"
+#include "ATanDeath.cpp"
 #include "RandomMove.cpp"
 #include "Fertility.cpp"
 #include "Verhulst.cpp"
@@ -26,7 +26,7 @@ tut_SexualPop::tut_SexualPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSi
 
 
     m_pGO  = new GetOld<tut_SexualAgent>(this, m_pCG, "");
-    m_pOAD = new OldAgeDeath<tut_SexualAgent>(this, m_pCG, "", m_apWELL);
+    m_pAD  = new ATanDeath<tut_SexualAgent>(this, m_pCG, "", m_apWELL);
     m_pRM  = new RandomMove<tut_SexualAgent>(this, m_pCG, "", m_apWELL);
     m_pFert     = new Fertility<tut_SexualAgent>(this, m_pCG, "");
     m_pVerhulst = new Verhulst<tut_SexualAgent>(this, m_pCG, "", m_apWELL);
@@ -34,7 +34,7 @@ tut_SexualPop::tut_SexualPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSi
     m_pPair = new RandomPair<tut_SexualAgent>(this, m_pCG, "", m_apWELL);
         
     m_prio.addAction(m_pGO);
-    m_prio.addAction(m_pOAD);
+    m_prio.addAction(m_pAD);
     m_prio.addAction(m_pRM);
     m_prio.addAction(m_pFert);
     m_prio.addAction(m_pVerhulst);
@@ -50,8 +50,8 @@ tut_SexualPop::~tut_SexualPop() {
     if (m_pGO != NULL) {
         delete m_pGO;
     }
-    if (m_pOAD != NULL) {
-        delete m_pOAD;
+    if (m_pAD != NULL) {
+        delete m_pAD;
     }
     if (m_pRM != NULL) {
         delete m_pRM;

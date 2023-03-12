@@ -2,7 +2,7 @@
 #define __TUT_ENVIRONCAPALTPOP_H__
 
 #include "GetOld.h"
-#include "OldAgeDeath.h"
+#include "ATanDeath.h"
 #include "Fertility.h"
 #include "VerhulstVarK.h"
 #include "RandomPair.h"
@@ -13,6 +13,7 @@
 #include "NPPCapacity.h"
 
 #include "SPopulation.h"
+#include "Geography.h"
 
 struct tut_EnvironCapAltAgent : Agent {
 
@@ -41,7 +42,7 @@ protected:
     VerhulstVarK<tut_EnvironCapAltAgent> *m_pVerVarK;
     RandomPair<tut_EnvironCapAltAgent> *m_pPair;
     GetOld<tut_EnvironCapAltAgent> *m_pGO;
-    OldAgeDeath<tut_EnvironCapAltAgent> *m_pOAD;
+    ATanDeath<tut_EnvironCapAltAgent> *m_pAD;
     Fertility<tut_EnvironCapAltAgent> *m_pFert;
     NPPCapacity<tut_EnvironCapAltAgent> *m_pNPPCap;
 
@@ -49,6 +50,8 @@ protected:
     double *m_adCapacities;
 
     bool m_bUpdateNeeded;
+
+    Geography *m_pGeography;
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include <omp.h>
 
 #include "types.h"
+#include "Environment.h"
 
 // target node => distance
 typedef std::map<gridtype, double>   distlist;
@@ -15,14 +16,15 @@ typedef std::map<gridtype, distlist> distancemap;
 typedef std::pair<gridtype,gridtype> bridgedef;
 typedef std::vector<bridgedef>        bridgelist;
 
-class Navigation {
+class Navigation : public Environment {
 public:
     Navigation();
     virtual ~Navigation();
     int setData(const distancemap &mDests, double dSampleDist);
     int setBridges(const bridgelist &vBridges);
     int checkSizes(uint iNumPorts, uint iNumDests, uint iNumDists);
- 
+    virtual void resetUpdated() {};
+
     uint     m_iNumPorts;
     uint     m_iNumDests;
     uint     m_iNumDists;

@@ -7,6 +7,7 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 #include "Evaluator.h"
+#include "Geography.h"
 
 #define ATTR_SINGLEEVAL_NAME "SingleEvaluator"
 
@@ -49,6 +50,8 @@ class SingleEvaluator : public Evaluator<T> {
 
     std::string m_sInputArrayName;
     bool m_bFirst;
+
+    Geography *m_pGeography;
 };
 
 #endif

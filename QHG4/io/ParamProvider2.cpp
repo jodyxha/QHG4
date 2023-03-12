@@ -10,11 +10,13 @@
 #define ATTR_VALUE  "value"
 #define ATTR_SPC_NAME "species_name"
 
-#define ELEM_CLASS  "class"
-#define ELEM_MODULE "module"
-#define ELEM_PRIOS  "priorities"
-#define ELEM_PRIO   "prio"
-#define ELEM_PARAM  "param"
+#define ELEM_CLASS   "class"
+#define ELEM_MODULE  "module"
+#define ELEM_PRIOS   "priorities"
+#define ELEM_VARDEFS "vardefs"
+#define ELEM_PRIO    "prio"
+#define ELEM_PARAM   "param"
+#define ELEM_VAR     "var"
 
 
 // ****************************************************************************
@@ -330,6 +332,30 @@ int ParamProvider2::processPriorities(qhgXMLNode *pPrios, stringmap &pa) {
     return iResult;
 }
 
+//----------------------------------------------------------------------------
+// processVarDefs
+//
+int ParamProvider2::processVarDefs(qhgXMLNode *pPrios, stringmap &vd) {
+    int iResult = -1;
+    if (pPrios != NULL) {
+        if (pPrios->getName() == ELEM_VARDEFS) {
+            iResult = 0;
+            //stdprintf("[ParamProvider2::processPriorities] processing priorities\n");
+            qhgXMLNode *pChild = pPrios->getChild();
+            while ((iResult == 0) && (pChild != NULL)) {
+                iResult = processParam(pChild, ELEM_VAR, vd);
+                pChild = pChild->getNext();
+            }
+        } else {
+            stdprintf("Expected Element to be '%s' not '%s'\n", ELEM_VARDEFS, pPrios->getName());
+        }
+    } else {
+        stdprintf("Can't do NULL element'\n");
+    }
+
+    return iResult;
+}
+
 
 //----------------------------------------------------------------------------
 // processClass
@@ -353,7 +379,8 @@ int ParamProvider2::processClass(qhgXMLNode *pClass) {
                 if (it != attr_class.end()) {
                     iResult = 0;
                     m_sSpeciesName = it->second;
-                    stringmap attr_prios;
+                    stringmap attr_prios; 
+                    stringmap var_defs;
                     qhgXMLNode *pChild = pClass->getChild();
                     while ((iResult == 0) && (pChild != NULL)) {
                         if (pChild->getName() == ELEM_MODULE) {
@@ -362,6 +389,8 @@ int ParamProvider2::processClass(qhgXMLNode *pClass) {
 
                         } else if (pChild->getName() == ELEM_PRIOS) {
                             iResult = processPriorities(pChild, attr_prios);
+                        } else if (pChild->getName() == ELEM_VARDEFS) {
+                            iResult = processVarDefs(pChild, var_defs);
                         } else {
                             stdprintf("unknown element:%s\n", pChild->getName());
                         } 
@@ -372,6 +401,7 @@ int ParamProvider2::processClass(qhgXMLNode *pClass) {
                     ci.cattr = attr_class;
                     ci.mods  = m_mModules;
                     ci.prios = attr_prios; 
+                    ci.vardefs = var_defs;
                     m_mClasses[sName] = ci;
                     m_vClassNames.push_back(sName);
 

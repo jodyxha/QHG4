@@ -4,6 +4,7 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 #include "PolyLine.h"
+#include "Geography.h" // for denbug message
 
 #define ATTR_WEIGHTEDMOVERAND_NAME      "WeightedMoveRand"
 #define ATTR_WEIGHTEDMOVERAND_PROB_NAME "WeightedMoveRand_prob"
@@ -28,6 +29,7 @@ class WeightedMoveRand : public Action<T> {
     double *m_adEnvWeights;
     double m_dMoveProb;
 
+    Geography *m_pGeography;
 };
 
 #endif

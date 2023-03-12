@@ -31,7 +31,8 @@
 //
 OoAPop::OoAPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **apIDG, uint32_t *aulState, uint *aiSeeds) 
     : SPopulation<OoAAgent>(pCG, pPopFinder, iLayerSize, apIDG, aulState, aiSeeds),
-      m_bPendingEvents(false) {
+      m_bPendingEvents(false),
+      m_pGeography(pCG->m_pGeography) {
  
     int iCapacityStride = 1;
     m_adCapacities = new double[m_pCG->m_iNumCells];
@@ -45,7 +46,7 @@ OoAPop::OoAPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen **ap
     MultiEvaluator<OoAAgent>::evaluatorinfos mEvalInfo;
 
     // add altitude evaluation - output is NULL because it will be set by MultiEvaluator
-    SingleEvaluator<OoAAgent> *pSEAlt = new SingleEvaluator<OoAAgent>(this, m_pCG, "Alt", NULL, (double*)m_pCG->m_pGeography->m_adAltitude, "AltCapPref", false, EVENT_ID_GEO);
+    SingleEvaluator<OoAAgent> *pSEAlt = new SingleEvaluator<OoAAgent>(this, m_pCG, "Alt", NULL, (double*)m_pGeography->m_adAltitude, "AltCapPref", false, EVENT_ID_GEO);
     mEvalInfo.push_back(std::pair<std::string, Evaluator<OoAAgent>*>("Multi_weight_alt", pSEAlt));
 
     // add NPP evaluation - output is NULL because it will be set by MultiEvaluator
@@ -175,8 +176,8 @@ int OoAPop::updateEvent(int iEventID, float fT) {
             for (int iAgent = iFirstAgent; iAgent <= iLastAgent; iAgent++) {
                 if (m_aAgents[iAgent].m_iLifeState > LIFE_STATE_DEAD) {
                     int iCellIndex = m_aAgents[iAgent].m_iCellIndex;
-                    if ((this->m_pCG->m_pGeography->m_adAltitude[iCellIndex] < 0) ||
-                        (this->m_pCG->m_pGeography->m_abIce[iCellIndex] > 0)) {
+                    if ((m_pGeography->m_adAltitude[iCellIndex] < 0) ||
+                        (m_pGeography->m_abIce[iCellIndex] > 0)) {
                         registerDeath(iCellIndex, iAgent);
                     }
                 }

@@ -4,6 +4,7 @@
 #include "Action.h"
 #include "LocEnv.h"
 #include "ParamProvider2.h"
+#include "Geography.h"
 
 #define ATTR_NPERSWEIGHTEDMOVE_NAME "NPersWeightedMove"
 
@@ -23,6 +24,8 @@ class NPersWeightedMove : public Action<T> {
  protected:
     WELL512 **m_apWELL;
     LocEnv<T>    *m_pLE;
+
+    Geography *m_pGeography;
 };
 
 #endif

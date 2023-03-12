@@ -20,7 +20,8 @@ CondWeightedMove<T>::CondWeightedMove(SPopulation<T> *pPop, SCellGrid *pCG, std:
       m_apWELL(apWELL),
       m_adEnvWeights(adEnvWeights),
       m_dMoveProb(0),
-      m_pMC(pMC) {
+    m_pMC(pMC),
+    m_pGeography(pCG->m_pGeography) {
 
     this->m_vNames.push_back(ATTR_CONDWEIGHTEDMOVE_PROB_NAME);
 }
@@ -75,7 +76,7 @@ int CondWeightedMove<T>::execute(int iAgentIndex, float fT) {
             if (iNewIndex > 0) {
 
                 int iNewCellIndex = this->m_pCG->m_aCells[iCellIndex].m_aNeighbors[iNewIndex-1];
-                if (!this->m_pCG->m_pGeography->m_abIce[iCellIndex]) {
+                if (!m_pGeography->m_abIce[iCellIndex]) {
                     // only move if MoveCondition allows it
                     if (m_pMC->allow(iCellIndex, iNewCellIndex)) {
                         this->m_pPop->registerMove(iCellIndex, iAgentIndex, iNewCellIndex);
