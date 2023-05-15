@@ -11,17 +11,19 @@
 #include "LineReader.h"
 #include "Sampling.h"
 #include "SamplingT.cpp"
-#include "CellSampling.h"
 #include "FullSampling.h"
-#include "RangeSampling.h"
+#include "EachSampling.h"
+#include "CellRangeSampling.h"
+#include "CoordRangeSampling.h"
+#include "GridRangeSampling.h"
 #include "HistoMaker.h"
 
 
 //----------------------------------------------------------------------------
 // createInstance
 //
-AgentDataHistoPie *AgentDataHistoPie::createInstance(std::string sQDFInputFile, std::string sPopName, std::string sDataItemName) {
-    AgentDataHistoPie *pADHP = new AgentDataHistoPie(sQDFInputFile, sPopName, sDataItemName);
+AgentDataHistoPie *AgentDataHistoPie::createInstance(std::string sQDFInputFile, std::string sPopName, std::string sDataItemName, bool bVerbose) {
+    AgentDataHistoPie *pADHP = new AgentDataHistoPie(sQDFInputFile, sPopName, sDataItemName, bVerbose);
     
     int iResult = pADHP->init();
     if (iResult != 0) {
@@ -56,15 +58,16 @@ AgentDataHistoPie::~AgentDataHistoPie() {
 //----------------------------------------------------------------------------
 // constructor
 //
-AgentDataHistoPie::AgentDataHistoPie(std::string sQDFInputFile, std::string sPopName, std::string sDataItemName) 
+AgentDataHistoPie::AgentDataHistoPie(std::string sQDFInputFile, std::string sPopName, std::string sDataItemName, bool bVerbose) 
     : m_sQDFInputFile(sQDFInputFile),
       m_sPopName(sPopName),
       m_sDataItemName(sDataItemName),
       m_iNumBins(0),
       m_iNumCells(0),
+      m_iNumDims(0),
       m_bSpherical(false),
       m_apCoords(NULL),
-      m_bVerbose(false) {
+      m_bVerbose(bVerbose) {
 
 }
 
@@ -92,14 +95,15 @@ int AgentDataHistoPie::init() {
 
 //----------------------------------------------------------------------------
 // extractData
-//
+//   fill extracted data into vector of pairs (cell id, value)
+// 
 int AgentDataHistoPie::extractData() {
     int iResult = -1;
 
     std::string sDSPath =  "/Populations/" + m_sPopName + "/AgentDataSet";
     Agent2DataExtractor *pADE = Agent2DataExtractor::createInstance(m_sQDFInputFile, sDSPath);
     if (pADE != NULL) {
-       
+        pADE->setVerbose(m_bVerbose);
         if (m_bVerbose) stdprintf("Extracting [%s]\n", m_sDataItemName);
         stringvec vItems;
         vItems.push_back("CellIdx");
@@ -114,9 +118,10 @@ int AgentDataHistoPie::extractData() {
         struct_manager *pSM = pADE->extractVarV(vItems);
         if (pSM != NULL) {
             int iNumItems = pADE->getNumItems();
+            if (m_bVerbose) stdprintf("Extracted %d items.\n", iNumItems);
             pSM->makeIndexedVals(iNumItems, m_vIndexedVals);
            
-            if (m_bVerbose) stdprintf("Got %zd values.\n", m_vIndexedVals.size());
+            if (m_bVerbose) stdprintf("Got %zd indexed values.\n", m_vIndexedVals.size());
             delete pSM;
         } else {
             stdprintf("Couldn't create struct manager\n");
@@ -148,6 +153,8 @@ double **AgentDataHistoPie::fillCoordMap() {
     if (iResult == 0) {
         m_bSpherical = (sType == GRID_STYPE_ICO) || (sType == GRID_STYPE_IEQ);
     }
+    m_iNumDims = m_bSpherical ? 3: 2; // ico grods require 3D pies, flat geometries need 2D pies
+
     QDFArray *pQA = QDFArray::create(m_sQDFInputFile);
     if (pQA != NULL) {
 
@@ -264,8 +271,11 @@ int AgentDataHistoPie::createSampling(std::string sSamplingInfo)  {
         
         if (pLine != NULL) {
             std::string sType = trim(pLine);
-            if (sType == "RangeSampling") {
-                pointrad pr;
+            if (sType == "CellRangeSampling") {
+                // CellRangeSampling:
+                // expect "<cellID> <range>
+                stdprintf("Using cell range sampling\n");
+                cellrad cr;
                 pLine = pLR->getNextLine(GNL_IGNORE_ALL);
                 while ((iResult == 0) && (pLine != NULL) && !pLR->isEoF()) {
                     iResult = -1; 
@@ -277,7 +287,7 @@ int AgentDataHistoPie::createSampling(std::string sSamplingInfo)  {
                         if (strToNum(vParts[0], &i0)) {
                             double d = 0.0;
                             if (strToNum(vParts[1], &d)) {
-                                pr.push_back(std::pair<int, double>(i0, d));
+                                cr.push_back(  std::pair<int, double>(i0, d));
                             } else {
                                 stdprintf("Expected double but got [%s}\n", vParts[1]);
                                 iResult = -1;
@@ -288,18 +298,154 @@ int AgentDataHistoPie::createSampling(std::string sSamplingInfo)  {
                             iResult = -1;
                         }
                     } else {
-                        stdprintf("Need at least 2 numbers for a range sampling entry\n");
+                        stdprintf("Need at least 2 numbers for a cell range sampling entry\n");
                     }
                     
                     pLine = pLR->getNextLine(GNL_IGNORE_ALL);
                 }
                 if (iResult ==0){
-                    pSamp = new RangeSampling(m_iNumCells, pr, m_apCoords[0], m_apCoords[1], 1.0, m_bSpherical);
+                    pSamp = new CellRangeSampling(m_iNumCells, m_apCoords, 1.0, m_bSpherical);
+                    pSamp->setRangeDescription(&cr);
                 }
-            }  else if  (sType == "CellSampling") {
-                pSamp = new CellSampling(m_iNumCells);
+            }  else if  (sType == "CoordRangeSampling") {
+                // CoordRangeSampling:
+                // expect "<coordX> <coordY> <range>
+                stdprintf("Using coord range sampling\n");
+                coordrad cr;
+                pLine = pLR->getNextLine(GNL_IGNORE_ALL);
+                while ((iResult == 0) && (pLine != NULL) && !pLR->isEoF()) {
+                    iResult = -1; 
+                    stringvec vParts;
+                    uint iNumParts = splitString(pLine, vParts, " ", false);
+                    if (iNumParts == 3) {
+                        iResult = 0;
+                        double dX = 0;
+                        if (strToNum(vParts[0], &dX)) {
+                            double dY = 0;
+                            if (strToNum(vParts[1], &dY)) {
+                                double d = 0.0;
+                                if (strToNum(vParts[2], &d)) {
+                                    cr.push_back(coorddata(dX, dY, d));
+                                } else {
+                                    stdprintf("Expected double but got [%s}\n", vParts[2]);
+                                    iResult = -1;
+                                }
+                            } else {
+                                stdprintf("Expected y-coord but got [%s}\n", vParts[1]);
+                            iResult = -1;
+                        }
+                            
+                        } else {
+                            stdprintf("Expected x-cood but got [%s}\n", vParts[0]);
+                            iResult = -1;
+                        }
+                    } else {
+                        stdprintf("Need at least 3 numbers for a coord range sampling entry\n");
+                    }
+                    
+                    pLine = pLR->getNextLine(GNL_IGNORE_ALL);
+                }
+                if (iResult ==0){
+                    pSamp = new CoordRangeSampling(m_iNumCells, m_apCoords, 1.0, m_bSpherical);
+                    pSamp->setRangeDescription(&cr);
+                }
+
             }  else if  (sType == "FullSampling") {
+                // FullSampling
+                // no params needed - one group containing all cells
+                
+                stdprintf("Using full sampling\n");
                 pSamp = new FullSampling(m_iNumCells);
+
+            }  else if  (sType == "EachSampling") {
+                // EachSampling
+                // no params needed - one group per cell
+                
+                stdprintf("Using 'each' sampling\n");
+                pSamp = new EachSampling(m_iNumCells);
+
+            }  else if  (sType == "GridRangeSampling") {
+                // GridRangeSampling
+                // expect <xmin> <min> <xstep> <ystep> <range>
+
+                stdprintf("Using grid range sampling\n");
+                griddef gd;
+                pLine = pLR->getNextLine(GNL_IGNORE_ALL);
+                while ((iResult == 0) && (pLine != NULL) && !pLR->isEoF()) {
+                    iResult = -1; 
+                    stringvec vParts;
+                    uint iNumParts = splitString(pLine, vParts, " ", false);
+                    if ((iNumParts == 7)|| (iNumParts == 4)) {
+                        iResult = 0;
+                        double dXMin = 0.0;
+                        if (strToNum(vParts[0], &dXMin)) {
+                            double dXMax = 0.0;
+                            if (strToNum(vParts[1], &dXMax)) {
+                                double dStepX = 0.0;
+                                if (strToNum(vParts[2], &dStepX)) {
+                                    double dYMin = 0;
+                                    double dYMax = 0;
+                                    double dStepY = 0;
+                                    double dRange = 0.0;
+                                    int iRangeIndex = 6;
+                                    if (iNumParts == 4) {
+                                        dYMin = dXMin;
+                                        dYMax = dXMax;
+                                        dStepY = dStepX;
+                                        iRangeIndex = 3;
+                                    } else {
+                                        
+                                        if (strToNum(vParts[3], &dYMin)) {
+                                            if (strToNum(vParts[4], &dYMax)) {
+                                                if (strToNum(vParts[5], &dStepY)) {
+                                                    iResult = 0;
+                                                
+                                                } else {
+                                                    stdprintf("Expected stepY (double) but got [%s}\n", vParts[5]);
+                                                    iResult = -1;
+                                                }
+                                            } else {
+                                                stdprintf("Expected maxY (double) but got [%s}\n", vParts[4]);
+                                                iResult = -1;
+                                            }
+                                        } else {
+                                            stdprintf("Expected minY (double) but got [%s}\n", vParts[3]);
+                                            iResult = -1;
+                                        }
+                                    }
+                                    if (iResult == 0) {
+                                        
+                                        if (strToNum(vParts[iRangeIndex], &dRange)) {
+                                            gd.push_back(griddata(dXMin, dXMax, dStepX, dYMin, dYMax, dStepY, dRange));
+                                        } else {
+                                            stdprintf("Expected range (double) but got [%s}\n", vParts[6]);
+                                            iResult = -1;
+                                        }
+                                    }
+                                } else {
+                                    stdprintf("Expected stepX (double) but got [%s}\n", vParts[3]);
+                                    iResult = -1;
+                                }
+                            } else {
+                                stdprintf("Expected maxX (double) but got [%s}\n", vParts[1]);
+                                iResult = -1;
+                            }
+                                
+                        } else {
+                            stdprintf("Expected minX (double) but got [%s}\n", vParts[0]);
+                            iResult = -1;
+                        }
+                    } else {
+                        stdprintf("Need at least 7 numbers for a grid range sampling entry\n");
+                    }
+                    
+                    pLine = pLR->getNextLine(GNL_IGNORE_ALL);
+                }
+
+                if (iResult == 0) {
+                    pSamp = new GridRangeSampling(m_iNumCells, m_apCoords, 1.0, m_bSpherical);
+                    pSamp->setRangeDescription(&gd);
+                }
             } else {
                 stdprintf("Unknown sampling type [%s]\n", sType);
             }
@@ -308,6 +454,7 @@ int AgentDataHistoPie::createSampling(std::string sSamplingInfo)  {
         if (pSamp != NULL) {
             pSamp->setVerbosity(m_bVerbose);
             iResult = pSamp->groupValues(m_vIndexedVals, m_vGroupedVals);
+            //pSamp->showSamples();
             delete pSamp;
         }
 
@@ -408,10 +555,10 @@ int AgentDataHistoPie::writePie(const std::string sQDFOutputFile) {
 
     if (m_bVerbose) stdprintf("writing pie output");
 
-    PieWriter *pPW = PieWriter::createInstance(m_sDataItemName, m_mHistos, m_iNumBins);
+    PieWriter *pPW = PieWriter::createInstance(m_sDataItemName, m_mHistos, m_iNumBins, m_iNumDims);
     if (pPW != NULL) {
         pPW->setVerbosity(m_bVerbose);
-        iResult = pPW->prepareData(m_iNumCells, m_apCoords[0], m_apCoords[1], true, 6371);
+        iResult = pPW->prepareData(m_iNumCells, m_apCoords[0], m_apCoords[1], m_bSpherical, 6371);
         if (iResult == 0) {
             iResult = pPW->writeToQDF(sQDFOutputFile);
             if (iResult == 0) {

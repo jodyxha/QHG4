@@ -163,18 +163,18 @@ int GridFactory::createEmptyQDF(const std::string sIGNFile) {
         stdprintf("Initializing Geography...\n");
         //        geonumber dRadius = 6371.3;
         int iMaxNeigh     = MAX_ICO_NEIGHBORS;
-        m_pGeo = new Geography(m_iNumCells, iMaxNeigh, m_dRadius);  // create geography
+        m_pGeo = new Geography(m_pCG, m_iNumCells, iMaxNeigh, m_dRadius);  // create geography
         iResult = initializeGeography(pIGN);
     }
     if (iResult == 0) {
         stdprintf("Initializing Climate...\n");
         int iNumSeasons = 0;
-        m_pClimate = new Climate(m_iNumCells, iNumSeasons, m_pGeo);
+        m_pClimate = new Climate(m_pCG, m_iNumCells, iNumSeasons);
         int iNumVegSpecies = 0;
         stdprintf("Initializing Vegetation...\n");
-        m_pVeg = new Vegetation(m_iNumCells, iNumVegSpecies, m_pGeo, m_pClimate);
+        m_pVeg = new Vegetation(m_pCG, m_iNumCells, iNumVegSpecies);
         stdprintf("Initializing Navigation...\n");
-        m_pNav = new Navigation();
+        m_pNav = new Navigation(m_pCG);
     }
     if (iResult == 0) {
         stdprintf("adding groups to cellgreid...\n");
@@ -758,11 +758,11 @@ int GridFactory::setGrid(const stringvec &vParams) {
     }
 
     if (iResult == 0) {
-        m_pClimate = new Climate(m_iNumCells, 0, m_pGeo);
+        m_pClimate = new Climate(m_pCG, m_iNumCells, 0);
         m_pCG->setClimate(m_pClimate);
-        m_pVeg = new Vegetation(m_iNumCells, 0, m_pGeo, m_pClimate);
+        m_pVeg = new Vegetation(m_pCG, m_iNumCells, 0);
         m_pCG->setVegetation(m_pVeg);
-        m_pNav = new Navigation();
+        m_pNav = new Navigation(m_pCG);
         m_pCG->setNavigation(m_pNav);
     }
     return iResult;
@@ -922,7 +922,7 @@ int GridFactory::setGridIco(const stringvec &vParams) {
         // build geography
         if (iResult == 0) {
             int iMaxNeigh = MAX_ICO_NEIGHBORS;
-            m_pGeo = new Geography(m_iNumCells, iMaxNeigh, m_dRadius);  // create geography
+            m_pGeo = new Geography(m_pCG, m_iNumCells, iMaxNeigh, m_dRadius);  // create geography
             m_pCG->setGeography(m_pGeo);
             initializeGeography(pIGN);
         }
@@ -1031,7 +1031,7 @@ int GridFactory::setGridFlat(const stringvec &vParams) {
         if (iResult == 0) {
             geonumber dRadius = 0.0;
             int iMaxNeigh =bHex ? HEX_NEIGHBORS : RECT_NEIGHBORS;
-            m_pGeo = new Geography(m_iNumCells, iMaxNeigh, dRadius);  // create geography
+            m_pGeo = new Geography(m_pCG, m_iNumCells, iMaxNeigh, dRadius);  // create geography
             m_pCG->setGeography(m_pGeo);
             initializeGeography(iW, iH, bHex);
             

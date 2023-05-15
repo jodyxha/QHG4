@@ -2,7 +2,7 @@
 #include <cstring>
 #include <cmath>
 #include "types.h"
-#include "Geography.h"
+#include "Environment.h"
 
 //#include "SeasonProvider.h"
 
@@ -17,11 +17,11 @@
 //-----------------------------------------------------------------------------
 // constructor
 //
-Climate::Climate(uint iNumCells, climatecount iNumSeasons, Geography *pGeography)
-    : m_bUpdated(true),
+Climate::Climate(SCellGrid *pCG, uint iNumCells, climatecount iNumSeasons)
+    : Environment(pCG),
+      m_bUpdated(true),
       m_iNumCells(iNumCells),     
-      m_iNumSeasons(iNumSeasons), 
-      m_pGeography(pGeography),
+      m_iNumSeasons(iNumSeasons),
       m_iSeasonMonths(0),
       m_iCurSeason(0),
       m_adActualTemps(NULL),

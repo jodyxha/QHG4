@@ -21,24 +21,16 @@ COPT=-c $< -I $(UTILS) -o $@ $(CADD) $(CFLAGS) $(C_STD) $(CRAY_DEF) $(DYN) $(COM
 
 ARFL=rv
 
-ifneq ("X$(SHORT)", "X")
-    ifneq  ("X$(DYN_POP)", "X")
-        POST0=cp *.o libPopulations.a ../populations/; echo "copied"
-    else
-        POST0=cp libPopulations.a ../populations/; echo "copied"
-    endif
-else
-    POST0=echo "ok"
-endif
+#ifneq ("X$(SHORT)", "X")
+#    ifneq  ("X$(DYN_POP)", "X")
+#        POST0=cp *.o libPopulations.a ../populations/; echo "copied"
+#    else
+#        POST0=cp libPopulations.a ../populations/; echo "copied"
+#    endif
+#else
+#    POST0=echo "ok"
+#endif
 
-ifneq  ("X$(DYN_POP)", "X")
-	ARCH=
-else
-	ARCH=$(POPS)
-endif
-
-POPSRC=$(wildcard *Pop.cpp)
-POPS=$(POPSRC:.cpp=.o)
 
 all: stubs
 	$(POST0)
@@ -46,10 +38,13 @@ all: stubs
 CONFIGURE:
 	$(PLUGIN_STUB)/svn_configure.sh
 
-lib: CONFIGURE libPluginStub.a
+MAKELINKS:
+	$(PLUGIN_STUB)/make_links.py
+
+lib: MAKELINKS CONFIGURE libPluginStub.a
 	$(POST0)
 
-stubs: CONFIGURE libPluginStub.a
+stubs: MAKELINKS CONFIGURE libPluginStub.a
 
 
 DynPopFactory.o: DynPopFactory.cpp DynPopFactory.h PopulationFactory.h
@@ -63,7 +58,7 @@ libPluginStub.a:  DynPopFactory.o Action.o
 	ar $(ARFL) $@ $?
 
 clean:
-	rm -f *.o libPopulations.a *.ti StatPopFactory.cpp
+	rm -f *.o libPluginStub.a *.h *.cpp
 
 
 

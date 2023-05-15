@@ -73,6 +73,7 @@ int **HistoMaker::createHistos(double dMin, double dMax, int iNumBins, bool bStr
     uint iCurIndex = 0;
     typename groupedvals<double>::const_iterator it;
     for (it = m_vGroupedVals.begin(); it != m_vGroupedVals.end(); ++it) {
+        printf("[HistoMaker::createHistos] histo #%d for %d...\n", iCurIndex, it->first);
         createSingleHisto(iCurIndex, it->second);
         iCurIndex++;
     }
@@ -88,6 +89,7 @@ int **HistoMaker::createHistos(double dMin, double dMax, int iNumBins, bool bStr
 int HistoMaker::createSingleHisto(uint iIndex, const std::vector<double> &vVals) {
     int iResult = 0;
 
+    printf("creating histo for  %u (%zd elements)\n", iIndex, vVals.size());
     for (uint k = 0; k < vVals.size(); k++) {
         bool bInRange = true;
         double r = m_iNumBins *(vVals[k]-m_dMin)/(m_dMax - m_dMin);
@@ -107,6 +109,7 @@ int HistoMaker::createSingleHisto(uint iIndex, const std::vector<double> &vVals)
             m_iNumOutsideRange++;
         }
     }
+    
 
     return iResult;
 }
@@ -135,13 +138,14 @@ void HistoMaker::showHistos(maphistos &mH) {
         }
         stdprintf("%f)\n", dMin);
     }
+
     stdprintf("Above: %zd (up to ", m_vAbove.size());
-        double dMax = m_dMax;
-        for (uint i = 0; i < m_vAbove.size(); i++) {
-            if (m_vAbove[i] < dMax) {
-                dMax = m_vAbove[i];
-            }
+    double dMax = m_dMax;
+    for (uint i = 0; i < m_vAbove.size(); i++) {
+        if (m_vAbove[i] < dMax) {
+            dMax = m_vAbove[i];
         }
-        stdprintf("%f)\n", dMax);
+    }
+    stdprintf("%f)\n", dMax);
 }
 

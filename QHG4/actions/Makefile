@@ -17,7 +17,7 @@ ifndef ARFL
 endif
 
 
-COPT=-c $< -I $(UTILS) -o $@ $(CADD) $(CFLAGS) $(C_STD) $(CRAY_DEF) $(DYN) $(COMP)
+COPT=-c $< -I $(UTILS) -o $@ $(CADD) $(CFLAGS) $(C_STD) $(CRAY_DEF) $(DYN) $(COMP) 
 
 $(warning DEFS in actions is $(DEFS))
 

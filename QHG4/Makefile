@@ -169,6 +169,10 @@ QHGMainTemp:
 	$(MAKE) all && \
 	$(MAKE) --directory=$(MAINAPP) QHGMainTemp
 
+QHGMainDynExp: 
+	$(MAKE) all && \
+	$(MAKE) --directory=$(MAINAPP) QHGMainDynExp
+
 QHGMain_so: 
 	$(MAKE) all && \
 	$(MAKE) --directory=$(MAINAPP) QHGMain_so

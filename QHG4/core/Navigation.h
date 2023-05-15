@@ -6,6 +6,9 @@
 #include "types.h"
 #include "Environment.h"
 
+const std::string ENV_NAV = "navigation";
+
+class CellGrid;
 // target node => distance
 typedef std::map<gridtype, double>   distlist;
 
@@ -18,7 +21,7 @@ typedef std::vector<bridgedef>        bridgelist;
 
 class Navigation : public Environment {
 public:
-    Navigation();
+    Navigation(SCellGrid *pCG);
     virtual ~Navigation();
     int setData(const distancemap &mDests, double dSampleDist);
     int setBridges(const bridgelist &vBridges);

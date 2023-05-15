@@ -87,8 +87,8 @@ int main(int iArgC, char *apArgV[]) {
             
         } else {
             if (iResult == 3) {
-                stdprintf("%susage%s: %d\n", colors::RED, colors::OFF, PARAMREADER_ERR_MANDATORY_MISSING);
-                stdprintf("%s", colors::RED);
+                stdprintf("%susage%s: %d\n", colors::HIRED, colors::OFF, PARAMREADER_ERR_MANDATORY_MISSING);
+                stdprintf("%s", colors::HIRED);
                 Simulator::helpParams();
                 stdprintf("%s\n", colors::OFF);
             } else if (iResult == 2) {
@@ -99,8 +99,8 @@ int main(int iArgC, char *apArgV[]) {
         MessLogger::free();
        
     } else {
-        stdprintf("%susage%s\n", colors::RED, colors::OFF);
-        stdprintf("%s", colors::RED);
+        stdprintf("%susage%s\n", colors::HIRED, colors::OFF);
+        stdprintf("%s", colors::HIRED);
         Simulator::helpParams();
         stdprintf("%s\n", colors::OFF);
         

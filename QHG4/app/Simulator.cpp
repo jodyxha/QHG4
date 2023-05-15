@@ -154,7 +154,7 @@ int Simulator::preLoop()  {
             for (uint i = 0; i < m_pCG->m_iNumCells; i++) {
                 vCellIDs.push_back(i);
             }
-            m_pOcc = OccTracker::createInstance(vCellIDs, m_pPopLooper);
+            m_pOcc = OccTracker::createInstance(m_pCG, vCellIDs, m_pPopLooper);
             m_pCG->setOccTracker(m_pOcc);
         }
 

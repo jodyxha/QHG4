@@ -5,6 +5,8 @@
 #include "Observable.h"
 #include "Environment.h"
 
+class SCellGrid;
+
 typedef uchar   climatecount;
 typedef double  climatenumber;
 
@@ -13,9 +15,11 @@ class Geography;
 
 #define EVT_CLIMATE_CHANGE 1001
 
+const std::string ENV_CLI     = "climate";
+
 class Climate : public Environment, public Observable {
 public:
-    Climate(uint iNumCells, climatecount iNumSeasons, Geography *pGeography);
+    Climate(SCellGrid *pCG, uint iNumCells, climatecount iNumSeasons);
 
     virtual ~Climate();
 
@@ -29,8 +33,6 @@ public:
     bool         m_bUpdated;
     uint         m_iNumCells;        // number of cells
     climatecount m_iNumSeasons;      // number of seasons
-
-    Geography   *m_pGeography;
 
     climatecount m_iSeasonMonths;    // season size in months (1,2,3,4,6,12)
     climatecount m_iCurSeason;       // current season 0,...m_iSeasonStep-1

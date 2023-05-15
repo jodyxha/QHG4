@@ -39,24 +39,31 @@ clean:
 new: clean app
 
 
+
 Sampling.o: Sampling.cpp Sampling.h
 	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
 
 FullSampling.o: FullSampling.cpp FullSampling.h  Sampling.h
 	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
 
-CellSampling.o: CellSampling.cpp CellSampling.h Sampling.h
+EachSampling.o: EachSampling.cpp EachSampling.h  Sampling.h
 	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
 
-RangeSampling.o: RangeSampling.cpp RangeSampling.h Sampling.h SamplingT.cpp
+CoordRangeSampling.o: CoordRangeSampling.cpp CoordRangeSampling.h Sampling.h
 	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
 
-SamplingTest.o: SamplingTest.cpp Sampling.h  FullSampling.h  CellSampling.h RangeSampling.h
+CellRangeSampling.o: CellRangeSampling.cpp CellRangeSampling.h Sampling.h SamplingT.cpp
 	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
 
-SamplingTest: SamplingTest.o Sampling.o FullSampling.o CellSampling.o RangeSampling.o
+GridRangeSampling.o: GridRangeSampling.cpp GridRangeSampling.h Sampling.h SamplingT.cpp
+	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
+
+SamplingTest.o: SamplingTest.cpp Sampling.h  FullSampling.h  CoordRangeSampling.h CellRangeSampling.h
+	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
+
+SamplingTest: SamplingTest.o Sampling.o FullSampling.o EachSampling.o CoordRangeSampling.o CellRangeSampling.o
 	$(CC) $(COMP) -o SamplingTest \
-        SamplingTest.o Sampling.o FullSampling.o CellSampling.o RangeSampling.o \
+        SamplingTest.o Sampling.o FullSampling.o EachSampling.o CoordRange.o CellRangeSampling.o \
 	-L$(IO)       -lIO \
 	-L$(UTILS)    -lUtils
 
@@ -93,36 +100,56 @@ PieWriter.o: PieWriter.cpp PieWriter.h Sampling.h
 	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
 
 
-a2dsamptest.o: a2dsamptest.cpp Agent2DataExtractor.h Sampling.h  FullSampling.h  CellSampling.h RangeSampling.h
+a2dsamptest.o: a2dsamptest.cpp Agent2DataExtractor.h  Sampling.h  FullSampling.h EachSampling.h  CoordRangeSampling.h CellRangeSampling.h
 	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
 
-a2dsamptest: a2dsamptest.o  Agent2DataExtractor.o  Sampling.o FullSampling.o CellSampling.o RangeSampling.o HistoMaker.o PieWriter.o
+a2dsamptest: a2dsamptest.o  Agent2DataExtractor.o Sampling.o FullSampling.o EachSampling.o CoordRangeSampling.o CellRangeSampling.o HistoMaker.o PieWriter.o
 	$(CC) $(COMP) -o a2dsamptest \
-        a2dsamptest.o Agent2DataExtractor.o Sampling.o FullSampling.o CellSampling.o RangeSampling.o HistoMaker.o PieWriter.o \
+        a2dsamptest.o Agent2DataExtractor.o Sampling.o FullSampling.o EachSampling.o CoordRangeSampling.o CellRangeSampling.o HistoMaker.o PieWriter.o \
 	-L$(IO)       -lIO \
 	-L$(UTILS)    -lUtils \
         -lhdf5 -std=c++20
 
-makeAgentDataHistoPie.o: makeAgentDataHistoPie.cpp Agent2DataExtractor.h Sampling.h  FullSampling.h  CellSampling.h RangeSampling.h
+makeAgentDataHistoPie.o: makeAgentDataHistoPie.cpp Agent2DataExtractor.h  Sampling.h  FullSampling.h EachSampling.h  CoordRangeSampling.h CellRangeSampling.h
 	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
 
-makeAgentDataHistoPie: makeAgentDataHistoPie.o  Agent2DataExtractor.o  Sampling.o FullSampling.o CellSampling.o RangeSampling.o HistoMaker.o PieWriter.o
+makeAgentDataHistoPie: makeAgentDataHistoPie.o  Agent2DataExtractor.o   Sampling.o FullSampling.o EachSampling.o CoordRangeSampling.o CellRangeSampling.o HistoMaker.o PieWriter.o
 	$(CC) $(COMP) -o makeAgentDataHistoPie \
-        makeAgentDataHistoPie.o Agent2DataExtractor.o Sampling.o FullSampling.o CellSampling.o RangeSampling.o HistoMaker.o PieWriter.o \
+        makeAgentDataHistoPie.o Agent2DataExtractor.o  Sampling.o FullSampling.o EachSampling.o CoordRangeSampling.o CellRangeSampling.o HistoMaker.o PieWriter.o \
 	-L$(IO)       -lIO \
 	-L$(UTILS)    -lUtils \
         -lhdf5 -lz -std=c++20
 
-AgentDataHistoPie.o: AgentDataHistoPie.cpp AgentDataHistoPie.h Agent2DataExtractor.h Sampling.h  FullSampling.h  CellSampling.h RangeSampling.h HistoMaker.h PieWriter.h
+AgentDataHistoPie.o: AgentDataHistoPie.cpp AgentDataHistoPie.h Agent2DataExtractor.h  Sampling.h  FullSampling.h  EachSampling.h CoordRangeSampling.h CellRangeSampling.h HistoMaker.h PieWriter.h
 	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
 
-adhp.o: adhp.cpp AgentDataHistoPie.h Agent2DataExtractor.h Sampling.h  FullSampling.h  CellSampling.h RangeSampling.h HistoMaker.h PieWriter.h
+adhp.o: adhp.cpp AgentDataHistoPie.h Agent2DataExtractor.h  Sampling.h  FullSampling.h EachSampling.h  CoordRangeSampling.h CellRangeSampling.h HistoMaker.h PieWriter.h
 	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
 
-adhp: adhp.o  AgentDataHistoPie.o Agent2DataExtractor.o  Sampling.o FullSampling.o CellSampling.o RangeSampling.o HistoMaker.o PieWriter.o
+adhp: adhp.o  AgentDataHistoPie.o Agent2DataExtractor.o  Sampling.o FullSampling.o EachSampling.o CoordRangeSampling.o CellRangeSampling.o GridRangeSampling.o HistoMaker.o PieWriter.o
 	$(CC) $(COMP) -o adhp \
-        adhp.o AgentDataHistoPie.o Agent2DataExtractor.o Sampling.o FullSampling.o CellSampling.o RangeSampling.o HistoMaker.o PieWriter.o \
+        adhp.o AgentDataHistoPie.o Agent2DataExtractor.o  Sampling.o FullSampling.o EachSampling.o CoordRangeSampling.o CellRangeSampling.o GridRangeSampling.o HistoMaker.o PieWriter.o \
+        -L$(IO)       -lIO \
+        -L$(UTILS)    -lUtils \
+        -lhdf5 -lz -std=c++20
+
+HistoMaker_multi.o: HistoMaker_multi.cpp HistoMaker_multi.h Sampling.h
+	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
+
+PieWriter_multi.o: PieWriter_multi.cpp PieWriter_multi.h Sampling.h
+	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
+
+AgentDataHistoPie_multi.o: AgentDataHistoPie_multi.cpp AgentDataHistoPie_multi.h Agent2DataExtractor.h  Sampling.h  FullSampling.h  EachSampling.h CoordRangeSampling.h CellRangeSampling.h HistoMaker_multi.h PieWriter_multi.h
+	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
+
+adhp_multi.o: adhp_multi.cpp AgentDataHistoPie_multi.h Agent2DataExtractor.h  Sampling.h  FullSampling.h EachSampling.h  CoordRangeSampling.h CellRangeSampling.h HistoMaker_multi.h PieWriter_multi.h
+	$(CC) $(COPT) $(DEFS)  -I$(UTILS) -I$(IO)
+
+adhp_multi: adhp_multi.o  AgentDataHistoPie_multi.o Agent2DataExtractor.o  Sampling.o FullSampling.o EachSampling.o CoordRangeSampling.o CellRangeSampling.o GridRangeSampling.o HistoMaker_multi.o PieWriter_multi.o
+	$(CC) $(COMP) -o adhp_multi \
+        adhp_multi.o AgentDataHistoPie_multi.o Agent2DataExtractor.o  Sampling.o FullSampling.o EachSampling.o CoordRangeSampling.o CellRangeSampling.o GridRangeSampling.o HistoMaker_multi.o PieWriter_multi.o \
 	-L$(IO)       -lIO \
 	-L$(UTILS)    -lUtils \
         -lhdf5 -lz -std=c++20
+
 

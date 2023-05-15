@@ -2,14 +2,16 @@
 #include <cstring>
 #include <omp.h>
 
+#include "SCellGrid.h"
 #include "Navigation.h"
 
 
 //-----------------------------------------------------------------------------
 // constructor
 //
-Navigation::Navigation()
-    : m_iNumPorts(0),
+Navigation::Navigation(SCellGrid *pCG)
+    : Environment(pCG),
+      m_iNumPorts(0),
       m_iNumDests(0),
       m_iNumDists(0),
       m_dSampleDist(0),

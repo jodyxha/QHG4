@@ -11,7 +11,7 @@
 
 class AgentDataHistoPie {
 public:
-    static AgentDataHistoPie *createInstance(std::string sQDFInputFile, std::string sPopName, std::string sDataItemName);
+    static AgentDataHistoPie *createInstance(std::string sQDFInputFile, std::string sPopName, std::string sDataItemName, bool bVerbose=false);
     virtual ~AgentDataHistoPie();
 
     int createSampling(const std::string sSamplingInfo); 
@@ -22,7 +22,7 @@ public:
 
     int setVerbosity(bool bVerbosity) { bool bOldV =m_bVerbose; m_bVerbose = bVerbosity; return bOldV;};
 public:
-    AgentDataHistoPie(std::string sQDFInputFile, std::string sPopName, std::string sDataItemName);
+    AgentDataHistoPie(std::string sQDFInputFile, std::string sPopName, std::string sDataItemName, bool bVerbose=false);
 
     int init();
     int extractData();
@@ -36,10 +36,12 @@ public:
     double m_dMaxVal;
     uint   m_iNumBins;
 
+
     indexedvals<double> m_vIndexedVals;;
     groupedvals<double> m_vGroupedVals;
 
     uint   m_iNumCells;
+    uint   m_iNumDims;
     bool m_bSpherical;
                       
     double **m_apCoords;

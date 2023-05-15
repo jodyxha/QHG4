@@ -20,9 +20,10 @@
 //-----------------------------------------------------------------------------
 // constructor
 //
-Geography::Geography(uint iNumCells, uint iMaxNeighbors, geonumber dRadius, geonumber dSeaLevel) 
-    : m_bUpdated(true),
-	  m_iNumCells(iNumCells),
+Geography::Geography(SCellGrid *pCG, uint iNumCells, uint iMaxNeighbors, geonumber dRadius, geonumber dSeaLevel) 
+    : Environment(pCG),
+      m_bUpdated(true),
+      m_iNumCells(iNumCells),
       m_iMaxNeighbors(iMaxNeighbors),
       m_dRadius(dRadius),
       m_dSeaLevel(0), 
@@ -37,11 +38,35 @@ Geography::Geography(uint iNumCells, uint iMaxNeighbors, geonumber dRadius, geon
     
     init(iNumCells, iMaxNeighbors, dRadius, dSeaLevel);
 }
+
+//-----------------------------------------------------------------------------
+// constructor
+//
+Geography::Geography(SCellGrid *pCG)
+    : Environment(pCG),
+      m_bUpdated(true),
+      m_iNumCells(pCG->m_iNumCells),
+      m_iMaxNeighbors(pCG->m_iConnectivity),
+      m_dRadius(1.0),
+      m_dSeaLevel(0.0), 
+      m_adLatitude(NULL),
+      m_adLongitude(NULL),
+      m_adAltitude(NULL), 
+      m_adDistances(NULL),
+      m_adArea(NULL),     
+      m_abIce(NULL),
+      m_adWater(NULL),     
+      m_adAngles(NULL) {
+    
+    init(pCG->m_iNumCells, pCG->m_iConnectivity, 1.0, 0.0);
+}
+
 //-----------------------------------------------------------------------------
 // constructor
 //
 Geography::Geography() 
-    : m_iNumCells(0),
+    : Environment(NULL),
+      m_iNumCells(0),
       m_iMaxNeighbors(0),
       m_dRadius(0),
       m_dSeaLevel(0), 
@@ -57,7 +82,7 @@ Geography::Geography()
 }
 
 //-----------------------------------------------------------------------------
-// destructor
+// init
 //
 int Geography::init(uint iNumCells, uint iMaxNeighbors, geonumber dRadius, geonumber dSeaLevel) {
     m_iNumCells     = iNumCells;
@@ -139,12 +164,12 @@ Geography::~Geography() {
 //    pi    : west
 //   -pi/2  : south
 //
-void Geography::calcAngles(SCellGrid* pCG) {
+void Geography::calcAngles() {
     m_adAngles = new geonumber[m_iNumCells*m_iMaxNeighbors];
     memset(m_adAngles, 111, m_iNumCells*m_iMaxNeighbors*sizeof(geonumber));
     for (uint i = 0; i < m_iNumCells; i++) {
-        int iIndex = pCG->m_mIDIndexes[i];
-        SCell &sc = pCG->m_aCells[iIndex];
+        int iIndex = m_pCG->m_mIDIndexes[i];
+        SCell &sc = m_pCG->m_aCells[iIndex];
         /*********/
         double dLon0 = m_adLongitude[iIndex];
         double dLat0 = m_adLatitude[iIndex];

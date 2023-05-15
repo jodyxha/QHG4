@@ -1,0 +1,5 @@
+CoordRangeSampling
+# <xcoord> <ycoord> <range>
+ 20 50 5
+ 10 30 7
+ 50 10 6

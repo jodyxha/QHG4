@@ -1,6 +1,7 @@
 #ifndef __VEGETATION_H__
 #define __VEGETATION_H__
 
+#include <string>
 #include "Environment.h"
 
 class Geography;
@@ -9,10 +10,12 @@ class SCellGrid;
 
 typedef double         veginumber;
 
+const std::string ENV_VEG     = "vegetation";
+
 
 class Vegetation : public Environment {
  public:
-    Vegetation(uint iNumCells, int iNumVegSpecies, Geography *pGeography, Climate *pClimate);
+    Vegetation(SCellGrid *pCG, uint iNumCells, int iNumVegSpecies);
     virtual ~Vegetation();
     
     uint m_iNumCells;
@@ -26,8 +29,6 @@ class Vegetation : public Environment {
     void resetUpdated() {};
  protected:
     double m_fPreviousTime;    
-    Geography *m_pGeography;
-    Climate   *m_pClimate;
 
 };
 

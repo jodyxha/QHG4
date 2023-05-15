@@ -7,9 +7,8 @@
 #include <iostream>
 
 #include "hdf5.h"
+#include "Sampling.h"
 
-template<typename T>
-using indexedvals = std::vector<std::pair<int, T>>;
 
 //----------------------------------------------------------------------------
 // val_struct1
@@ -135,7 +134,7 @@ public:
             for (int i = 0; i < iNum; i++) {
                 int iIndex = static_cast<int>(m_pVals[i].m_tVal);
                 double dVal = (double)m_pVals[i].m_uVal;
-                vIndexedVals.push_back(std::pair<int, double>(iIndex, dVal));
+                vIndexedVals.push_back(refval(iIndex, dVal));
             }
         } else {
             // error

@@ -1,19 +1,24 @@
 #ifndef __GEOGRAPHY_H__
 #define __GEOGRAPHY_H__
 
+#include <string>
+
 #include "Environment.h"
 
 class SCellGrid;
 
 typedef double geonumber;
 
+const std::string ENV_GEO     = "geography";
+
 class Geography : public Environment {
 public:
-    Geography(uint iNumCells, uint iMaxNeighbors, geonumber dRadius, geonumber dSeaLevel=0);
+    Geography(SCellGrid *pCG, uint iNumCells, uint iMaxNeighbors, geonumber dRadius, geonumber dSeaLevel=0);
+    Geography(SCellGrid *pCG);
     Geography();
     virtual ~Geography();
 
-    int init(uint iNumCells, uint iMaxNeighbors, geonumber dRadius, geonumber dSeaLevel);
+    int init(uint iNumCells, uint iMaxNeighbors, geonumber dRadius, geonumber dSeaLevel=0);
 
 
     //global values
@@ -35,7 +40,7 @@ public:
                                 // this must be calculated
   
     // additionals
-    void calcAngles(SCellGrid* pCG);
+    void calcAngles();
 	inline void resetUpdated() { m_bUpdated = false; };
 };
 

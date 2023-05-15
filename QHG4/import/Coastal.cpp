@@ -62,7 +62,7 @@ SCellGrid *createCellGrid(const std::string sQDFFile) {
                         GeoAttributes geoatt;
                         iResult = pGeoR->readAttributes(&geoatt);
                         if (iResult == 0) {
-                            Geography *pGeo = new Geography(geoatt.m_iNumCells, geoatt.m_iMaxNeighbors, geoatt.m_dRadius);
+                            Geography *pGeo = new Geography(pCG, geoatt.m_iNumCells, geoatt.m_iMaxNeighbors, geoatt.m_dRadius);
                             
                             iResult = pGeoR->readData(pGeo);
                             if (iResult == 0) {

@@ -10,14 +10,15 @@
 #include "stdstrutilsT.h"
 #include "PopBase.h"
 #include "PopLooper.h"
+#include "SCellGrid.h"
 #include "OccHistory.h"
 #include "OccTracker.h"
 
 //----------------------------------------------------------------------------
 //  creeateInstance
 //
-OccTracker *OccTracker::createInstance(intvec &vCellIDs, PopLooper *pPL) {
-    OccTracker *pOC = new OccTracker(vCellIDs);
+OccTracker *OccTracker::createInstance(SCellGrid *pCG, intvec &vCellIDs, PopLooper *pPL) {
+    OccTracker *pOC = new OccTracker(pCG, vCellIDs);
     int iResult = pOC->init(pPL);
     if (iResult != 0) {
         delete pOC;
@@ -56,8 +57,9 @@ int OccTracker::updateCounts(float fT) {
 //----------------------------------------------------------------------------
 //  constructor
 //
-OccTracker::OccTracker(intvec vCellIDs)
-    : m_vCellIDs(vCellIDs),
+OccTracker::OccTracker(SCellGrid *pCG, intvec vCellIDs)
+    : Environment(pCG),
+      m_vCellIDs(vCellIDs),
       m_pOH(NULL) {
 
 }

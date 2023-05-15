@@ -984,7 +984,7 @@ int SimParams::setGeo(hid_t hFile, bool bRequired, bool bUpdate /* = false */) {
              if (geoatt.m_iMaxNeighbors == (uint)m_pCG->m_iConnectivity) {
                  if (geoatt.m_iNumCells == (uint)m_pCG->m_iNumCells) {
                      if (!bUpdate) {
-                         m_pGeo = new Geography(geoatt.m_iNumCells, geoatt.m_iMaxNeighbors, geoatt.m_dRadius);
+                         m_pGeo = new Geography(m_pCG, geoatt.m_iNumCells, geoatt.m_iMaxNeighbors, geoatt.m_dRadius);
                      } else {
                          m_pGeo = m_pCG->m_pGeography;
                      }
@@ -1019,7 +1019,7 @@ int SimParams::setGeo(hid_t hFile, bool bRequired, bool bUpdate /* = false */) {
      }
 
     if (m_bCalcGeoAngles && (iResult == 0)) {
-        m_pGeo->calcAngles(m_pCG);
+        m_pGeo->calcAngles();
     }
 
     return iResult;
@@ -1065,7 +1065,7 @@ int SimParams::setClimate(hid_t hFile, bool bRequired, bool bUpdate /* = false *
             if (climatt.m_iNumCells == m_pCG->m_iNumCells) {
 
                 if (!bUpdate) {
-                    m_pCli = new Climate(climatt.m_iNumCells, climatt.m_iNumSeasons, m_pGeo);
+                    m_pCli = new Climate(m_pCG, climatt.m_iNumCells, climatt.m_iNumSeasons);
                 } else {
                     m_pCli = m_pCG->m_pClimate;
                 }
@@ -1143,7 +1143,7 @@ int SimParams::setVeg(hid_t hFile, bool bRequired, bool bUpdate /* = false */) {
 
             if (vegatt.m_iNumCells == m_pCG->m_iNumCells) {
                 if (!bUpdate) {
-                    m_pVeg = new Vegetation(vegatt.m_iNumCells, vegatt.m_iNumVegSpc, m_pCG->m_pGeography, m_pCG->m_pClimate);
+                    m_pVeg = new Vegetation(m_pCG, vegatt.m_iNumCells, vegatt.m_iNumVegSpc);
                 } else {
                     m_pVeg = m_pCG->m_pVegetation;
                 }
@@ -1216,7 +1216,7 @@ int SimParams::setNav(hid_t hFile, bool bUpdate) {
             //@@            LOG_STATUS2("[setVeg] VegReader attributes read (numspc: %d, numcells:%d)\n", iNumVegSpc, iNumCells);
             
             if (!bUpdate) {
-                m_pNav = new Navigation();
+                m_pNav = new Navigation(m_pCG);
             } else {
                 m_pNav = m_pCG->m_pNavigation;
             }
@@ -1290,8 +1290,12 @@ int SimParams::setPops(const std::string sFile) {
         m_pPopLooper = new PopLooper();
     }
 
+    // get a population factory if we don't have one already
     if (m_pPopFac == NULL) {
+        stdprintf("[SimParams::setPops] bDynPops is %dn", m_bDynPops);
+
 #ifdef DYNAMIC_POPS
+        stdprintf("[SimParams::setPops] in DYNAMIC_POPS compilation branch\n");
         m_pPopFac = DynPopFactory::createInstance(m_vSODirs, m_pCG, m_pPopLooper, m_iLayerSize, m_apIDG, m_aulState, m_aiSeeds);
         if (m_pPopFac == NULL) {
             stdprintf("[setPops} couldn't create DynPopFactory\n");
@@ -1300,6 +1304,7 @@ int SimParams::setPops(const std::string sFile) {
             iResult = 0;
         }
 #else
+        stdprintf("[SimParams::setPops] in STATIC_POPS compilation branch\n");
         if (m_bDynPops) {
             m_pPopFac = DynPopFactory::createInstance(m_vSODirs, m_pCG, m_pPopLooper, m_iLayerSize, m_apIDG, m_aulState, m_aiSeeds);
             if (m_pPopFac == NULL) {

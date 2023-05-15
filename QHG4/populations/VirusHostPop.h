@@ -11,7 +11,19 @@
 #include "Virus.h"
 #include "SPopulation.h"
 
-#define VAR_VIURUSHOST_MUT_RATE_NAME "MutationRate"
+const std::string VAR_VIURUSHOST_MUT_RATE_NAME    = "MutationRate";
+const std::string VAR_VIURUSHOST_IMM_INHERIT_NAME = "ImmunityInheritance";
+const std::string INH_TYPES[] = {
+    "mix",
+    "mat", 
+    "pat", 
+    "max",
+    }; 
+
+const int INH_MIX     = 0;
+const int INH_MAT     = 1;
+const int INH_PAT     = 2;
+const int INH_MAX     = 3; 
 
 struct VirusHostAgent : Agent {
 
@@ -45,7 +57,9 @@ protected:
     RandomPair<VirusHostAgent>   *m_pPair;
     Virus<VirusHostAgent>        *m_pVirus;
 
-    float m_fMutationRate;         
+
+    float       m_fMutationRate;         
+    std::string m_sInheritType;
 };
 
 #endif 

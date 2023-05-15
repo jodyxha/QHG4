@@ -1,0 +1,9 @@
+CellRangeSampling
+# samplimg areas given by cell id and radius
+# <cell-id> <range>
+
+  1 0.1
+ 30 0.1
+175 0.03
+303 0.1
+

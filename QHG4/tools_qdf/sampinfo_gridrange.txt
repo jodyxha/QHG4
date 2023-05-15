@@ -1,0 +1,5 @@
+GridRangeSampling
+# samplimg areas given by grid points and radius
+# <xmin> <xmax> <xstep> [<ymin> <ymax> <ystep>} <range>
+# if the y data is omitted, the x values are used for them
+ 10 200 45 10 200 45 10

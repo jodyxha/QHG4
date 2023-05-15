@@ -115,7 +115,7 @@ QHGMain: QHGMain.o Simulator.o SimParams.o GridScrambler.o
 	-L $(IO) -lIO \
 	-L $(UTILS_QHG) -lUtilsQHG \
 	-L $(UTILS) -lUtils \
-        -lz -lhdf5 -lm -lcrypto 
+        -lz -lhdf5 -lm -lcrypto
 else
 QHGMain: QHGMain.o Simulator.o SimParams.o GridScrambler.o \
     IDS_AND_POPFACTORY 
@@ -129,8 +129,24 @@ QHGMain: QHGMain.o Simulator.o SimParams.o GridScrambler.o \
 	-L $(IO) -lIO \
 	-L $(UTILS_QHG) -lUtilsQHG \
 	-L $(UTILS) -lUtils \
-        -lz -lhdf5 -lm -lcrypto 
+        -lz -lhdf5 -lm -lcrypto  -Wl,--export-dynamic 
 endif
+
+QHGMainDynExp: QHGMain.o Simulator.o SimParams.o GridScrambler.o \
+    IDS_AND_POPFACTORY 
+	$(CC) $(CFLAGS) $(COMP) $(DYN_OPT)  -o $(OUTFILE)  \
+	QHGMain.o Simulator.o SimParams.o GridScrambler.o \
+	-L $(PLUGIN_STUB) -lPluginStub \
+	-L $(GENES) -lGenes \
+	-L $(CORE) -Wl,--whole-archive -lCore -Wl,--no-whole-archive  \
+	-L $(ICOSA) -lIcosa \
+	-L $(GEOINFO) -lGeoInfo \
+	-L $(IO)  -Wl,--whole-archive -lIO -Wl,--no-whole-archive  \
+	-L $(UTILS_QHG) -lUtilsQHG \
+	-L $(UTILS) -Wl,--whole-archive  -lUtils  -Wl,--no-whole-archive \
+        -lz -lhdf5 -lm -lcrypto -Wl,--export-dynamic
+
+
 
 SimSimpleParams.o: SimSimpleParams.cpp SimSimpleParams.h
 	$(CC) $(COPT) $(DEFS)  -I$(CORE)  -I$(ICOSA) -I$(IO) -I$(POPULATIONS)

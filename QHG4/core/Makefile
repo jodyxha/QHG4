@@ -71,7 +71,7 @@ MoveStats_old.o: MoveStats_old.cpp MoveStats_old.h
 	$(CC) $(COPT) $(DEFS) -I$(IO) 
 
 Navigation.o: Navigation.cpp Navigation.h 
-	$(CC) $(COPT) $(DEFS) 
+	$(CC) $(COPT) $(DEFS)  -I$(ICOSA) 
 
 SCellGrid.o: SCellGrid.cpp SCellGrid.h SCell.h Geography.h Climate.h
 	$(CC) $(COPT) $(DEFS) -I$(ICOSA)

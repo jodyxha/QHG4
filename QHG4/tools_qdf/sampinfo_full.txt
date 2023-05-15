@@ -1,0 +1,3 @@
+FullSampling
+# the single sampling region consists of all cells
+# no arguments needed

@@ -4,7 +4,7 @@
 #include "SamplingT.cpp"
 #include "CellSampling.h"
 #include "FullSampling.h"
-#include "RangeSampling.h"
+#include "CellRangeSampling.h"
 
 class SamplingTest : public Sampling {
 public:
@@ -44,7 +44,7 @@ int main(int iArgC, char *apArgV[]) {
     for (int i =0; i < iNumCells; ++i) {
         vVals.push_back(std::pair<int, float>(i, i*i));
     }
-    pointrad pr {{0,2}, {4,2}, {20,2}, {24,1}};
+    cellrad pr {{0,2}, {4,2}, {20,2}, {24,1}};
     double *dLon = new double[iNumCells];
     double *dLat = new double[iNumCells];
     for (int h = 0; h < iH; h++) {

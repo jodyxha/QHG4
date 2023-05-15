@@ -426,7 +426,7 @@ SCellGrid *createCGFromIGN(const std::string sIGNFile, int *piNumCells) {
                                 
         // create new geography
         Geography *pGeo = NULL;
-        pGeo = new Geography(*piNumCells, 6, 6371.0);  // create geography
+        pGeo = new Geography(pCG, *piNumCells, 6, 6371.0);  // create geography
         memset(pGeo->m_adWater, 0, pCG->m_iNumCells*sizeof(double));
         pCG->setGeography(pGeo);
         initializeGeography(pCG, pIGN);
@@ -465,7 +465,7 @@ SCellGrid *createCGFromQDF(const std::string sInputQDF, int *piNumCells) {
                         iResult = pGeoR->readAttributes(&geoa);
                         if (iResult == 0) {
                             if (*piNumCells == (int)ga.m_iNumCells) {
-                                Geography *pGeo = new Geography(geoa.m_iNumCells, geoa.m_iMaxNeighbors, geoa.m_dRadius);
+                                Geography *pGeo = new Geography(pCG, geoa.m_iNumCells, geoa.m_iMaxNeighbors, geoa.m_dRadius);
                             
                                 iResult = pGeoR->readData(pGeo);
                                 if (iResult == 0) {

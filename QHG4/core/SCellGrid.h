@@ -10,11 +10,15 @@ class OccTracker;
 
 #include <cstdlib>
 #include <unistd.h>
+#include <string>
+#include <map>
+
 #include <hdf5.h>
 
 #include "icoutil.h"
 #include "SCell.h"
 
+#include "Environment.h"
 #include "Geography.h"
 #include "Climate.h"
 #include "Vegetation.h"
@@ -29,6 +33,8 @@ const int GRID_TYPE_FLAT4 =   0;
 const int GRID_TYPE_FLAT6 =   1;
 const int GRID_TYPE_ICO   =   2;
 const int GRID_TYPE_IEQ   =   3;
+
+
 
 class SCellGrid {
 public:
@@ -59,6 +65,8 @@ public:
     Navigation *m_pNavigation;
     // occupation tracking
     OccTracker *m_pOccTracker;
+
+    std::map<std::string, Environment*> m_mEnvironments;
 
     void setGeography(Geography* pGeo);
     void setClimate(Climate* pClim);

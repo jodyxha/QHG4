@@ -190,7 +190,7 @@ SCellGrid *createCellGrid(const char *pQDFFile) {
                         GeoAttributes geoatt;
                         iResult = pGeoR->readAttributes(&geoatt);
                         if (iResult == 0) {
-                            Geography *pGeo = new Geography(geoatt.m_iNumCells, geoatt.m_iMaxNeighbors, geoatt.m_dRadius);
+                            Geography *pGeo = new Geography(pCG, geoatt.m_iNumCells, geoatt.m_iMaxNeighbors, geoatt.m_dRadius);
                             
                             iResult = pGeoR->readData(pGeo);
                             if (iResult == 0) {
@@ -370,7 +370,7 @@ int writeAllToQDF(SCellGrid *pCG, const char *sOutputQDF, const distancemap &mFi
     
     printf("Write to [%s] (external)\n", sOutputQDF); fflush(stdout);
 
-    Navigation *pNav    = new Navigation();
+    Navigation *pNav    = new Navigation(pCG);
     pNav->setData(mFinalDistances, dSampleDist); 
     pNav->setBridges(vBridges);
    
@@ -411,7 +411,7 @@ int writeAllToQDFIn(SCellGrid *pCG, const char *sOutputQDF, const distancemap &m
 
     printf("Write to [%s] (internal)\n", sOutputQDF); fflush(stdout);
 
-    Navigation *pNav    = new Navigation(); 
+    Navigation *pNav    = new Navigation(pCG); 
     pNav->setData(mFinalDistances, dSampleDist); 
     printf("arrays set"); fflush(stdout);
     pNav->setBridges(vBridges);

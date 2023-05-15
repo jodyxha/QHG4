@@ -46,7 +46,7 @@
 //
 int addGeography(int iTile, SCellGrid *pCG, IcoGridNodes *pIGN) {
     int iResult = 0;
-    Geography *pGeo = new Geography( pCG->m_iNumCells, 6, 1, 0);
+    Geography *pGeo = new Geography(pCG, pCG->m_iNumCells, 6, 1, 0);
     for (uint i=0; i < pCG->m_iNumCells; ++i) {
         int iIndex = pCG->m_aCells[i].m_iGlobalID; 
         IcoNode* pIN = pIGN->m_mNodes[iIndex];           // get the corresponding iconode in pIGN

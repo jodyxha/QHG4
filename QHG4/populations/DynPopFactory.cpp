@@ -144,7 +144,7 @@ PopBase *DynPopFactory::createPopulationByName(const std::string sName) {
 
             createPopFunc pCreatePop = (createPopFunc) dlsym(hLibrary, CREATEPOP_NAME);
             if (pCreatePop != NULL) {
-	        // we have to 'inject' the ARrayShare singleton
+	        // we have to 'inject' the ArrayShare singleton
                 ArrayShare *pAS = ArrayShare::getInstance();
                 m_vLibHandles.push_back(hLibrary);
                 pPB = pCreatePop(pAS, m_pCG, m_pPopFinder, m_iLayerSize, m_apIDG, m_aulState);

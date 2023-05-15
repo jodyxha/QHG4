@@ -89,8 +89,5 @@ plugtest: plugtest.o
 
 %Wrapper.so: %Wrapper.o
 	$(CC) -shared  -o $@ $< \
-        $(POPS)/$(subst  Wrapper.so,,$@).o -lhdf5 \
-	-L$(IO)     -lIO \
-	-L$(CORE)   -lCore \
-	-L$(UTILS)  -lUtils 
+        $(POPS)/$(subst  Wrapper.so,,$@).o -lhdf5
 

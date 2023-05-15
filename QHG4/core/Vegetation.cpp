@@ -9,8 +9,6 @@
 #include "IcoGridNodes.h"
 #include "IcoNode.h"
 
-#include "Climate.h"
-#include "Geography.h"
 #include "Vegetation.h"
 
 #include "SCellGrid.h"
@@ -18,12 +16,11 @@
 //-----------------------------------------------------------------------------
 //  constructor
 //
-Vegetation::Vegetation(uint iNumCells, int iNumVegSpecies, Geography *pGeography, Climate *pClimate)
-    : m_iNumCells(iNumCells),
+Vegetation::Vegetation(SCellGrid *pCG, uint iNumCells, int iNumVegSpecies)
+    : Environment(pCG),
+      m_iNumCells(iNumCells),
       m_iNumVegSpecies(iNumVegSpecies),
-      m_fPreviousTime(-1.0),
-      m_pGeography(pGeography),
-      m_pClimate(pClimate) {
+      m_fPreviousTime(-1.0){
 
     m_adBaseANPP = new double[m_iNumCells];
     m_adTotalANPP = new double[m_iNumCells];

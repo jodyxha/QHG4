@@ -41,6 +41,9 @@ VirusHostPop::VirusHostPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize
 
     m_prio.addAction(m_pPair);
     m_prio.addAction(m_pVirus);
+
+    m_fMutationRate = 0.0;
+    m_sInheritType = "mix";
 }
 
 //----------------------------------------------------------------------------
@@ -93,6 +96,37 @@ int  VirusHostPop::getPopParams(const stringmap &mVarDefs) {
         }
     } else {
         // expected key VAR_VIURUSHOST_MUT_RATE_NAME
+    }
+
+    it = mVarDefs.find(VAR_VIURUSHOST_IMM_INHERIT_NAME);
+    if (it != mVarDefs.end()) {
+        std::string sInheritType = it->second;
+
+        // handle the "+"
+        if (!sInheritType.ends_with("+")) {
+            m_fMutationRate = 0;
+        } else {
+            // drop the plus
+            sInheritType = sInheritType.substr(0, sInheritType.size()-1);
+        }
+        // check if valid inherit type
+        bool bSearching = true;
+        for (int i  = 0; bSearching && (i < 4); i++) {
+            if (sInheritType == INH_TYPES[i]) {
+                bSearching = false;
+            }
+        }
+        
+        if (bSearching) {
+            printf("[VirusHostPop::getPopParams] unknown inherit type [%s]\n", sInheritType.c_str());
+        } else {
+            m_sInheritType = sInheritType;
+            printf("[VirusHostPop::getPopParams] have inherit type [%s]\n", m_sInheritType.c_str());
+            iResult = 0;
+        }
+
+    } else {
+        // expected key VAR_VIURUSHOST_IMM_INHERIT_NAME
     }
     return iResult;
 }
@@ -158,23 +192,36 @@ int VirusHostPop::makePopSpecificOffspring(int iAgent, int iMother, int iFather)
     m_aAgents[iAgent].m_fLastBirth = m_fCurTime;
 
     // the offspring's immunity is the average of the parents' immunities plus a little fuzz factor.
+    float fImm = 0.0;
+    if (m_sInheritType == INH_TYPES[INH_MIX]) {
+        fImm =  (m_aAgents[iMother].m_fImmunity + m_aAgents[iFather].m_fImmunity)/2;
+    } else if (m_sInheritType == INH_TYPES[INH_MAT]) {
+        fImm =  m_aAgents[iMother].m_fImmunity;
+    } else if (m_sInheritType == INH_TYPES[INH_PAT]) {
+        fImm =  m_aAgents[iFather].m_fImmunity;
+    } else if (m_sInheritType == INH_TYPES[INH_MAX]) {
+        fImm = (m_aAgents[iMother].m_fImmunity > m_aAgents[iFather].m_fImmunity)?m_aAgents[iMother].m_fImmunity:m_aAgents[iFather].m_fImmunity;
+    } else {
+        // shouldn't happen
+        iResult = -1;
+    }
 
-    float fImm =  (m_aAgents[iMother].m_fImmunity + m_aAgents[iFather].m_fImmunity)/2;
-        
+    //mutate
     fImm += m_apWELL[omp_get_thread_num()]->wgauss(m_fMutationRate);
     if (fImm < 0) {
         fImm = 0;
     }else if (fImm > 1) {
         fImm = 1;
     }
-    m_aAgents[iAgent].m_fImmunity = 0;//fImm;
+    m_aAgents[iAgent].m_fImmunity = fImm;
     
-    /*
+    
     if (m_aAgents[iMother].m_fViralLoad > 0) {
-        m_aAgents[iAgent].m_fViralLoad = 0.01;
+        m_aAgents[iAgent].m_fViralLoad = 0.2;
         printf("Babyinfect: %d -> %d\nn", iMother, iAgent);
     }
-    */
+    
+
     //printf("[VirusHostPop::makePopSpecificOffsprin] baby %d vl %f, imm %f\n",  iAgent, m_aAgents[iAgent].m_fViralLoad, m_aAgents[iAgent].m_fImmunity);
     return iResult;
 }

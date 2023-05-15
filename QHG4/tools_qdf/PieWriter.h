@@ -22,7 +22,7 @@ typedef struct {
 class PieWriter {
 public:
     //    static PieWriter *createInstance(const std::string sPieName, groupedvals<double> &mGroups);
-    static PieWriter *createInstance(const std::string sPieName, maphistos &mHistos, uint iNumBins);
+    static PieWriter *createInstance(const std::string sPieName, maphistos &mHistos, uint iNumBins, uint iNumDims);
     virtual ~PieWriter();
 
     int setValueNames(const stringvec &svValueNames);
@@ -34,7 +34,7 @@ public:
 
     int setVerbosity(bool bVerbose) {bool bOldV = m_bVerbose; m_bVerbose = bVerbose; return bOldV;};
 protected:
-    PieWriter(const std::string sPieName, uint iNumBins);
+    PieWriter(const std::string sPieName, uint iNumBins, uint iNumDims);
     //    int init(groupedvals<double> &mGroups);
     int init(maphistos &mHistos);
     int prepareDataReal();
@@ -44,6 +44,7 @@ protected:
 
     uint m_iNumPies;
     uint m_iNumVals;
+    uint m_iNumDims;
     std::string m_sPieName;
     std::string m_sValNames;
 

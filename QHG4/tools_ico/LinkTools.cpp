@@ -125,7 +125,7 @@ int LinkTools::readGeo() {
          if (iResult == 0) {
              if (geoatt.m_iMaxNeighbors == (uint)m_pCG->m_iConnectivity) {
                  if (geoatt.m_iNumCells == (uint)m_pCG->m_iNumCells) {
-                     Geography *pGeo = new Geography(geoatt.m_iNumCells, geoatt.m_iMaxNeighbors, geoatt.m_dRadius);
+                     Geography *pGeo = new Geography(m_pCG, geoatt.m_iNumCells, geoatt.m_iMaxNeighbors, geoatt.m_dRadius);
                      iResult = pGR->readData(pGeo);
                      if (iResult == 0) {
                          m_pCG->setGeography(pGeo);

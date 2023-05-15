@@ -10,6 +10,7 @@
 
 #include "SCell.h"
 #include "SCellGrid.h"
+#include "Environment.h"
 #include "Geography.h"
 #include "Climate.h"
 #include "Navigation.h"
@@ -167,12 +168,16 @@ void SCellGrid::delOckTracker() {
 //
 void SCellGrid::setGeography(Geography* pGeo) { 
     m_pGeography = pGeo;
+    m_mEnvironments[ENV_GEO] = pGeo;
+    /*
     if (m_pClimate != NULL) {
         m_pClimate->m_pGeography = pGeo;
+
     }
     if (m_pVegetation != NULL) {
         //m_pVegetation->m_pGeography = pGeo;
     }
+    */
 };
 
 //-----------------------------------------------------------------------------
@@ -180,9 +185,12 @@ void SCellGrid::setGeography(Geography* pGeo) {
 //
 void SCellGrid::setClimate(Climate* pClim) { 
     m_pClimate = pClim;
+    m_mEnvironments[ENV_CLI] = pClim;
+    /*
     if (m_pVegetation != NULL) {
         //m_pVegetation->m_pClimate = pClim;
     }
+    */
 };
 
 //-----------------------------------------------------------------------------
@@ -190,6 +198,7 @@ void SCellGrid::setClimate(Climate* pClim) {
 //
 void SCellGrid::setVegetation(Vegetation* pVeg) {
     m_pVegetation = pVeg; 
+    m_mEnvironments[ENV_VEG] = pVeg;
 };
 
 
@@ -198,6 +207,7 @@ void SCellGrid::setVegetation(Vegetation* pVeg) {
 //
 void SCellGrid::setNavigation(Navigation* pNav) {
     m_pNavigation = pNav; 
+    m_mEnvironments[ENV_NAV] = pNav;
 };
 
 
@@ -206,6 +216,7 @@ void SCellGrid::setNavigation(Navigation* pNav) {
 //
 void SCellGrid::setOccTracker(OccTracker* pOcc) {
     m_pOccTracker = pOcc; 
+    m_mEnvironments[ENV_OCC] = pOcc;
 };
 
 

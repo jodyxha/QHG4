@@ -1,0 +1,46 @@
+
+body=rae_new
+# must exist:
+#   template_nea.dat   dat template for neander data (Lon, Lat LifeState, AgID, Gender, Age, LastBirth, Species)
+#   template_sap.dat   dat template for sapiens data (Lon, Lat LifeState, AgID, Gender, Age, LastBirth, Species)
+#   template_nea.xml   an xml file with appropriate default values for neander
+#   template_sap.xml   an xml file with appropriate default values for neander
+#   newstuff_all.csv  csv containing the params for all (e.g. etxracted lines from a bigger csv, or combination of neander csv and sapiens csv + manual work)
+
+for f in /home/jody/progs/multi_spc_QHG3/work/fsn299movies/fsn_sap1283_b0.317_d0.022_fi3.401_F49.49_f16.75_N0.85_K48.799_W0.547_A63.3_P0.150.qdf /home/jody/progs/multi_spc_QHG3/work/fsn299movies/fsn_sap3620_b0.282_d0.021_fi2.786_F48.38_f12.67_N1.03_K49.893_W0.494_A60.0_P0.112.qdf /home/jody/progs/multi_spc_QHG3/work/fsn299movies/fsn_sap4077_b0.339_d0.012_fi2.224_F45.50_f15.86_N0.81_K49.268_W0.469_A60.1_P0.140.qdf /home/jody/progs/multi_spc_QHG3/work/fsn299movies/fsn_sap4594_b0.326_d0.010_fi2.825_F48.66_f15.60_N0.81_K48.818_W0.590_A64.5_P0.131.qdf; 
+do 
+  h=`echo $f | gawk -F/ '{ print $NF }' | gawk -F_ '{ print $2 }' | sed 's/sap//'`; 
+  ./qdf2xml4.py ${f}:sapiens dum_${body}_sap_${h}.xml; 
+done
+
+for f in /home/jody/progs/multi_spc_QHG3/work/fsn299movies/fsn_nea1283_b0.218_d0.030_fi4.000_F50.00_f18.00_N0.86_K39.502_W0.700_A70.0_P0.200.qdf /home/jody/progs/multi_spc_QHG3/work/fsn299movies/fsn_nea3620_b0.214_d0.030_fi4.000_F50.00_f18.00_N1.08_K47.412_W0.700_A70.0_P0.200.qdf /home/jody/progs/multi_spc_QHG3/work/fsn299movies/fsn_nea4077_b0.341_d0.030_fi4.000_F50.00_f18.00_N0.93_K38.408_W0.700_A70.0_P0.200.qdf /home/jody/progs/multi_spc_QHG3/work/fsn299movies/fsn_nea4594_b0.162_d0.030_fi4.000_F50.00_f18.00_N0.86_K49.209_W0.700_A70.0_P0.200.qdf; 
+do 
+  h=`echo $f | gawk -F/ '{ print $NF }' | gawk -F_ '{ print $2 }' | sed 's/nea//'`; 
+  ./qdf2xml4.py ${f}:neander dum_${body}_nea_${h}.xml; 
+done
+
+
+for s in nea sap; 
+do 
+  for f in 1283 3620 4077 4594; 
+  do 
+    ./csv2xmldat.py  template_${s}.xml template_${s}.dat newstuff_all.csv zolli dum_${body}_xmldat_${s}
+  done
+done
+
+arr=(1283 3620 4077 4594)
+for i in 0 1 2 3; 
+do 
+  cat dum_${body}_xmldat_sap_0000${i}.dat dum_${body}_xmldat_nea_0000${i}.dat > ${body}_all_${arr[${i}]}.dat; 
+done
+
+
+for f in 1283 3620 4077 4594; 
+do 
+  echo "  ./combine_xml.py dum_${body}_nea_${f}.xml dum_${body}_sap_${f}.xml ${body}_all_${f}.xml; "
+  ./combine_xml.py dum_${body}_nea_${f}.xml dum_${body}_sap_${f}.xml ${body}_all_${f}.xml; 
+done
+
+
+rm dum_${body}*
+

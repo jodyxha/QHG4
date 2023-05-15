@@ -12,6 +12,7 @@
 const std::string PIEGROUP_NAME      = "PiePlots";
 const std::string PIE_ATTR_NUM_PIES  = "NumPies";
 const std::string PIE_ATTR_NUM_VALS  = "NumVals";
+const std::string PIE_ATTR_NUM_DIMS  = "NumDims";
 const std::string PIE_DATASET_NAME   = "PieDataSet";
 const std::string PIE_ATTR_VAL_NAMES = "ValNames";
 
@@ -19,9 +20,10 @@ const std::string PIE_ATTR_VAL_NAMES = "ValNames";
 //----------------------------------------------------------------------------
 //  constructor
 //
-PieWriter::PieWriter(const std::string sPieName, uint iNumVals) 
+PieWriter::PieWriter(const std::string sPieName, uint iNumVals, uint iNumDims) 
     : m_iNumPies(0),
       m_iNumVals(iNumVals),
+      m_iNumDims(iNumDims),
       m_sPieName(sPieName),
       m_sValNames(""),
       m_pAllData(NULL),
@@ -45,8 +47,8 @@ PieWriter::~PieWriter() {
 //----------------------------------------------------------------------------
 //  createInstance
 //
-PieWriter *PieWriter::createInstance(const std::string sPieName, maphistos &mHistos, uint iNumBins) {
-    PieWriter *pPW = new PieWriter(sPieName, iNumBins);
+PieWriter *PieWriter::createInstance(const std::string sPieName, maphistos &mHistos, uint iNumBins, uint iNumDims) {
+    PieWriter *pPW = new PieWriter(sPieName, iNumBins, iNumDims);
     int iResult = pPW->init(mHistos);
     if (iResult != 0) {
         delete pPW;
@@ -263,6 +265,7 @@ int PieWriter::writeToQDF(const std::string sQDFFile) {
 
                     qdf_insertAttribute(hPieItem,  PIE_ATTR_NUM_PIES,  1, &m_iNumPies);
                     qdf_insertAttribute(hPieItem,  PIE_ATTR_NUM_VALS,  1, &m_iNumVals);
+                    qdf_insertAttribute(hPieItem,  PIE_ATTR_NUM_DIMS,  1, &m_iNumDims);
                     qdf_insertSAttribute(hPieItem, PIE_ATTR_VAL_NAMES,     m_sValNames);
 
                     if (m_bVerbose) stdprintf("written attributes\n");

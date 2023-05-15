@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+  <Plugin name="Pie" type="plot" label="Pie" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" vartype="vector,array" iconFile="PiePlot.xpm">
+    <CXXFLAGS>
+      ${GLEW_INCLUDE_DIR}
+    </CXXFLAGS>
+    <Files components="V">
+      avtPieFilter.C
+      avtPiePlot.C
+      avtPieMapper.C
+      vtkSinglePieFilter.cpp
+      GlyphManager.cpp
+      GlyphGeometry.cpp
+      PieGeometry.cpp
+      BarGeometry.cpp
+      BoxGeometry.cpp
+    </Files>
+    <Files components="E">
+      avtPieFilter.C
+      avtPiePlot.C
+      avtPieMapper.C
+      vtkSinglePieFilter.cpp
+      GlyphManager.cpp
+      GlyphGeometry.cpp
+      PieGeometry.cpp
+      BarGeometry.cpp
+      BoxGeometry.cpp
+    </Files>
+    <Attribute name="PieAttributes" purpose="Attributes for the PiePlot plot." persistent="true" keyframe="true" exportAPI="" exportInclude="" codefile="PieAttributes.code">
+      <Enum name="GlyphStyle">
+        STYLE_PIE
+        STYLE_BAR
+        STYLE_BOX
+      </Enum>
+      <Field name="iGlyphStyle" label="Glyph Style" type="enum" subtype="GlyphStyle">
+        STYLE_PIE
+      </Field>
+      <Field name="iPieSectors" label="Num Sectors" type="int">
+        120
+      </Field>
+      <Field name="fPieRadius" label="Pie Radius" type="float">
+        1.000000
+      </Field>
+      <Field name="fPieBorder" label="Border Width" type="float">
+        0.100000
+      </Field>
+      <Field name="fBarXScale" label="Scale X" type="float">
+        1.000000
+      </Field>
+      <Field name="fBarYScale" label="Scale Y" type="float">
+        1.000000
+      </Field>
+      <Field name="fBarBorder" label="Border Width" type="float">
+        0.100000
+      </Field>
+      <Field name="fBoxXScale" label="Scale X" type="float">
+        1.000000
+      </Field>
+      <Field name="fBoxYScale" label="Scale Y" type="float">
+        1.000000
+      </Field>
+      <Field name="fBoxBorder" label="Border Width" type="float">
+        0.100000
+      </Field>
+      <Field name="multiColor" label="multiColor" type="att" subtype="ColorAttributeList">
+      </Field>
+      <Field name="valueNames" label="valueNames" type="stringVector" internal="true">
+      </Field>
+      <Function name="ChangesRequireRecalculation" user="true" member="true">
+      </Function>
+      <Function name="PieViewerEnginePluginInfo::InitializePlotAtts" user="false" member="true">
+      </Function>
+      <Function name="PieViewerEnginePluginInfo::ReInitializePlotAtts" user="false" member="true">
+      </Function>
+      <Function name="PieViewerEnginePluginInfo::ResetPlotAtts" user="false" member="true">
+      </Function>
+      <Function name="PieViewerEnginePluginInfo::PrivateSetPlotAtts" user="true" member="true" access="private">
+      </Function>
+      <Include file="header" quoted="false">
+        ColorAttribute.h
+      </Include>
+    </Attribute>
+  </Plugin>

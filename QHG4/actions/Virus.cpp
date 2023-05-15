@@ -130,7 +130,7 @@ int Virus<T>::execute(int iAgentIndex, float fT) {
                     if (dR < m_fInfectionProb * (1-pao->m_fImmunity)) {
                         // register infection load for agent
                         if (pao->m_fViralLoad < m_fInitialLoad) {
-                            printf("VirVir[Virus::execute] T%f: have an infection: %d (%ld) -> %d (%ld) (%f)\n", fT, iAgentIndex, pa->m_ulID, iOtherAgent, pao->m_ulID,pao->m_fViralLoad);
+                            // printf("VirVir[Virus::execute] T%f: have an infection: %d (%ld) -> %d (%ld) (%f)\n", fT, iAgentIndex, pa->m_ulID, iOtherAgent, pao->m_ulID,pao->m_fViralLoad);
                             m_amAgentInfects[iT][iOtherAgent] /*+*/= m_fInitialLoad;
                         }
                     }

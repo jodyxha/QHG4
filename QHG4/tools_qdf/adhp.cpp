@@ -26,9 +26,9 @@ void usage(const std::string sApp) {
     stdprintf("  dataItemName   name of data item to extract\n");
     stdprintf("  popName        name of population (if omitzted,  \"sapiens\" is used)\n");
     stdprintf("  samplingInfo   text file containing snmpling info. format see below\n");
-    stdprintf("    dmin         minimum value for bins\n");
-    stdprintf("    dmax         minimum value for bins\n");
-    stdprintf("    bins         number of bins\n");
+    stdprintf("  dmin           minimum value for bins\n");
+    stdprintf("  dmax           minimum value for bins\n");
+    stdprintf("  bins           number of bins\n");
     stdprintf("  mode           etiher \"txt\", \"csv\" or \"pie\"\n");
     stdprintf("");
     stdprintf("format for sampling info:\n");
@@ -107,6 +107,7 @@ int main(int iArgC, char *apArgV[]) {
                     stdprintf("-s: [%s]\n", sSamplingInfo);
                     stdprintf("-l: [%d]\n", bList);
                     stdprintf("-m: [%s]\n", sOutputModes);
+                    stdprintf("-v: [%d]\n", bVerbose);
                 }
 
 
@@ -170,9 +171,8 @@ int main(int iArgC, char *apArgV[]) {
                     } else {
 
                         // this will immeidaely extract the required data
-                        AgentDataHistoPie *pADHP = AgentDataHistoPie::createInstance(sQDFInputFile, sPopName, sDataItemName);
+                        AgentDataHistoPie *pADHP = AgentDataHistoPie::createInstance(sQDFInputFile, sPopName, sDataItemName, bVerbose);
                         if (pADHP != NULL) {
-                            pADHP->setVerbosity(bVerbose);
                             // sample to reduce and group sampling points
                             iResult = pADHP->createSampling(sSamplingInfo);
                             if (iResult == 0) {
@@ -189,7 +189,7 @@ int main(int iArgC, char *apArgV[]) {
                                                 sQDFOutputFile = sQDFOutputBody+".qdf";
                                             }
                                             std::filesystem::copy_file(sQDFInputFile, sQDFOutputFile);
-                                            stdprintf("copied the input file [%s] to [%s]\n", sQDFOutputFile, sQDFOutputFile);
+                                            stdprintf("copied the input file [%s] to [%s]\n", sQDFInputFile, sQDFOutputFile);
                                         } else {
                                             sQDFOutputFile = sQDFOutputBody+".qdf";
                                         }

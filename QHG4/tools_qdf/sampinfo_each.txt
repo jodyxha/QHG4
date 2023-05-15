@@ -1,0 +1,3 @@
+EachSampling
+# each cell is a sampling point
+# no arguments needed
