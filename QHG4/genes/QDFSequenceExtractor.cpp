@@ -322,7 +322,7 @@ int QDFSequenceExtractor<T>::getSelectedSequencesSparse(const std::string sSeque
     // get total number of elements in dataset
     hsize_t dims;
     herr_t status = H5Sget_simple_extent_dims(hDataSpace, &dims, NULL);
-    if (m_bVerbose) printf("Dataspace extent: %lld\n", dims);
+    if (m_bVerbose) printf("Dataspace extent: %lu\n", dims);
 
     // initialize some counters and indexes
     hsize_t iCount;
@@ -353,9 +353,9 @@ int QDFSequenceExtractor<T>::getSelectedSequencesSparse(const std::string sSeque
                 iResult = -1;
             }
         } else {
-            printf("Index too big: (%lld+1)*%d*numblocks > %lld\n", iOffset, m_iPloidy, dims);
-            printf("iOffset:    %lld\n", iOffset);
-            printf("iCount:     %lld\n", iCount);
+            printf("Index too big: (%lu+1)*%d*numblocks > %lu\n", iOffset, m_iPloidy, dims);
+            printf("iOffset:    %lu\n", iOffset);
+            printf("iCount:     %lu\n", iCount);
             printf("numblocks:  %d\n", m_iNumBlocks);
             printf("IdxID:      %d\n", itIdxId->first);
             iResult = -1;

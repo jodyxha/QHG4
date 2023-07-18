@@ -177,14 +177,17 @@ int ArrivalChecker::init(const std::string sQDFGrid, const std::string sQDFStats
 
         if (iResult == 0) {
             iResult = readStats(sQDFStatsReal, sSpecies1);
+            stdfprintf(stderr, "[init] readStats(%s,%s): res %d\n", sQDFStatsReal, sSpecies1, iResult);
             if (iResult == 0) {
                 locspec locSpec(sLocFile, dDistance, 0);
                 m_vNames.clear();
  
                 iResult = fillLocData(&locSpec, m_mLocData, &m_vNames);
+                stdfprintf(stderr, "[init] fillLocData(...): res %d\n", iResult);
                 if (iResult == 0) { 
                     stdfprintf(stderr, "[init] loading agents cell (%s,%s)\n", sQDFStatsReal, sSpecies1);
                     iResult = loadAgentsCell(sQDFStatsReal, sSpecies1);
+                    stdfprintf(stderr, "[init] loadAgentsCell(%s,%s): reds %d\n", sQDFStatsReal, sSpecies1, iResult);
                     if (iResult == 0) {
                         stdfprintf(stderr, "[init] getting cell agent counts\n");
                         iResult = getCellAgentCounts();
@@ -421,7 +424,7 @@ int ArrivalChecker::readStats(const std::string sQDFStats, const std::string sSp
 
         // get arrival times
         if (!sCurSpecies.empty()) {
-            sGroupSpec = stdsprintf("Populations/%s", sCurSpecies); 
+            sGroupSpec = stdsprintf("Populations/%s/MoveStats", sCurSpecies); 
             iResult = pQA2->openArray(sGroupSpec, SPOP_DS_TIME);
         }
 
@@ -431,6 +434,7 @@ int ArrivalChecker::readStats(const std::string sQDFStats, const std::string sSp
             uint iCount = pQA2->getFirstSlab(m_pTravelTimes, m_iNumCells);
             if (iCount == m_iNumCells) {
                 //                printf("Read %d CellIDs\n", iCount);
+                stdfprintf(stderr,"[readStats] Read TravelTimes [%s; %s/%s]", sQDFStats, sGroupSpec, SPOP_DS_TIME);
                 iResult = 0;
             } else {
                 stdfprintf(stderr, "%s[readStats] Read bad number of grid IDs from [%s:%s/%s]: %d (instead of %d)%s\n", 
@@ -446,7 +450,7 @@ int ArrivalChecker::readStats(const std::string sQDFStats, const std::string sSp
 
         if (iResult == 0) {
             // get travelled distance
-            sGroupSpec = stdsprintf("Populations/%s", sCurSpecies); 
+            sGroupSpec = stdsprintf("Populations/%s/MoveStats", sCurSpecies); 
             iResult = pQA2->openArray(sGroupSpec, SPOP_DS_DIST);
             
 
@@ -456,6 +460,7 @@ int ArrivalChecker::readStats(const std::string sQDFStats, const std::string sSp
                 uint iCount = pQA2->getFirstSlab(m_pTravelDists, m_iNumCells);
                 if (iCount == m_iNumCells) {
                     //                printf("Read %d CellIDs\n", iCount);
+                    stdfprintf(stderr,"[readStats] Read Distances [%s; %s/%s]", sQDFStats, sGroupSpec, SPOP_DS_DIST);
                     iResult = 0;
                 } else {
                     stdfprintf(stderr, "%s[readStats] Read bad number of grid IDs from [%s:%s/%s]: %d (instead of %d)%s\n", 

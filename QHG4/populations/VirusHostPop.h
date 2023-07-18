@@ -8,22 +8,25 @@
 #include "Fertility.h"
 #include "Verhulst.h"
 #include "RandomPair.h"
+#include "AgentBinSplitter.h"
 #include "Virus.h"
 #include "SPopulation.h"
 
-const std::string VAR_VIURUSHOST_MUT_RATE_NAME    = "MutationRate";
-const std::string VAR_VIURUSHOST_IMM_INHERIT_NAME = "ImmunityInheritance";
+const std::string VAR_VIRUSHOST_MUT_RATE_NAME    = "MutationRate";
+const std::string VAR_VIRUSHOST_IMM_INHERIT_NAME = "ImmunityInheritance";
 const std::string INH_TYPES[] = {
     "mix",
     "mat", 
     "pat", 
+    "min",
     "max",
     }; 
 
 const int INH_MIX     = 0;
 const int INH_MAT     = 1;
 const int INH_PAT     = 2;
-const int INH_MAX     = 3; 
+const int INH_MIN     = 3; 
+const int INH_MAX     = 4; 
 
 struct VirusHostAgent : Agent {
 
@@ -33,7 +36,6 @@ struct VirusHostAgent : Agent {
         
     float m_fViralLoad;
     float m_fImmunity;
-    float m_fIncoming;
 };
 
 class VirusHostPop : public  SPopulation<VirusHostAgent> {
@@ -49,13 +51,14 @@ public:
 
     int makePopSpecificOffspring(int iAgent, int iMother, int iFather);
 protected:
-    GetOld<VirusHostAgent>      *m_pGO;
-    ATanDeath<VirusHostAgent>   *m_pAD;
-    RandomMove<VirusHostAgent>  *m_pRM;
-    Fertility<VirusHostAgent>    *m_pFert;
-    Verhulst<VirusHostAgent>     *m_pVerhulst;
-    RandomPair<VirusHostAgent>   *m_pPair;
-    Virus<VirusHostAgent>        *m_pVirus;
+    GetOld<VirusHostAgent>            *m_pGO;
+    ATanDeath<VirusHostAgent>         *m_pAD;
+    RandomMove<VirusHostAgent>        *m_pRM;
+    Fertility<VirusHostAgent>         *m_pFert;
+    Verhulst<VirusHostAgent>          *m_pVerhulst;
+    RandomPair<VirusHostAgent>        *m_pPair;
+    AgentBinSplitter<VirusHostAgent>  *m_pAgSplit;
+    Virus<VirusHostAgent>             *m_pVirus;
 
 
     float       m_fMutationRate;         

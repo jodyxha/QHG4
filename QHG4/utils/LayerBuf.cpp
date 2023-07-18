@@ -76,6 +76,7 @@ LayerBuf<T>::~LayerBuf() {
     for (unsigned int i = 0; i < m_vUsedLayers.size(); i++) {
         if (m_vUsedLayers[i] != NULL) {
             // delete array
+            printf("[LayerBuf<T>::createLayer()]deleting layer %d (%p)\n", i,  m_vUsedLayers[i]); fflush(stdout);
             delete[] m_vUsedLayers[i];
         }
     }
@@ -90,7 +91,7 @@ LayerBuf<T>::~LayerBuf() {
 }
 
 //---------------------------------------------------------------------------
-// destructor
+// init
 //
 template<class T>
 void LayerBuf<T>::init(uint iLayerSize, int iStrategy) {
@@ -140,6 +141,7 @@ void LayerBuf<T>::createLayer() {
         // ... otherwise create a new one
         //        printf("Creating block\n");
         pLayer = new T[m_iLayerSize];
+        printf("[LayerBuf<T>::createLayer()] created new layer %p\n", pLayer); fflush(stdout);
         // if data is padded there may be uninitialised bytes
         // to prevent valgrind nag: initialize entire layer
         memset(pLayer, 37, m_iLayerSize*sizeof(T));
@@ -165,6 +167,22 @@ int  LayerBuf<T>::copyLayer(int iDestLayer, const T *pData) {
     return iResult;
 }
 
+//---------------------------------------------------------------------------
+// appendLayers
+//
+template<class T>
+int  LayerBuf<T>::appendLayers(LBBase *pLBB) {
+    int iResult = -1;
+    LayerBuf<T> *pLB = dynamic_cast<LayerBuf<T> *>(pLBB);
+    if (pLB != NULL) {
+        m_vUsedLayers.insert(m_vUsedLayers.begin(), pLB->m_vUsedLayers.begin(), pLB->m_vUsedLayers.end());
+        iResult = 0;
+    } else{
+        // expected a LayerBuf<T>
+    }
+    return iResult;
+}
+
 
 //---------------------------------------------------------------------------
 // freeAllLayers
@@ -178,6 +196,17 @@ void LayerBuf<T>::freeAllLayers() {
         freeLayer(i);
     }
 }
+
+
+//---------------------------------------------------------------------------
+// detachAllLayers
+//  simply clears the layers, but does not delete them
+//
+template<class T>
+void LayerBuf<T>::detachAllLayers() {
+    m_vUsedLayers.clear();
+}
+
 
 //---------------------------------------------------------------------------
 // freeLayer

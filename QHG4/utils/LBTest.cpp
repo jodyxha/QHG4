@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cmath>
+#include <ctime>
 
 #include "LayerBuf.h"
 #include "LayerBuf.cpp"
@@ -156,12 +157,14 @@ int main(int iArgC, char *apArgV[]) {
     int iResult = 0;
 
     int iLayerSize = 7;
+    /*
     printf("Preparing array\n");
     LayerBuf<cucumber> LC(iLayerSize, MB_DESTROY_DELAY+2);
     LBController *pLBC = new LBController();
     pLBC->init(iLayerSize);
     pLBC->addBuffer(&LC);
 
+    
     for (int i = 0; i < 6; i++) {
         pLBC->getFreeIndex();   
     }
@@ -171,7 +174,7 @@ int main(int iArgC, char *apArgV[]) {
     pLBC->deleteElement(0);
     pLBC->deleteElement(1);
     pLBC->deleteElement(5);
-
+    
     //    pLBC->deleteElement(8);
     printf("L: %d, F%d, L%d\n", pLBC->getNumLayers(), pLBC->getFirstIndex(LBController::ACTIVE), pLBC->getLastIndex(LBController::ACTIVE));
     for (uint i = 0; i < pLBC->getNumLayers(); i++) {
@@ -210,8 +213,91 @@ int main(int iArgC, char *apArgV[]) {
     for (uint i = 0; i < pLBC->getNumLayers(); i++) {
         pLBC->displayArray(i, 0, LBController::NIL);
     }
-
+    
 
     delete pLBC;
+ 
+    */
+
+    LayerBuf<cucumber> LC1(iLayerSize, MB_DESTROY_DELAY+2);
+    
+    LBController *pLBC1 = new LBController();
+    pLBC1->init(iLayerSize);
+    pLBC1->addBuffer(&LC1);
+    
+    LayerBuf<cucumber> LC2(iLayerSize, MB_DESTROY_DELAY+2);
+    LBController *pLBC2 = new LBController();
+    pLBC2->init(iLayerSize);
+    pLBC2->addBuffer(&LC2);
+    
+    
+
+    for (int i = 0; i < 6; i++) {
+        pLBC1->getFreeIndex();   
+    }
+    for (int i = 0; i < 5; i++) {
+        pLBC1->getFreeIndex();   
+    }
+    
+    pLBC1->deleteElement(0);
+    pLBC1->deleteElement(1);
+    pLBC1->deleteElement(5);
+    
+    pLBC1->compactData();
+    
+    printf("*** LBC1 L: %d, F%d, L%d\n", pLBC1->getNumLayers(), pLBC1->getFirstIndex(LBController::ACTIVE), pLBC1->getLastIndex(LBController::ACTIVE));
+    for (uint i = 0; i < pLBC1->getNumLayers(); i++) {
+        printf("***   ");
+        pLBC1->displayArray(i, 0, LBController::NIL);
+    }
+    
+    
+    for (int i = 0; i < 8; i++) {
+        pLBC2->getFreeIndex();   
+    }
+    for (int i = 0; i < 8; i++) {
+        pLBC2->getFreeIndex();   
+    }
+    pLBC2->deleteElement(3);
+    pLBC2->deleteElement(2);
+    pLBC2->deleteElement(0);
+    
+    pLBC2->compactData();
+    
+    printf("*** LBC2 L: %d, F%d, L%d\n", pLBC2->getNumLayers(), pLBC2->getFirstIndex(LBController::ACTIVE), pLBC2->getLastIndex(LBController::ACTIVE));
+    for (uint i = 0; i < pLBC2->getNumLayers(); i++) {
+        printf("***   ");
+        pLBC2->displayArray(i, 0, LBController::NIL);
+    }
+    
+    
+    pLBC1->appendLBC(pLBC2);
+    
+    /*
+    printf("LBC1combined  L: %d, F%d, L%d\n", pLBC1->getNumLayers(), pLBC1->getFirstIndex(LBController::ACTIVE), pLBC1->getLastIndex(LBController::ACTIVE));
+    for (uint i = 0; i < pLBC1->getNumLayers(); i++) {
+        pLBC1->displayArray(i, 0, LBController::NIL);
+    }
+    */
+
+    pLBC1->compactData();
+
+    
+    printf("*** LBC1 after compact  L: %d, F%d, L%d\n", pLBC1->getNumLayers(), pLBC1->getFirstIndex(LBController::ACTIVE), pLBC1->getLastIndex(LBController::ACTIVE));
+    for (uint i = 0; i < pLBC1->getNumLayers(); i++) {
+        printf("***   ");
+        pLBC1->displayArray(i, 0, LBController::NIL);
+    }
+    
+    printf("*** LBC2 after compact  L: %d, F%d, L%d\n", pLBC2->getNumLayers(), pLBC2->getFirstIndex(LBController::ACTIVE), pLBC2->getLastIndex(LBController::ACTIVE));
+    for (uint i = 0; i < pLBC2->getNumLayers(); i++) {
+        printf("***   ");
+        pLBC2->displayArray(i, 0, LBController::NIL);
+    }
+    
+    delete pLBC2;
+
+    delete pLBC1;
+    
     return iResult;
 }

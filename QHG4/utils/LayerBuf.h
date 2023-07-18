@@ -55,7 +55,8 @@ public:
 
     void freeLayer(uint iIndex);
     void freeAllLayers();
-       
+    void detachAllLayers();
+   
     // debugging
     void showUsedLayers();
     void showFreeLayers();
@@ -68,6 +69,8 @@ public:
     virtual void moveElements(uint iToLayer,   uint iToIndex, 
                               uint iFromLayer, uint iFromIndex, 
                               uint iNum);
+    virtual int appendLayers(LBBase *pLBB);
+
     // for hdf5 writing
     size_t getNumUsedLayers() const {return m_vUsedLayers.size();};
     virtual int copyBlock(uint iStart, T *pBlock, uint iSize);

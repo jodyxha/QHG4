@@ -101,7 +101,7 @@ int SequenceIOUtils<T>::writeSequenceDataQDF(hid_t hSpeciesGroup, uint iNumArray
 
     // amount of elements we have to save 
     hsize_t dims = iNumArrays * m_iBlockSize;
-    printf("  num agents total: %lld = %d * %d\n", dims, iNumArrays, m_iBlockSize);
+    printf("  num agents total: %lu = %d * %d\n", dims, iNumArrays, m_iBlockSize);
     fflush(stdout); fflush(stderr);
 
     hid_t hDataSpace = H5Screate_simple(1, &dims, NULL);
@@ -115,7 +115,7 @@ int SequenceIOUtils<T>::writeSequenceDataQDF(hid_t hSpeciesGroup, uint iNumArray
         
         if (hDataSet > 0) {
             hsize_t dimsm = m_iLayerSize*(ulong)m_iBlockSize;
-            printf("  memspace size: %lld=%d*%d\n", dimsm, m_iLayerSize, m_iBlockSize);
+            printf("  memspace size: %lu=%d*%d\n", dimsm, m_iLayerSize, m_iBlockSize);
             fflush(stdout); fflush(stderr);
             hid_t hMemSpace = H5Screate_simple (1, &dimsm, NULL); 
 
@@ -160,9 +160,9 @@ int SequenceIOUtils<T>::writeSequenceDataQDF(hid_t hSpeciesGroup, uint iNumArray
                             qdf_closeDataSpace(hMemSpace); 
                             dimsm = iCount;
                             hMemSpace = H5Screate_simple (1, &dimsm, NULL); 
-                            printf("  memspace resize: %lld=%d*%d\n", dimsm, m_pWriteCopyController->getNumUsed(0), m_iBlockSize);
+                            printf("  memspace resize: %lu=%d*%d\n", dimsm, m_pWriteCopyController->getNumUsed(0), m_iBlockSize);
                         }
-			printf("Now we slab offs %lld, count %lld\n", iOffset, iCount);
+			printf("Now we slab offs %lu, count %lu\n", iOffset, iCount);
                         fflush(stdout); fflush(stderr);
                         
                         status = H5Sselect_hyperslab(hDataSpace, H5S_SELECT_SET, 
@@ -226,7 +226,7 @@ int SequenceIOUtils<T>::readSequenceDataQDF(hid_t hSpeciesGroup, uint iNumReadIt
         // get toal number of elements in dataset
         hsize_t dims;;
         herr_t status = H5Sget_simple_extent_dims(hDataSpace, &dims, NULL);
-        printf("Dataspace extent: %lld\n", dims);
+        printf("Dataspace extent: %lu\n", dims);
 
         // initialize some counters and indexes
         int iFirstIndex = 0;
@@ -310,7 +310,7 @@ int SequenceIOUtils<T>::dumpSequenceDataQDF(hid_t hSpeciesGroup) {
     fflush(stdout);
 
     hsize_t dims = m_paSequence->getNumLayers()*m_iLayerSize*m_iBlockSize;
-    printf("[SequenceIOUtils<T>::dumpSequenceDataQDF] dim = %lld = %d * %d * %d\n", dims, m_paSequence->getNumLayers(), m_iLayerSize, m_iBlockSize );
+    printf("[SequenceIOUtils<T>::dumpSequenceDataQDF] dim = %lu = %d * %d * %d\n", dims, m_paSequence->getNumLayers(), m_iLayerSize, m_iBlockSize );
     hid_t hDataSpace = H5Screate_simple(1, &dims, NULL);
 
 
@@ -385,10 +385,10 @@ int SequenceIOUtils<T>::restoreSequenceDataQDF(hid_t hSpeciesGroup) {
         iResult = 0;
 
         herr_t status = H5Sget_simple_extent_dims(hDataSpace, &dims, NULL);
-        printf("[SequenceIOUtils<T>::restoreSequenceDataQDF] dims:%lld\n", dims); fflush(stdout);
+        printf("[SequenceIOUtils<T>::restoreSequenceDataQDF] dims:%lu\n", dims); fflush(stdout);
         hsize_t dimsm = ((long)m_paSequence->getLayerSize())*m_iBlockSize;
-        printf("[SequenceIOUtils<T>::restoreSequenceDataQDF] slabsize:%lld\n", dimsm); fflush(stdout);
-        printf("[SequenceIOUtils<T>::restoreSequenceDataQDF] total size:%lld\n", dimsm*m_paSequence->getNumLayers()); fflush(stdout);
+        printf("[SequenceIOUtils<T>::restoreSequenceDataQDF] slabsize:%lu\n", dimsm); fflush(stdout);
+        printf("[SequenceIOUtils<T>::restoreSequenceDataQDF] total size:%lu\n", dimsm*m_paSequence->getNumLayers()); fflush(stdout);
         T *pSlab  = new T[dimsm];
         hid_t hMemSpace = H5Screate_simple (1, &dimsm, NULL); 
 
@@ -405,7 +405,7 @@ int SequenceIOUtils<T>::restoreSequenceDataQDF(hid_t hSpeciesGroup) {
             
         for (uint j = 0; (iResult == 0) && (j < m_paSequence->getNumLayers()); j++) {
             // write agents of layer j as hyperslab
-            printf("[Genetics::restoreAdditionalDataQDF] loop %d: sofar %lld, getting %lld\n", j, offset, count); fflush(stdout);
+            printf("[Genetics::restoreAdditionalDataQDF] loop %d: sofar %lu, getting %lun", j, offset, count); fflush(stdout);
             status = H5Sselect_hyperslab(hDataSpace, H5S_SELECT_SET, 
                                          &offset, &stride, &count, &block);
             

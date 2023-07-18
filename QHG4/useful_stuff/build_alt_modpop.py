@@ -275,7 +275,8 @@ if len(argv) > 2:
         exit
     #-- end try
 else:
-    print("%s - create and appropriately fill alternativ population and action subdirectories"%argv[0])
+    print("")
+    print("%s - create and appropriately fill alternative population and action subdirectories"%argv[0])
     print("Usage:")
     print("  %s <prefix> <pop_name>+"%argv[0])
     print("where")

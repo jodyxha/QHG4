@@ -162,6 +162,39 @@ int LBController::addBuffer(LBBase *pLB) {
 
 
 //----------------------------------------------------------------------------
+// appendLBC
+//
+int LBController::appendLBC(LBController *pLBC) {
+    int iResult = -1;
+    if ((pLBC->getLayerSize() == m_iLayerSize) && (pLBC->getLBufs().size() == m_vpLB.size())) {
+        
+        std::vector<L2List *> &vpL2L = pLBC->getL2Lists();
+        
+        m_vpL2L.insert(m_vpL2L.end(), vpL2L.begin(), vpL2L.end());
+        // to prevent double deletes, we clean the vector of L2L but do not delete them
+        // they will be deleted by this LBC
+        vpL2L.clear();
+
+        
+        std::vector<LBBase *> &vpLB = pLBC->getLBufs();
+
+        for (uint i = 0; i < m_vpLB.size(); i++) {
+            m_vpLB[i]->appendLayers(vpLB[i]);
+            // to prevent double deletes we remove the LayerBufs from the vector but do not delete them
+            vpLB[i]->detachAllLayers();
+        }
+        vpLB.clear();
+        iResult = 0;
+    } else {
+        // blocksize doesn't match
+        iResult = -2;
+    }
+    return iResult;   
+}
+
+
+
+//----------------------------------------------------------------------------
 // removeBuffer
 //
 int LBController::removeBuffer(LBBase *pLB) {
@@ -182,7 +215,7 @@ int LBController::removeBuffer(LBBase *pLB) {
 //
 int LBController::addLayer() {
     m_vpL2L.push_back(new L2List(m_iLayerSize));
-    printf("[LBController::addLayer] create a layer in all %zd bufs\n",  m_vpLB.size());
+    // printf("[LBController::addLayer] create a layer in all %zd bufs\n",  m_vpLB.size());
     for (uint i = 0; i < m_vpLB.size(); i++) {
         m_vpLB[i]->createLayer();
     }
@@ -334,7 +367,6 @@ int LBController::compactData() {
                 iFF++;
             }
         }
-
         // if we have no holes, we are done
         if (iFF < m_vpL2L.size()) {
             // find last layer with used indices

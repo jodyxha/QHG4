@@ -52,7 +52,7 @@ Virus<T>::Virus(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, WELL512 *
 //
 template<typename T>
 Virus<T>::~Virus() {
-    // selete the arrays
+    // delete the arrays
     delete[] m_amCellAgents;
     delete[] m_amAgentInfects;
 }
@@ -88,8 +88,8 @@ int Virus<T>::initialize(float fT) {
 
 //-----------------------------------------------------------------------------
 // execute
-//  - let the the agent's virus load grow logisically
-//  - if the agent's virus load exceeds the lethality level its register it for death
+//  - let the the agent's virus load grow logistically
+//  - if the agent's virus load exceeds the lethality level, register it for death
 //  - if the agent's viorus load exceeds the contagion level, it infects all agents in the cell (infection: increase the ``m_fIncoming`` value of the agent)
 //
 template<typename T>
@@ -126,7 +126,7 @@ int Virus<T>::execute(int iAgentIndex, float fT) {
                     T *pao = &(this->m_pPop->m_aAgents[iOtherAgent]);
                     // infect!
                     double dR =  this->m_apWELL[omp_get_thread_num()]->wrandd();
-                    // we reduce the effective infection probability by multiplyint it with (1-immunity)
+                    // we reduce the effective infection probability by multiplying it with (1-immunity)
                     if (dR < m_fInfectionProb * (1-pao->m_fImmunity)) {
                         // register infection load for agent
                         if (pao->m_fViralLoad < m_fInitialLoad) {

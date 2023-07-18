@@ -16,6 +16,7 @@ public:
     virtual void createLayer() = 0;
     virtual void freeLayer(uint iIndex) = 0;
     virtual void freeAllLayers() = 0;
+    virtual void detachAllLayers() = 0;
 
     virtual uint getNumLayers() const = 0;
     virtual uint getLayerSize() const = 0;
@@ -24,6 +25,7 @@ public:
                               uint iFromLayer, uint iFromInde, 
                               uint iNum) = 0;
 
+    virtual int  appendLayers(LBBase *pLBB) = 0;
     
 };
 

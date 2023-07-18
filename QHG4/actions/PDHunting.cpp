@@ -236,7 +236,10 @@ template<typename T>
 int PDHunting<T>::relationFromString(std::string sPredRelations) {
     char *pCur1;
     int iResult = -1;
-    char pPredRelations[sPredRelations.length()+1];
+
+    char *pPredRelations = new char[sPredRelations.length()+1];
+    strcpy(pPredRelations, sPredRelations.c_str());
+    //char pPredRelations[sPredRelations.length()+1];
     char *pRelations = strchr(pPredRelations, '|');
     if (pRelations != NULL) {
         *pRelations = '\0';

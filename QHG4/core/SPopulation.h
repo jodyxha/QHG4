@@ -186,12 +186,16 @@ public:
     virtual void setAgentDataType();
     //void showStates(bool bFull);
 
+    virtual hid_t getAgentQDFDataType() { return m_hAgentDataType;};
     
 //@@ to be removed    virtual void setQDFVersionIn(int iV) {m_iQDFVersionIn = iV;};
 //@@ to be removed    virtual int  getQDFVersionIn() {return m_iQDFVersionIn;};
 //@@ to be removed    virtual void setQDFVersionOut(int iV) {m_iQDFVersionOut = iV;};
 //@@ to be removed    virtual int  getQDFVersionOut() {return m_iQDFVersionOut;};
     
+    int writeAgentDataQDFSafe(LBController *pAgentController, LayerBuf<T> &aBuf, hid_t dataspace_id, hid_t dataset_id, hid_t hAgentType);
+    int writeAgentDataQDFSafe(hid_t dataspace_id, hid_t dataset_id, hid_t hAgentType);
+
 protected:
     int m_iNumCells;
     ulong m_iTotal;
@@ -243,7 +247,7 @@ protected:
     virtual hid_t createAgentDataTypeQDF();
     virtual void addPopSpecificAgentDataTypeQDF(hid_t *hAgentDataType) { };
     int writeAgentDataQDF(hid_t dataspace_id, hid_t dataset_id, hid_t hAgentType);
-    int writeAgentDataQDFSafe(hid_t dataspace_id, hid_t dataset_id, hid_t hAgentType);
+    //int writeAgentDataQDFSafe(hid_t dataspace_id, hid_t dataset_id, hid_t hAgentType);
     int writeSpeciesDataQDF(hid_t hSpeciesGroup);
     int readAgentDataQDF(hid_t hDataSpace, hid_t hDataSet, hid_t hAgentType);
     int readSpeciesDataQDF(hid_t hSpeciesGroup);
@@ -331,7 +335,6 @@ protected:
     // species specific arrays
     //    double *m_adCapacities;
 
-    virtual hid_t getAgentQDFDataType() { return m_hAgentDataType;};
     hid_t m_hAgentDataType;
 
     int m_iQDFVersionIn;

@@ -6,8 +6,7 @@ import os
 linkfiles = {"core"       : ["PopBase.h"],
              "actions"    : ["Action.h",
                              "Action.cpp"], 
-             "populations": ["Factory.h",
-                             "PopulationFactory.h",
+             "populations": ["PopulationFactory.h",
                              "DynPopFactory.h",
                              "DynPopFactory.cpp"]
              }

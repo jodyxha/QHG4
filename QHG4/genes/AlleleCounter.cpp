@@ -311,7 +311,7 @@ int AlleleCounter::loadGenomes(int iNumPerBuf) {
     // get total number of elements in dataset
     hsize_t dims;
     herr_t status = H5Sget_simple_extent_dims(hDataSpace, &dims, NULL);
-    if (m_bVerbose) printf("Dataspace extent: %lld\n", dims);
+    if (m_bVerbose) printf("Dataspace extent: %lu\n", dims);
 
     // initialize some counters and indexes
     hsize_t iCount;

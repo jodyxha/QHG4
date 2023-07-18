@@ -20,6 +20,7 @@
 #include "LocEnv.cpp"
 #include "PrivParamMix.cpp"
 #include "Navigate.cpp"
+#include "MoveStats.cpp"
 #include "OoANavSHybYchMTDPop.h"
 
 static bool g_bFirst = true;
@@ -67,6 +68,8 @@ OoANavSHybYchMTDPop::OoANavSHybYchMTDPop(SCellGrid *pCG, PopFinder *pPopFinder, 
 
     m_pNavigate = new Navigate<OoANavSHybYchMTDAgent>(this, m_pCG, "", m_apWELL);
 
+    m_pMoveStats = new MoveStats<OoANavSHybYchMTDAgent>(this, m_pCG, "");
+
     // adding all actions to prioritizer
 
     m_prio.addAction(m_pWM);
@@ -78,6 +81,7 @@ OoANavSHybYchMTDPop::OoANavSHybYchMTDPop(SCellGrid *pCG, PopFinder *pPopFinder, 
     m_prio.addAction(m_pLE);
     m_prio.addAction(m_pPPM);
     m_prio.addAction(m_pNavigate);
+    m_prio.addAction(m_pMoveStats);
 
 }
 
@@ -119,6 +123,9 @@ OoANavSHybYchMTDPop::~OoANavSHybYchMTDPop() {
     }
     if (m_pNavigate != NULL) {
         delete m_pNavigate;
+    }
+    if (m_pMoveStats != NULL) {
+        delete m_pMoveStats;
     }
 }
 

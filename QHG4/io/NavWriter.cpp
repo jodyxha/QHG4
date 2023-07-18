@@ -105,7 +105,7 @@ int NavWriter::write(hid_t hFile) {
                 } else {
                     stdprintf("[NavWriter] error writing bridges\n");
                 }
-                delete pBridges;
+                delete[] pBridges;
  
             }
             qdf_closeGroup(hNavGroup);

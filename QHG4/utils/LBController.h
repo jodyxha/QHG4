@@ -28,6 +28,8 @@ public:
     int addBuffer(LBBase *pLB);
     int removeBuffer(LBBase *pLB);
 
+    int appendLBC(LBController *pLLB);
+
     // layer managenent
     int addLayer();
     int removeLayer(uint iLayer);
@@ -79,6 +81,9 @@ public:
 
 
 protected:
+  
+    std::vector<L2List *> &getL2Lists() { return m_vpL2L;};
+    std::vector<LBBase *> &getLBufs() { return m_vpLB;};
     uint m_iLayerSize;
     int compactLayers();
 

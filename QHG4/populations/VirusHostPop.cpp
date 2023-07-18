@@ -13,6 +13,7 @@
 #include "Fertility.cpp"
 #include "Verhulst.cpp"
 #include "RandomPair.cpp"
+#include "AgentBinSplitter.cpp"
 #include "Virus.cpp"
 
 #include "VirusHostPop.h"
@@ -31,6 +32,7 @@ VirusHostPop::VirusHostPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize
     m_pVerhulst = new Verhulst<VirusHostAgent>(this, m_pCG, "", m_apWELL);
 
     m_pPair = new RandomPair<VirusHostAgent>(this, m_pCG, "", m_apWELL);
+    m_pAgSplit = new AgentBinSplitter<VirusHostAgent>(this, m_pCG, "", m_pAgentController);
     m_pVirus = new Virus<VirusHostAgent>(this, m_pCG, "", m_apWELL);
     
     m_prio.addAction(m_pGO);
@@ -41,6 +43,9 @@ VirusHostPop::VirusHostPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize
 
     m_prio.addAction(m_pPair);
     m_prio.addAction(m_pVirus);
+
+    m_prio.addAction(m_pAgSplit);
+    // AgentBinSplitter is not involved in th e simulation steps
 
     m_fMutationRate = 0.0;
     m_sInheritType = "mix";
@@ -69,7 +74,11 @@ VirusHostPop::~VirusHostPop() {
     if (m_pPair != NULL) {
         delete m_pPair;
     }
-  
+    
+    if (m_pAgSplit != NULL) {
+        delete m_pAgSplit;
+    }
+    
     if (m_pVirus != NULL) {
         delete m_pVirus;
     }
@@ -84,7 +93,7 @@ VirusHostPop::~VirusHostPop() {
 int  VirusHostPop::getPopParams(const stringmap &mVarDefs) {
     int iResult = -1;
 
-    stringmap::const_iterator it = mVarDefs.find(VAR_VIURUSHOST_MUT_RATE_NAME);
+    stringmap::const_iterator it = mVarDefs.find(VAR_VIRUSHOST_MUT_RATE_NAME);
     if (it != mVarDefs.end()) {
         float fMutTemp = 0;
         if (strToNum(it->second, &fMutTemp)) {
@@ -95,10 +104,10 @@ int  VirusHostPop::getPopParams(const stringmap &mVarDefs) {
             // couldn't convert string to float
         }
     } else {
-        // expected key VAR_VIURUSHOST_MUT_RATE_NAME
+        // expected key VAR_VIRUSHOST_MUT_RATE_NAME
     }
 
-    it = mVarDefs.find(VAR_VIURUSHOST_IMM_INHERIT_NAME);
+    it = mVarDefs.find(VAR_VIRUSHOST_IMM_INHERIT_NAME);
     if (it != mVarDefs.end()) {
         std::string sInheritType = it->second;
 
@@ -126,15 +135,15 @@ int  VirusHostPop::getPopParams(const stringmap &mVarDefs) {
         }
 
     } else {
-        // expected key VAR_VIURUSHOST_IMM_INHERIT_NAME
+        // expected key VAR_VIRUSHOST_IMM_INHERIT_NAME
     }
     return iResult;
 }
 
 //----------------------------------------------------------------------------
 // addPopSpecificAgentData
-// read additional data from pop file (the mat index and incoming are volatile, 
-// so we don't try to read or wrwite them)
+// read additional data from pop file (the mat index is volatile, 
+// so we don't try to read or write it)
 //
 int VirusHostPop::addPopSpecificAgentData(int iAgentIndex, char **ppData) {
 
@@ -186,7 +195,7 @@ int VirusHostPop::makePopSpecificOffspring(int iAgent, int iMother, int iFather)
     m_aAgents[iAgent].m_iMateIndex = -3;
     // SPopulation assigns random genders to a baby, ehich is ok here
     m_aAgents[iAgent].m_fViralLoad = 0;
-    m_aAgents[iAgent].m_fIncoming = 0;
+
 
     // register this date as the last birth of the mother
     m_aAgents[iAgent].m_fLastBirth = m_fCurTime;
@@ -199,6 +208,8 @@ int VirusHostPop::makePopSpecificOffspring(int iAgent, int iMother, int iFather)
         fImm =  m_aAgents[iMother].m_fImmunity;
     } else if (m_sInheritType == INH_TYPES[INH_PAT]) {
         fImm =  m_aAgents[iFather].m_fImmunity;
+    } else if (m_sInheritType == INH_TYPES[INH_MIN]) {
+        fImm = (m_aAgents[iMother].m_fImmunity < m_aAgents[iFather].m_fImmunity)?m_aAgents[iMother].m_fImmunity:m_aAgents[iFather].m_fImmunity;
     } else if (m_sInheritType == INH_TYPES[INH_MAX]) {
         fImm = (m_aAgents[iMother].m_fImmunity > m_aAgents[iFather].m_fImmunity)?m_aAgents[iMother].m_fImmunity:m_aAgents[iFather].m_fImmunity;
     } else {

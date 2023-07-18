@@ -58,13 +58,13 @@ int Action<T>::checkAttributes(const stringmap &mParams) {
     if (checkAttributesV(mParams, m_vNames, vRequired, vUnknown) != 0) {
         iResult = -1;
         if (vRequired.size() > 0) {
-            stdprintf("[Action %s] Missing param%s:\n", m_sActionName, (vRequired.size()>0)?"s":"");
+            stdprintf("[Action %s] Param%s missing from XML file:\n", m_sActionName, (vRequired.size()>0)?"s":"");
             for (uint i = 0; i < vRequired.size(); i++) {
                 stdprintf("[Action %s]     %s\n", m_sActionName,vRequired[i]);
             }
         }
         if (vUnknown.size() > 0) {
-            stdprintf("[Action %s] Unknown param%s:\n", m_sActionName, (vUnknown.size()>0)?"s":"");
+            stdprintf("[Action %s] Unknown param%s in XML file:\n", m_sActionName, (vUnknown.size()>0)?"s":"");
             for (uint i = 0; i < vUnknown.size(); i++) {
                 stdprintf("[Action %s]     %s\n", m_sActionName, vUnknown[i]);
             }

@@ -247,7 +247,9 @@ char *qhgXMLNode::readString () {
             }
         }
     }
-    strncpy(m_sCurString, p0, m_pCur - p0);
+    if (m_pCur != p0) {
+        strncpy(m_sCurString, p0, m_pCur - p0);
+    }
     m_sCurString[m_pCur-p0] = '\0';
     if (bInString) {
         stdprintf("string not closed with quote [%s][%s]\n", p0, m_pCur);

@@ -15,7 +15,7 @@
 #include "LocEnv.h"
 #include "PrivParamMix.h"
 #include "Navigate.h"
-
+#include "MoveStats.h"
 
 struct OoANavSHybYchMTDAgent : Agent {
 
@@ -77,6 +77,7 @@ public:
     PersOldAgeDeath<OoANavSHybYchMTDAgent> *m_pOAD;
     PersFertility<OoANavSHybYchMTDAgent> *m_pFert;
     Navigate<OoANavSHybYchMTDAgent> *m_pNavigate;
+    MoveStats<OoANavSHybYchMTDAgent> *m_pMoveStats;
     bool m_bCreateGenomes;
     bool m_bPendingEvents;
 
