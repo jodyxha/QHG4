@@ -31,6 +31,7 @@ public:
 
     virtual int tryGetAttributes(const ModuleComplex *pMC);
     virtual int extractAttributesQDF(hid_t hSpeciesGroup);
+    virtual int writeAttributesQDF(hid_t hSpeciesGroup);
 
 protected:
 
@@ -51,6 +52,7 @@ protected:
     std::vector<LBController *> *m_pvLBCs; // numthread array of LBC* vectors
     std::vector<LayerBuf<T>>    *m_pvLBs;   // numthread array of LB vectors
 
+    bool m_bVerbose;
     static const char *asNames[];
 };
 

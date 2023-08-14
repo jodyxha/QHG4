@@ -66,6 +66,7 @@ protected:
     SPopulation<T> *m_pPop;
     SCellGrid      *m_pCG;    
     stringvec       m_vNames;
+    std::string     m_sID;
     std::string     m_sActionName;
   
 };

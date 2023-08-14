@@ -170,7 +170,7 @@ int qdf_extractAttribute(hid_t hLoc, const char *pName, uint iNum, char *cValue)
                 printf("read char attribute err\n");
             } 
         } else {
-            printf("[char] Bad Rank (%d) or bad size %llu (!= %d)\n", rank, dims[0], iNum);
+            printf("[char] Bad Rank (%d) or bad size %lu (!= %d)\n", rank, dims[0], iNum);
         }
         qdf_closeDataSpace(hAttrSpace);
         qdf_closeAttribute(hAttribute);
@@ -206,7 +206,7 @@ int qdf_extractAttribute(hid_t hLoc, const char *pName, uint iNum, int *iValue) 
                 printf("read int attribute err\n");
             } 
         } else {
-            printf("[int] Bad Rank (%d) or bad size %llu (!= %d)\n", rank, dims[0], iNum);
+            printf("[int] Bad Rank (%d) or bad size %lu (!= %d)\n", rank, dims[0], iNum);
         }
         qdf_closeDataSpace(hAttrSpace);
         qdf_closeAttribute(hAttribute);
@@ -242,7 +242,7 @@ int qdf_extractAttribute(hid_t hLoc, const char *pName, uint iNum, uint *iValue)
                 printf("read int attribute err\n");
             } 
         } else {
-            printf("[uint] Bad Rank (%d) or bad size %llu (!= %d)\n", rank, dims[0], iNum);
+            printf("[uint] Bad Rank (%d) or bad size %lu (!= %d)\n", rank, dims[0], iNum);
         }
         qdf_closeDataSpace(hAttrSpace);
         qdf_closeAttribute(hAttribute);
@@ -281,7 +281,7 @@ int qdf_extractAttribute(hid_t hLoc, const char *pName, uint iNum, long *lValue)
                 printf("read long attribute err\n");
             } 
         } else {
-            printf("[long] Bad Rank (%d) or bad size %llu (!= %d)\n", rank, dims[0], iNum);
+            printf("[long] Bad Rank (%d) or bad size %lu (!= %d)\n", rank, dims[0], iNum);
         }
         qdf_closeDataSpace(hAttrSpace);
         qdf_closeAttribute(hAttribute);
@@ -318,7 +318,7 @@ int qdf_extractAttribute(hid_t hLoc, const char *pName, uint iNum, float *fValue
                 printf("read float attribute err\n");
             } 
         } else {
-            printf("[float] Bad Rank (%d) or bad size %llu (!= %d)\n", rank, dims[0], iNum);
+            printf("[float] Bad Rank (%d) or bad size %lu (!= %d)\n", rank, dims[0], iNum);
         }
         qdf_closeDataSpace(hAttrSpace);
         qdf_closeAttribute(hAttribute);
@@ -355,7 +355,7 @@ int qdf_extractAttribute(hid_t hLoc, const char *pName, uint iNum, double *dValu
                 printf("read double attribute err\n");
             } 
         } else {
-            printf("[double] Bad Rank (%d) or bad size %llu (!= %d)\n", rank, dims[0], iNum);
+            printf("[double] Bad Rank (%d) or bad size %lu (!= %d)\n", rank, dims[0], iNum);
         }
         qdf_closeDataSpace(hAttrSpace);
         qdf_closeAttribute(hAttribute);
@@ -755,3 +755,33 @@ int collectSubGroups(hid_t hPopGroup, stringvec &vNames) {
     return 0;
 
 }
+
+//----------------------------------------------------------------------------
+// qdf_extractSAttribute
+//    string as reference
+//
+int qdf_extractSAttribute2(hid_t hLoc, const std::string sName, std::string &sValue) {
+    int iResult = -1;
+
+    sValue = "";    
+    if (qdf_attr_exists(hLoc, sName.c_str())) {
+        hid_t hAttribute = H5Aopen_by_name(hLoc, ".", sName.c_str(), H5P_DEFAULT, H5P_DEFAULT);
+        hid_t atype  = H5Aget_type(hAttribute);
+        hsize_t size = H5Tget_size (atype);
+        char *pString = new char[size+1];
+        memset(pString, 0, size+1);
+        herr_t status = H5Aread(hAttribute, atype, pString);
+        if (status >= 0) {
+            sValue = pString;
+            iResult = 0;
+        }
+        qdf_closeAttribute(hAttribute);
+        delete[] pString;
+    } else {
+        //stdprintf("Attribute [%s] does not exist\n", sName);
+    }
+    return iResult;
+}
+                     
+
+    

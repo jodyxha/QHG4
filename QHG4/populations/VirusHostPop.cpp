@@ -32,7 +32,8 @@ VirusHostPop::VirusHostPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize
     m_pVerhulst = new Verhulst<VirusHostAgent>(this, m_pCG, "", m_apWELL);
 
     m_pPair = new RandomPair<VirusHostAgent>(this, m_pCG, "", m_apWELL);
-    m_pAgSplit = new AgentBinSplitter<VirusHostAgent>(this, m_pCG, "", m_pAgentController);
+    m_pAgSplitV = new AgentBinSplitter<VirusHostAgent>(this, m_pCG, "VLoad", m_pAgentController);
+    m_pAgSplitI = new AgentBinSplitter<VirusHostAgent>(this, m_pCG, "Immun", m_pAgentController);
     m_pVirus = new Virus<VirusHostAgent>(this, m_pCG, "", m_apWELL);
     
     m_prio.addAction(m_pGO);
@@ -44,7 +45,8 @@ VirusHostPop::VirusHostPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize
     m_prio.addAction(m_pPair);
     m_prio.addAction(m_pVirus);
 
-    m_prio.addAction(m_pAgSplit);
+    m_prio.addAction(m_pAgSplitV);
+    m_prio.addAction(m_pAgSplitI);
     // AgentBinSplitter is not involved in th e simulation steps
 
     m_fMutationRate = 0.0;
@@ -75,8 +77,12 @@ VirusHostPop::~VirusHostPop() {
         delete m_pPair;
     }
     
-    if (m_pAgSplit != NULL) {
-        delete m_pAgSplit;
+    if (m_pAgSplitV != NULL) {
+        delete m_pAgSplitV;
+    }
+    
+    if (m_pAgSplitI != NULL) {
+        delete m_pAgSplitI;
     }
     
     if (m_pVirus != NULL) {

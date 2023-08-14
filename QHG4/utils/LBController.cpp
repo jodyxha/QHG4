@@ -526,7 +526,6 @@ const L2List *LBController::getL2List(uint iLayer) {
     return pL2List;
 }
 
-
 //----------------------------------------------------------------------------
 // setL2List
 //  clears setsreturns the L2List for layer #iLayer or NULL for bad index

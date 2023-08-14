@@ -1,0 +1,92 @@
+
+Grass:
+  1 agent per cell
+  min_mass, max_mass, growth rate (logistic)
+  sees shared array "grass_mass_avail" (mass per cell)
+  sees shared array "grass_mass_consumed" (GrassID, mass)
+
+  int getGrassMassAvailable(double *adGrass);
+  int removeGrassMassConsumed(double *adConsumed);
+
+Rabbit:
+  age, birth_mass, max_mass, starve_mass, fert_mass, birthprob, max_age
+  sees shared array "rabbit_mass_avail" (mass per cell)
+     alt: "rabbit_count" (Num oer cell)
+  sees shared array "grass_mass_consumed"(GrassID, mass)
+  sees shared array "FoxCount") (number, per cell)
+  sees shared array "grass_mass_avail") (mass per cell)
+  sees shared array "kill_list" (IDs)
+
+
+Fox:
+  age, birth_mass, max_mass, starve_mass, fert_mass, birthprob, max_age
+  creates and sees shared array "FoxCount") (number, per cell)
+  creates and sees shared array "kill_list" (IDs)
+  sees shared array "rabbit_mass_avail" (mass per cell)
+
+
+Shared array, owner, consumers
+  grass_mass_avail,    GrassPop,  GrassManager,  RabbitManager
+  rabbit_mass_avail,   RabbitPop, RabbitManager, FoxManager
+  grass_mass_consumed, RabbitPop, RabbitManager, GrassManager
+  fox_count,           FoxPop,    FoxManager,    RabbitManager
+  kill_list,           FoxPop,    FoxManager,    RabbitManager
+
+
+array                     Grass          Rabbit           Fox
+
+grass_mass_avail            +-------------->
+grass_mass_consumed         <--------------+
+rabbit_mass_avail                          +--------------->
+rabbit_cells                               +--------------->
+fox_count                                  <---------------+
+DeadRabbits                                <---------------+
+
+
+
+GrassManager:
+  preLoop():    fill shared array "grass_mass_avail" (local mass - min_mass)
+
+  initialize(): nothing 
+  finalize():   subtract "grass_mass_consumed" from grass_mass
+                update "grass_mass_avail" 
+
+RabbitManager
+  preLoop():    fill shared array "rabbit_mass_avail"
+  initialize(): feed (determine "grass_mass_consumed", increase masses)
+  finalize():   update "rabbit_mass_avail"
+                registerDeath for "kill_list"
+                combine "fox_count" and "grass_mass_avail" to "preferences"
+  
+FoxManager
+  preLoop():    fill shared array "fox_count"
+  initialize(): feed (determine "kill_list" increase masses)
+  finalize():   update "fox_count" 
+                make "rabbit_mass_avail" into a  preference
+
+
+GrassGrower: 
+has public removeGrassConsumed(), getGrassMassAvailable()
+  attrs:  min_mass, max_mass, cur_mass, growth rate
+  in execute dm = growth:rate*curmass*(1-cur_mass/max_mass)
+  
+  also sees m_adGrassMassAvail andm:adGrassMassConsumed
+
+Rabbit agent has attributes mass and age
+
+RabbitRepro:
+  attrs: birthprob, birth_mass, fert_mass
+
+Starver (fox & rabbit)
+  attrs: decay, starve_mass
+  (mass = mass*(1-decay); if (mass <starve_mass)  {register death(...)
+
+Eater (fox & rabbit)
+  attrs: max_mass
+
+
+
+GrassPop
+  creates arrays m_adGrassMassAvail and m_adGrassMassConsumed
+  implements getGrassMassAvailable():   call GrassGrower::getGrassMassAvailable()
+  implements removeGrassMassConsumed(): call GrassGrower::removeGrassMassConsumed()

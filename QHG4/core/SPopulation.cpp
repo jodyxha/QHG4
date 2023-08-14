@@ -215,7 +215,7 @@ void SPopulation<T>::showStates(bool bFull) {
         sprintf(s, "%02x", pDigest[i]/ *umd5[i]* /);
         strcat(smd5, s);
     }
-
+    free(pDigest);
     stdprintf("WELL hash %s\n", smd5);
     if (bFull) {
         stdprintf("%s", sStates);
@@ -1493,7 +1493,7 @@ int SPopulation<T>::modifyAttributes(const std::string sAttrName, double dValue)
 //  The copied layer is then compacted and passed to  H5Dwrite
 //  
 template<typename T>
-int  SPopulation<T>::writeAgentDataQDFSafe(LBController *pAgentController, LayerBuf<T> &aBuf, hid_t hDataSpace, hid_t hDataSet, hid_t hAgentType) {
+int  SPopulation<T>::writeAgentDataQDFSafe(LBController *pAgentController, LayerBuf<T> &aBuf, hid_t hDataSpace, hid_t hDataSet, hid_t hAgentType, bool bHandleDead) {
     int iResult = 0;
     stdprintf("[SPopulation::writeAgentDataQDFSafe] with LBC and LB\n");
     fflush(stdout);
@@ -1518,9 +1518,12 @@ int  SPopulation<T>::writeAgentDataQDFSafe(LBController *pAgentController, Layer
     // make sure there are no holes and no forgotten dead
     // m_vMergedDeadList is used by other objects (e.g. Genetics)
     m_vMergedDeadList.clear();
-    m_vMergedDeadList.insert(m_vMergedDeadList.end(), m_pPrevD, m_pPrevD+m_iNumPrevDeaths);
-    std::sort(m_vMergedDeadList.begin(), m_vMergedDeadList.end());
+    if (bHandleDead) {
+        m_vMergedDeadList.insert(m_vMergedDeadList.end(), m_pPrevD, m_pPrevD+m_iNumPrevDeaths);
+        std::sort(m_vMergedDeadList.begin(), m_vMergedDeadList.end());
+    }
 
+    //@@need a copy of nerged dead list
     int iTotalKill = 0;
     uint iNumWritten = 0;
     herr_t status = H5P_DEFAULT;
@@ -1543,9 +1546,10 @@ int  SPopulation<T>::writeAgentDataQDFSafe(LBController *pAgentController, Layer
                 uint iNumKilled  = 0;
                 uint iD = 0;
                 while ((iD < m_vMergedDeadList.size()) && (m_vMergedDeadList[iD] < (int)(j+1)*iLayerSize)) {
-                    
+                    //stdprintf("[SPopulation<T>::writeAgentDataQDFSafe] deleting id  local %d, global %d (j=%d, ID = %d\n", m_vMergedDeadList[iD],m_vMergedDeadList[iD] - j*iLayerSize, j, iD);
+                                        
                     iResult = m_pWriteCopyController->deleteElement(m_vMergedDeadList[iD] - j*iLayerSize);
-
+                    
                     iD++;
                     iNumKilled++;
                 }
@@ -1555,10 +1559,11 @@ int  SPopulation<T>::writeAgentDataQDFSafe(LBController *pAgentController, Layer
                 if (count > 0) {
                     // here it is important not to have an empty slab
                     m_pWriteCopyController->compactData();
-            
+                    // do it again in case deletions and compactions changed something
+                    count =  m_pWriteCopyController->getNumUsed(0);
                     const T* pSlab = m_aWriteCopy.getLayer(0);
                     iNumWritten +=  count;
-
+                 
                     // adapt memspace if size of slab is different
                     if (count != dimsm) {
                         qdf_closeDataSpace(hMemSpace); 
@@ -1566,15 +1571,14 @@ int  SPopulation<T>::writeAgentDataQDFSafe(LBController *pAgentController, Layer
                         hMemSpace = H5Screate_simple (1, &dimsm, NULL); 
                     }
             
-                    //			printf("selecting hyperslab:\n offset %d\n count %d\n", offset, count);
-                
                     status = H5Sselect_hyperslab(hDataSpace, H5S_SELECT_SET, 
-                                             &offset, &stride, &count, &block);
+                                                 &offset, &stride, &count, &block);
             
                     status = H5Dwrite(hDataSet, hAgentType, hMemSpace,
                                   hDataSpace, H5P_DEFAULT, pSlab);
+                    
                     offset += count;
-                } else {
+                }  else {
                     stdprintf("[SPopulation<T>::writeAgentDataQDFSafe] ignored layer %d because it only contains dead\n", j);
                 }
             } else {
@@ -1589,8 +1593,7 @@ int  SPopulation<T>::writeAgentDataQDFSafe(LBController *pAgentController, Layer
     qdf_closeDataSpace(hMemSpace); 
 
     stdprintf("[SPopulation<T>::writeAgentDataQDFSafe] written %u agents, killed %d\n", iNumWritten, iTotalKill); fflush(stdout);
-    stdprintf("[SPopulation<T>::writeAgentDataQDFSafe] end with status %d\n", status); fflush(stdout);
-
+  
     return (status >= 0)?iResult:-1;
 }
 
@@ -2050,7 +2053,7 @@ int SPopulation<T>::extractPrioDataAttribute(hid_t hSpeciesGroup) {
 template<typename T>
 int  SPopulation<T>::dumpAgentDataQDF(hid_t hDataSpace, hid_t hDataSet, hid_t hAgentType) {
     int iResult = 0;
-    stdprintf("[SPopulation::dumpAgentDataQDFSafe]\n");
+    stdprintf("[SPopulation::dumpAgentDataQDF]\n");
     fflush(stdout);
 
     hsize_t dimsm = m_pAgentController->getLayerSize();

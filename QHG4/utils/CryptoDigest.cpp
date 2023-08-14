@@ -311,7 +311,7 @@ unsigned char *CryptoDigest::genericsum_file(std::string sDigestName, std::strin
             
         fIn.close();
     } else {
-        fprintf(stderr, "Couldn't open file for reading [%s]\n", sFileName);
+        fprintf(stderr, "Couldn't open file for reading [%s]\n", sFileName.c_str());
         iResult = -1;
     }
         return pOut;

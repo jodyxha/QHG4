@@ -1,7 +1,7 @@
 CC=g++
 COPT=-shared -O3 -Wall -fPIC -o $@ $^
 
-SRCS = $(shell ls | grep .cpp)
+SRCS = $(shell ls | grep [a-zA-Z0-9_+-]*.cpp$)
 
 all: libQDFUtils.so
 

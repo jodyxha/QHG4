@@ -57,7 +57,8 @@ protected:
     Fertility<VirusHostAgent>         *m_pFert;
     Verhulst<VirusHostAgent>          *m_pVerhulst;
     RandomPair<VirusHostAgent>        *m_pPair;
-    AgentBinSplitter<VirusHostAgent>  *m_pAgSplit;
+    AgentBinSplitter<VirusHostAgent>  *m_pAgSplitV;
+    AgentBinSplitter<VirusHostAgent>  *m_pAgSplitI;
     Virus<VirusHostAgent>             *m_pVirus;
 
 

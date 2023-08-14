@@ -193,7 +193,7 @@ public:
 //@@ to be removed    virtual void setQDFVersionOut(int iV) {m_iQDFVersionOut = iV;};
 //@@ to be removed    virtual int  getQDFVersionOut() {return m_iQDFVersionOut;};
     
-    int writeAgentDataQDFSafe(LBController *pAgentController, LayerBuf<T> &aBuf, hid_t dataspace_id, hid_t dataset_id, hid_t hAgentType);
+    int writeAgentDataQDFSafe(LBController *pAgentController, LayerBuf<T> &aBuf, hid_t dataspace_id, hid_t dataset_id, hid_t hAgentType, bool bHandleDead=true);
     int writeAgentDataQDFSafe(hid_t dataspace_id, hid_t dataset_id, hid_t hAgentType);
 
 protected:

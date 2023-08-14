@@ -19,6 +19,7 @@
 #include "ParamProvider2.h"
 #include "LBController.h"
 #include "LayerArrBuf.h"
+#include "SPopulation.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
 
@@ -31,7 +32,7 @@ const char *AgentBinSplitter<T>::asNames[] = {
     ATTR_ABS_NUM_BINS_NAME,
     ATTR_ABS_VAR_FIELD_NAME};
 
-const std::string SUB_POP_GROUP_NAME = "SubPopGroups";
+//const std::string SUB_POP_GROUP_NAME = "SubPopulations";
 //const std::string AGENT_DATASET_NAME = "AgentDataSet";
 
 //-----------------------------------------------------------------------------
@@ -46,7 +47,8 @@ AgentBinSplitter<T>::AgentBinSplitter(SPopulation<T> *pPop,  SCellGrid *pCG, std
       m_dBinMax(0),
       m_iNumBins(0),
       m_sVarField(""),
-      m_iVarOffset(0) {
+      m_iVarOffset(0),
+      m_bVerbose(false) {
 
     // prepare the vecarrays
     m_pvLBCs = new std::vector<LBController *>[m_iNumThreads];
@@ -88,22 +90,24 @@ int AgentBinSplitter<T>::getVariableOffset() {
     
     int iResult = -1;
 
-    stdprintf("[AgentBinSplitter<T>::getVariableOffset] start\n"); fflush(stdout);
+    if (m_bVerbose) {stdprintf("[AgentBinSplitter<T>::getVariableOffset] start\n"); fflush(stdout);}
     hid_t hAgentType = this->m_pPop->getAgentQDFDataType(); 
-    stdprintf("[AgentBinSplitter<T>::getVariableOffset] agenttyype %lx, def %lx\n", hAgentType, H5P_DEFAULT); fflush(stdout);
+    if (m_bVerbose) {stdprintf("[AgentBinSplitter<T>::getVariableOffset] agenttyype %lx, def %lx\n", hAgentType, H5P_DEFAULT); fflush(stdout);}
     if (hAgentType != H5P_DEFAULT) {
         int iVarIndex =  H5Tget_member_index(hAgentType, m_sVarField.c_str());  
-        stdprintf("[AgentBinSplitter<T>::getVariableOffset] VarIndex %d\n", iVarIndex); fflush(stdout);
+        if (m_bVerbose) {stdprintf("[AgentBinSplitter<T>::getVariableOffset] VarIndex %d\n", iVarIndex); fflush(stdout);}
 
-        for (int i = 0; i < H5Tget_nmembers(hAgentType); i++) {
-            char *pt = H5Tget_member_name(hAgentType, i);
-            stdprintf("[AgentBinSplitter<T>::getVariableOffset] index %d (%03d): [%s]\n", i, H5Tget_member_offset(hAgentType, i), pt); fflush(stdout);
+        if (m_bVerbose) {
+            for (int i = 0; i < H5Tget_nmembers(hAgentType); i++) {
+                char *pt = H5Tget_member_name(hAgentType, i);
+                stdprintf("[AgentBinSplitter<T>::getVariableOffset] index %d (%03d): [%s]\n", i, H5Tget_member_offset(hAgentType, i), pt); fflush(stdout);
             H5free_memory(pt);
+        }
         }
         if (iVarIndex >= 0)  {
             //int iNumMembers = H5Tget_nmembers(hAgentType);
             m_iVarOffset =  H5Tget_member_offset(hAgentType, iVarIndex);
-            stdprintf("[AgentBinSplitter<T>::getVariableOffset] VarIndex %d; VarOffset %d\n", iVarIndex, m_iVarOffset); fflush(stdout);
+            if (m_bVerbose) {stdprintf("[AgentBinSplitter<T>::getVariableOffset] VarIndex %d; VarOffset %d\n", iVarIndex, m_iVarOffset); fflush(stdout);}
             m_hVarType = H5Tget_member_type(hAgentType, iVarIndex);
 
             iResult = 0;
@@ -116,7 +120,7 @@ int AgentBinSplitter<T>::getVariableOffset() {
         // got invalid agent type
         stdprintf("[AgentBinSplitter<T>::getVariableOffset] Error: got invalid agent type\n"); fflush(stdout);
     }
-    stdprintf("[AgentBinSplitter<T>::getVariableOffset] end\n"); fflush(stdout);
+    if (m_bVerbose) {stdprintf("[AgentBinSplitter<T>::getVariableOffset] end\n"); fflush(stdout);}
     return iResult;
     
 }
@@ -128,67 +132,67 @@ template<typename T>
 double AgentBinSplitter<T>::getDVal(T &ag) {
 
     double dResult = fNaN;
-    stdprintf("[AgentBinSplitter<T>::getDVal] start\n"); fflush(stdout);
+    //stdprintf("[AgentBinSplitter<T>::getDVal] start ag:%d (L %d)\n", ag.m_ulCellID, ag.m_iLifeState); fflush(stdout);
     char *p = (char*)(&ag);
      
     if (H5Tequal(m_hVarType,  H5T_NATIVE_CHAR)) {
         char j;
         memcpy(&j, p + m_iVarOffset, sizeof(char));
-        printf("retrieved char: %d\n", j);
+        //stdprintf("retrieved char: %d\n", j);
         dResult = (double)(j);
     } else if (H5Tequal(m_hVarType,  H5T_NATIVE_UCHAR)) {
         uchar j;
         memcpy(&j, p + m_iVarOffset, sizeof(char));
-        printf("retrieved uchar: %d\n", j);
+        //stdprintf("retrieved uchar: %d\n", j);
         dResult = (double)(j);
     } else if (H5Tequal(m_hVarType,  H5T_NATIVE_SHORT)) {
         short int j;
         memcpy(&j, p + m_iVarOffset, sizeof(short int));
-        printf("retrieved short: %d\n", j);
+        //stdprintf("retrieved short: %d\n", j);
         dResult = (double)(j);
     } else if (H5Tequal(m_hVarType,  H5T_NATIVE_USHORT)) {
         ushort j;
         memcpy(&j, p + m_iVarOffset, sizeof(ushort));
-        printf("retrieved ushort: %d\n", j);
+        //stdprintf("retrieved ushort: %d\n", j);
         dResult = (double)(j);
     } else if (H5Tequal(m_hVarType,  H5T_NATIVE_INT32)) {
         int j;
         memcpy(&j, p + m_iVarOffset, sizeof(int));
-        printf("retrieved int: %d\n", j);
+        //stdprintf("retrieved int: %d\n", j);
         dResult = (double)(j);
     } else if (H5Tequal(m_hVarType,  H5T_NATIVE_UINT32)) {
         uint j;
         memcpy(&j, p + m_iVarOffset, sizeof(uint));
-        printf("retrieved uint: %d\n", j);
+        //stdprintf("retrieved uint: %d\n", j);
         dResult = (double)(j);
     } else if (H5Tequal(m_hVarType,  H5T_NATIVE_LONG)) {
         long j;
         memcpy(&j, p + m_iVarOffset, sizeof(long));
-        printf("retrieved long: %ld\n", j);
+        //stdprintf("retrieved long: %ld\n", j);
         dResult = (double)(j);
     } else if (H5Tequal(m_hVarType,  H5T_NATIVE_ULONG)) {
         ulong j;
         memcpy(&j, p + m_iVarOffset, sizeof(ulong));
-        printf("retrieved ulong: %ld\n", j);
+        //stdprintf("retrieved ulong: %ld\n", j);
         dResult = (double)(j);
     } else if (H5Tequal(m_hVarType,  H5T_NATIVE_FLOAT)) {
         float j;
         memcpy(&j, p + m_iVarOffset, sizeof(float));
-        printf("retrieved float: %f\n", j);
+        //stdprintf("retrieved float: %f\n", j);
         dResult = (double)(j);
     } else if (H5Tequal(m_hVarType,  H5T_NATIVE_DOUBLE)) {
         double j;
         memcpy(&j, p + m_iVarOffset, sizeof(double));
-        printf("retrieved double: %f\n", j);
+        //stdprintf("retrieved double: %f\n", j);
     } else if (H5Tequal(m_hVarType,  H5T_NATIVE_DOUBLE)) {
         double j;
         memcpy(&j, p + m_iVarOffset, sizeof(double));
-        printf("retrieved double: %f\n", j);
+        //stdprintf("retrieved double: %f\n", j);
     } else {
         printf("not many left to do this is one of them\n");
     }                       
 
-    stdprintf("[AgentBinSplitter<T>::getDVal] end\n"); fflush(stdout);
+    //stdprintf("[AgentBinSplitter<T>::getDVal] end\n"); fflush(stdout);
 
     return dResult;
 }
@@ -204,7 +208,7 @@ int AgentBinSplitter<T>::preLoop() {
     
     stdprintf("[AgentBinSplitter<T>::preLoop] start\n"); fflush(stdout);
     int iLayerSize = m_pAgentController->getLayerSize();
-    stdprintf("[AgentBinSplitter<T>::preLoop] LayerSize %d, numthreads %d, numbins %d\n", iLayerSize, m_iNumThreads, m_iNumBins); fflush(stdout);
+    //stdprintf("[AgentBinSplitter<T>::preLoop] LayerSize %d, numthreads %d, numbins %d\n", iLayerSize, m_iNumThreads, m_iNumBins); fflush(stdout);
     for (int iT = 0; iT < m_iNumThreads; iT++) {
         m_pvLBs[iT].resize(m_iNumBins);
         m_pvLBCs[iT].resize(m_iNumBins);
@@ -213,7 +217,7 @@ int AgentBinSplitter<T>::preLoop() {
             m_pvLBs[iT][j].init(iLayerSize);
 
             m_pvLBCs[iT][j] = new LBController(iLayerSize);
-            stdprintf("[AgentBinSplitter<T>::preLoop] created [%d][%u]: %p\n", iT, j, m_pvLBCs[iT][j]); fflush(stdout);
+            //stdprintf("[AgentBinSplitter<T>::preLoop] created [%d][%u]: %p\n", iT, j, m_pvLBCs[iT][j]); fflush(stdout);
             m_pvLBCs[iT][j]->addBuffer(static_cast<LBBase *>(&(m_pvLBs[iT][j])));
             m_pvLBCs[iT][j]->addLayer();
         }
@@ -231,7 +235,7 @@ template<typename T>
 int AgentBinSplitter<T>::preWrite(float fTime) {
 
     int iResult = 0;
-    stdprintf("[AgentBinSplitter<T>::preWrite] start\n"); fflush(stdout);
+    stdprintf("[AgentBinSplitter<T>::preWrite] start (total %d agents (eff %d))\n",   this->m_pPop->getNumAgentsTotal(),  this->m_pPop->getNumAgentsEffective()); fflush(stdout);
     iResult = getVariableOffset();
     
     if (iResult == 0) { 
@@ -241,21 +245,22 @@ int AgentBinSplitter<T>::preWrite(float fTime) {
         // loop over all agents
         //#pragma omp parallel for
         for (int iA = this->m_pPop->getFirstAgentIndex(); iA <=  this->m_pPop->getLastAgentIndex(); iA++) {
-            int iT = omp_get_thread_num();
+            if (this->m_pPop->m_aAgents[iA].m_iLifeState != LIFE_STATE_DEAD) {
+                int iT = omp_get_thread_num();
 
-            double d = getDVal( this->m_pPop->m_aAgents[iA]);
-            double dBin = m_iNumBins*(d - m_dBinMin)/(m_dBinMax - m_dBinMin);
-            if (dBin < 0) {
-                dBin = 0;
-            } else if (dBin >= m_iNumBins) {
-                dBin = m_iNumBins-1;
+                double d = getDVal( this->m_pPop->m_aAgents[iA]);
+                double dBin = m_iNumBins*(d - m_dBinMin)/(m_dBinMax - m_dBinMin);
+                if (dBin < 0) {
+                    dBin = 0;
+                } else if (dBin >= m_iNumBins) {
+                    dBin = m_iNumBins-1;
+                }
+                int iBin = (int)dBin;
+                //stdprintf("[AgentBinSplitter<T>::preWrite] agent @%d (L%d): val %f, bin %d\n", iA,  this->m_pPop->m_aAgents[iA].m_iLifeState, d, iBin); fflush(stdout);
+                uint iStart = m_pvLBCs[iT][iBin]->reserveSpace2(1);
+                // copy block
+                m_pvLBs[iT][iBin].copyBlock(iStart, &( this->m_pPop->m_aAgents[iA]), 1);
             }
-            int iBin = (int)dBin;
-            stdprintf("[AgentBinSplitter<T>::preWrite] agent @%d: val %f, bin %d\n", iA, d, iBin); fflush(stdout);
-            uint iStart = m_pvLBCs[iT][iBin]->reserveSpace2(1);
-            // copy block
-            m_pvLBs[iT][iBin].copyBlock(iStart, &( this->m_pPop->m_aAgents[iA]), 1);
-
         }
         
         // here we'd need to collate the bufs
@@ -282,67 +287,57 @@ int AgentBinSplitter<T>::writeAdditionalDataQDF(hid_t hSpeciesGroup) {
     int iResult = -1;
 
     stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] start\n"); fflush(stdout);
+    qdf_insertSAttribute(hSpeciesGroup, "id", this->m_sID); 
     // create subgroup "SubPopulations"
-    hid_t hSubPopGroup = qdf_createGroup(hSpeciesGroup, SUB_POP_GROUP_NAME);
-    stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] hSubPopGroup is %lx\n", hSubPopGroup); fflush(stdout);
+    hid_t hSubPopGroup = qdf_createGroup(hSpeciesGroup, SUBPOPGROUP_NAME);
+ 
     if (hSubPopGroup != H5P_DEFAULT)  {
         // add some attributes
         iResult = 0;
         // in "SubPopulations" loop throughLBContollers
-        stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] loop through %zd controllers\n", m_pvLBCs[0].size()); fflush(stdout);
         for (unsigned i = 0; (i < m_pvLBCs[0].size()) && (iResult == 0);i++) {
             char sName[256];
-            sprintf(sName, "SubPop_%03d", i);
+            sprintf(sName, "%s_%s_SubPop_%03d", this->m_pPop->getSpeciesName().c_str(), this->m_sID.c_str(), i);
             
             //    create subgroup "SubPop_<i>"
-            stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] creating subgroup %s\n", sName); fflush(stdout);
+            //stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] creating subgroup %s\n", sName); fflush(stdout);
             hid_t hSubSubGroup = qdf_createGroup(hSubPopGroup, sName);
-            stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] hSubSubGroup is %lx\n", hSubSubGroup); fflush(stdout);
-            if (hSubSubGroup != H5P_DEFAULT)  {
+            if (hSubSubGroup != H5P_DEFAULT) {
                 hsize_t dims=m_pvLBCs[0][i]->getNumUsed();
                 //    in "SubPop_<i> create "AgentDataSet"
                 //      write agent data
                 //      close "AgentDataSet"
                 hid_t hAgentType = this->m_pPop->getAgentQDFDataType(); 
                 hid_t hDataSpace = H5Screate_simple(1, &dims, NULL);
-                stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] hDataSpace is %lx\n", hDataSpace); fflush(stdout);
-                    
+                                  
                 if (hDataSpace > 0) {
                     
                     // Create the dataset
-                    stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] creating dataset %s\n", AGENT_DATASET_NAME); fflush(stdout);
+                    //stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] creating dataset %s\n", AGENT_DATASET_NAME); fflush(stdout);
                     hid_t hDataSet = H5Dcreate2(hSubSubGroup, AGENT_DATASET_NAME.c_str(), hAgentType, hDataSpace, 
                                                 H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
                     
-                    stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] hDataSet is %lx\n", hDataSet); fflush(stdout);
                     if (hDataSet > 0) {
                         if (dims > 0) {
                             stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] writing %d agents to bin %d\n", m_pvLBCs[0][i]->getNumUsed(), i); fflush(stdout);
                             //@@@@this->m_pPop->writeAgentDataQDFSafe(hDataSpace, hDataSet, hAgentType);
-                            this->m_pPop->writeAgentDataQDFSafe(m_pvLBCs[0][i], m_pvLBs[0][i], hDataSpace, hDataSet, hAgentType);
+                            this->m_pPop->writeAgentDataQDFSafe(m_pvLBCs[0][i], m_pvLBs[0][i], hDataSpace, hDataSet, hAgentType, false);
+                            qdf_closeDataSet(hDataSet);
                         } else {
                             stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] no agents to write\n"); fflush(stdout);
                         }
-                        stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] closing data set %lx\n", hDataSet); fflush(stdout);
-                        qdf_closeDataSet(hDataSet);
-                        stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] closed data set\n"); fflush(stdout);
                     } else {
                         // couldn't create dataset
                         stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] Error couldn't create dataset]\n"); fflush(stdout);
+                        iResult = -1;
                     }
-                    stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] closing data space %lx\n", hDataSpace); fflush(stdout);
                     qdf_closeDataSpace(hDataSpace);
-                    stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] closed data space\n"); fflush(stdout);
                 } else {
                     // couldn't create dataspace
-                    stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] Error couldn't create dataspace]\n"); fflush(stdout);
                     iResult = -1;
                 }
                 
-                stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] closing group [%s] %lx\n", sName, hSubSubGroup); fflush(stdout);
                 qdf_closeGroup(hSubSubGroup);
-                stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] closed group [%s]\n", sName); fflush(stdout);
-                
             } else {
                 // couldn't create subsub group
                 stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] Error couldn't create subsubgroup [%s]\n", sName); fflush(stdout);
@@ -351,7 +346,6 @@ int AgentBinSplitter<T>::writeAdditionalDataQDF(hid_t hSpeciesGroup) {
             
         }
 
-        stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] closing group [%s] %lx\n", SUB_POP_GROUP_NAME, hSubPopGroup); fflush(stdout);
         qdf_closeGroup(hSubPopGroup);
         
     } else {
@@ -442,3 +436,21 @@ int AgentBinSplitter<T>::tryGetAttributes(const ModuleComplex *pMC) {
 }
 
 
+//-----------------------------------------------------------------------------
+// writeAttributesQDF
+//
+//  tries to write the attributes
+//    ATTR_ATANDEATH_MAXAGE_NAME
+//    ATTR_ATANDEATH_RANGE_NAME
+//    ATTR_ATANDEATH_SLOPE_NAME
+//
+template<typename T>
+int AgentBinSplitter<T>:: writeAttributesQDF(hid_t hSpeciesGroup) {
+    int iResult = 0;
+
+    iResult = qdf_insertAttribute(hSpeciesGroup, ATTR_ABS_BIN_MIN_NAME,  1, &m_dBinMin);
+    iResult = qdf_insertAttribute(hSpeciesGroup, ATTR_ABS_BIN_MAX_NAME,  1, &m_dBinMax);
+    iResult = qdf_insertAttribute(hSpeciesGroup, ATTR_ABS_NUM_BINS_NAME, 1, &m_iNumBins);
+
+    return iResult; 
+}

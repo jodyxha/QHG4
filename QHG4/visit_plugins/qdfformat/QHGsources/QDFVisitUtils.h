@@ -10,20 +10,21 @@ typedef std::vector<std::string> stringvec;
 // this macro is rewuired to calculate offsets of fields in a derived struct
 #define qoffsetof(S,M) (ulong(&(S.M))   - ulong(&(S)))
 
-#define POPGROUP_NAME   "Populations"
-#define GEOGROUP_NAME   "Geography"
-#define CLIGROUP_NAME   "Climate"
-#define VEGGROUP_NAME   "Vegetation"
-#define GRIDGROUP_NAME  "Grid"
-#define MSTATGROUP_NAME "MoveStatistics"
-#define NAVGROUP_NAME   "Navigation"
-#define PIEGROUP_NAME   "PiePlots"
-#define VECGROUP_NAME   "VectorData"
+#define POPGROUP_NAME    "Populations"
+#define GEOGROUP_NAME    "Geography"
+#define CLIGROUP_NAME    "Climate"
+#define VEGGROUP_NAME    "Vegetation"
+#define GRIDGROUP_NAME   "Grid"
+#define MSTATGROUP_NAME  "MoveStatistics"
+#define NAVGROUP_NAME    "Navigation"
+#define SUBPOPGROUP_NAME "SubPopulations"
+#define PIEGROUP_NAME    "PiePlots"
+#define VECGROUP_NAME    "VectorData"
 
 #define AGENT_DATASET_NAME "AgentDataSet"
 #define CELL_DATASET_NAME  "CellDataSet"
-#define PIE_DATASET_NAME  "PieDataSet"
-#define VEC_DATASET_NAME  "VectorDataSet"
+#define PIE_DATASET_NAME   "PieDataSet"
+#define VEC_DATASET_NAME   "VectorDataSet"
 
 #define ROOT_ATTR_NAME "QHG"
 #define ROOT_TIME_NAME "Time"
@@ -167,5 +168,6 @@ int qdf_listAttributes(hid_t loc_id, const char *pName, const char *pIndent);
 
 int collectNumericDataSets(hid_t hPopGroup, stringvec &vNames);
 int collectSubGroups(hid_t hPopGroup, stringvec &vNames);
+int qdf_extractSAttribute2(hid_t hLoc, const std::string sName, std::string &sValue);
 
 #endif

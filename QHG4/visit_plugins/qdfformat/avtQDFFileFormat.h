@@ -109,6 +109,7 @@ class avtQDFFileFormat : public avtSTSDFileFormat
     void            findPopSubGroups();
     void            findPieSubGroups();
     void            findVecSubGroups();
+    void            findSubPopSubGroups();
     void            createGridMetaData(avtDatabaseMetaData *md);
     void            createGeographyMetaData(avtDatabaseMetaData *md);
     void            createClimateMetaData(avtDatabaseMetaData *md);
@@ -117,7 +118,7 @@ class avtQDFFileFormat : public avtSTSDFileFormat
     void            createPopulationMetaData(avtDatabaseMetaData *md);
     void            createPieMetaData(avtDatabaseMetaData *md);
     void            createVecMetaData(avtDatabaseMetaData *md);
-    
+    void            createSubPopulationMetaData(avtDatabaseMetaData *md);
     vtkDataSet* GetRectMesh();
     vtkDataSet* GetHexMesh();
     vtkDataSet* GetIcoEqMesh();
@@ -158,14 +159,20 @@ class avtQDFFileFormat : public avtSTSDFileFormat
     hid_t   m_hVecGroup;
 
     H5G_info_t m_infoPopGroup; 
+    H5G_info_t m_infoSubPopGroup; 
     int     m_nVegSpecies;
     int     m_nPops;
+    std::map<std::string, int> m_mapNSubPops;
     std::map<std::string, int> m_mapNAgents;
     std::map<std::string, hid_t> m_mapDataAgents;
     std::map<std::string, truename_group> m_mapSpecialAgentVars;
 
+    std::map<std::string, hid_t> m_mapAgentGroups;
+
     std::map< std::string, name_group> m_mapAgentFields; 
     std::vector<std::string>     m_vPopNames;
+    std::vector<std::string>     m_vSubPopNames;
+    std::map<std::string, std::string>     m_mSubPopNamesFull;
 
     int     m_nPies;
     std::vector<std::string>     m_vPieNames;

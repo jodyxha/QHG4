@@ -11,6 +11,7 @@ template<typename T>
 Action<T>::Action(SPopulation<T> *pPop, SCellGrid *pCG, const std::string sActionName, const std::string sID) 
     : m_pPop(pPop),
       m_pCG(pCG),
+      m_sID(sID),
       m_sActionName(sActionName) {
     if (!sID.empty()) {
         m_sActionName += '[' + sID + ']';

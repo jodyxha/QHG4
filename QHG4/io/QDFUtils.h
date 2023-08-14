@@ -18,6 +18,7 @@ const std::string GRIDGROUP_NAME  = "Grid";
 const std::string MSTATGROUP_NAME = "MoveStatistics";
 const std::string NAVGROUP_NAME   = "Navigation";
 const std::string OCCGROUP_NAME   = "Occupation";
+const std::string SUBPOPGROUP_NAME = "SubPopulations";
 
 
 const std::string AGENT_DATASET_NAME   = "AgentDataSet";

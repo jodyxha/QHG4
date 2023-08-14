@@ -7,6 +7,7 @@
 #include "stdstrutilsT.h"
 #include "types.h"
 #include "crypto.h"
+#include "CryptoDigest.h"
 #include "WELL512.h"
 #include "WELLUtils.h"
 
@@ -55,6 +56,7 @@ int WELLUtils::phraseToSeed(const std::string sPhrase, std::vector<uint32_t> &vu
         // md5sumS creates an array of 16 unsigned chars.
         // For anentire WELL512 state we need 4 such results
         for (uint k = 0; k < 4; k++) {
+            /*
             // modify the input string for each iteration
             std::string sPhrase2 = sPhrase + std::to_string(k);
             uchar md[crypto::MD5_SIZE];
@@ -64,6 +66,17 @@ int WELLUtils::phraseToSeed(const std::string sPhrase, std::vector<uint32_t> &vu
                 memcpy(&u, md + i, sizeof(uint32_t));
                 vulState.push_back(u);
             }
+*/
+            // modify the input string for each iteration
+            std::string sPhrase2 = sPhrase + std::to_string(k);
+            unsigned int iLen = 0;
+            unsigned char *pDigest = CryptoDigest::md5sum_string(sPhrase2, &iLen); 
+            for (uint i = 0; i < STATE_SIZE; i += sizeof(uint32_t)) {
+                uint32_t u = 0;
+                memcpy(&u, pDigest + i, sizeof(uint32_t));
+                vulState.push_back(u);
+            }
+            free(pDigest);
         }
         iResult = 0;
         
@@ -129,12 +142,14 @@ WELL512 **WELLUtils::buildWELLs(int iNum, uint iSeed) {
         int c = 0;
         for (uint j = 0; j < STATE_SIZE/4; j++) {
             std::string sPhrase = stdsprintf("seed for %d[%d]:%u", iT, j, iSeed);
-            uchar md[crypto::MD5_SIZE];
-            crypto::md5sumS(sPhrase.c_str(), md);
-
+            //uchar md[crypto::MD5_SIZE];
+            //crypto::md5sumS(sPhrase.c_str(), md);
+            unsigned int iLen = 0;
+            unsigned char *pDigest = CryptoDigest::md5sum_string(sPhrase, &iLen); 
+        
 
             for (uint i = 0; i < 4; i++) {
-                temp[c++] = *((uint32_t *)(md+sizeof(uint32_t)*i));
+                temp[c++] = *((uint32_t *)(pDigest+sizeof(uint32_t)*i));
             }
         }
         pWELL[iT] = new WELL512(temp);
@@ -186,15 +201,27 @@ void WELLUtils::showStates(WELL512 **apWELL, int iNum, bool bFull) {
         sStates += sTemp;
         sStates += "\n";
     }
+    /*
     uchar umd5[crypto::MD5_SIZE];
     std::string smd5("");
-
+    
     crypto::md5sumS(sStates.c_str(), umd5);
     for (int i = 0; i < crypto::MD5_SIZE; i++) {
         std::string s = stdsprintf("%02x", umd5[i]);
         smd5 += s;
     }
+    */
+ 
+    unsigned int iLen = 0;
+    std::string smd5("");
+    
+    unsigned char *pDigest = CryptoDigest::md5sum_string(sStates, &iLen); 
+    for (unsigned int i = 0; i < iLen; i++) {
+        std::string s = stdsprintf("%02x", pDigest[i]);
+        smd5 += s;
+    }
 
+ 
     stdprintf("WELL hash %s\n", smd5);
     if (bFull) {
         stdprintf("%s", sStates);
@@ -223,14 +250,21 @@ std::string WELLUtils::strState(WELL512 *pWELL) {
 std::string WELLUtils::strStateHash(WELL512 *pWELL) {
     std::string sState = strState(pWELL);
 
-    uchar umd5[crypto::MD5_SIZE];
     std::string smd5("");
-
+    /*
+    uchar umd5[crypto::MD5_SIZE];
     crypto::md5sumS(sState.c_str(), umd5);
     for (int i = 0; i < crypto::MD5_SIZE; i++) {
         std::string s = stdsprintf("%02x", umd5[i]);
         smd5 += s;
     }
-
+    */
+    unsigned int iLen = 0;
+    unsigned char *pDigest = CryptoDigest::md5sum_string(sState, &iLen);
+    for (unsigned int i = 0; i < iLen; i++) {
+        std::string s = stdsprintf("%02x", pDigest[i]);
+        smd5 += s;
+    }
+    free(pDigest);
     return std::string(smd5);
 }

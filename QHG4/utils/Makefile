@@ -56,7 +56,7 @@ libUtils.a: utils.o strutils.o stdstrutils.o geomutils.o calcutils.o PolyLine.o 
       LayerBuf.o LayerArrBuf.o L2List.o LBController.o \
       SeqInterval.o \
       WELL512.o WELLUtils.o bino_tools.o BinomialDist.o Permutator.o \
-      SimpleMapper.o crypto.o crc.o \
+      SimpleMapper.o CryptoDigest.o crc.o \
       SystemInfo.o ExecuteCommand.o \
       ArrayShare.o \
       RankTable.o
@@ -168,7 +168,7 @@ SeqInterval.o: SeqInterval.cpp SeqInterval.h utils.h types.h
 smallprimes.o: smallprimes.cpp smallprimes.h 
 	$(CC) $(COPT) $(DEFS)
 
-crypto.o: crypto.cpp crypto.h 
+CryptoDigest.o: CryptoDigest.cpp CryptoDigest.h 
 	$(CC) $(COPT) $(DEFS)
 
 crc.o: crc.cpp crc.h 
@@ -248,3 +248,15 @@ stdsprintf_test: stdsprintf_test.o
 	$(CC) -o stdsprintf_test \
 	stdsprintf_test.o \
         -L$(UTILS) -lUtils
+
+
+cryptotest.o: cryptotest.cpp CryptoDigest.h
+	$(CC) $(COPT) $(DEFS) 
+
+cryptotest: cryptotest.o CryptoDigest.o
+	$(CC) -o cryptotest \
+        cryptotest.o CryptoDigest.o \
+	-lcrypto
+
+
+
