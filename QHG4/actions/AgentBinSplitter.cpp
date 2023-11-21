@@ -53,7 +53,7 @@ AgentBinSplitter<T>::AgentBinSplitter(SPopulation<T> *pPop,  SCellGrid *pCG, std
     // prepare the vecarrays
     m_pvLBCs = new std::vector<LBController *>[m_iNumThreads];
     m_pvLBs  = new std::vector<LayerBuf<T>>[m_iNumThreads];
-    
+   
     this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
 }
 
@@ -65,10 +65,10 @@ template<typename T>
 AgentBinSplitter<T>::~AgentBinSplitter() {
     if (m_pvLBCs != NULL) {
         for (int i = 0; i < m_iNumThreads; i++) {
-            stdprintf("[AgentBinSplitter<T>::destrucotr] i=%d: %zd elements\n", i, m_pvLBCs[i].size()); fflush(stdout);
+            //stdprintf("[AgentBinSplitter<T>::destrucotr] i=%d: %zd elements\n", i, m_pvLBCs[i].size()); fflush(stdout);
             for (uint j = 0; j < m_pvLBCs[i].size(); j++) {
                 if (m_pvLBCs[i][j] != NULL) {
-                    stdprintf("[AgentBinSplitter<T>::destrucotr] deleting [%d][%u]: %p\n", i, j, m_pvLBCs[i][j]); fflush(stdout);
+                    //stdprintf("[AgentBinSplitter<T>::destrucotr] deleting [%d][%u]: %p\n", i, j, m_pvLBCs[i][j]); fflush(stdout);
                      delete m_pvLBCs[i][j];
                 }
             }
@@ -282,14 +282,14 @@ int AgentBinSplitter<T>::preWrite(float fTime) {
 // writeAdditionalDataQDF
 //
 template<typename T>
-int AgentBinSplitter<T>::writeAdditionalDataQDF(hid_t hSpeciesGroup) {
+int AgentBinSplitter<T>::writeAdditionalDataQDF(hid_t hActionGroup) {
 
     int iResult = -1;
 
     stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] start\n"); fflush(stdout);
-    qdf_insertSAttribute(hSpeciesGroup, "id", this->m_sID); 
+    qdf_insertSAttribute(hActionGroup, "id", this->m_sID); 
     // create subgroup "SubPopulations"
-    hid_t hSubPopGroup = qdf_createGroup(hSpeciesGroup, SUBPOPGROUP_NAME);
+    hid_t hSubPopGroup = qdf_createGroup(hActionGroup, SUBPOPGROUP_NAME);
  
     if (hSubPopGroup != H5P_DEFAULT)  {
         // add some attributes
@@ -320,7 +320,6 @@ int AgentBinSplitter<T>::writeAdditionalDataQDF(hid_t hSpeciesGroup) {
                     if (hDataSet > 0) {
                         if (dims > 0) {
                             stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] writing %d agents to bin %d\n", m_pvLBCs[0][i]->getNumUsed(), i); fflush(stdout);
-                            //@@@@this->m_pPop->writeAgentDataQDFSafe(hDataSpace, hDataSet, hAgentType);
                             this->m_pPop->writeAgentDataQDFSafe(m_pvLBCs[0][i], m_pvLBs[0][i], hDataSpace, hDataSet, hAgentType, false);
                             qdf_closeDataSet(hDataSet);
                         } else {
@@ -334,6 +333,7 @@ int AgentBinSplitter<T>::writeAdditionalDataQDF(hid_t hSpeciesGroup) {
                     qdf_closeDataSpace(hDataSpace);
                 } else {
                     // couldn't create dataspace
+                    stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] Error couldn't create data space\n", sName); fflush(stdout);
                     iResult = -1;
                 }
                 
@@ -350,6 +350,7 @@ int AgentBinSplitter<T>::writeAdditionalDataQDF(hid_t hSpeciesGroup) {
         
     } else {
         // couldn't open subpopgroup
+        stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] Error couldn't open subpopgroup [%s]\n", SUBPOPGROUP_NAME); fflush(stdout);
         iResult = -1;
     }
     stdprintf("[AgentBinSplitter<T>::writeAdditionalDataQDF] end\n"); fflush(stdout);
@@ -368,26 +369,26 @@ int AgentBinSplitter<T>::writeAdditionalDataQDF(hid_t hSpeciesGroup) {
 //    ATTR_ABS_VAR_FIELD_NAME
 //
 template<typename T>
-int AgentBinSplitter<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
+int AgentBinSplitter<T>::extractAttributesQDF(hid_t hActionGroup) {
    
     int iResult = 0;
     
     if (iResult == 0) {
-        iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_ABS_BIN_MIN_NAME,  1, (double *) &m_dBinMin);
+        iResult = qdf_extractAttribute(hActionGroup, ATTR_ABS_BIN_MIN_NAME,  1, (double *) &m_dBinMin);
         if (iResult != 0) {
             LOG_ERROR("[Genetics] couldn't read attribute [%s]", ATTR_ABS_BIN_MIN_NAME);
         }
     }
     
     if (iResult == 0) {
-        iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_ABS_BIN_MAX_NAME,  1, (double *) &m_dBinMax);
+        iResult = qdf_extractAttribute(hActionGroup, ATTR_ABS_BIN_MAX_NAME,  1, (double *) &m_dBinMax);
         if (iResult != 0) {
             LOG_ERROR("[Genetics] couldn't read attribute [%s]", ATTR_ABS_BIN_MAX_NAME);
         }
     }
     
     if (iResult == 0) {
-        iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_ABS_NUM_BINS_NAME, 1, (int *) &m_iNumBins);
+        iResult = qdf_extractAttribute(hActionGroup, ATTR_ABS_NUM_BINS_NAME, 1, (int *) &m_iNumBins);
         if (iResult != 0) {
             LOG_ERROR("[Genetics] couldn't read attribute [%s]", ATTR_ABS_NUM_BINS_NAME);
         }
@@ -395,7 +396,7 @@ int AgentBinSplitter<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
     
     if (iResult == 0) {
         std::string sTemp = "";
-        iResult = qdf_extractSAttribute(hSpeciesGroup, ATTR_ABS_VAR_FIELD_NAME, sTemp);
+        iResult = qdf_extractSAttribute(hActionGroup, ATTR_ABS_VAR_FIELD_NAME, sTemp);
         if (iResult != 0) {
             LOG_ERROR("[Genetics] couldn't read attribute [%s]", ATTR_ABS_VAR_FIELD_NAME);
         } else {
@@ -445,12 +446,12 @@ int AgentBinSplitter<T>::tryGetAttributes(const ModuleComplex *pMC) {
 //    ATTR_ATANDEATH_SLOPE_NAME
 //
 template<typename T>
-int AgentBinSplitter<T>:: writeAttributesQDF(hid_t hSpeciesGroup) {
+int AgentBinSplitter<T>:: writeAttributesQDF(hid_t hActionGroup) {
     int iResult = 0;
 
-    iResult = qdf_insertAttribute(hSpeciesGroup, ATTR_ABS_BIN_MIN_NAME,  1, &m_dBinMin);
-    iResult = qdf_insertAttribute(hSpeciesGroup, ATTR_ABS_BIN_MAX_NAME,  1, &m_dBinMax);
-    iResult = qdf_insertAttribute(hSpeciesGroup, ATTR_ABS_NUM_BINS_NAME, 1, &m_iNumBins);
+    iResult = qdf_insertAttribute(hActionGroup, ATTR_ABS_BIN_MIN_NAME,  1, &m_dBinMin);
+    iResult = qdf_insertAttribute(hActionGroup, ATTR_ABS_BIN_MAX_NAME,  1, &m_dBinMax);
+    iResult = qdf_insertAttribute(hActionGroup, ATTR_ABS_NUM_BINS_NAME, 1, &m_iNumBins);
 
     return iResult; 
 }

@@ -70,7 +70,7 @@ tut_ParthenoPop::~tut_ParthenoPop() {
 
 //----------------------------------------------------------------------------
 // addPopSpecificAgentData
-// read additional data from pop file (the mat index is volatile, so we don't try to read it)
+// read additional data from pop file (the mate index is volatile, so we don't try to read it)
 //
 int tut_ParthenoPop::addPopSpecificAgentData(int iAgentIndex, char **ppData) {
 

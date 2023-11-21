@@ -61,7 +61,7 @@ new: clean app
 Def2QDF.o: Def2QDF.cpp  
 	$(CC) $(COPT) $(DEFS)  -I$(CORE) -I$(ICOSA) -I$(IO)
 
-GridFactory.o: GridFactory.cpp GridFactory.h
+GridFactory.o: GridFactory.cpp GridFactory.h NodeIndex.h
 	$(CC) $(COPT) $(DEFS)  -I$(CORE) -I$(ICOSA) -I$(IO) -I$(UTILS_QHG)
 
 
@@ -226,4 +226,21 @@ QDF2CubemapImages: QDF2CubemapImages.o CubemapImages.o
 	-L$(VISUAL) -lVisual \
 	-L$(UTILS)  -lUtils \
         -lhdf5 -lz -lpng
+
+LookUpSampler.o: LookUpSampler.cpp LookUpSampler.h
+	$(CC) $(COPT) $(DEFS)  -I$(VISUAL)
+
+
+LookUpSamples.o: LookUpSamples.cpp LookUpSampler.h
+	$(CC) $(COPT) $(DEFS)  -I$(VISUAL)
+
+LookUpSamples: LookUpSamples.o LookUpSampler.o
+	$(CC) $(COMP) $(CFLAGS)  -o LookUpSamples \
+        LookUpSamples.o LookUpSampler.o \
+       -L$(VISUAL) -lVisual \
+       -L$(UTILS)  -lUtils \
+       -lpng  
+
+
+
 

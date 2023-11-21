@@ -86,11 +86,11 @@ int GridGroupReader::tryReadAttributes(GridAttributes *pAttributes) {
 //-----------------------------------------------------------------------------
 // createCellDataType
 //
-hid_t createCellDataType() {
+hid_t createCellDataType(int iMaxNeighbors) {
     hid_t hCellDataType = H5Tcreate (H5T_COMPOUND, sizeof(SCell));
     H5Tinsert(hCellDataType, GRID_DS_CELL_ID.c_str(),    HOFFSET(SCell, m_iGlobalID),      H5T_NATIVE_INT);
     H5Tinsert(hCellDataType, GRID_DS_NUM_NEIGH.c_str(),  HOFFSET(SCell, m_iNumNeighbors),  H5T_NATIVE_UCHAR);
-    hsize_t dims = MAX_NEIGH;
+    hsize_t dims = iMaxNeighbors;
     hid_t hAttrArr = H5Tarray_create2(H5T_NATIVE_INT, 1, &dims);
     H5Tinsert(hCellDataType, GRID_DS_NEIGHBORS.c_str(),  HOFFSET(SCell, m_aNeighbors), hAttrArr);
 
@@ -125,7 +125,7 @@ int GridGroupReader::readData(SCellGrid *pCG) {
     }
 
     if (iResult == 0) {
-        hid_t hCellType = createCellDataType();
+        hid_t hCellType = createCellDataType(pCG->m_iMaxNeighbors);
         hid_t hDataSet   = H5Dopen(m_hGroup, CELL_DATASET_NAME.c_str(), H5P_DEFAULT);
         hid_t hDataSpace = H5Dget_space(hDataSet);
 

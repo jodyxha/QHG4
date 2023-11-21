@@ -42,7 +42,7 @@
 
 #include "EventChecker.h"
 
-#include "IcoGridNodes.h"
+//#include "IcoGridNodes.h"
 #include "Surface.h"
 #include "Icosahedron.h"
 #include "EQsahedron.h"

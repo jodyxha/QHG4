@@ -24,7 +24,7 @@
 #include "Icosahedron.h"
 #include "IcoHeader.h"
 #include "symbuf.h"
-#include "IcoGridNodes.h"
+//#include "IcoGridNodes.h"
 
 #define ICO_BUF 4096
 

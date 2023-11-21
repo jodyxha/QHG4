@@ -44,11 +44,11 @@ void usage(const std::string sApp) {
 //----------------------------------------------------------------------------
 // parseIndexElement
 //
-int parseIndexElement(SubSpace<int> *pSS, uint iDim, uintvec vSizes, char *pIndexDesc, uintvecvec &vAllIndexes, uintvec &vAllSums, bool bVerbose) {
+int parseIndexElement(SubSpace<int> *pSS, uint iDim, uintvec vSizes, char *pIndexDesc, uintvecvec &vAllIndexes, uintuintmap &mAllReds, bool bVerbose) {
     int iResult = -1;
     
     vAllIndexes.clear();
-    vAllSums.clear();
+    mAllReds.clear();
     stringvec vsA;
     std::vector<int> vA;
     uint iDim2 = splitString(pIndexDesc, vsA, ":");
@@ -59,15 +59,17 @@ int parseIndexElement(SubSpace<int> *pSS, uint iDim, uintvec vSizes, char *pInde
                         
             stringvec vsX;
             uintvec vX;
-            if ((vsA[i] == "*")  || (vsA[i] == "#")) {
+            if ((vsA[i] == "*")  || (vsA[i] == "#") || (vsA[i] == "%")) {
                 if (bVerbose) {stdfprintf(stderr, "found '*' or '#' for %d: range(%d)\n", i, vSizes[i]);}
                 for (uint k = 0; k < vSizes[i]; ++k) {
                     vX.push_back(k);
                 }
                 if (bVerbose) {stdfprintf(stderr, "vX (%zd):", vX.size());for (uint z = 0; z < vX.size(); z++){ stdfprintf(stderr, " %d", vX[z]);}printf("\n");}
                 if (vsA[i] == "#") {
-                    vAllSums.push_back(i);
-                }
+                    mAllReds[i] = 0;
+                } else if (vsA[i] == "%") {
+                    mAllReds[i] = 1;
+                }   
             } else {
                 uint iDim2 = splitString(vsA[i], vsX, "+");
                 if (bVerbose) {stdfprintf(stderr, "vsX (%zd):", vsX.size());for (uint z = 0; z < vsX.size(); z++){ stdfprintf(stderr, " %s", vsX[z]);}printf("\n");}
@@ -115,6 +117,8 @@ int main(int iArgC, char *apArgV[]) {
     int iResult = 0;
     bool bVerbose = false;
 
+    stringvec sRed{"+", "/"};
+
     double dT_hyb   = 0;
     double dT_slice = 0;
     double dT_sum   = 0;
@@ -143,7 +147,7 @@ int main(int iArgC, char *apArgV[]) {
                 vSizes.push_back(pHC->getNumSims());
                 
                 int iNumVals = pHC->getNumSims()*pHC->getNumSteps()*pHC->getNumRegions()*pHC->getNumBins();
-                SubSpace<int> *pSS = SubSpace<int>::create_instance(vSizes, bVerbose);
+                SubSpace<int> *pSS = SubSpace<int>::create_instance_from_sizes(vSizes, bVerbose);
                 if (pSS != NULL) {
                     SubSpace<int> *pSSOutput=NULL;
                     
@@ -158,71 +162,74 @@ int main(int iArgC, char *apArgV[]) {
                     //pSS->show_names();
                     if (bVerbose) {
                         pHC->show_data();
-                        pSS->show_data_nice(DISP_INT);
+                        pSS->show_data_nice(DISP_INT, stdout, vStandardSeps, true);
                     }
                     //                    pSS->show_data_csv();
                     
                    
-                    uintvecvec vAllIndexes;
-                    uintvec    vSumDims;
+                    uintvecvec  vAllIndexes;
+                    uintuintmap mRedDims;
                     if (pIndexDef != NULL) {
-                        iResult = parseIndexElement(pSS, vSizes.size(), vSizes, pIndexDef, vAllIndexes, vSumDims, bVerbose);
+                        iResult = parseIndexElement(pSS, vSizes.size(), vSizes, pIndexDef, vAllIndexes, mRedDims, bVerbose);
                         if (iResult == 0) {
                             if (bVerbose) {
                                 stdfprintf(stderr, "SliceIndexes:\n");
                                 for (uint i = 0; i < vAllIndexes.size(); i++) {
-                                    uintvec::const_iterator it = std::find(vSumDims.begin(), vSumDims.end(), i);
-                                    std::string s = (it != vSumDims.end()?"+":" ");
+                                    
+                                    uintuintmap::const_iterator it = mRedDims.find(i);
+                                    
+                                    std::string s = (it != mRedDims.end())?sRed[it->second]:" ";
+                                    
+                                    
                                     stdfprintf(stderr, "  %s ", s);
                                     for (uint j = 0; j < vAllIndexes[i].size(); j++) {
                                         stdfprintf(stderr, "% d", vAllIndexes[i][j]);
                                     }
                                     stdfprintf(stderr, "\n");
                                 }
+                                
                             }
-                            
-                            dT_slice = omp_get_wtime();
-                            //                        pSS->calculate_slice_description(vAllIndexes);
-                            SubSpace<int> *pSS2 = pSS->create_slice(vAllIndexes);
-                            dT_slice = omp_get_wtime() - dT_slice;
-                            
-                            
-                            if (pSS2 != NULL) {
-                                // use the vAllIndexes to create a new coordnames
-                                // and pass them to pSS2
-                                
-                                pSSOutput = pSS2;
-                                
-                                if (bVerbose) {
-                                    stdprintf("Have slice\n");
-                                    pSS2->show_sizes();
-                                    pSS2->show_data_nice(DISP_INT);
-                                }
-                                if (vSumDims.size() > 0) {
-                                    dT_sum = omp_get_wtime();
-                                    SubSpace<int> *pSSSum = pSS2->create_sum(vSumDims);
-                                    dT_sum = omp_get_wtime() - dT_sum;
-                                    
-                                    delete pSS2;
-                                    pSSOutput = pSSSum;
-                                    if (bVerbose) {
-                                        stdprintf("Have reduction\n");
-                                        pSSSum->show_sizes();
-                                        pSSSum->show_data_nice(DISP_INT);
-                                    }
-                                    //delete pSSSum;
-                                }
-                                
-                            
-                                //if (bVerbose) {
-                                stdprintf("Have final output slice\n");
-                                pSSOutput->show_sizes();
-                                //                            pSSOutput->show_data_nice(DISP_INT );
-                                pSSOutput->show_data_csv();
-                                //}
-                           } 
-                            
                         }
+                            
+                        dT_slice = omp_get_wtime();
+                        //                        pSS->calculate_slice_description(vAllIndexes);
+                        SubSpace<int> *pSS2 = pSS->create_slice(vAllIndexes);
+                        dT_slice = omp_get_wtime() - dT_slice;
+                        
+                        
+                        if (pSS2 != NULL) {
+                            // use the vAllIndexes to create a new coordnames
+                            // and pass them to pSS2
+                                
+                            pSSOutput = pSS2;
+                            
+                            if (bVerbose) {
+                                stdprintf("Have slice\n");
+                                pSS2->show_sizes();
+                                pSS2->show_data_nice(DISP_INT, stdout, vStandardSeps, true);
+                            }
+                            if (mRedDims.size() > 0) {
+                                dT_sum = omp_get_wtime();
+                                SubSpace<int> *pSSSum = pSS2->create_reductions(mRedDims);
+                                dT_sum = omp_get_wtime() - dT_sum;
+                                
+                                delete pSS2;
+                                pSSOutput = pSSSum;
+                                if (bVerbose) {
+                                    stdprintf("Have reduction\n");
+                                    pSSSum->show_sizes();
+                                    pSSSum->show_data_nice(DISP_INT, stdout, vStandardSeps, true);
+                                }
+                                //delete pSSSum;
+                            }
+                                                        
+                            //if (bVerbose) {
+                            stdprintf("Have final output slice\n");
+                            pSSOutput->show_sizes();
+                            //                            pSSOutput->show_data_nice(DISP_INT );
+                            pSSOutput->show_data_csv();
+                            //}
+                        } 
                         
                     } else {
                         pSS->show_names();

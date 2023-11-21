@@ -11,15 +11,15 @@
 
 const double RAD = M_PI/180.0;
 const double EPS = 1e-6;
-const int    MAX_NEIGHBORS = 6;
+//const int    MAX_NEIGHBORS = 6;
 
 //----------------------------------------------------------------------------
 // createInstance
-Angulator *Angulator::createInstance(const char *pFile) {
+Angulator *Angulator::createInstance(const char *pFile, int iMaxNeighbors) {
     Angulator *pAng = NULL;
     hid_t hFile = qdf_openFile(pFile, true);
     if (hFile > 0) {
-        pAng = new Angulator(hFile);
+        pAng = new Angulator(hFile, iMaxNeighbors);
     }
     return pAng;
 }
@@ -27,18 +27,19 @@ Angulator *Angulator::createInstance(const char *pFile) {
 
 //----------------------------------------------------------------------------
 // createInstance
-Angulator *Angulator::createInstance(hid_t hFile) {
-    return new Angulator(hFile);
+Angulator *Angulator::createInstance(hid_t hFile, int iMaxNeighbors) {
+    return new Angulator(hFile, iMaxNeighbors);
 }
 
 //----------------------------------------------------------------------------
 // constructor
 //
-Angulator::Angulator(hid_t hFile)
+Angulator::Angulator(hid_t hFile, iMaxNeighbors)
     : m_hFile(hFile),
       m_hGridGroup(H5P_DEFAULT),
       m_hGeoGroup(H5P_DEFAULT),
       m_iNumCells(0),
+      m_iMaxNeighbors(iMaxNeighbors),
       m_pdLons(NULL),
       m_pdLats(NULL),
       m_pdAngles(NULL),
@@ -129,7 +130,7 @@ hid_t Angulator::createCellDataType() {
     hid_t hCellDataType = H5Tcreate (H5T_COMPOUND, sizeof(SCell));
     H5Tinsert(hCellDataType, GRID_DS_CELL_ID,    HOFFSET(SCell, m_iGlobalID),      H5T_NATIVE_INT);
     H5Tinsert(hCellDataType, GRID_DS_NUM_NEIGH,  HOFFSET(SCell, m_iNumNeighbors),  H5T_NATIVE_UCHAR);
-    hsize_t dims = MAX_NEIGH;
+    hsize_t dims = m_iMaxNeighbors;
     hid_t hAttrArr = H5Tarray_create2(H5T_NATIVE_INT, 1, &dims);
     H5Tinsert(hCellDataType, GRID_DS_NEIGHBORS,  HOFFSET(SCell, m_aNeighbors), hAttrArr);
 
@@ -221,11 +222,11 @@ int Angulator::prepareArrays(bool bAngles) {
     m_pdLons   = new double[m_iNumCells];
     m_pdLats   = new double[m_iNumCells];
     if (bAngles) {
-        m_pdAngles = new double[m_iNumCells*MAX_NEIGHBORS];
-        m_pdAngles2 = new double[m_iNumCells*MAX_NEIGHBORS];
+        m_pdAngles = new double[m_iNumCells*m_iMaxNeighbors];
+        m_pdAngles2 = new double[m_iNumCells*m_iMaxNeighbors];
     }
-    m_pdDirs  = new double[3*m_iNumCells*MAX_NEIGHBORS];
-    m_pdDirs2 = new double[3*m_iNumCells*MAX_NEIGHBORS];
+    m_pdDirs  = new double[3*m_iNumCells*m_iMaxNeighbors];
+    m_pdDirs2 = new double[3*m_iNumCells*m_iMaxNeighbors];
     m_aCells  = new SCell[m_iNumCells];
 
     iResult = qdf_readArray(m_hGeoGroup, GEO_DS_LONGITUDE, m_iNumCells, m_pdLons);
@@ -309,8 +310,8 @@ int Angulator::calcAngles(double *pdAngles) {
 
             getNorth(dTheta, dPhi, pvNorth);
 
-            int iBase = iC*MAX_NEIGHBORS;
-            for (int i = 0; i < MAX_NEIGHBORS; i++) {
+            int iBase = iC*m_iMaxNeighbors;
+            for (int i = 0; i < m_iMaxNeighbors; i++) {
                 int iN = m_aCells[iC].m_aNeighbors[i];
                 if (iN >= 0) {
                     
@@ -358,8 +359,8 @@ int Angulator::calcDirs(double *pdDirs) {
             polar2Cart(dTheta, dPhi, pvVert);
 
 
-            int iBase = iC*3*MAX_NEIGHBORS;
-            for (int i = 0; i < MAX_NEIGHBORS; i++) {
+            int iBase = iC*3*m_iMaxNeighbors;
+            for (int i = 0; i < m_iMaxNeighbors; i++) {
                 int iN = m_aCells[iC].m_aNeighbors[i];
                 if (iN >= 0) {
                     
@@ -396,7 +397,7 @@ int Angulator::calcDirs(double *pdDirs) {
 // saveAngles
 //
 int Angulator::saveAngles() {
-    return qdf_replaceArray(m_hGeoGroup, GEO_DS_ANGLES, m_iNumCells*MAX_NEIGHBORS, m_pdAngles);
+    return qdf_replaceArray(m_hGeoGroup, GEO_DS_ANGLES, m_iNumCells*m_iMaxNeighbors, m_pdAngles);
 }
 
 
@@ -404,7 +405,7 @@ int Angulator::saveAngles() {
 // saveDirs
 //
 int Angulator::saveDirs() {
-    return qdf_replaceArray(m_hGeoGroup, GEO_DS_DIRS, m_iNumCells*MAX_NEIGHBORS*3, m_pdDirs);
+    return qdf_replaceArray(m_hGeoGroup, GEO_DS_DIRS, m_iNumCells*m_iMaxNeighbors*3, m_pdDirs);
 }
 
 
@@ -568,10 +569,10 @@ int Angulator::check(const char *pFile) {
         
     char sName[128];
     double *pData = m_pdAngles2;
-    for (int i = 0; i < MAX_NEIGHBORS; i++) {
+    for (int i = 0; i < m_iMaxNeighbors; i++) {
         sprintf(sName, "%s_%d", GEO_DS_ANGLES, i);
-        iResult =  qdf_readArraySlabS(m_hGeoGroup, GEO_DS_ANGLES, m_iNumCells, i, MAX_NEIGHBORS, 1, pData);
-        //iResult =  qdf_readArraySlabT(m_hGeoGroup, GEO_DS_ANGLES, m_iNumCells, i, MAX_NEIGHBORS, pData);
+        iResult =  qdf_readArraySlabS(m_hGeoGroup, GEO_DS_ANGLES, m_iNumCells, i, m_iMaxNeighbors, 1, pData);
+        //iResult =  qdf_readArraySlabT(m_hGeoGroup, GEO_DS_ANGLES, m_iNumCells, i, m_iMaxNeighbors, pData);
         pData += m_iNumCells;
     }
 
@@ -579,10 +580,10 @@ int Angulator::check(const char *pFile) {
     // compare
     bool bMatch = true;
     for (int iC = 0; bMatch && (iC < m_iNumCells); ++iC) {
-        for (int iN = 0; bMatch && (iN < MAX_NEIGHBORS); ++iN) {
-            bool bMatch1 = (m_pdAngles2[iN*m_iNumCells+iC] == m_pdAngles[iC*MAX_NEIGHBORS+iN]);
+        for (int iN = 0; bMatch && (iN < m_iMaxNeighbors); ++iN) {
+            bool bMatch1 = (m_pdAngles2[iN*m_iNumCells+iC] == m_pdAngles[iC*m_iMaxNeighbors+iN]);
             if (!bMatch1) {
-                printf("Mismatch for iC:%d, iN:%d - m_pdAngles2[%d]:%f, m_pdAngles[%d]:%f\n", iC,iN, iN*m_iNumCells+iC, m_pdAngles2[iN*m_iNumCells+iC],iC*MAX_NEIGHBORS+iN,m_pdAngles[iC*MAX_NEIGHBORS+iN]);
+                printf("Mismatch for iC:%d, iN:%d - m_pdAngles2[%d]:%f, m_pdAngles[%d]:%f\n", iC,iN, iN*m_iNumCells+iC, m_pdAngles2[iN*m_iNumCells+iC],iC*m_iMaxNeighbors+iN,m_pdAngles[iC*m_iMaxNeighbors+iN]);
             } 
             bMatch = bMatch && bMatch1;
             
@@ -593,11 +594,11 @@ int Angulator::check(const char *pFile) {
 
 
     printf("getting the dirl data...\n");
-    iResult =  qdf_readArray(m_hGeoGroup, GEO_DS_DIRS, m_iNumCells*MAX_NEIGHBORS*3, m_pdDirs);
+    iResult =  qdf_readArray(m_hGeoGroup, GEO_DS_DIRS, m_iNumCells*m_iMaxNeighbors*3, m_pdDirs);
     pData = m_pdDirs2;
-    for (int i = 0; i < MAX_NEIGHBORS; i++) {
+    for (int i = 0; i < m_iMaxNeighbors; i++) {
         sprintf(sName, "%s_%d", GEO_DS_ANGLES, i);
-        iResult =  qdf_readArraySlabS(m_hGeoGroup, GEO_DS_DIRS, m_iNumCells, i, MAX_NEIGHBORS, 3, pData);
+        iResult =  qdf_readArraySlabS(m_hGeoGroup, GEO_DS_DIRS, m_iNumCells, i, m_iMaxNeighbors, 3, pData);
         pData += m_iNumCells*3;
     }
     
@@ -605,11 +606,11 @@ int Angulator::check(const char *pFile) {
     // compare
     bMatch = true;
     for (int iC = 0; bMatch && (iC < m_iNumCells); ++iC) {
-        for (int iN = 0; bMatch && (iN < MAX_NEIGHBORS); ++iN) {
+        for (int iN = 0; bMatch && (iN < m_iMaxNeighbors); ++iN) {
             for (int iV = 0; bMatch && (iV < 3); ++iV) {
-                bool bMatch1 = (m_pdDirs2[iN*m_iNumCells*3+3*iC+iV] == m_pdDirs[iC*MAX_NEIGHBORS*3+iN*3+iV]);
+                bool bMatch1 = (m_pdDirs2[iN*m_iNumCells*3+3*iC+iV] == m_pdDirs[iC*m_iMaxNeighbors*3+iN*3+iV]);
                 if (!bMatch1) {
-                    printf("Mismatch for iC:%d, iN:%d, iV: %d - m_pdDir2[%d]:%e, m_pdDir[%d]:%e\n", iC,iN, iV, iN*m_iNumCells*3+3*iC+iV, m_pdDirs2[iN*m_iNumCells*3+3*iC+iV],iC*MAX_NEIGHBORS*3+iN*3+iV,m_pdDirs[iC*MAX_NEIGHBORS*3+iN*3+iV]);
+                    printf("Mismatch for iC:%d, iN:%d, iV: %d - m_pdDir2[%d]:%e, m_pdDir[%d]:%e\n", iC,iN, iV, iN*m_iNumCells*3+3*iC+iV, m_pdDirs2[iN*m_iNumCells*3+3*iC+iV],iC*m_iMaxNeighbors*3+iN*3+iV,m_pdDirs[iC*m_iMaxNeighbors*3+iN*3+iV]);
                 } 
                 bMatch = bMatch && bMatch1;
             }

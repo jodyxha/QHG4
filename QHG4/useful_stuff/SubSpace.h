@@ -7,6 +7,7 @@ typedef std::vector<intvec> intvecvec;
 typedef std::vector<uintvec> uintvecvec;
 typedef std::vector<std::pair<int,int>> intintvec;
 typedef std::vector<std::pair<uint,uint>> uintuintvec;
+typedef std::map<uint,uint> uintuintmap;
 typedef std::vector<intintvec> intintvecvec;
 typedef std::vector<stringvec> stringvecvec;
 
@@ -14,10 +15,33 @@ const int DISP_INT      = 0;
 const int DISP_FLOAT_01 = 1;
 const int DISP_FLOAT    = 2;
  
+const static stringvec vStandardSeps = {
+    "\n",
+    "\n",
+    "-------------\n",
+    "+++++++++++++++++\n",
+    "*********************\n",
+    "=========================\n",
+    "#############################\n",
+    ":::::::::::::::::::::::::::::::::\n",
+    };
+
+const static stringvec vFileSeps = {
+    "\n",
+    "\n",
+    "\n",
+    "\n\n",
+    "\n\n\n",
+    "\n\n\n\n",
+    "\n\n\n\n\n",
+    };
+
 template<typename T>
 class SubSpace {
 public:
-    static SubSpace *create_instance(uintvec &vSizes, bool bVerbosity);
+    static SubSpace *create_instance_from_sizes(const uintvec &vSizes, bool bVerbosity);
+    static SubSpace *create_instance_from_dims(const std::string sDim, bool bVerbosity);
+
     virtual ~SubSpace();
 
     int  set_data(T *pData, uint iOffset, uint iNumElements);
@@ -27,20 +51,31 @@ public:
     int pos_to_coord(uint iPos, uintvec &vCoord);
     int coord_to_pos(uintvec vCoord);
 
+    SubSpace *copyFull();
+
     void show_sizes();
     void show_names();
     void show_data();
-    void show_data_nice(int iDispType);
+    void show_data_nice(int iDispType, FILE *fOut, stringvec vSeparators, bool bFrame);
     void show_data_csv();
 
+    uint getNumDims() {return m_iNumDims;};
+    uint getNumVals() { return m_iNumVals;};
+    const uintvec &getSizes() { return m_vSizes;}; 
+    uintvec &getSizesCopy() { return m_vSizes;}; 
+    const T* getBuffer() {return m_adData;};
 
     SubSpace *create_slice(uintvecvec vvIndexes);
-    SubSpace *create_sum(uintvec vSumDims);
+    SubSpace *create_reductions(uintuintmap &mRedDims);
+    SubSpace *squeeze();
 
     const stringvecvec &get_coord_names(){ return m_vvCoordNames;};
+
+    static int dims2Sizes(std::string sDims, uintvec &vSizes, const std::string sSep);
+
 protected:
     SubSpace(bool bVerbosity);
-    int    init(uintvec &vSizes);
+    int    init(const uintvec &vSizes);
     void   normalize_slices(uintuintvec &vSliceData);
     int    single_slice(uintvec vIndexes, uintuintvec &vSliceData);
     bool   check_indexes(uintvecvec &vvIndexes);
@@ -50,8 +85,8 @@ protected:
     static int cartesian_product(uintvecvec vSets, uintvecvec &vvCombinations);
     static int cartesian_product_rec(uintvecvec vSets, uintvec vTemp, uintvecvec &vvCombinations);
     static int merge_slice_data(uintuintvec vSliceDataIn, uintuintvec &vSliceDataOut, bool bVerbose);
-    
-    uint     m_iDim;
+
+    uint     m_iNumDims;
     uintvec  m_vSizes;
     uintvec  m_vSizesX;
     T       *m_adData;

@@ -167,7 +167,7 @@ public:
     virtual void randomize(int i);
     virtual int flushDeadSpace();
     virtual int setParams(const std::string sParams){ return 0;};
-    virtual int  getPopParams(const stringmap &mVarDefs);
+    virtual int getPopParams(const stringmap &mVarDefs);
 
     // the array of agent structs
     LayerBuf<T> m_aAgents; 

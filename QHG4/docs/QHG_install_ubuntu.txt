@@ -1,0 +1,160 @@
+####################################################
+# installing and building QHG on ubuntu 16.04
+#
+# steps 1 to 6   describe the preparation and
+#                compilation of QHG
+# steps 7 to 11  describe the preparation and
+#                compilation of QHG tools
+#
+####################################################
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1. install necessary packages
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# bring the package manager up to date
+sudo apt-get update
+
+# install developer tools (compiler, debugger etc)
+sudo apt-get install g++ make gdb valgrind
+
+# code versioning (svn)
+sudo apt-get install subversion
+
+# some libraries used by QHG
+sudo apt-get install zlib1g-dev libssl-dev
+
+sudo apt-get install libgsl0-dev
+
+# another important library
+sudo apt-get install libhdf5-serial-dev
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 2. add environment variable to .profile
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+#------------------------------------------------------
+# for the compilation to work we must make sure set some environment variables will always be set
+# edit the file '.profile' in your home directory (here i use vi - you can use any ASCII text editor you want)
+
+vi ~/.profile
+
+# add these lines to the end of ~/.profile
+  export CPATH=/usr/include/hdf5/serial/:$CPATH
+  export LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/hdf5/serial/:$LIBRARY_PATH
+  export GCC=/usr/bin/g++
+
+# save and close the file
+#------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 3. create the source code directory and get code
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# create your source directory
+mkdir ~/progs
+
+# go there
+cd ~/progs
+
+# check out the code base
+svn co svn+ssh://alirv@aim-bigfoot.uzh.ch/home/morpho_svn/QHG3/trunk QHG3
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 4. log out
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# now log out
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 5. log in
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# log in again (this makes sure the environment variables are set and stuff we installed gets initialised)
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 6. build GHG
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# go to the code root directory
+cd ~/progs/QHG3
+
+# build QHG with debug informaion
+make clean QHGMain
+
+# see if it works
+app/QHGMain
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 7. create output directory for some of thetools
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# create the utils directory
+mkdir ~/utils
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 8. install packages neeeded by QHG tools
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+sudo apt-get install libpng-dev
+sudo apt-get install libglib2.0-dev
+sudo apt-get install libcairo2-dev
+sudo apt-get install libgtk2.0-dev
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 9. modify .profile again
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+#------------------------------------------------------
+# edit the file '.profile' in your home directory (here i use vi - you can use any ASCII text editor you want)
+
+vi ~/.profile
+
+# add this line to the end of .profile
+  export CPATH=/usr/include/cairo/:/usr/include/gtk-2.0/gdk/:/usr/lib/x86_64-linux-gnu/glib-2.0/include/:/usr/include/glib-2.0:$CPATH
+# save and close the file
+#------------------------------------------------------
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 10. log out
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# now log out
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 11. log in
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# log in again (this makes sure the environment variables are set and stuff we installed gets initialised)
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 11. build the tools
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# go to the root directory
+cd ~/progs/QHG3
+
+# build the tools
+make tools_n
+
+
+#######################################
+############### notes #################
+#######################################
+
+#######################################
+# logging in and logging out
+#When i exported the environment variables directly,
+#i had to add many more directories to CPATH to get the compilation done.
+#
+
+
+#######################################
+# compile QHG optimized
+
+OPT=1 make clean QHGMain
+
+#######################################
+# compile QHG and QHG tools optimized
+
+OPT=1 make clean QHGMain tools_n
+

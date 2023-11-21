@@ -6,8 +6,8 @@
 
 #include <omp.h>
 
-#include "IcoGridNodes.h"
-#include "IcoNode.h"
+//#include "IcoGridNodes.h"
+//#include "IcoNode.h"
 
 #include "Vegetation.h"
 

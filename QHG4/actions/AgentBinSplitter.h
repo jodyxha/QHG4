@@ -24,14 +24,13 @@ public:
     virtual ~AgentBinSplitter();
  
     virtual int preLoop();
-    virtual int postLoop() {return 0;};
-
+   
     virtual int preWrite(float fTime);
-    virtual int writeAdditionalDataQDF(hid_t hSpeciesGroup);
+    virtual int writeAdditionalDataQDF(hid_t hActionGroup);
 
     virtual int tryGetAttributes(const ModuleComplex *pMC);
-    virtual int extractAttributesQDF(hid_t hSpeciesGroup);
-    virtual int writeAttributesQDF(hid_t hSpeciesGroup);
+    virtual int extractAttributesQDF(hid_t hActionGroup);
+    virtual int writeAttributesQDF(hid_t hActionGroup);
 
 protected:
 

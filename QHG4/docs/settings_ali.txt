@@ -1,0 +1,60 @@
+In order to easily log in to the server, mount data rives and access the data 
+you must make the following settings on your workstation.
+
+User and groups settings
+========================
+The main user name on your machine should be 'alirv'
+  user name: alirv
+  user id:   1069
+If i remember correctly, you can set this during the installation of ubuntu.
+If it is possible to change the login group during installation, set it to 500.
+
+After installation you should create two groups on your machine,
+and add the user 'alirv' to them
+On a terminal type:
+  sudo groupadd -g 500 morpho
+  sudo groupadd -g 1111 neander
+
+  sudo usermod -g morpho -G neander alirv
+(the option '-g' sets the login group, '-G' sets additinal group memberships)
+
+Networking
+==========
+Data pertaining to networking1 are usually entered during the installation process.
+Make sure that your machine does not use DHCP, but enter the IP address manually:
+  IP Address:   130.60.126.113
+  Netmask:      255.255.255.128
+  Default       130.60.126.1
+  nameserver 1: 130.60.128.3
+  nameserver 2: 130.60.64.51
+
+
+NFS
+===
+NFS (Network FIle System) allows you to mount drives of remote computers.
+Most of our data resides on our server aim-bigfoot.uzh.ch (130.60.126.9),
+and it is con venient to access it as if it were in a directory on your machine.
+
+To install a NFS client you have to install two packages:
+  apt-get install nfs-common 
+
+To import the /morpho directory, you have to create a so-called 'mountpoint'.
+Thi is usually an empty directory.
+  sudo mkdir /morpho
+
+Then you have to add a line to the file '/etc/fstab'.
+Open the file /etc/fstab with a text editor:
+  sudo vi /etc/fstab
+(the  'sudo' is required, because normal users are not allowed to change system files)
+Then add the line
+  aim-bigfoot.uzh.ch:/raid1/morpho/  /morpho  nfs   tcp,rw,hard,intr,nosuid,rsize=32768,wsize=32768,nfsvers=3,_netdev     0 0 
+ 
+To mount your home directory from bigfoot:
+  sudo mkdir /home/aim-bigfoot
+  sudo mkdir /home/aim-bigfoot/alirv
+and add the line
+  aim-bigfoot.uzh.ch:/raid2/home/alirv  /home/aim-bigfoot/alirv  nfs   tcp,rw,hard,intr,nosuid,rsize=32768,wsize=32768,nfsvers=3,_netdev     0 0 
+to
+   /etc/fstab
+
+

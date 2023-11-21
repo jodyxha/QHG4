@@ -17,7 +17,7 @@ protected:
     stringmap *m_psm;
     hid_t m_hCellDataType;
 
-    hid_t createCellDataType();
+    hid_t createCellDataType(int iMaxNeighbors);
     int writeCellData(hid_t hDataSpace, hid_t hDataSet, hid_t hCellType);
     int writeGridAttributes(hid_t hGridGroup);
  

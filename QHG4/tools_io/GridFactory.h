@@ -13,6 +13,7 @@
 
 typedef std::map<std::string, stringvec>   commandmap;
 
+class NodeIndex;
 
 class GridFactory {
 public:
@@ -20,7 +21,6 @@ public:
     GridFactory();
     ~GridFactory();
 
-    int createEmptyQDF(const std::string sIGNFile);
 
     //bool isReady() { return (m_pLR != NULL) || (m_pLine != NULL);};
     bool isReady() { return true;};
@@ -42,7 +42,6 @@ protected:
     uint m_iNumCells;
 
     bool exists(const std::string sFile, std::string &sExists);
-    IcoGridNodes *readIGNFile(const std::string sFileName);
     
     int setDataDirs(const char *pDataDirs);
     int setDataDirs(const stringvec &vDataDirs);
@@ -55,21 +54,16 @@ protected:
     int setGridIco(const stringvec &vParams);
     int setGridFlat(const stringvec &vParams);
 
-    int createCells(IcoGridNodes *pIGN);
+    int createCells(NodeIndex *pNI);
     int createCells(int iW, int iH, uint iPeriodicity, bool bHex);
-    //    int createCellsOld(int iW, int iH, bool bPeriodic, bool bHex);
-
+  
     int createCellsHex(uint iW, uint iH, uint iPeriodicity);
     int createCellsHexPeriodic(uint iW, uint iH);
-    //    int createCellsOldHexPeriodic(uint iW, uint iH);
-    //    int createCellsOldHexNonPeriodic(uint iW, uint iH);
-
+ 
     int createCellsRect(uint iW, uint iH, uint iPeriodicity);
     int createCellsRectPeriodic(uint iW, uint iH);
-    //    int createCellsOldRectPeriodic(uint iW, uint iH);
-    //    int createCellsOldRectNonPeriodic(uint iW, uint iH);
-
-    int initializeGeography(IcoGridNodes *pIGN);
+ 
+    int initializeGeography(NodeIndex *pNI);
     int initializeGeography(int iW, int iH, bool bHex);
 
     int createNETCDFCommands(stringvec &vParams, const std::string sApp, const std::string sDefaultFile, const std::string sCommandTemplate);

@@ -25,7 +25,7 @@ class OccTracker;
 #include "Navigation.h"
 //#include "OccTracker.h"
 
-#include "IcoGridNodes.h"
+#include "surfconsts.h"
 
 
 const int GRID_TYPE_NONE  =  -1;
@@ -38,7 +38,7 @@ const int GRID_TYPE_IEQ   =   3;
 
 class SCellGrid {
 public:
-    static SCellGrid *createInstance(IcoGridNodes *pIGN);
+//    static SCellGrid *createInstance(IcoGridNodes *pIGN);
 
     SCellGrid(int iID, uint iNumCells, const stringmap &smSurfaceData);    
     ~SCellGrid();
@@ -46,7 +46,8 @@ public:
     int         m_iID;
     uint        m_iNumCells;
     SCell       *m_aCells;
-    
+    int         m_iMaxNeighbors;
+
     // general grid info
     stringmap m_smSurfaceData;
     int       m_iType;
@@ -65,6 +66,7 @@ public:
     Navigation *m_pNavigation;
     // occupation tracking
     OccTracker *m_pOccTracker;
+
 
     std::map<std::string, Environment*> m_mEnvironments;
 

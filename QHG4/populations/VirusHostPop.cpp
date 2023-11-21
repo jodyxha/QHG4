@@ -148,7 +148,7 @@ int  VirusHostPop::getPopParams(const stringmap &mVarDefs) {
 
 //----------------------------------------------------------------------------
 // addPopSpecificAgentData
-// read additional data from pop file (the mat index is volatile, 
+// read additional data from pop file (the mate index is volatile, 
 // so we don't try to read or write it)
 //
 int VirusHostPop::addPopSpecificAgentData(int iAgentIndex, char **ppData) {

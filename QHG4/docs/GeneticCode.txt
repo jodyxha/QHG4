@@ -1,0 +1,73 @@
+# Nucleotides: 0:A; 1:C; 2:G; 3:T/U
+# AminoAcids
+#  0 A: Ala    1 C: Cys    2 D: Asp    3 E: Glu    4 F: Phe
+#  5 G: Gly    6 H: His    7 I: Ile    8 K: Lys    9 L: Leu
+# 10 M: Met   11 N: Asn   12 P: Pro   13 Q: Gln   14 R: Arg
+# 15 S: Ser   16 T: Thr   17 V: Val   18 W: Trp   19 Y: Tyr
+# 20 X: Stop
+
+00  8 # AAA K 
+01 11 # AAC N
+02  8 # AAG K
+03 11 # AAU N
+04 16 # ACA T
+05 16 # ACC T
+06 16 # ACG T
+07 16 # ACU T
+08 14 # AGA R
+09 15 # AGC S
+10 14 # AGG R
+11 15 # AGU S
+12  7 # AUA I
+13  7 # AUC I
+14 10 # AUG M  = start
+15  7 # AUU I
+16 13 # CAA Q
+17  6 # CAC H
+18 13 # CAG Q
+19  6 # CAU H
+20 12 # CCA P
+21 12 # CCC P
+22 12 # CCG P
+23 12 # CCU P
+24 14 # CGA R
+25 14 # CGC R
+26 14 # CGC R
+27 14 # CGU R
+28  9 # CUA L
+29  9 # CUC L
+30  9 # CUG L
+31  9 # CUU L
+32  3 # GAA E
+33  2 # GAC D
+34  3 # GAG E 
+35  2 # GAU D
+36  0 # GCA A
+37  0 # GCC A
+38  0 # GCG A
+39  0 # GCU A
+40  5 # GGA G
+41  5 # GGC G
+42  5 # GGG G
+43  5 # GGU G
+44 17 # GUA V
+45 17 # GUC V
+46 17 # GUG V
+47 17 # GUU V
+48 20 # UAA X
+49 19 # UAC Y
+50 20 # UAG X
+51 19 # UAU Y 
+52 15 # UCA S
+53 15 # UCC S
+54 15 # UCG S
+55 15 # UCU S
+56 20 # UGA X
+57  1 # UGC C
+58 18 # UGG W
+59  1 # UGU C
+60  9 # UUA L
+61  4 # UUC F
+62  9 # UUG L
+63  4 # UUU F
+

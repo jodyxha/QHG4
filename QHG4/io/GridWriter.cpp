@@ -16,7 +16,7 @@ GridWriter::GridWriter(SCellGrid *pCG, stringmap *psm)
       m_psm((psm != NULL)?psm:&(pCG->m_smSurfaceData)) {
     
        
-    m_hCellDataType = createCellDataType();
+    m_hCellDataType = createCellDataType(pCG->m_iMaxNeighbors);
 }
 
 //----------------------------------------------------------------------------
@@ -76,11 +76,11 @@ int GridWriter::write(hid_t hFile) {
 //-----------------------------------------------------------------------------
 // createCellDataType
 //
-hid_t GridWriter::createCellDataType() {
+hid_t GridWriter::createCellDataType(int iMaxNeighbors) {
     hid_t hCellDataType = H5Tcreate (H5T_COMPOUND, sizeof(SCell));
     H5Tinsert(hCellDataType, GRID_DS_CELL_ID.c_str(),    HOFFSET(SCell, m_iGlobalID),      H5T_NATIVE_INT);
     H5Tinsert(hCellDataType, GRID_DS_NUM_NEIGH.c_str(),  HOFFSET(SCell, m_iNumNeighbors),  H5T_NATIVE_UCHAR);
-    hsize_t dims = MAX_NEIGH;
+    hsize_t dims = iMaxNeighbors;
     hid_t hAttrArr = H5Tarray_create2(H5T_NATIVE_INT, 1, &dims);
     H5Tinsert(hCellDataType, GRID_DS_NEIGHBORS.c_str(),  HOFFSET(SCell, m_aNeighbors), hAttrArr);
 

@@ -8,8 +8,8 @@ class SCellGrid;
 
 class Angulator {
 public:
-    static Angulator *createInstance(const char *pFile);
-    static Angulator *createInstance(hid_t hFile);
+    static Angulator *createInstance(const char *pFile, int iMaxNeighbors);
+    static Angulator *createInstance(hid_t hFile)intr iMaxNeighbors;
     virtual ~Angulator();
 
     int doAngles();
@@ -19,7 +19,7 @@ public:
     static void polar2Cart(double dTheta, double dPhi, Vec3D *pVec);
 
 protected:    
-    Angulator(hid_t hFile);
+    Angulator(hid_t hFile, int iMaxNeighbors);
     int calcAngles(double *pdAngles);
     int calcDirs(double *pdDirs);
     int openGroups();
@@ -36,6 +36,7 @@ protected:
     hid_t m_hGeoGroup;
 
     int     m_iNumCells;
+    int     m_iMaxNeighbors
     double *m_pdLons;
     double *m_pdLats;
     double *m_pdAngles;

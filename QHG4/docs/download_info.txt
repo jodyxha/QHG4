@@ -1,0 +1,41 @@
+rivers:
+
+  https://www.naturalearthdata.com/downloads/
+
+------------------------------------------------------------------------------
+
+altitudes:
+
+  https://maps.ngdc.noaa.gov/viewers/wcs-client/
+------------------------------------------------------------------------------
+
+Sea level data:
+
+Waelbroeck, C. et al.
+Sea-level and deep water temperature changes derived from benthic foraminifera isotopic records.
+Quat. Sci. Rev. 21, 295\u2013305 (2002).
+
+------------------------------------------------------------------------------
+
+Ice-sheet data:
+
+Ganopolski, A., Calov, R. & Claussen, M.
+Simulation of the last glacial cycle with a coupled climate ice-sheet model of intermediate complexity.
+Clim. Past 6, 229\u2013244 (2010).
+
+------------------------------------------------------------------------------
+
+NPP data
+
+A Timmermann, To. Friedrich
+Late Pleistocene climate drivers of early human migration
+Nature, doi: 10.1038/nature19365 (2016)
+
+------------------------------------------------------------------------------
+
+Bridge climate data
+
+Bristol Research Initiative for the Dynamic Global Environment
+  http://www.bridge.bris.ac.uk/resources/simulations
+
+------------------------------------------------------------------------------

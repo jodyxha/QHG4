@@ -1,0 +1,125 @@
+\documentclass[a4paper,oneside]{article}
+
+\begin{document}.
+
+\subsection*{Description of the Agent-Based Model}
+The simulations for this work were performed by our agent-based 
+simulation framework {\bf QHG} (``Quantitative Humane Geophylogeny'').
+\subsubsection*{Environment}
+The agents in {\bf QHG}, live and move on the nodes of a grid (for the simulations described here, 
+we used a spherical grid based onthe subdivision of an icosahedron).
+Each node of the grid is assigned a set of environmental data pertainiing to its coordinates:
+geography (e.g. altitude, sealevels (REF:SEALEVEL), ice (REF:ICE), rivers), climate (temperature, precipitation),
+and vegetation (NPP (REF:NPP)).
+The carrying capacity of the cell is calulated from its NPP by means of a ramp function, given by the
+parameters $K_{min}, K_{max}, NPP_{min}, NPP_{max}$  as follows:
+If $NPP_{cur} < NPP_{min}$ then $K_{cur} =  K_{min}$, 
+if $NPP_{cur} > NPP_{max}$ then $K_{cur} =  K_{max}$. Otherwise,
+\[ K_{cur} = K_{min} + (K_{max}-K_{min})(NPP_{cur} - NPP_{min})/(NPP_{max} - NPP_{min})\]
+The environment data is updated every 1'000 steps (years) to reflect changes in climate, ice and sea-level
+
+Seafaring, e.g. island-hopping to Australia, is realized by adding low-probability connections between two 
+nodes separated by water
+
+For a full description of the environmental variables cf. table~\ref{tab:env}.
+
+\subsubsection*{Agents}
+At every time step an agent can perform different actions such as move, mate and bear offspring, and/or die. 
+Movement is strongly influenced by the environment: the direction in which to move is a random choice 
+weighted by altitude and carrying capacity of the neighboring nodes, and agents can not move to nodes 
+under water or covered with ice.
+
+Birth and death probabilities are calculated with linear functions leading to logistic growth:
+\[ 
+  p_{birth}  =  b_{0} + (\theta - b_{0})\frac{N}{K},\hspace{0.2in}
+  p_{death}  =  d_{0} + (d_{0} - \theta)\frac{N}{K}, 
+\]
+where $N$ is the number of agents, $K$ is the local carrying capacity and $\theta$ is the turnover.
+
+A description of the agents' configurable attributes can be found in table~\ref{tab:agt}.
+
+
+\begin{table}[ht!]
+  \begin{center}
+  \caption{Environmental Variables}
+  \label{tab:env}
+  \begin{tabular}{cl|l}
+    \hline
+    \multicolumn{3}{l}{\bf{Geography}}                                 \\
+    \hline
+    \space & \texttt{Latitude}    &  latitude of node  (radians)                \\
+    \space & \texttt{Longitude}   &  longitude of node (radians)                \\ 
+    \space & \texttt{Altitude}    &  altitude of node (meters)                  \\
+    \space & \texttt{Ice}         &  ice (1) or no ice (0)                      \\
+    \space & \texttt{Water}       &  presence of water (e.g. rivers)            \\  
+    \space & \texttt{Coastal}     &  close to coast (1) or not (0)              \\ 
+    \space & \texttt{Distances}   &  distances to neighboring nodes             \\
+    \space & \texttt{Area}        &  area of region associated wit cell         \\
+    \hline
+    \multicolumn{2}{l}{\bf{Climate}}                                   \\
+    \hline
+    \space & \texttt{AnnualMeanTemp} &  current annual mean temperature in node \\
+    \space & \texttt{AnnualRainfall} &  current annual total rainfall in node   \\
+    \hline
+    \multicolumn{2}{l}{\bf{Vegetation}}                                \\
+    \hline
+    \space & \texttt{NPP}            &  Net Primary Production in node          \\
+    \hline
+
+  \end{tabular}
+
+  \end{center}
+\end{table}
+
+
+
+\begin{table}[ht!]
+  \begin{center}
+  \caption{Agent Attributes}
+  \label{tab:agt}
+  \begin{tabular}{cl|l}
+    \hline
+    \multicolumn{3}{l}{\bf{Birth and Death Probabilies}}           \\
+    \hline
+    \space & \texttt{Verhulst\_b0}                  &  birth probability for $N=0$   \\
+    \space & \texttt{Verhulst\_d0}                  &  death probability for $N=0$   \\
+    \space & \texttt{Verhulst\_theta}               &  turn-over rate                \\
+    \hline 
+    \multicolumn{3}{l}{\bf{Fertility}}                                      \\
+    \hline
+    \space & \texttt{Fertility\_interbirth}         &  interbirth interval (years)   \\
+    \space & \texttt{Fertility\_max\_age}           &  maximum fertile age (years)   \\
+    \space & \texttt{Fertility\_min\_age}           &  minimum fertile age (years)   \\
+    \hline
+    \multicolumn{3}{l}{\bf{Old Age Cut-Off}}                                \\
+    \hline
+    \space & \texttt{OAD\_max\_age}                 &  average age cut-off (years)   \\
+    \space & \texttt{OAD\_uncertainty}              &  variance                      \\
+    \hline
+    \multicolumn{3}{l}{\bf{NPP-Capacity Conversion}}                                 \\
+    \hline
+    \space & \texttt{NPPCap\_K\_max}                & $K_{max}$ parameter for ramp function   \\
+    \space & \texttt{NPPCap\_K\_min}                & $K_{min}$ parameter for ramp function   \\
+    \space & \texttt{NPPCap\_NPP\_max}              & $NPP_{max}$ parameter for ramp function \\
+    \space & \texttt{NPPCap\_NPP\_min}              & $NPP_{min}$ parameter for ramp function \\
+    \space & \texttt{NPPCap\_water\_factor}         & Capacity increase for presence of water \\
+    \space & \texttt{NPPCap\_coastal\_factor}       & Capacity increase for vicinity of coast \\
+
+    \hline
+    \multicolumn{2}{l}{\bf{Move Probability}}                                \\
+    \hline
+    \space & \texttt{WeightedMove\_prob}            & move probability          \\
+
+    \multicolumn{2}{l}{\bf{Navigation}}                                \\
+    \hline
+    \space & \texttt{Navigate\_dist0}               & reference distance for crossing \\
+    \space & \texttt{Navigate\_prob0}               & probability of crossing at reference distance \\
+    \space & \texttt{Navigate\_decay}               & factor for exponential decay of probability with distance \\
+  \end{tabular}
+
+  \end{center}
+\end{table}
+
+\end{document}
+
+

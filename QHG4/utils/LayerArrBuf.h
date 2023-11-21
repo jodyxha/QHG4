@@ -27,7 +27,7 @@ public:
 
 #ifndef LBNEW
     virtual inline
-    T &operator[](int i) const { return  LayerBuf<T>::m_vUsedLayers[(i*m_iArraySize)/ LayerBuf<T>::m_iLayerSize][(i*m_iArraySize)%LayerBuf<T>::m_iLayerSize];};
+    T &operator[](uint i) const { return  LayerBuf<T>::m_vUsedLayers[(i*m_iArraySize)/ LayerBuf<T>::m_iLayerSize][(i*m_iArraySize)%LayerBuf<T>::m_iLayerSize];};
 #else
     virtual inline
     T &operator[](uint i) const { return  LayerBuf<T>::m_vUsedLayers[i>>LayerBuf<T>::m_iIndexBits][m_iArraySize*(i & LayerBuf<T>::m_iSubIndexMask)];};

@@ -56,17 +56,7 @@ int WELLUtils::phraseToSeed(const std::string sPhrase, std::vector<uint32_t> &vu
         // md5sumS creates an array of 16 unsigned chars.
         // For anentire WELL512 state we need 4 such results
         for (uint k = 0; k < 4; k++) {
-            /*
-            // modify the input string for each iteration
-            std::string sPhrase2 = sPhrase + std::to_string(k);
-            uchar md[crypto::MD5_SIZE];
-            crypto::md5sumS(sPhrase.c_str(), md);
-            for (uint i = 0; i < STATE_SIZE; i += sizeof(uint32_t)) {
-                uint32_t u = 0;
-                memcpy(&u, md + i, sizeof(uint32_t));
-                vulState.push_back(u);
-            }
-*/
+
             // modify the input string for each iteration
             std::string sPhrase2 = sPhrase + std::to_string(k);
             unsigned int iLen = 0;
@@ -142,8 +132,6 @@ WELL512 **WELLUtils::buildWELLs(int iNum, uint iSeed) {
         int c = 0;
         for (uint j = 0; j < STATE_SIZE/4; j++) {
             std::string sPhrase = stdsprintf("seed for %d[%d]:%u", iT, j, iSeed);
-            //uchar md[crypto::MD5_SIZE];
-            //crypto::md5sumS(sPhrase.c_str(), md);
             unsigned int iLen = 0;
             unsigned char *pDigest = CryptoDigest::md5sum_string(sPhrase, &iLen); 
         
@@ -201,16 +189,6 @@ void WELLUtils::showStates(WELL512 **apWELL, int iNum, bool bFull) {
         sStates += sTemp;
         sStates += "\n";
     }
-    /*
-    uchar umd5[crypto::MD5_SIZE];
-    std::string smd5("");
-    
-    crypto::md5sumS(sStates.c_str(), umd5);
-    for (int i = 0; i < crypto::MD5_SIZE; i++) {
-        std::string s = stdsprintf("%02x", umd5[i]);
-        smd5 += s;
-    }
-    */
  
     unsigned int iLen = 0;
     std::string smd5("");
@@ -251,14 +229,6 @@ std::string WELLUtils::strStateHash(WELL512 *pWELL) {
     std::string sState = strState(pWELL);
 
     std::string smd5("");
-    /*
-    uchar umd5[crypto::MD5_SIZE];
-    crypto::md5sumS(sState.c_str(), umd5);
-    for (int i = 0; i < crypto::MD5_SIZE; i++) {
-        std::string s = stdsprintf("%02x", umd5[i]);
-        smd5 += s;
-    }
-    */
     unsigned int iLen = 0;
     unsigned char *pDigest = CryptoDigest::md5sum_string(sState, &iLen);
     for (unsigned int i = 0; i < iLen; i++) {

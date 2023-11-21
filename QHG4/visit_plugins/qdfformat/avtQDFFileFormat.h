@@ -172,7 +172,6 @@ class avtQDFFileFormat : public avtSTSDFileFormat
     std::map< std::string, name_group> m_mapAgentFields; 
     std::vector<std::string>     m_vPopNames;
     std::vector<std::string>     m_vSubPopNames;
-    std::map<std::string, std::string>     m_mSubPopNamesFull;
 
     int     m_nPies;
     std::vector<std::string>     m_vPieNames;

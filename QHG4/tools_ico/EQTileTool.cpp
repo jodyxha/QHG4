@@ -46,7 +46,7 @@
 //
 int addGeography(int iTile, SCellGrid *pCG, IcoGridNodes *pIGN) {
     int iResult = 0;
-    Geography *pGeo = new Geography(pCG, pCG->m_iNumCells, 6, 1, 0);
+    Geography *pGeo = new Geography(pCG, pCG->m_iNumCells, pCG->m_iMaxNeighbors, 1, 0);
     for (uint i=0; i < pCG->m_iNumCells; ++i) {
         int iIndex = pCG->m_aCells[i].m_iGlobalID; 
         IcoNode* pIN = pIGN->m_mNodes[iIndex];           // get the corresponding iconode in pIGN
@@ -101,7 +101,7 @@ int splitGrid(BasicTiling *pBT, const char *sQDFBody, const char *sIGNBody, int 
         // write a QDF
         if (iResult == 0)  {
             if (sQDFBody != NULL) {
-                SCellGrid *pCG = SCellGrid::createInstance(pIGN);
+                SCellGrid *pCG = NULL;/*SCellGrid::createInstance(pIGN);*/
                 // add basic geography data (Lon, Lat, distances to neighbors)
                 iResult = addGeography(i, pCG, pIGN);
                 if (iResult == 0) {

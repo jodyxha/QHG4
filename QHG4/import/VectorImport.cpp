@@ -359,7 +359,7 @@ int createCells(IcoGridNodes *pIGN, SCellGrid *pCG) { // THIS IS FOR ICOSAHEDRON
         for (int j = 0; j < pIN->m_iNumLinks; ++j) {
             pCG->m_aCells[i].m_aNeighbors[j] = pCG->m_mIDIndexes[pIN->m_aiLinks[j]];
         }
-        for (int j = pIN->m_iNumLinks; j < MAX_NEIGH; ++j) {
+        for (int j = pIN->m_iNumLinks; j < pCG->m_iMaxNeighbors; ++j) {
             pCG->m_aCells[i].m_aNeighbors[j] = -1;
         }
     }
@@ -426,7 +426,7 @@ SCellGrid *createCGFromIGN(const std::string sIGNFile, int *piNumCells) {
                                 
         // create new geography
         Geography *pGeo = NULL;
-        pGeo = new Geography(pCG, *piNumCells, 6, 6371.0);  // create geography
+        pGeo = new Geography(pCG, *piNumCells, pCG->m_iMaxNeighbors, 6371.0);  // create geography
         memset(pGeo->m_adWater, 0, pCG->m_iNumCells*sizeof(double));
         pCG->setGeography(pGeo);
         initializeGeography(pCG, pIGN);

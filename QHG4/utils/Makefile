@@ -29,7 +29,6 @@ endif
 
 COPT=-c $< -o $@ $(CADD) $(CFLAGS) $(DYN) -fPIC $(C_STD) $(CRAY_DEF) $(COMP) $(DEFS)
 
-
 $(warning DEFS in utils is $(DEFS))
 
 TESTS=BinoDistTest L2LTest LABTest LBTest SysInfoTest  WELLTest stdsprintf_test

@@ -739,6 +739,7 @@ herr_t extractSubGroups(hid_t loc_id, const char *name, const H5L_info_t*pInfo, 
     if (statbuf.type == H5O_TYPE_GROUP) {
         stringvec *v= (stringvec *)(opdata);
         v->push_back(name);
+        //printf("QDF: [extractSubGroup] got new group [%s]\n", name); fflush(stdout);
     }
     H5Oclose(hTemp);
     return status;

@@ -7,8 +7,8 @@
 
 #include "Geography.h"
 
-#include "IcoGridNodes.h"
-#include "IcoNode.h"
+//#include "IcoGridNodes.h"
+//#include "IcoNode.h"
 
 #include "SCellGrid.h"
 

@@ -1,0 +1,117 @@
+####################################################
+# installing and building QHG on CentOS 7.3.1611
+#
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1. install necessary packages
+#++++++++++++++++++++++++++++++++++++++++++++++++++
+# immportant additional repository
+sudo yum install epel-release
+
+# install developer tools (compiler, debugger etc)
+sudo yum install gcc-c++.x86_64 
+sudo yum install gdb.x86_64 
+sudo yum install valgrind.x86_64 valgrind-devel.x86_64 
+
+# code versioning (svn)
+sudo yum install subversion.x86_64 
+
+sudo yum install zlib-devel.x86_64
+
+sudo yum install openssl-devel.x86_64
+
+sudo yum install hdf5-devel.x86_64 hdf5.x86_64
+
+sudo yum install gsl-devel.x86_64 gsl.x86_64
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 2. add environment variable to .bash_profile
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+#------------------------------------------------------
+# for the compilation to work we must make sure set some environment variables will always be set
+# edit the file '.bash_profile' in your home directory (here i use vi - you can use any ASCII text editor you want)
+
+vi ~/.bash_profile
+
+# add this line to the end of ~/.bash_profile
+  export GCC=/usr/bin/g++
+
+# save and close the file
+#------------------------------------------------------
+
+# "activate" the new variables in  ~/.bash_profile
+source  ~/.bash_profile
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 3. create the source code directory and get code
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# create your source directory
+mkdir ~/progs
+
+# go there
+cd ~/progs
+
+# check out the code base
+svn co svn+ssh://alirv@aim-bigfoot.uzh.ch/home/morpho_svn/QHG3/trunk QHG3
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 4. build GHG
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# go to the root directory
+cd ~/progs/QHG3
+
+# build QHG (with debug information)
+make clean QHGMain
+
+# see if it works
+app/QHGMain
+
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 5. create output directory for some of thetools
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# create the utils directory
+mkdir ~/utils
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 5. install packages neeeded by QHG tools
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+sudo yum install libpng-devel.x86_64
+
+sudo yum install glib2-devel.x86_64 
+sudo yum install cairo-devel.x86_64
+sudo yum install gtk2-devel.x86_64 
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 6. modify .profile again
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+#------------------------------------------------------
+# edit the file '~/.bash_profile' in your home directory (here i use vi - you can use any ASCII text editor you want)
+
+vi ~/.bash_profile
+
+# add this line to the end of .bash_profile
+  export CPATH=/usr/include/cairo/:/usr/lib64/glib-2.0/include/:/usr/include/glib-2.0:$CPATH
+  
+# save and close the file
+#------------------------------------------------------
+# "activate" the new variables in  ~/.bash_profile
+source  ~/.bash_profile
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# 7. build the tools
+#+++++++++++++++++++++++++++++++++++++++++++++++++++
+# go to the root directory
+cd ~/progs/QHG3
+
+# build the tools
+make tools_n
+

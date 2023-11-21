@@ -5,7 +5,7 @@
 #include "types.h"
 #include "strutils.h"
 
-#include "IcoGridNodes.h"
+//#include "IcoGridNodes.h"
 #include "IcoNode.h"
 
 #include "SCell.h"
@@ -17,7 +17,7 @@
 #include "OccTracker.h"
 #include "MessLoggerT.h"
 
-
+/*
 //-----------------------------------------------------------------------------
 // constructor
 //
@@ -63,6 +63,7 @@ SCellGrid *SCellGrid::createInstance(IcoGridNodes *pIGN) {
     
     return pCG;
 }
+*/
 
 //-----------------------------------------------------------------------------
 // constructor
@@ -71,6 +72,7 @@ SCellGrid::SCellGrid(int iID, uint iNumCells, const stringmap &smSurfaceData)
     : m_iID(iID),
       m_iNumCells(iNumCells),
       m_aCells(NULL),
+      m_iMaxNeighbors(MAX_NEIGH),
       m_smSurfaceData(smSurfaceData),
       m_iConnectivity(6),
       m_pGeography(NULL),

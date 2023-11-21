@@ -313,7 +313,7 @@ int createCells(SCellGrid *pCG, IcoGridNodes *pIGN) { // THIS IS FOR ICOSAHEDRON
         for (int j = 0; j < pIN->m_iNumLinks; ++j) {
             pCG->m_aCells[i].m_aNeighbors[j] = pCG->m_mIDIndexes[pIN->m_aiLinks[j]];
         }
-        for (int j = pIN->m_iNumLinks; j < MAX_NEIGH; ++j) {
+        for (int j = pIN->m_iNumLinks; j < pCG->m_iMaxNeighbors; ++j) {
             pCG->m_aCells[i].m_aNeighbors[j] = -1;
         }
     }
@@ -395,7 +395,7 @@ int main(int iArgC, char *apArgV[]) {
                 
                         createCells(pCG, pIGN);
               
-                        Geography *pGeo = new Geography(iNumCells, 6, 6371.0);  // create geography
+                        Geography *pGeo = new Geography(iNumCells, pCG->m_iMaxNeighbors, 6371.0);  // create geography
                         pCG->setGeography(pGeo);
                         initializeGeography(pCG, pIGN);
                 

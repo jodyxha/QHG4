@@ -239,7 +239,7 @@ SubSpaceTest.o: SubSpaceTest.cpp SubSpace.h
 SubSpaceTest: SubSpaceTest.o SubSpace.o
 	$(CC) $(COMP)  -o SubSpaceTest \
 	SubSpaceTest.o SubSpace.o \
-	-L$(UTILS)   -lUtils 
+	-L$(UTILS)   -lUtils -lz
 
 
 hdfutils.o: hdfutils.cpp hdfutils.h

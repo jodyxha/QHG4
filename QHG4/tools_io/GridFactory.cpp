@@ -19,7 +19,7 @@
 #include "Vegetation.h"
 #include "Navigation.h"
 #include "IcoNode.h"
-#include "IcoGridNodes.h"
+#include "NodeIndex.h"
 #include "VertexLinkage.h"
 #include "EQsahedron.h"
 #include "SCellGrid.h"
@@ -136,64 +136,15 @@ GridFactory::~GridFactory() {
     delete m_pCG;
 }
 
-//-----------------------------------------------------------------------------
-// createEmptyQDF
-//
-int GridFactory::createEmptyQDF(const std::string sIGNFile) {
-    int iResult = 0;
-  
-    stdprintf("Creating IGN from [%s]...\n", sIGNFile);
-    IcoGridNodes *pIGN = new IcoGridNodes();
-    iResult = pIGN->read(sIGNFile);
 
-    if (iResult == 0) {
-        m_iNumCells = (uint)pIGN->m_mNodes.size();
-    } else {
-        iResult = -1;
-        stdprintf("The file [%s] is not an IGN file\n", sIGNFile); 
-    }
-
-    if (iResult == 0) {
-        stdprintf("Creating CellGrid...\n");
-        m_pCG = new SCellGrid(0, m_iNumCells, pIGN->getData());
-        iResult = createCells(pIGN);
-    }
-
-    if (iResult == 0) {
-        stdprintf("Initializing Geography...\n");
-        //        geonumber dRadius = 6371.3;
-        int iMaxNeigh     = MAX_ICO_NEIGHBORS;
-        m_pGeo = new Geography(m_pCG, m_iNumCells, iMaxNeigh, m_dRadius);  // create geography
-        iResult = initializeGeography(pIGN);
-    }
-    if (iResult == 0) {
-        stdprintf("Initializing Climate...\n");
-        int iNumSeasons = 0;
-        m_pClimate = new Climate(m_pCG, m_iNumCells, iNumSeasons);
-        int iNumVegSpecies = 0;
-        stdprintf("Initializing Vegetation...\n");
-        m_pVeg = new Vegetation(m_pCG, m_iNumCells, iNumVegSpecies);
-        stdprintf("Initializing Navigation...\n");
-        m_pNav = new Navigation(m_pCG);
-    }
-    if (iResult == 0) {
-        stdprintf("adding groups to cellgreid...\n");
-        m_pCG->setGeography(m_pGeo);
-        m_pCG->setClimate(m_pClimate);
-        m_pCG->setVegetation(m_pVeg);
-        m_pCG->setNavigation(m_pNav);
-    }
-
-    return iResult;
-}
 
 //-----------------------------------------------------------------------------
 // createEQGrid
 //    pVL = EQsahedron::getLinkage()
 //
-IcoGridNodes *createEQGrid(VertexLinkage *pVL) {
+NodeIndex *createEQGrid(VertexLinkage *pVL) {
     
-    IcoGridNodes *pIGN = new IcoGridNodes();
+    NodeIndex *pNI = new NodeIndex();
     
     std::map<gridtype, Vec3D *>::const_iterator iti;
     for (iti = pVL->m_mI2V.begin(); iti != pVL->m_mI2V.end(); iti++) {
@@ -226,13 +177,13 @@ IcoGridNodes *createEQGrid(VertexLinkage *pVL) {
                 pIN->addLink(*st, dDist);
 
             }
-            pIGN->m_mNodes[iti->first] = pIN;
+            pNI->m_mNodes[iti->first] = pIN;
         } else {
-            pIGN = NULL;
+            pNI = NULL;
         }
     }
 
-    return pIGN;
+    return pNI;
 }
 
 
@@ -775,7 +726,7 @@ int GridFactory::setGrid(const stringvec &vParams) {
 int GridFactory::setGridIco(const stringvec &vParams) {
     int iResult = -1;
 
-    IcoGridNodes *pIGN = NULL;
+    NodeIndex *pNI = NULL;
     int iSubDivs = -1;
     
     bool bEqual = true;
@@ -789,13 +740,7 @@ int GridFactory::setGridIco(const stringvec &vParams) {
             stringvec vArg;
             int iNum = splitString(vParams[1], vArg, ":");
             if (iNum == 1) {
-                /* no more N for now
-                pIGN = readIGNFile(vParams[1]);
-                if (pIGN != NULL) {
-                    m_iNumCells = (uint)pIGN->m_mNodes.size();
-                    iResult = 0;
-                }
-                */
+               
             } else {
                 if (strToNum(vArg[1], &iSubDivs)) {
                     iResult = 0;
@@ -823,66 +768,7 @@ int GridFactory::setGridIco(const stringvec &vParams) {
                 stdprintf("too many arguments\n");
                 iResult = -1;
             } 
-            /*
-        } else if (vParams.size() == 3) {
-                // <ignfile> <radius> | <type>:<subdiv> <type>
-            if (strToNum(vParams[1], &iSubDivs)) {
-                iResult = 0;
-                if (vParams[2].compare("std") == 0)  {
-                    bEqual = false;
-                    stdprintf("Without tegmark\n");
-                } else if (vParams[2].compare("eq") == 0)  {
-                    bEqual = true;
-                    stdprintf("With tegmark\n");
-                } else {
-                    stdprintf("expected \"<ignfile> <radius>\" or \"<subdivs> <type>\"\n");
-                    iResult = -1;
-                }
-            } else {
-                pIGN = readIGNFile(vParams[1]);
-                if (pIGN != NULL) {
-                    if (strToNum(vParams[2], &dRadius)) {
-                        m_dRadius = dRadius;
-                        m_iNumCells = (uint)pIGN->m_mNodes.size();
-                        iResult = 0;
-                    } else {
-                        stdprintf("expected <radius>, not [%s]\n", vParams[2]);
-                        iResult = -1;
-                    }
-                } else {
-                    iResult = -1;
-                }
-            }
             
-        } else if (vParams.size() == 4) {
-            // <subdiv> <type> <radius>
-            if (strToNum(vParams[1], &iSubDivs)) {
-                iResult = 0;
-                if (vParams[2].compare("std") == 0)  {
-                    bEqual = false;
-                    stdprintf("Without tegmark\n");
-                } else if (vParams[2].compare("eq") == 0)  {
-                    bEqual = true;
-                    stdprintf("With tegmark\n");
-                } else {
-                    stdprintf("unknown type [%s]- only know 'eq' or 'std'\n", vParams[2]);
-                    iResult = -1;
-                }
-                if (iResult == 0) {
-                    if (strToNum(vParams[3], &dRadius)) {
-                        m_dRadius = dRadius;
-                        iResult = 0;
-                    } else {
-                        stdprintf("expected <radius>, not [%s]\n", vParams[3]);
-                        iResult = -1;
-                    }
-                }
-            } else {
-                stdprintf("expected <subdivs>, not [%s]\n", vParams[1]);
-                iResult = -1;
-            }
-            */
-        
         } else {
             // too many parameters
             iResult = -1;
@@ -900,8 +786,8 @@ int GridFactory::setGridIco(const stringvec &vParams) {
             EQsahedron *pEQNodes = EQsahedron::createInstance(iSubDivs, bEqual);
             pEQNodes->relink();
             VertexLinkage *pVL = pEQNodes->getLinkage();
-            pIGN = createEQGrid(pVL);
-            m_iNumCells = (uint)pIGN->m_mNodes.size();
+            pNI = createEQGrid(pVL);
+            m_iNumCells = pNI->getNumNodes();
             delete pEQNodes;
             iResult = 0;
         }
@@ -911,23 +797,19 @@ int GridFactory::setGridIco(const stringvec &vParams) {
             stringmap smSurfaceData;
             smSurfaceData[SURF_TYPE] = SURF_EQSAHEDRON;
             smSurfaceData[SURF_IEQ_SUBDIVS] = stdsprintf("%d", iSubDivs);
-            pIGN->setData(smSurfaceData);
-            // here the SCellGrid class is created
-            //        m_pCG = new SCellGrid(0, m_iNumCells, iGridType, iW, iH, bPeriodic);
-            m_pCG = new SCellGrid(0, m_iNumCells, pIGN->getData());
-            iResult = createCells(pIGN);
+            m_pCG = new SCellGrid(0, m_iNumCells, smSurfaceData);
+            iResult = createCells(pNI);
             
         }
         
         // build geography
         if (iResult == 0) {
-            int iMaxNeigh = MAX_ICO_NEIGHBORS;
-            m_pGeo = new Geography(m_pCG, m_iNumCells, iMaxNeigh, m_dRadius);  // create geography
+            m_pGeo = new Geography(m_pCG, m_iNumCells, m_pCG->m_iMaxNeighbors, m_dRadius);  // create geography
             m_pCG->setGeography(m_pGeo);
-            initializeGeography(pIGN);
+            initializeGeography(pNI);
         }
         
-        delete pIGN;
+        delete pNI;
 
     }
 
@@ -1139,7 +1021,7 @@ int GridFactory::createCellsRectPeriodic(uint iW, uint iH) {
 
         // clear all neighbor links
         m_pCG->m_aCells[i].m_iNumNeighbors = (uchar)RECT_NEIGHBORS;
-        for (int j = 0; j < MAX_NEIGH; j++) {
+        for (int j = 0; j < m_pCG->m_iMaxNeighbors; j++) {
             m_pCG->m_aCells[i].m_aNeighbors[j] = -1;
         }
 
@@ -1440,9 +1322,6 @@ int GridFactory::applyShellCommands(const char *pQDFFile) {
 
 
 
- 
-
-
 //-----------------------------------------------------------------------------
 // initializeGeography
 // for HEX and RECT grids
@@ -1481,7 +1360,7 @@ int GridFactory::initializeGeography(int iX, int iY, bool bHex) {
 //   Distances
 //   Area
 //
-int GridFactory::initializeGeography(IcoGridNodes *pIGN) {
+int GridFactory::initializeGeography(NodeIndex *pNI) {
 
     int iResult = 0;
 
@@ -1509,7 +1388,7 @@ int GridFactory::initializeGeography(IcoGridNodes *pIGN) {
     if (iResult == 0) {
         for (uint i=0; i<m_iNumCells; ++i) {
             gridtype iIndex = m_pCG->m_aCells[i].m_iGlobalID;  // for each cell find its ID
-            IcoNode* pIN = pIGN->m_mNodes[iIndex];           // get the corresponding iconode in pIGN
+            IcoNode* pIN = pNI->m_mNodes[iIndex];           // get the corresponding iconode in pNI
 
        
             if(pIN != NULL) {
@@ -1573,41 +1452,18 @@ int GridFactory::initializeGeography(IcoGridNodes *pIGN) {
 
 
 //-----------------------------------------------------------------------------
-// readIGNFile
-//  (probably obsolete, because nowadays we don't use IGN files a lot)
-//
-IcoGridNodes *GridFactory::readIGNFile(const std::string sFileName) {
-    IcoGridNodes *pIGN = NULL;
-    
-    std::string sRealFile;
-    if (exists(sFileName, sRealFile)) {
-        pIGN = new IcoGridNodes();
-        int iResult = pIGN->read(sRealFile);
-        if(iResult==0) {
-            m_iNumCells = (uint)pIGN->m_mNodes.size();
-        } else {
-            delete pIGN;
-            stdprintf("The file [%s] is not an IGN file\n", sRealFile); 
-        }
-    } else {
-        stdprintf("IGN file does not exist [%s]\n", sFileName);
-    }
-    return pIGN;
-}
-
-//-----------------------------------------------------------------------------
 // createCells
 //   create cells
 //   link cells
 //
-int GridFactory::createCells(IcoGridNodes *pIGN) { // THIS IS FOR ICOSAHEDRON GRID
+int GridFactory::createCells(NodeIndex *pNI) { // THIS IS FOR ICOSAHEDRON GRID
  
     LOG_STATUS("[GridFactory::createCells] allocating %d cells\n", m_iNumCells);
     
     uint iC = 0;
     m_pCG->m_aCells = new SCell[m_iNumCells];
     std::map<gridtype, IcoNode*>::const_iterator it;
-    for (it = pIGN->m_mNodes.begin(); it != pIGN->m_mNodes.end(); ++it) {
+    for (it = pNI->m_mNodes.begin(); it != pNI->m_mNodes.end(); ++it) {
         m_pCG->m_mIDIndexes[it->first]=iC;
 
         m_pCG->m_aCells[iC].m_iGlobalID    = it->first;
@@ -1623,13 +1479,14 @@ int GridFactory::createCells(IcoGridNodes *pIGN) { // THIS IS FOR ICOSAHEDRON GR
     // linking and distances
     for (uint i =0; i < m_iNumCells; ++i) {
         // get link info from IcCell
-        IcoNode *pIN = pIGN->m_mNodes[m_pCG->m_aCells[i].m_iGlobalID];
+        IcoNode *pIN = pNI->m_mNodes[m_pCG->m_aCells[i].m_iGlobalID];
         for (int j = 0; j < pIN->m_iNumLinks; ++j) {
             m_pCG->m_aCells[i].m_aNeighbors[j] = m_pCG->m_mIDIndexes[pIN->m_aiLinks[j]];
         }
-        for (int j = pIN->m_iNumLinks; j < MAX_NEIGH; ++j) {
+        for (int j = pIN->m_iNumLinks; j < m_pCG->m_iMaxNeighbors; ++j) {
             m_pCG->m_aCells[i].m_aNeighbors[j] = -1;
         }
     }
     return 0;
 }
+

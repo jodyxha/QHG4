@@ -76,7 +76,7 @@ LayerBuf<T>::~LayerBuf() {
     for (unsigned int i = 0; i < m_vUsedLayers.size(); i++) {
         if (m_vUsedLayers[i] != NULL) {
             // delete array
-            printf("[LayerBuf<T>::createLayer()]deleting layer %d (%p)\n", i,  m_vUsedLayers[i]); fflush(stdout);
+            //printf("[LayerBuf<T>::createLayer()]deleting layer %d (%p)\n", i,  m_vUsedLayers[i]); fflush(stdout);
             delete[] m_vUsedLayers[i];
         }
     }
@@ -141,7 +141,7 @@ void LayerBuf<T>::createLayer() {
         // ... otherwise create a new one
         //        printf("Creating block\n");
         pLayer = new T[m_iLayerSize];
-        printf("[LayerBuf<T>::createLayer()] created new layer %p\n", pLayer); fflush(stdout);
+        //printf("[LayerBuf<T>::createLayer()] created new layer %p\n", pLayer); fflush(stdout);
         // if data is padded there may be uninitialised bytes
         // to prevent valgrind nag: initialize entire layer
         memset(pLayer, 37, m_iLayerSize*sizeof(T));

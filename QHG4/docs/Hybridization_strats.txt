@@ -1,0 +1,119 @@
+Implementation thoughts on the two hybridization strategies
+-------------------------------------------------------------------------------
+
+strategy 1: 
+-----------
+modify the existing two-species implementation
+- implement inter-specific matings
+- at each birth: the baby senses the number of Neanderthals and humans at its 
+  node and behaves according to the majority, i.e., it will be added to the 
+  majority species
+
+strategy 2: 
+-----------
+work with a new one-species implementation
+- implement personalized parameter values
+- personalize all parameter values at birth as a function of the parameter 
+  values of the parents
+- mating probability (or birth probability) is a function of the parameter 
+  value difference between parents
+
+-------------------------------------------------------------------------------
+
+regarding strategy 1: 
+---------------------
+For inter-species mating, we need a Mating action which, at each step and for 
+each cell, creates vectors of all local females of both species and on vector
+for the males. This action would then randomly create as many couples as 
+possible (some of these would be mixed, some of these would be 'pure').
+The precise structure of the containers filled by Mating and used by Birthing
+has yet to be determined.
+Probably a vector of pairs (PopBase*, int), where the int is the agent's
+index in its species' agent array. 
+
+A larger issue would be the actual birthing: currently, only females can
+create babys which are put on a birthqueue of the species. The births are 
+actually realized *after* the parallel section has finished.
+Furthermore, each action belongs to a species, and each species launches
+its actions at appropriate times.
+In the new Situation we would need an action which has pointers to 
+both populations (so it can assign the baby to the correct birth queue).
+
+Variant A: 
+The solution would have to be assymmetrical.
+One species would transmit its 'this' pointer to the other species using a 
+shared array. The other would create and manage instances of the Mating and the 
+Birthing actions, using a pointer to itself and the pointer received from the 
+other species.
+
+Variant B:
+Create a new class of actions which are not bound to one particular species.
+Such classes could be used to implement Mating and Birth in a more natural 
+and symmetrical way. This would also entail changes to the main Simulation 
+loop because these new action types have to be called at appropriate times. 
+ 
+-------------------------------------------------------------------------------
+
+regarding strategy 2:
+---------------------
+Many of the actions need to access an agent's data (gender, age,...).
+These actions comprise 
+  BirthDeath, 
+  Fertility, 
+  OldAgeDeath, 
+  WeightedMove.
+To personalize these actions, each agent has a number of additional fields 
+corresponding to the action parameters, which are calculated and set at an 
+agent's birth, and depend on the parents' hybridizaton.
+
+The actions must be rewritten to use the agents' parameter values instead of 
+the population specific ones.
+
+
+The problematic action is NPPCap.
+Whenever the conditions (NPP) change, NPPCap calculates Carrying Capacities 
+for each cell in a parallelized loop, using NPP_min, NPP_max, K_min, K_max 
+for the calculation.
+The resulting array is used by WeightedMove and by BirthDeath.
+For WeightedMove this array is combined with an array depending on a cells 
+altitude to make high altitude cells less favorable.
+
+This action is not easily personalized as it is now, as this would involve 
+a separate array for each agent.
+
+Here are some variants for solving this issue
+
+Variant A
+One possibility would be *not* to personalize these paraeters. 
+The movement decisions would not differ much from a personalized setting
+because the ramp function is monotonous, i.e. cells with higher NPP (and 
+therefore higher CC) would still have a higher probabilty than cells with lower
+NPP. 
+As for the influence of CC on birth: we already have a hybridization-dependent
+factor changing the birth probability.
+
+Variant B
+In this variant, too, we would keep the precalculated array for the movement 
+decisions, but calculate CC's on the spot for each agent giving birth. 
+This comes with a cost of more (non-parallelizable) work, especially when
+many agents are doing the recalculation of their personalized CCs.
+
+C: every agent has an short array to store the CC values of its neighboring 
+cells.
+These values could be calculated at the beginning of each step in a 
+paralleizable loop.
+These values are used for WeightedMove and BirthDeath.
+
+----
+For all variants we would have to reimplement *all* actions dealing personalized parameters.
+Variant A is easiest to achieve as we leave everything as it is.
+Variant B would require a new implementation of NPPCap, and is possibly too slow.
+Variant C would require a new implementation of NPPCap, and a major redesign of how 
+different environment data are combined.
+
+
+    effort   hybeffect  niceness
+1A    1         1          0
+1B    4         1          1
+2A    2         2          0
+2B    3         3          1

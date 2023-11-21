@@ -1,0 +1,51 @@
+Class_name                       (should always be 'NPersOoANavSHybRelPop')
+NPersHybBirthDeathRel_hybminprob (a new parameter defining the lowest value of the saddle function; a single value)
+NPersHybBirthDeathRel_b0_sapiens
+NPersHybBirthDeathRel_d0_sapiens
+NPersHybBirthDeathRel_other_sapiens    (should always be 'neander')
+NPersHybBirthDeathRel_theta_sapiens    (should be the same as BirthDeathRelComp_b0_neander)
+NPersHybBirthDeathRel_this_sapiens     (should always be 'sapiens')
+Fertility_interbirth_sapiens
+Fertility_max_age_sapiens
+Fertility_min_age_sapiens
+NPPCap_K_max_sapiens
+NPPCap_K_min_sapiens
+NPPCap_NPP_max_sapiens
+NPPCap_NPP_min_sapiens
+NPPCap_coastal_factor_sapiens
+NPPCap_coastal_max_latitude_sapiens    (default 66.0)
+NPPCap_coastal_min_latitude_sapiens    (default 50.0)
+NPPCap_efficiency_sapiens              (default 1) 
+NPPCap_water_factor_sapiens
+Navigate_decay_sapiens                 (default -0.001)
+Navigate_dist0_sapiens                 (default 150)
+Navigate_min_dens_sapiens              (default 0)
+Navigate_prob0_sapiens                 (defualt 0.1)    
+OAD_max_age_sapiens
+OAD_suncertainty_sapiens
+NPersWeightedMove_prob_sapiens
+NPersHybBirthDeathRel_b0_neander
+NPersHybBirthDeathRel_d0_neander
+NPersHybBirthDeathRel_other_neander    (should always be 'sapiens')
+NPersHybBirthDeathRel_theta_neander    (should be the same as BirthDeathRelComp_b0_neander)
+NPersHybBirthDeathRel_this_neander     (should always be 'neander')
+Fertility_interbirth_neander
+Fertility_max_age_neander
+Fertility_min_age_neander
+NPPCap_K_max_neander
+NPPCap_K_min_neander
+NPPCap_NPP_max_neander
+NPPCap_NPP_min_neander
+NPPCap_coastal_factor_neander
+NPPCap_coastal_max_latitude_neander    (default 66.0)  
+NPPCap_coastal_min_latitude_neander    (default 50.0)  
+NPPCap_efficiency_neander              (default 1)     
+NPPCap_water_factor_neander                            
+Navigate_decay_neander                 (default -0.001)
+Navigate_dist0_neander                 (default 150)   
+Navigate_min_dens_neander              (default 0)     
+Navigate_prob0_neander                 (defualt 0.1)   
+OAD_max_age_neander
+OAD_uncertainty_neander
+NPersWeightedMove_prob_neander
+

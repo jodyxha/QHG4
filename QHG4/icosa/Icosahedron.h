@@ -18,7 +18,7 @@ class PolyFace;
 class BufWriter;
 class symbuf;
 
-class IcoGridNodes;
+//class IcoGridNodes;
 
 
 typedef int (VertexLinkage::*ADDFACEMETHOD) (IcoFace *);

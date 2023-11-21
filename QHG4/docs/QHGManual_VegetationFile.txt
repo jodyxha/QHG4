@@ -1,0 +1,76 @@
+%------
+% replacement for second paragraph of section 4.1 "Grid file"
+Examples can be found in the resources/grids folder in the main QHG folder. In the file names, S means the file contains grid data, G denotes the grid file also contains geography, likewise, C stands for climate, V for vegetation and N for navigation data. "ieq" in the file names means the grid is an equal are icosahedron dubdivision. If the file name contains an expression of the form <width>x<height> the grid is rectangular with the indicated size.
+
+
+%------
+% subsection 4.5.2 of section 4 "Parameter values"
+\subsection{Population files} \label{vegfile}
+  A vegetation file is a QDF file containing a data set of two columns, "BaseNPP" and "NPP". The "NPP" column is usually calculated from "BaseNPP" and NPP increases  due to rivers or coastal contributions.
+
+%------
+% replacement for the last sentence in subsection 4.5.2 of section 4 "Parameter values"
+A negative value denotes a birth time prior to the simulation start (this way we can start a simulation with adult individuals)
+
+
+
+%------
+% section 5 "Output of QHG"
+Basically, all output of QHG is in the form of QDF files. Usually all data regarding the environment (grid, geography, etc) is bundled into an output QDF file, whereas population data is stored in a separate QDF file.
+What data should be out at what time can be specified with the  {\fontfamily{pcr}\selectfont --event parameter} (see section \ref{eventparam}).
+
+
+%------
+% replacement for the last sentence in section 6 "Examples"
+The logfile test_1.log is written to the current directory. The output of QHG is very detailed and contains a lot of technical and debug information, as well as some statistics. Therefore, it is advisable to redirect stdou into a file, as shown in the example. After the simulation has successfully completed, this file may be deleted.
+
+
+%------
+% subsections of section 7 "Other tools"
+\subsection{VisIt} \label{VisIt}
+  VisIt is a visualisation created and maintained by the Lawrence Livermore NAtional Library.
+  Using the visit-plugin for the QDF format, most of the data of all types of QDF files can be displayed as pseudocolor maps on the grid. To display data from a pure population QDF file you must link it to a grid with the  {\fontfamily{pcr}\selectfont LinkQDFGroups.py} program (section \ref{LinkQDFGroups}).
+
+  In order to build and use this plugin, VisIt sources should be downloaded from https://wci.llnl.gov/simulation/computer-codes/visit/source and be built with the "build_visit script" found at the same site.
+  After successful installation, look at the file {\fontfamily{pcr}\selectfont BUILD_PLUGIN.sh} and set environment variables as indicated in this file.
+
+
+%------
+% subsections of section 7 "Other tools"
+\subsection{pop_attrs.py}
+This tool allows you to view and modify attributes of a QDF population file.
+	Usage:
+		\begin{lstlisting}
+	    ./pop_attrs.py show  [all] <pop-qdf>[:<pop-name>] [<attr-name>]*
+          or:
+            ./pop_attrs.py mod   <pop-qdf>[:<pop-name>] (<attr-name> <attr-val>)*
+          or:
+            ./pop_attrs.py add   <pop-qdf>[:<pop-name>] <attr-name> <attr-val> [<attr_type>]
+          or:
+            ./pop_attrs.py del   <pop-qdf>[:<pop-name>] <attr-name>
+          
+          where:
+            pop-qdf    QDF file with populations
+            pop-name   name of population (if omitted, the first population is used)
+            attr-name  name of attribute
+            attr-val   new value for attribute (the value must have the correct type
+            attr_type  a numpy type such as 'float64', 'int32', 'S2' etv
+
+		\end{lstlisting}
+Note that the "mod" variant currently only allows changing the values of numerical attributes.
+
+
+%------
+% subsections of section 7 "Other tools"
+\subsection{longlatforid.py}
+With this tool you can get the longitude, latitude, altitude and ice cover for node-IDs of a particular grid.
+     Usage:
+		\begin{lstlisting}
+                  ../useful_stuff/longlatforid.py <qdf-file> <output-mode> <nodeid>* 
+                where
+                  qdf-file     a qdf file with Grid and Geography grtoup
+                  output-mode  "csv" or "nice"
+                  nodeid       node id for which to extract data
+                Example
+                  ../useful_stuff/longlatforid.py  navworld_085_kya_256.qdf 123 4565 7878 31112 0
+		\end{lstlisting}

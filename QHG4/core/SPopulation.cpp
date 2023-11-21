@@ -188,41 +188,6 @@ void SPopulation<T>::prepareLists(int iAgentLayerSize,int iListLayerSize, uint32
 
 }
 
-/*
-//----------------------------------------------------------------------------
-// showStates
-//
-template<typename T>
-void SPopulation<T>::showStates(bool bFull) {
-    char *sStates = new char [m_iNumThreads * 256];
-    *sStates = '\0';
-    for (int i = 0; i < m_iNumThreads; i++) {
-        char sTemp[256];
-        sprintf(sTemp, "[%08x] ", m_apWELL[i]->getIndex());
-        strcat(sStates, sTemp);
-        m_apWELL[i]->state2String(sTemp);
-        strcat(sStates, sTemp);
-        strcat(sStates, "\n");
-    }
-    uchar umd5[crypto::MD5_SIZE];
-    char  smd5[2*crypto::MD5_SIZE+1];
-    *smd5 = '\0';
-
-    //crypto::md5sumS(sStates, umd5);
-    unsigned char *pDigest = CryptoDigest::md5sum_string(sStates, &iLen) 
-    for (int i = 0; i < iLen/ *crypto::MD5_SIZE* /; i++) {
-        char s[4];
-        sprintf(s, "%02x", pDigest[i]/ *umd5[i]* /);
-        strcat(smd5, s);
-    }
-    free(pDigest);
-    stdprintf("WELL hash %s\n", smd5);
-    if (bFull) {
-        stdprintf("%s", sStates);
-    }
-    delete[] sStates;
-}
-*/
 
 //----------------------------------------------------------------------------
 // randomize
@@ -1203,6 +1168,10 @@ int  SPopulation<T>::addAgent(int iCellIndex, char *pData, bool bUpdateCounts) {
 
 //----------------------------------------------------------------------------
 // addAgentData
+//   ppData points to a string which was retrieved from a dat file.
+//   This methods reads all (non-volatile) elements from the string and
+//   saves them. The rest of the string will be processed by the method
+//   addPopSpecificAgentData() of derived classes.
 //
 template<typename T>
 int  SPopulation<T>::addAgentData(int iCellIndex, int iAgentIndex, char **ppData) {
@@ -1896,9 +1865,10 @@ int  SPopulation<T>::getPrioInfos(const stringmap &mPrios) {
 
 
 //----------------------------------------------------------------------------
-// getPrioInfos
-//  Get priority info 
-//  and fill m_mPrioInfo (map<string, uint>)
+// getPopParams
+//  Get priority info population oarams and set them.
+//  Should be implemented by derived populations who need parameters
+//  (i.e. which are not action parameters) 
 //
 template<typename T>
 int  SPopulation<T>::getPopParams(const stringmap &mVarDefsPrios) {

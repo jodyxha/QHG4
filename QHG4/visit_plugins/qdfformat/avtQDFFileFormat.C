@@ -166,7 +166,7 @@ void avtQDFFileFormat::findPopSubGroups() {
             debug1 << "QDF: [findPopSubGroups] Pop #" << i << "::: " << sCurName << endl;
                             
             hid_t hThisPop = qdf_openGroup(m_hPopGroup, sCurName, true);
-            printf("QDF: [findPopSubGroups] check existence of %s] in %lu\n", AGENT_DATASET_NAME, hThisPop);  fflush(stdout);
+            //printf("QDF: [findPopSubGroups] check existence of %s] in %lu\n", AGENT_DATASET_NAME, hThisPop);  fflush(stdout);
             if (H5Lexists(hThisPop, AGENT_DATASET_NAME, H5P_DEFAULT)) {
                 m_mapAgentGroups[sCurName] = hThisPop;               
                 hid_t hThisDataset = H5Dopen(hThisPop, AGENT_DATASET_NAME, H5P_DEFAULT);
@@ -235,7 +235,7 @@ void avtQDFFileFormat::findPopSubGroups() {
 // ****************************************************************************
 
 void avtQDFFileFormat::findSubPopSubGroups() {
-    debug1 << "QDF: [findSubPopSubGroups] getting pop info in intialize... " << endl; debug1.flush();
+    debug1 << "QDF: [findSubPopSubGroups] getting sub pop info in intialize... " << endl; debug1.flush();
                     
     int iResult = 0;
     int iGlobActionCount = 0;
@@ -247,18 +247,15 @@ void avtQDFFileFormat::findSubPopSubGroups() {
     // we know "Populations" only has population groups, no datasets
     
     m_vSubPopNames.clear();
-    m_mSubPopNamesFull.clear();
+
     // loop through the real populations
     debug1 << "QDF: [findSubPopSubGroups] Creating metadata for " << vPopNames.size() << " populations" << endl; debug1.flush();
         
     for (uint idxPop = 0; idxPop < vPopNames.size(); idxPop++) {
         std::string sCurPopName = vPopNames[idxPop];
-        printf("QDF: [findSubPopSubGroups] sCurName is now [%s]\n", sCurPopName.c_str());fflush(stdout);
 
         debug1 << "QDF: [findSubPopSubGroups] Pop #" << idxPop << "::: " << sCurPopName << endl; debug1.flush();
-        printf("QDF: [findSubPopSubGroups] about to open pop group [%s]\n",  sCurPopName.c_str()); fflush(stdout);
         hid_t hThisPop = qdf_openGroup(m_hPopGroup, sCurPopName.c_str(), true);
-        printf("QDF: [findSubPopSubGroups] hThisPop is %lx\n",  hThisPop); fflush(stdout);
         debug1 << "QDF: [findSubPopSubGroups] hThisPop is "<< hThisPop << endl; debug1.flush();
         
         // loop through action groups
@@ -268,20 +265,14 @@ void avtQDFFileFormat::findSubPopSubGroups() {
         for (unsigned idxAction = 0; idxAction < vActionNames.size(); idxAction++) {
             hid_t hAction = qdf_openGroup(hThisPop, vActionNames[idxAction].c_str());
             if (hAction != H5P_DEFAULT) {
-                printf("QDF: [findSubPopSubGroups] hAction is %lx\n",  hAction); fflush(stdout);
                 debug1 << "QDF: [findSubPopSubGroups] hAction is "<< hAction << endl; debug1.flush();
 
 
-                    
-                // 
-                printf("QDF: [findSubPopSubGroups] about to query existence of [AgentBinSplitter] in [%s/%s]\n", m_vPopNames[idxPop].c_str(), vActionNames[idxAction].c_str()); fflush(stdout);
-                
-                printf("QDF: [findSubPopSubGroups] about to query existence of [%s] in hAction\n", SUBPOPGROUP_NAME); fflush(stdout);
+                debug1 << "QDF: [findSubPopSubGroups] about to query existence of [" << SUBPOPGROUP_NAME << "] in hAction(" << std::hex << hAction << std::dec << endl << std::flush;
                 if (H5Lexists(hAction, SUBPOPGROUP_NAME , H5P_DEFAULT)) {
 
                     // this let's see if this action has an ID attribute
                     std::string sID = "";
-                    printf("QDF: [findSubPopSubGroups] about to query attriute existence of [id] in hAction\n"); fflush(stdout);
                     hid_t hAttID = H5Aexists(hAction, "id");
                     if (hAttID != H5P_DEFAULT) {
                         iResult = qdf_extractSAttribute2(hAction, "id", sID);
@@ -292,48 +283,43 @@ void avtQDFFileFormat::findSubPopSubGroups() {
                         sprintf(sNumber, "%03d", iGlobActionCount);
                         sID = std::string("action_") + sNumber;
                     }
-                    printf("QDF: [findSubPopSubGroups] sID of action [%s]: [%s]\n", vActionNames[idxAction].c_str(), sID.c_str()); fflush(stdout);
+                    debug1 << "QDF: [findSubPopSubGroups] sID of action [" << vActionNames[idxAction] << "]: [" << sID << "]" << endl; debug1.flush();
 
-                    printf("QDF: [findSubPopSubGroups] about to open the group [%s] in hABS\n", SUBPOPGROUP_NAME); fflush(stdout);
                     hid_t hSubPopsGroup = qdf_openGroup(hAction, SUBPOPGROUP_NAME);
-                    printf("QDF: [findSubPopSubGroups] hSubPopsGroup is %lx\n",  hSubPopsGroup); fflush(stdout);
                     debug1 << "QDF: [findSubPopSubGroups] hSubPopsGroup is "<< hSubPopsGroup << endl; debug1.flush();
                     
-                    collectSubGroups(hSubPopsGroup, m_vSubPopNames);
-                    
+                    stringvec vCurSubPopNames;
+                    collectSubGroups(hSubPopsGroup, vCurSubPopNames);
+
+
                     // SubPopulations also ony has groups (and no datasets)
-                    for (uint idxSubPop = 0; idxSubPop < m_vSubPopNames.size(); idxSubPop++) {
-                        debug1 << "QDF: [findSubPopSubGroups] in inner loop for '" << m_vSubPopNames[idxSubPop] << "'"  << endl; debug1.flush();
-                        printf("QDF: [findSubPopSubGroups] in inner loop for '%s'\n",  m_vSubPopNames[idxSubPop].c_str());  fflush(stdout);
-                        printf("QDF: [findSubPopSubGroups] about to open group [%s] in %lx\n",   m_vSubPopNames[idxSubPop].c_str(), hSubPopsGroup);  fflush(stdout);
-                        hid_t hSubPop = qdf_openGroup(hSubPopsGroup, m_vSubPopNames[idxSubPop].c_str());
+                    for (uint idxSubPop = 0; idxSubPop < vCurSubPopNames.size(); idxSubPop++) {
+                        std::string sCurPopName = vCurSubPopNames[idxSubPop];
+                        m_vSubPopNames.push_back(sCurPopName);
+                        debug1 << "QDF: [findSubPopSubGroups] in inner loop for '" << sCurPopName << "'"  << endl; debug1.flush();
+                        hid_t hSubPop = qdf_openGroup(hSubPopsGroup, sCurPopName.c_str());
                         if (hSubPop != H5P_DEFAULT) {
                             
-                            printf("QDF: [findSubPopSubGroups] hSubPop is %lx\n",  hSubPop);  fflush(stdout);
                             debug1 << "QDF: [findSubPopSubGroups] hSubPop is "<< hSubPop << endl; debug1.flush();
-                            std::string sCurFullSubName = vPopNames[idxPop] + SEP_CHAR + sID + SEP_CHAR + m_vSubPopNames[idxSubPop];
-                            printf("QDF: [findSubPopSubGroups] m_mSubPopNamesFull[%s] is [%s]\n", vPopNames[idxPop], m_vSubPopNames[idxSubPop].c_str()); fflush(stdout);
-                            m_mSubPopNamesFull[m_vSubPopNames[idxSubPop]] = sCurFullSubName;
-                            printf("QDF: [findSubPopSubGroups] m_mSubPopNamesFull[%s] is [%s]\n", m_vSubPopNames[idxSubPop].c_str(), m_mSubPopNamesFull[m_vSubPopNames[idxSubPop]].c_str()); fflush(stdout);
-                            printf("QDF: [findSubPopSubGroups] about to query existence of [%s] in hSubPop\n", AGENT_DATASET_NAME); fflush(stdout);
+                     
                             if (H5Lexists(hSubPop, AGENT_DATASET_NAME, H5P_DEFAULT))  {
-                                m_mapAgentGroups[sCurFullSubName] = hSubPop;
-                                printf("QDF: [findSubPopSubGroups] m_mapAgentGroups['%s'] is %lx\n", sCurFullSubName.c_str(),  m_mapAgentGroups[sCurFullSubName]); fflush(stdout);
-
+                                m_mapAgentGroups[sCurPopName] = hSubPop;
+                            
                                 // here: only extracz cellID?
-                                printf("QDF: [findSubPopSubGroups] about to open the dataset [%s] in hSubPop\n", AGENT_DATASET_NAME); fflush(stdout);
                                 hid_t hThisSubDataset = H5Dopen(hSubPop, AGENT_DATASET_NAME, H5P_DEFAULT);
-                                printf("QDF: [findSubPopSubGroups] hThisSubDataset is %lx\n",  hThisSubDataset);  fflush(stdout);
                                 hid_t hAgentType = H5Dget_type(hThisSubDataset);     // get the agent compound data type
                                 int nFields = H5Tget_nmembers(hAgentType);        // how many data fiels are in the compound agent type?
                                 size_t iAgentTypeSize = H5Tget_size(hAgentType);  // get its size in bytes for later use
                                 hssize_t nAgents = H5Dget_storage_size(hThisSubDataset)/iAgentTypeSize; // how many agents?
                                 
                                 // save valuable information for later use
-                                m_mapDataAgents.insert(std::pair<std::string,hid_t>(sCurFullSubName, hThisSubDataset));
-                                m_mapNAgents.insert(std::pair<std::string, int>(sCurFullSubName, (int)nAgents));
-                                debug1 << "QDF: [findSubPopSubGroups] added Pop data for '" << sCurFullSubName << ".(" << nAgents <<" agents) to  m_mapDataAgents and  m_mapNAgents" << endl; debug1.flush();
-                                
+				debug1 << "QDF: [findSubPopSubGroups] m_mapDataAgents.insert(" << sCurPopName << ", " <<std::hex << hThisSubDataset <<std::dec <<")" << endl << std::flush;
+                                m_mapDataAgents.insert(std::pair<std::string,hid_t>(sCurPopName, hThisSubDataset));
+
+				debug1 << "QDF: [findSubPopSubGroups] m_mapNAgents.insert(" << sCurPopName << ", " << nAgents <<")" << endl << std::flush;
+                                m_mapNAgents.insert(std::pair<std::string, int>(sCurPopName, (int)nAgents));
+                                debug1 << "QDF: [findSubPopSubGroups] added Pop data for '" << sCurPopName << ".(" << nAgents <<" agents) to  m_mapDataAgents and  m_mapNAgents" << endl; debug1.flush();
+                                                                
                                 
                                 for (unsigned int k = 0; k < nFields; k++) {
                                     char* sFieldName = new char[63];
@@ -347,33 +333,30 @@ void avtQDFFileFormat::findSubPopSubGroups() {
                                     hid_t tReadType = H5Tcreate(H5T_COMPOUND, tFieldTypeSize);
                                     H5Tinsert(tReadType, sFieldName, 0, tFieldType);
                                     
-                                    /*
-                                    char* sUniqueFieldName = new char[128];
-                                    strcpy(sUniqueFieldName, sCurFullSubName.c_str());
-                                    
-                                    strcat(sUniqueFieldName, SEP_CHAR);
-                                    strcat(sUniqueFieldName, sFieldName);  // name = POPNAME:FIELDNAME to avoid duplication between pops
-                                    */
-                                    debug1 << "QDF: [findSubPopSubGroups] adding metadata for " << sUniqueFieldName << endl; debug1.flush();
+                                    std::string sUniqueFieldName = sCurPopName + SEP_CHAR + sFieldName;
                                         
+				    debug1 << "QDF: [findSubPopSubGroups] pairDatasetAndType=("<<std::hex << hThisSubDataset << std::dec <<", " << std::hex << tReadType << std::dec <<")" <<endl<<std::flush;
+
                                     group_type pairDatasetAndType = group_type(hThisSubDataset, tReadType);
-                                    name_group pairNames = name_group(sCurPopName, pairDatasetAndType);  // is sCurPopName  the right one?
-                                    m_mapAgentFields.insert(std::pair<std::string,name_group>(sCurFullSubName, pairNames)); 
+				    debug1 << "QDF: [findSubPopSubGroups] pairNames=("<< sCurPopName << ", pairDatasetAndType)"<< endl<<std::flush;
+                                    name_group pairNames = name_group(sCurPopName, pairDatasetAndType); 
+                                    m_mapAgentFields.insert(std::pair<std::string,name_group>(sUniqueFieldName, pairNames)); 
+                                    debug1 << "QDF: [findSubPopSubGroups] added field " << k << " of " << nFields << "(" << sFieldName << ")" << endl << std::flush;
                                     delete sFieldName;
                                 } // end for k
                                 
                             } else {
-                                    debug1 << "QDF: [findSubPopSubGroups] no dataset [" << AGENT_DATASET_NAME << "] found in [" <<  m_vSubPopNames[idxSubPop] << "]" << endl; debug1.flush();
+                                    debug1 << "QDF: [findSubPopSubGroups] no dataset [" << AGENT_DATASET_NAME << "] found in [" <<  sCurPopName << "]" << endl; debug1.flush();
                             }
                             //qdf_closeGroup(hSubPop);
                             // this group mist be closed
                         } else {
-                            debug1 << "QDF: [findSubPopSubGroups] couldn't open subpop group [" << m_vSubPopNames[idxSubPop] << "] in [" <<  "Populations/" << vPopNames[idxPop] << "]" << endl; debug1.flush();
+                            debug1 << "QDF: [findSubPopSubGroups] couldn't open subpop group [" << sCurPopName << "] in [" <<  "Populations/" << vPopNames[idxPop] << "]" << endl; debug1.flush();
                         }
                     } // end for idxSubPopj    
                         qdf_closeGroup(hSubPopsGroup);
                 } else {
-                    debug1 << "QDF: [findSubPopSubGroups] no subgroup [" << SUBPOPGROUP_NAME << "] found in [" <<  sCurPopName << "]" << endl; debug1.flush();
+                    debug1 << "QDF: [findSubPopSubGroups] no subgroup [" << vActionNames[idxAction] << "/" << SUBPOPGROUP_NAME << "] found in [" <<  sCurPopName << "]" << endl; debug1.flush();
                 }
                 qdf_closeGroup(hAction);
             } else {
@@ -381,12 +364,6 @@ void avtQDFFileFormat::findSubPopSubGroups() {
             }
         } // end for idxAction
     } // end for idxPop
-    printf("QDF: [findSubPopSubGroups] leaving method\n");   fflush(stdout);
-
-    printf("QDF: [findSubPopSubGroups] m_vSubPopNames & Co\n"); fflush(stdout);
-    for (uint i = 0; i < m_vSubPopNames.size(); i++) {
-        printf(" popn [%s] => full[%s] => hpop[%lx]\n",  m_vSubPopNames[i].c_str(), m_mSubPopNamesFull[m_vSubPopNames[i]].c_str(),  m_mapAgentGroups[m_mSubPopNamesFull[m_vSubPopNames[i]]]); fflush(stdout);
-    }
 
     debug1 << "QDF: [findSubPopSubGroups] leaving method" << endl;   debug1.flush();
 }
@@ -1204,14 +1181,9 @@ avtQDFFileFormat::createPopulationMetaData(avtDatabaseMetaData *md) {
 // ****************************************************************************
 void
 avtQDFFileFormat::createSubPopulationMetaData(avtDatabaseMetaData *md) {
-    printf("QDF: [createSubPopulationMetaData] m_vSubPopNames & Co\n"); fflush(stdout);
-    for (uint i = 0; i < m_vSubPopNames.size(); i++) {
-        printf(" popn [%s] => full[%s] => hpop[%lx]\n",  m_vSubPopNames[i].c_str(), m_mSubPopNamesFull[m_vSubPopNames[i]].c_str(),  m_mapAgentGroups[m_mSubPopNamesFull[m_vSubPopNames[i]]]); fflush(stdout);
-    }
-
+    debug1 << "QDF: [createSubPopulationMetaData] m_hPopGroup: " << m_hPopGroup << endl <<std::flush;
     if (m_hPopGroup != H5P_DEFAULT) {
-        printf("QDF: [createSubPopulationMetaData] this: %lx getting pop info...\n", this);
-        debug1 << "QDF: [createSubPopulationMetaData] (this:" << this <<") getting pop info... " << endl;
+        debug1 << "QDF: [createSubPopulationMetaData] (this:" << this <<") getting pop info... " << endl << std::flush;
 
         int iResult = H5Gget_info(m_hPopGroup, &m_infoPopGroup);
             
@@ -1220,15 +1192,15 @@ avtQDFFileFormat::createSubPopulationMetaData(avtDatabaseMetaData *md) {
 
             debug1 << "QDF: [createSubPopulationMetaData] Pop #" << i << "::: " << m_vSubPopNames[i] << endl << std::flush;
         
-            // printf("QDF: [createSubPopulationMetaData] calling qdf_openGroup(%lx, %s, true)\n", m_mapAgentGroups[m_mSubPopNamesFull[m_vSubPopNames[i]]].c_str(), m_vSubPopNames[i].c_str()); fflush(stdout);
-            hid_t hThisPop = m_mapAgentGroups[m_mSubPopNamesFull[m_vSubPopNames[i]]];
+
+            hid_t hThisPop = m_mapAgentGroups[m_vSubPopNames[i]];
             debug1 << "QDF: [createSubPopulationMetaData] metadata: doing pop group [" << m_vSubPopNames[i] << "] H5Lexists(" << hThisPop <<", "<< m_vSubPopNames[i] <<")" << endl << std::flush;
-            printf("QDF: [createSubPopulationMetaData] metadata: doing pop group [%s] H5Lexists(%lx, %s)\n",  m_vSubPopNames[i].c_str(), hThisPop,  AGENT_DATASET_NAME); fflush(stdout);
             if (H5Lexists(hThisPop, AGENT_DATASET_NAME, H5P_DEFAULT)) {
-            
+                
+                debug1 << "QDF: [createSubPopulationMetaData] creating pop mesh for name [" << m_vSubPopNames[i] << "]" << endl <<std::flush;
                 // create point mesh for population agents
                 avtMeshMetaData *PopMeshMD = new avtMeshMetaData;
-                PopMeshMD->name = m_mSubPopNamesFull[m_vSubPopNames[i]];
+                PopMeshMD->name = m_vSubPopNames[i];
                 PopMeshMD->meshType = AVT_POINT_MESH;
                 PopMeshMD->spatialDimension = (!strcasecmp(m_sGridType,"LTC")) ? 2 : 3;
                 PopMeshMD->topologicalDimension = 0; 
@@ -1725,7 +1697,7 @@ avtQDFFileFormat::GetAgentFlatMesh(const char *popname) {
     
     // for agent positions, we need to know spatial coordinates of grid nodes
 
-    debug1 << "QDF: [GetAgentFlatMesh] called GetAgentFlatMesh" << endl;
+    debug1 << "QDF: [GetAgentFlatMesh] called GetAgentFlatMesh with popname=" << popname << endl << std::flush;
 
     vtkDataSet *BaseGrid = GetMesh(GRIDGROUP_NAME);
     vtkIdType nNodes = BaseGrid->GetNumberOfPoints();
@@ -1738,7 +1710,7 @@ avtQDFFileFormat::GetAgentFlatMesh(const char *popname) {
     }
     
     debug1 << "QDF: [GetAgentFlatMesh] got coordinates from " << GRIDGROUP_NAME << " for " << nNodes << " nodes" << endl;
-
+    debug1 << "QDF: [GetAgentFlatMesh] getting num agents for [" << popname <<"]" <<endl << std::flush;
     int nAgents = (m_mapNAgents.find(popname))->second;
 
     debug1 << "QDF: [GetAgentFlatMesh] processing data for " << nAgents << " agents" << endl;
@@ -1752,16 +1724,19 @@ avtQDFFileFormat::GetAgentFlatMesh(const char *popname) {
     strcpy(sCellIDName, popname);
     strcat(sCellIDName, SEP_CHAR);
     strcat(sCellIDName, GRID_DS_CELL_ID);
+    debug1 << "QDF: [GetAgentFlatMesh] using [" << sCellIDName << "] as key" << endl <<std::flush;
     hid_t hPopData = ((m_mapAgentFields.find(sCellIDName))->second).second.first;
     hid_t hCellIDType = ((m_mapAgentFields.find(sCellIDName))->second).second.second;
     
-    debug1 << "QDF: [GetAgentFlatMesh] GetAgentFlatMesh preparing to read " << sCellIDName << endl;
+    debug1 << "QDF: [GetAgentFlatMesh] GetAgentFlatMesh preparing to read " << popname/*sCellIDName*/ << endl;
 
     delete sCellIDName;
 
     int *aiAgentCells = new int[nAgents];
 
+    debug1 << "QDF: [GetAgentFlatMesh] calling H5Dread with hPopData=" << std::hex << hPopData << std::dec << " and hCellIDType=" << std::hex << hCellIDType << std::dec << endl << std::flush;
     herr_t iErr = H5Dread(hPopData, hCellIDType, H5S_ALL, H5S_ALL, H5P_DEFAULT, aiAgentCells);
+    debug1 << "QDF: [GetAgentFlatMesh] cajj to H5Dread completed" << endl << std::flush;
     
     srand(time(NULL));
     for (int i = 0; i < nAgents; i++) {
@@ -1846,13 +1821,13 @@ avtQDFFileFormat::GetAgentIcoEqMesh(const char *popname) {
     hid_t hPopData = ((m_mapAgentFields.find(sCellIDName))->second).second.first;
     hid_t hCellIDType = ((m_mapAgentFields.find(sCellIDName))->second).second.second;
     
-    debug1 << "QDF: [GetAgentIcoEqMesh] GetAgentIcoEqMesh preparing to read " << sCellIDName << endl;
+    debug1 << "QDF: [GetAgentIcoEqMesh] GetAgentIcoEqMesh preparing to read " << sCellIDName << endl << std::flush;
     debug1.flush();
     int *aiAgentCells = new int[nAgents];
 
     herr_t iErr = H5Dread(hPopData, hCellIDType, H5S_ALL, H5S_ALL, H5P_DEFAULT, aiAgentCells);
 
-    debug1 << "QDF: [GetAgentIcoEqMesh] " << sCellIDName << " read: herr_t: " << iErr << endl;
+    debug1 << "QDF: [GetAgentIcoEqMesh] " << sCellIDName << " read: herr_t: " << iErr << endl << std::flush;
     debug1.flush();
 
     float* xarray = new float[nAgents];

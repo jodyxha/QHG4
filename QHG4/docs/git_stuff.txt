@@ -1,0 +1,95 @@
+git
+github
+configuring
+  git config --global user.email "jody.xha@gmail.com"
+  git config --global user.name "jodyxha"
+adding a new repository
+- create new repository in GitHub
+  git remote add origin https://github.com/jodyxha/QHG4
+initialize a project
+  cd path/to/folder
+  git init
+push contents of local repo to GitHub
+  git push --set-upstream origin main
+
+adding a file
+  git add <file_name>
+  git add -all
+
+get files from GitHub to local repo
+  git --pull origin main
+
+commit
+  git commit -a -m “Some message”
+commit
+  git commit -a -m “Some message”
+
+push everything
+git push origin
+======================================================================
+
+username:
+ jodyxha
+
+current access token:
+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
+
+adding docs
+======================================================================
+doc root:
+	cd ~/progs/git_qhg4_doc/jodyxha.github.io
+	rm -rf QHG4/*
+	cd QHG4
+	cp -r  /home/jody/progs/QHG4/sphinxdocs/build/html/* .
+	(run ~/progs/git_qhg4_doc/fix_refs.sh if uploaded files see no css)
+	cd ..
+		git add QHG4 (or selectvely add: git add abd/xyz.rst)
+		git commit -a -m "some message"
+		git push origin
+
+======================================================================
+
+good manual
+======================================================================
+  https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository
+======================================================================
+
+adding code 
+======================================================================
+code handling(repo ~/progs/git_qhg4_code):      
+   (create a te,porary directorym e.g. "temp_git"=
+   cd temp_git
+   svn co svn+ssh://jody@aim-bigfoot.uzh.ch/home/qhg4_svn/QHG4/trunk QHG4
+
+   (remove unneeded files and directories)
+   
+   cd git_QHG4_code
+   cp -r ../temp_git/QHG4/ .       
+   git add QHG4
+   git commit -a -m "some message"
+   git push origin
+======================================================================
+
+
+repositories
+======================================================================
+local repositories:
+  code : ~/progs/git_qhg4_code   (frog: ~/progs/git_QHG4)
+  docs : ~/progs/git_qhg4_docs   (frog: ~/progs/git_qhg4_doc)
+
+github repositories
+  code : https://github.com/jodyxha/QHG4.git
+  docs : https://github.com/jodyxha/jodyxha.github.io
+
+documentation pages 
+  docs : https://jodyxha.github.io/QHG4/index.html
+======================================================================
+
+
+fix_refs.sh:
+======================================================================
+mv _static static
+mv _images images
+find ./ -name "*.html" -type f -exec sed -i 's/_static/static/g' {} \;
+find ./ -name "*.html" -type f -exec sed -i 's/_images/images/g' {} \;
+======================================================================

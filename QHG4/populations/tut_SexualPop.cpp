@@ -70,7 +70,7 @@ tut_SexualPop::~tut_SexualPop() {
 
 //----------------------------------------------------------------------------
 // addPopSpecificAgentData
-// read additional data from pop file (the mat index is volatile, so we don't try to read it)
+// read additional data from pop file (the mate index is volatile, so we don't try to read it)
 //
 int tut_SexualPop::addPopSpecificAgentData(int iAgentIndex, char **ppData) {
 
