@@ -8,8 +8,8 @@ const int MAX_NEIGH = 6;
 
 typedef struct {
     gridtype  m_iGlobalID;
-    uchar   m_iNumNeighbors;
-    int     m_aNeighbors[MAX_NEIGH];
+    uchar     m_iNumNeighbors;
+    int       m_aNeighbors[MAX_NEIGH];
 } SCell;
 
 

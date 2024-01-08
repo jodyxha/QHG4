@@ -4,9 +4,9 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_OLDAGEDEATH_NAME "OldAgeDeath"
-#define ATTR_OLDAGEDEATH_MAXAGE_NAME      "OAD_max_age"
-#define ATTR_OLDAGEDEATH_UNCERTAINTY_NAME "OAD_uncertainty"
+const static std::string ATTR_OLDAGEDEATH_NAME   = "OldAgeDeath";
+const static std::string ATTR_OLDAGEDEATH_MAXAGE_NAME        = "OAD_max_age";
+const static std::string ATTR_OLDAGEDEATH_UNCERTAINTY_NAME   = "OAD_uncertainty";
 
 class WELL512;
 

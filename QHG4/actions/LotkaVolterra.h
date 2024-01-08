@@ -21,14 +21,14 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_LOTKAVOLTERRA_NAME           "LotkaVolterra"
-#define ATTR_LOTKAVOLTERRA_SELFRATE_NAME  "LV_selfrate"
-#define ATTR_LOTKAVOLTERRA_MIXRATE_NAME   "LV_mixrate"
-#define ATTR_LOTKAVOLTERRA_OTHERPOP_NAME  "LV_otherpop"
-#define ATTR_LOTKAVOLTERRA_K_NAME         "LV_K"
+const static std::string ATTR_LOTKAVOLTERRA_NAME             = "LotkaVolterra";
+const static std::string ATTR_LOTKAVOLTERRA_SELFRATE_NAME    = "LV_selfrate";
+const static std::string ATTR_LOTKAVOLTERRA_MIXRATE_NAME     = "LV_mixrate";
+const static std::string ATTR_LOTKAVOLTERRA_OTHERPOP_NAME    = "LV_otherpop";
+const static std::string ATTR_LOTKAVOLTERRA_K_NAME           = "LV_K";
 
 
-#define NAME_LEN 1024
+const static int NAME_LEN = 1024;
 
 class WELL512;
 

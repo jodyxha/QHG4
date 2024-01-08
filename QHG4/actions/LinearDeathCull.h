@@ -4,11 +4,11 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_LINDEATHCULL_NAME "LinearDeathCull"
-#define ATTR_LINDEATHCULL_D0_NAME "LinearDeathCull_d0"
-#define ATTR_LINDEATHCULL_TURNOVER_NAME "LinearDeathCull_theta"
-#define ATTR_LINDEATHCULL_CAPACITY_NAME "LinearDeathCull_K"
-#define ATTR_LINDEATHCULL_EPS_NAME      "LinearDeathCull_eps"
+const static std::string ATTR_LINDEATHCULL_NAME   = "LinearDeathCull";
+const static std::string ATTR_LINDEATHCULL_D0_NAME   = "LinearDeathCull_d0";
+const static std::string ATTR_LINDEATHCULL_TURNOVER_NAME   = "LinearDeathCull_theta";
+const static std::string ATTR_LINDEATHCULL_CAPACITY_NAME   = "LinearDeathCull_K";
+const static std::string ATTR_LINDEATHCULL_EPS_NAME        = "LinearDeathCull_eps";
 
 class WELL512;
 

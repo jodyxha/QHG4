@@ -7,7 +7,7 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_RANDPERMPAIR_NAME "RandPermPair"
+const static std::string ATTR_RANDPERMPAIR_NAME   = "RandPermPair";
 
 class WELL512;
 

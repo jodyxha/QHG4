@@ -6,10 +6,10 @@
 
 class WELL512;
 
-#define ATTR_ATANDEATH_NAME "ATanDeath"
-#define ATTR_ATANDEATH_MAXAGE_NAME "ATanDeath_max_age"
-#define ATTR_ATANDEATH_RANGE_NAME  "ATanDeath_range"
-#define ATTR_ATANDEATH_SLOPE_NAME  "ATanDeath_slope"
+const static std::string ATTR_ATANDEATH_NAME   = "ATanDeath";
+const static std::string ATTR_ATANDEATH_MAXAGE_NAME   = "ATanDeath_max_age";
+const static std::string ATTR_ATANDEATH_RANGE_NAME    = "ATanDeath_range";
+const static std::string ATTR_ATANDEATH_SLOPE_NAME    = "ATanDeath_slope";
 
 const double EPS = 0.001;
 

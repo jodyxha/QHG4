@@ -36,6 +36,8 @@
 #include "VegGroupReader.h"
 #include "Navigation.h"
 #include "NavGroupReader.h"
+#include "Navigation2.h"
+#include "NavGroupReader2.h"
 
 #include "EnvInterpolator.h"
 #include "AutoInterpolator.h"
@@ -100,6 +102,7 @@ SimParams::SimParams()
       m_pCli(NULL),
       m_pVeg(NULL),
       m_pNav(NULL),
+      m_pNav2(NULL),
       m_pPopLooper(NULL),
       m_apIDG(NULL),
       m_pEnvInt(NULL),
@@ -170,6 +173,9 @@ SimParams::~SimParams() {
     }
     if (m_pNav != NULL) {
         delete m_pNav;
+    }
+    if (m_pNav2 != NULL) {
+        delete m_pNav2;
     }
     if (m_pPopLooper != NULL) {
         delete m_pPopLooper;
@@ -290,6 +296,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
     std::string sClimateFile("");
     std::string sVegFile("");
     std::string sNavFile("");
+    std::string sNav2File("");
     // this might be to big to place on the buffer
     //    char sEvents[2048*MAX_PATH];
     // better use a string allocated by ParamReader instead
@@ -319,7 +326,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
     m_bTrackOcc = false;
     m_bZipOutput = false;
 
-    bool bOK = m_pPR->setOptions(31, 
+    bool bOK = m_pPR->setOptions(32, 
                                  "-h:0",                  &bHelp,
                                  "--help:s",              &sHelpTopic,
                                  "--log-file:s",          &sDummyLog,
@@ -328,6 +335,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                                  "--climate:s",           &sClimateFile,
                                  "--veg:s",               &sVegFile,
                                  "--nav:s",               &sNavFile,
+                                 "--nav2:s",              &sNav2File,
                                  "--pops:s",              &sPops,
                                  "--output-prefix:s",     &sOutputPrefix,
                                  "--output-dir:s",        &sOutputDir,
@@ -518,6 +526,14 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                     if (iRes2 != 0) {
                         iResult = iRes2;
                         vsErrorInfo.push_back("setNav");
+                    }
+                    iResult = (iRes2 < iResult)?iRes2:iResult;
+                }
+                if (sNav2File != "") {
+                    iRes2   = setNav2(sNav2File);
+                    if (iRes2 != 0) {
+                        iResult = iRes2;
+                        vsErrorInfo.push_back("setNav2");
                     }
                     iResult = (iRes2 < iResult)?iRes2:iResult;
                 }
@@ -854,6 +870,13 @@ int SimParams::setGrid(hid_t hFile, bool bUpdate /* = false */) {
                 }
 
                 iRes = setNav(hFile, bUpdate);
+                if (iRes == 0) {
+                    // ok
+                } else {
+                    LOG_STATUS2("[setGrid] No Navigation found in QDF\n");
+                }
+
+                iRes = setNav2(hFile, bUpdate);
                 if (iRes == 0) {
                     // ok
                 } else {
@@ -1252,6 +1275,81 @@ int SimParams::setNav(hid_t hFile, bool bUpdate) {
     
     return iResult;
 }
+
+//----------------------------------------------------------------------------
+// setNav
+//  if File is QDF file, use NavGroupReader to create Navigation
+//  otherwise fail
+//
+int SimParams::setNav2(const std::string sFile) {
+    int iResult = -1;
+    
+    std::string sRealNav2;
+    if (exists(sFile, sRealNav2)) {
+        hid_t hFile = qdf_openFile(sRealNav2);
+        if (hFile > 0) {
+            iResult = setNav2(hFile, true);
+        }
+	qdf_closeFile(hFile);
+    } else {
+        // err: doesn't exist
+    }
+    return iResult;
+}
+
+//----------------------------------------------------------------------------
+// setNav
+//  use QDF file
+//
+int SimParams::setNav2(hid_t hFile, bool bUpdate) {
+    int iResult = -1;
+    
+    NavGroupReader2 *pNR2 = NavGroupReader2::createNavGroupReader2(hFile);
+    if (pNR2 != NULL) {
+        Nav2Attributes nav2att;
+	memset(&nav2att, 0, sizeof(Nav2Attributes));
+        iResult = pNR2->readAttributes(&nav2att);
+        if (iResult == 0) {
+            //@@            LOG_STATUS2("[setVeg] VegReader attributes read (numspc: %d, numcells:%d)\n", iNumVegSpc, iNumCells);
+            
+            if (!bUpdate) {
+                m_pNav2 = new Navigation2(m_pCG);
+            } else {
+                m_pNav2 = m_pCG->m_pNavigation2;
+            }
+
+            
+            iResult = pNR2->readData(m_pNav2);
+            if (iResult == 0) {
+                LOG_STATUS2("[setNav] NavGroupReader readData succeeded!\n");
+                iResult = pNR2->readBridges(m_pNav2);
+                if (iResult == 0) {
+                    LOG_STATUS2("[setNav] NavGroupReader readBridges succeeded!\n");
+                    if (!bUpdate) {
+                        m_pCG->setNavigation2(m_pNav2);
+                    }
+                } else {
+                    LOG_ERROR2("[setNav] Couldn't read bridges\n");
+                }
+
+            } else {
+                LOG_ERROR2("[setNav] Couldn't read data\n");
+            }
+            
+        } else {
+            LOG_ERROR2("[setNav] Couldn't read attributes\n");
+        }
+        
+        
+        delete pNR2;
+    } else {
+        LOG_WARNING2("[setNav] Couldn't create NavGroupReader: did not find group [%s]\n", NAVGROUP_NAME);
+    }
+    
+    
+    return iResult;
+}
+
 
 
 //----------------------------------------------------------------------------

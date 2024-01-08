@@ -164,8 +164,8 @@ hid_t qdf_openFile(const std::string sFileName, bool bRW) {
 //----------------------------------------------------------------------------
 // opencreate
 //
-hid_t qdf_opencreateFile(const std::string sFileName, int iStep, float fStartTime, const std::string sInfoString) {
-    hid_t hFile = qdf_openFile(sFileName);
+hid_t qdf_opencreateFile(const std::string sFileName, int iStep, float fStartTime, const std::string sInfoString, bool bRW) {
+    hid_t hFile = qdf_openFile(sFileName, bRW);
     if (hFile == H5P_DEFAULT) {
         hFile = qdf_createFile(sFileName, iStep, fStartTime, sInfoString);
     }
@@ -346,20 +346,29 @@ int qdf_insertSAttribute(hid_t hLoc, const std::string sName, const char  *pValu
 int qdf_insertAttribute(hid_t hLoc, const std::string sName, const uint iNum, void *vValue, const hid_t hType) {
     int iResult = -1;
     hsize_t dims = iNum;
-    hid_t hAttrSpace = H5Screate_simple (1, &dims, NULL);
-    hid_t hAttribute = H5Acreate(hLoc, sName.c_str(), 
-                                 hType, hAttrSpace, 
-                                 H5P_DEFAULT, H5P_DEFAULT);
 
-    herr_t status = H5Awrite (hAttribute, hType, vValue);
+    int iExists = H5Aexists(hLoc,  sName.c_str());
     
-    if (status == 0) {
-        iResult = 0;
+    if (iExists == 0) {
+
+        hid_t hAttrSpace = H5Screate_simple (1, &dims, NULL);
+        hid_t hAttribute = H5Acreate(hLoc, sName.c_str(), 
+                                     hType, hAttrSpace, 
+                                     H5P_DEFAULT, H5P_DEFAULT);
+        
+        herr_t status = H5Awrite (hAttribute, hType, vValue);
+
+        qdf_closeAttribute(hAttribute);
+        qdf_closeDataSpace(hAttrSpace);
+    
+        if (status == 0) {
+            iResult = 0;
+        } else {
+            stdprintf("write %s attribute err\n", msTypeNames[hType]);
+        } 
     } else {
-        stdprintf("write %s attribute err\n", msTypeNames[hType]);
-    } 
-    qdf_closeDataSpace(hAttrSpace);
-    qdf_closeAttribute(hAttribute);
+        stdprintf("Attribute [%s] already exists\n", sName);
+    }
 
     return iResult;
 }

@@ -10,6 +10,7 @@
 #include "Climate.h"
 #include "Vegetation.h"
 #include "Navigation.h"
+#include "Navigation2.h"
 
 typedef std::map<std::string, stringvec>   commandmap;
 
@@ -79,11 +80,12 @@ protected:
     int setDensity(int iIndex, double dD);
     int setNPP(int iIndex, double dA);
 
-    SCellGrid  *m_pCG;
-    Geography  *m_pGeo;
-    Climate    *m_pClimate;
-    Vegetation *m_pVeg;
-    Navigation *m_pNav;
+    SCellGrid   *m_pCG;
+    Geography   *m_pGeo;
+    Climate     *m_pClimate;
+    Vegetation  *m_pVeg;
+    Navigation  *m_pNav;
+    Navigation2 *m_pNav2;
 
     stringvec   m_vDataDirs;
     LineReader *m_pLR;

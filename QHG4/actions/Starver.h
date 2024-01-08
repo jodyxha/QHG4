@@ -4,9 +4,9 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_STARVER_NAME              "Starver"
-#define ATTR_STARVER_STARVE_MASS_NAME  "StarveMass"
-#define ATTR_STARVER_MASS_DECAY_NAME   "MassDecay"
+const static std::string ATTR_STARVER_NAME                = "Starver";
+const static std::string ATTR_STARVER_STARVE_MASS_NAME    = "StarveMass";
+const static std::string ATTR_STARVER_MASS_DECAY_NAME     = "MassDecay";
 
 template<typename T>
 class Starver : public Action<T> {

@@ -18,6 +18,7 @@
 #include "Climate.h"
 #include "Vegetation.h"
 #include "Navigation.h"
+#include "Navigation2.h"
 #include "IcoNode.h"
 #include "NodeIndex.h"
 #include "VertexLinkage.h"
@@ -94,6 +95,7 @@ static std::string sPeriodicityNames[] = {
       m_pClimate(NULL),
       m_pVeg(NULL),
       m_pNav(NULL),
+      m_pNav2(NULL),
       m_pLR(NULL),
       m_sDef(sDefFile),
       m_bInterpol(false),
@@ -114,6 +116,7 @@ GridFactory::GridFactory()
       m_pClimate(NULL),
       m_pVeg(NULL),
       m_pNav(NULL),
+      m_pNav2(NULL),
       m_pLR(NULL),
       m_sDef(""),
       m_bInterpol(false),
@@ -130,6 +133,7 @@ GridFactory::~GridFactory() {
     // the GridFactory creates the cell grid, geo and climate
     // but does not delete them - they are used elsewhere
     delete m_pNav;
+    delete m_pNav2;
     delete m_pVeg;
     delete m_pClimate;
     delete m_pGeo;
@@ -713,8 +717,10 @@ int GridFactory::setGrid(const stringvec &vParams) {
         m_pCG->setClimate(m_pClimate);
         m_pVeg = new Vegetation(m_pCG, m_iNumCells, 0);
         m_pCG->setVegetation(m_pVeg);
-        m_pNav = new Navigation(m_pCG);
+        m_pNav  = new Navigation(m_pCG);
         m_pCG->setNavigation(m_pNav);
+        m_pNav2 = new Navigation2(m_pCG);
+        m_pCG->setNavigation2(m_pNav2);
     }
     return iResult;
 }

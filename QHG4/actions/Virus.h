@@ -5,12 +5,12 @@
 #include "Action.h"
 #include "ParamProvider2.h"
     
-#define ATTR_VIRUS_NAME                 "Virus"
-#define ATTR_VIRUS_INFECTION_PROB_NAME  "InfectionProb"
-#define ATTR_VIRUS_INITIAL_LOAD_NAME    "InitialLoad"
-#define ATTR_VIRUS_GROWTH_RATE_NAME     "GrowthRate"
-#define ATTR_VIRUS_CONTAGION_LEVEL_NAME "ContagionLevel"
-#define ATTR_VIRUS_LETHALITY_LEVEL_NAME "LethalityLevel"
+const static std::string ATTR_VIRUS_NAME                   = "Virus";
+const static std::string ATTR_VIRUS_INFECTION_PROB_NAME    = "InfectionProb";
+const static std::string ATTR_VIRUS_INITIAL_LOAD_NAME      = "InitialLoad";
+const static std::string ATTR_VIRUS_GROWTH_RATE_NAME       = "GrowthRate";
+const static std::string ATTR_VIRUS_CONTAGION_LEVEL_NAME   = "ContagionLevel";
+const static std::string ATTR_VIRUS_LETHALITY_LEVEL_NAME   = "LethalityLevel";
 
 typedef std::map<int, intvec> cellagentmap;
 typedef std::map<int, float>  agentloadmap;

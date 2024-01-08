@@ -5,10 +5,10 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_ANIMALREP_NAME            "AnimalReproducer"
-#define ATTR_ANIMALREP_MASS_FERT_NAME  "MassFert"
-#define ATTR_ANIMALREP_MASS_BABY_NAME  "MassBaby"
-#define ATTR_ANIMALREP_BIRTH_PROB_NAME "BirthProb"
+const static std::string ATTR_ANIMALREP_NAME              = "AnimalReproducer";
+const static std::string ATTR_ANIMALREP_MASS_FERT_NAME    = "MassFert";
+const static std::string ATTR_ANIMALREP_MASS_BABY_NAME    = "MassBaby";
+const static std::string ATTR_ANIMALREP_BIRTH_PROB_NAME   = "BirthProb";
 
 template<typename T>
 class AnimalReproducer : public Action<T> {

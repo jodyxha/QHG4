@@ -10,8 +10,8 @@
 #include "LayerArrBuf.h"
 #include "WELL512.h"
 
-#define ATTR_SELPAIR_NAME      "SelPair"
-#define ATTR_SELPAIR_PROB_NAME "SelPairProb"
+const static std::string ATTR_SELPAIR_NAME        = "SelPair";
+const static std::string ATTR_SELPAIR_PROB_NAME   = "SelPairProb";
 
 #define MAX_SPL_NAME  256
 

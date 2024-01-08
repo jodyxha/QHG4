@@ -6,10 +6,10 @@
 #include "LinearBirthRel.h"
 #include "LinearDeathRel.h"
 
-#define ATTR_BIRTHDEATHREL_NAME        "BirthDeathRel"
-#define ATTR_BIRTHDEATHREL_B0_NAME     "BirthDeathRel_b0"
-#define ATTR_BIRTHDEATHREL_D0_NAME     "BirthDeathRel_d0"
-#define ATTR_BIRTHDEATHREL_THETA_NAME  "BirthDeathRel_theta"
+const static std::string ATTR_BIRTHDEATHREL_NAME          = "BirthDeathRel";
+const static std::string ATTR_BIRTHDEATHREL_B0_NAME       = "BirthDeathRel_b0";
+const static std::string ATTR_BIRTHDEATHREL_D0_NAME       = "BirthDeathRel_d0";
+const static std::string ATTR_BIRTHDEATHREL_THETA_NAME    = "BirthDeathRel_theta";
 
 template<typename T>
 class BirthDeathRel : public Action<T> { 

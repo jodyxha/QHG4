@@ -4,10 +4,10 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_MASSMANAGER_NAME       "MassManager"
-#define ATTR_MASSMANAGER_MIN_NAME   "MM_minmass"
-#define ATTR_MASSMANAGER_MAX_NAME   "MM_maxmass"
-#define ATTR_MASSMANAGER_DELTA_NAME "MM_deltamass"
+const static std::string ATTR_MASSMANAGER_NAME         = "MassManager";
+const static std::string ATTR_MASSMANAGER_MIN_NAME     = "MM_minmass";
+const static std::string ATTR_MASSMANAGER_MAX_NAME     = "MM_maxmass";
+const static std::string ATTR_MASSMANAGER_DELTA_NAME   = "MM_deltamass";
 
 class MassInterface;
 

@@ -8,9 +8,9 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_RANDDISTRPAIR_NAME  "RandDistrPair"
-#define ATTR_RANDDISTRPAIR_DCRIT "RandDistrPair_dcrit"
-#define ATTR_RANDDISTRPAIR_VCRIT "RandDistrPair_vcrit"
+const static std::string ATTR_RANDDISTRPAIR_NAME    = "RandDistrPair";
+const static std::string ATTR_RANDDISTRPAIR_DCRIT   = "RandDistrPair_dcrit";
+const static std::string ATTR_RANDDISTRPAIR_VCRIT   = "RandDistrPair_vcrit";
 
 
 #define INIT_PERM_SIZE 100

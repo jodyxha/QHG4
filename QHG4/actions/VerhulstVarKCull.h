@@ -6,11 +6,11 @@
 #include "LinearBirth.h"
 #include "LinearDeathCull.h"
 
-#define ATTR_VERHULSTVARKCULL_NAME          "VerhulstVarKCull"
-#define ATTR_VERHULSTVARKCULL_B0_NAME       "VerhulstVarKCull_b0"
-#define ATTR_VERHULSTVARKCULL_D0_NAME       "VerhulstVarKCull_d0"
-#define ATTR_VERHULSTVARKCULL_TURNOVER_NAME "VerhulstVarKCull_theta"
-#define ATTR_VERHULSTVARKCULL_EPS_NAME      "VerhulstVarKCull_eps"
+const static std::string ATTR_VERHULSTVARKCULL_NAME            = "VerhulstVarKCull";
+const static std::string ATTR_VERHULSTVARKCULL_B0_NAME         = "VerhulstVarKCull_b0";
+const static std::string ATTR_VERHULSTVARKCULL_D0_NAME         = "VerhulstVarKCull_d0";
+const static std::string ATTR_VERHULSTVARKCULL_TURNOVER_NAME   = "VerhulstVarKCull_theta";
+const static std::string ATTR_VERHULSTVARKCULL_EPS_NAME        = "VerhulstVarKCull_eps";
 
 template<typename T>
 class VerhulstVarKCull : public Action<T> { 

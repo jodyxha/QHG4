@@ -5,7 +5,7 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_INDEXCOLLECTOR_NAME     "IndexCollector"
+const static std::string ATTR_INDEXCOLLECTOR_NAME       = "IndexCollector";
 
 
 template<typename T>

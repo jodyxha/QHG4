@@ -5,8 +5,8 @@
 #include "AgentEnv.h"
 #include "ParamProvider2.h"
 
-#define ATTR_GROUPMEMBERMOVE_NAME "GroupMemberMove"
-#define ATTR_GROUPMEMBERMOVE_PROB_NAME "GroupMemberMove_prob"
+const static std::string ATTR_GROUPMEMBERMOVE_NAME   = "GroupMemberMove";
+const static std::string ATTR_GROUPMEMBERMOVE_PROB_NAME   = "GroupMemberMove_prob";
 
 template<typename T>
 class GroupMemberMove : public Action<T> {

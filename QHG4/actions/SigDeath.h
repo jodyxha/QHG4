@@ -6,10 +6,10 @@
 
 class WELL512;
 
-#define ATTR_SIGDEATH_NAME "SigDeath"
-#define ATTR_SIGDEATH_MAXAGE_NAME "SigDeath_max_age"
-#define ATTR_SIGDEATH_RANGE_NAME  "SigDeath_range"
-#define ATTR_SIGDEATH_SLOPE_NAME  "SigDeath_slope"
+const static std::string ATTR_SIGDEATH_NAME   = "SigDeath";
+const static std::string ATTR_SIGDEATH_MAXAGE_NAME   = "SigDeath_max_age";
+const static std::string ATTR_SIGDEATH_RANGE_NAME    = "SigDeath_range";
+const static std::string ATTR_SIGDEATH_SLOPE_NAME    = "SigDeath_slope";
 
 const double EPS = 0.001;
 

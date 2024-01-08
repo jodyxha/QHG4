@@ -11,11 +11,11 @@
 #include "LayerBuf.h"
 #include "LBController.h"
 
-#define ATTR_ABS_NAME            "AgentBinSplitter"
-#define ATTR_ABS_BIN_MIN_NAME    "BinMin"
-#define ATTR_ABS_BIN_MAX_NAME    "BinMax"
-#define ATTR_ABS_NUM_BINS_NAME   "NumBins"
-#define ATTR_ABS_VAR_FIELD_NAME  "VarField"
+const static std::string ATTR_ABS_NAME              = "AgentBinSplitter";
+const static std::string ATTR_ABS_BIN_MIN_NAME      = "BinMin";
+const static std::string ATTR_ABS_BIN_MAX_NAME      = "BinMax";
+const static std::string ATTR_ABS_NUM_BINS_NAME     = "NumBins";
+const static std::string ATTR_ABS_VAR_FIELD_NAME    = "VarField";
 
 template<typename T>
 class AgentBinSplitter : public Action<T> {

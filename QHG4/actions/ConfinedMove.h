@@ -4,10 +4,10 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_CONFINEDMOVE_NAME "ConfinedMove"
-#define ATTR_CONFINEDMOVE_X_NAME "ConfinedMove_x"
-#define ATTR_CONFINEDMOVE_Y_NAME "ConfinedMove_y"
-#define ATTR_CONFINEDMOVE_R_NAME "ConfinedMove_r"
+const static std::string ATTR_CONFINEDMOVE_NAME   = "ConfinedMove";
+const static std::string ATTR_CONFINEDMOVE_X_NAME   = "ConfinedMove_x";
+const static std::string ATTR_CONFINEDMOVE_Y_NAME   = "ConfinedMove_y";
+const static std::string ATTR_CONFINEDMOVE_R_NAME   = "ConfinedMove_r";
 
 
 template<typename T>

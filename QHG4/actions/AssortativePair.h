@@ -8,9 +8,9 @@
 #include "ParamProvider2.h"
 #include "Genetics.h"
 
-#define ATTR_ASSPAIR_NAME     "AssortativePair"
-#define ATTR_ASSPAIR_CUTOFF   "AssortativePair_cutoff"
-#define ATTR_ASSPAIR_PERMUTE  "AssortativePair_permute"
+const static std::string ATTR_ASSPAIR_NAME       = "AssortativePair";
+const static std::string ATTR_ASSPAIR_CUTOFF     = "AssortativePair_cutoff";
+const static std::string ATTR_ASSPAIR_PERMUTE    = "AssortativePair_permute";
 
 class WELL512;
 

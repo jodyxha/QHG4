@@ -16,15 +16,15 @@
 class LBController;
 class BinomialDist;
 
-#define ATTR_GENETICS_NAME              "Genetics"
-#define ATTR_GENETICS_GENOME_SIZE       "Genetics_genome_size"
-#define ATTR_GENETICS_NUM_CROSSOVER     "Genetics_num_crossover"
-#define ATTR_GENETICS_MUTATION_RATE     "Genetics_mutation_rate"
-#define ATTR_GENETICS_INITIAL_MUTS      "Genetics_initial_muts"
-#define ATTR_GENETICS_CREATE_NEW_GENOME "Genetics_create_new_genome"
-#define ATTR_GENETICS_BITS_PER_NUC      "Genetics_bits_per_nuc"
+const static std::string ATTR_GENETICS_NAME                = "Genetics";
+const static std::string ATTR_GENETICS_GENOME_SIZE         = "Genetics_genome_size";
+const static std::string ATTR_GENETICS_NUM_CROSSOVER       = "Genetics_num_crossover";
+const static std::string ATTR_GENETICS_MUTATION_RATE       = "Genetics_mutation_rate";
+const static std::string ATTR_GENETICS_INITIAL_MUTS        = "Genetics_initial_muts";
+const static std::string ATTR_GENETICS_CREATE_NEW_GENOME   = "Genetics_create_new_genome";
+const static std::string ATTR_GENETICS_BITS_PER_NUC        = "Genetics_bits_per_nuc";
 
-#define GENOME_DATASET_NAME    "Genome"
+//const static std::string GENOME_DATASET_NAME      = "Genome";
         
 
 // it is not very nice to derive Genetics from Action (it isn't really one),

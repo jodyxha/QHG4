@@ -19,12 +19,14 @@
 #include "SCellGrid.h"
 #include "Geography.h"
 #include "Navigation.h"
+#include "Navigation2.h"
 
 #include "GridGroupReader.h"
 #include "GeoGroupReader.h"
 #include "GridWriter.h"
 #include "GeoWriter.h"
 #include "NavWriter.h"
+#include "NavWriter2.h"
 
 #include "QDFUtils.h"
 #include "ComponentBuilder.h"
@@ -282,13 +284,13 @@ int readBridges(const char *pBridgeFile, bridgelist &vBridges) {
                     printf("expected 2 numbersn");
                 }
             } else {
-                printf("this shouldn´t happen\n");
+                printf("this shouldn't happen\n");
             }
         }
                 
         delete pLR;
     } else { 
-        printf("Couldn´t open [%s]\n", pBridgeFile);
+        printf("Couldn't open [%s]\n", pBridgeFile);
     }
     printf("read %zd bridges\n", vBridges.size());
     return iResult;
@@ -385,7 +387,19 @@ int writeAllToQDF(SCellGrid *pCG, const char *sOutputQDF, const distancemap &mFi
         if (iResult == 0) {
             iResult = pNavW->write(hFile);
             if (iResult == 0) {
-                printf("Written ok\n");
+                Navigation2 *pNav2 = new Navigation2(pCG);
+                pNav2->setData(mFinalDistances, dSampleDist);
+                pNav2->setBridges(vBridges);
+                NavWriter2  *pNav2W   = new NavWriter2(pNav2);
+                iResult = pNav2W->write(hFile);
+                if (iResult == 0) {
+
+                    printf("Written ok\n");
+                } else {
+                    printf("Couldn't write navigation2\n");
+                }
+                delete pNav2W;
+                delete pNav2;
             } else {
                 printf("Couldn't write navigation\n");
             }
@@ -417,13 +431,23 @@ int writeAllToQDFIn(SCellGrid *pCG, const char *sOutputQDF, const distancemap &m
     pNav->setBridges(vBridges);
     printf("bridges set"); fflush(stdout);
 
+    Navigation2 *pNav2 = new Navigation2(pCG);
+    pNav2->setData(mFinalDistances, dSampleDist);
+    pNav2->setBridges(vBridges);
+
     NavWriter  *pNavW   = new NavWriter(pNav);
-    printf("writer created"); fflush(stdout);
+    printf("navwriter created"); fflush(stdout);
+
+    NavWriter2  *pNav2W   = new NavWriter2(pNav2);
+    printf("navwriter2 created"); fflush(stdout);
 
     hid_t hFile = qdf_openFile(sOutputQDF, true);
     iResult = pNavW->write(hFile);
-    printf("stuff written"); fflush(stdout);
-
+    printf("nav stuff written"); fflush(stdout);
+    iResult = pNav2W->write(hFile);
+    if (iResult == 0) {
+        printf("nav2 stuff written"); fflush(stdout);
+    }
     if (iResult == 0) {
         qdf_closeFile(hFile);  
     } else {

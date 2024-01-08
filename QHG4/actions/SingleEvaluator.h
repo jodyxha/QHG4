@@ -9,7 +9,7 @@
 #include "Evaluator.h"
 #include "Geography.h"
 
-#define ATTR_SINGLEEVAL_NAME "SingleEvaluator"
+const static std::string ATTR_SINGLEEVAL_NAME   = "SingleEvaluator";
 
 class PolyLine;
 

@@ -28,11 +28,16 @@ push everything
 git push origin
 ======================================================================
 
+credentials
+======================================================================
 username:
  jodyxha
 
 current access token:
-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
+token old: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
+new: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
+======================================================================
+
 
 adding docs
 ======================================================================
@@ -49,18 +54,21 @@ doc root:
 
 ======================================================================
 
+
 good manual
 ======================================================================
   https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository
 ======================================================================
 
+
 adding code 
 ======================================================================
 code handling(repo ~/progs/git_qhg4_code):      
-   (create a te,porary directorym e.g. "temp_git"=
+   (create a te,porary directorym e.g. "temp_git")
    cd temp_git
    svn co svn+ssh://jody@aim-bigfoot.uzh.ch/home/qhg4_svn/QHG4/trunk QHG4
-
+   or
+   svn co svn+ssh://jody@frog/data/qhg4_svn/QHG4/trunk QHG4
    (remove unneeded files and directories)
    
    cd git_QHG4_code
@@ -68,6 +76,23 @@ code handling(repo ~/progs/git_qhg4_code):
    git add QHG4
    git commit -a -m "some message"
    git push origin
+======================================================================
+
+
+dumping and loading svn repositories
+======================================================================
+dumping:
+  svnadmin dump /path/to/repository > svnexport.dump
+e.g. on frog:
+  svnadmin dump /data/qhg4_svn > qhg4_svn_11212023.dump
+
+loading:
+  (for a new repository, create it with svnadmin
+  svnadmin create /data/new_qhg_svn
+  
+  svnadmin load /path/to/repository < svnexport.dump
+e.g. on frog
+  svnadmin load /data/new_qhg_svn < qhg4_svn_11212023.dump
 ======================================================================
 
 

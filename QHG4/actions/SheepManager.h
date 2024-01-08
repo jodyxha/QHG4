@@ -5,7 +5,7 @@
 #include "ParamProvider2.h"
 #include "ArrayShare.h"
 
-#define ATTR_SHEEPMAN_NAME "SheepManager"
+const static std::string ATTR_SHEEPMAN_NAME   = "SheepManager";
 
 typedef std::pair<int, double>  cellnm;  // count and mass in cell
 typedef std::vector<cellnm>     cellnmvec;

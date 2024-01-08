@@ -21,14 +21,14 @@ typedef std::vector<bridgedef>        bridgelist;
 
 
 
-#define ATTR_NAVIGATE_NAME  "Navigate"
+const static std::string ATTR_NAVIGATE_NAME    = "Navigate";
 //required
-#define ATTR_NAVIGATE_DECAY_NAME        "Navigate_decay"
-#define ATTR_NAVIGATE_DIST0_NAME        "Navigate_dist0"
-#define ATTR_NAVIGATE_PROB0_NAME        "Navigate_prob0"
-#define ATTR_NAVIGATE_MINDENS_NAME      "Navigate_min_dens"
+const static std::string ATTR_NAVIGATE_DECAY_NAME          = "Navigate_decay";
+const static std::string ATTR_NAVIGATE_DIST0_NAME          = "Navigate_dist0";
+const static std::string ATTR_NAVIGATE_PROB0_NAME          = "Navigate_prob0";
+const static std::string ATTR_NAVIGATE_MINDENS_NAME        = "Navigate_min_dens";
 // optional
-#define ATTR_NAVIGATE_BRIDGE_PROB_NAME  "Navigate_bridge_prob"
+const static std::string ATTR_NAVIGATE_BRIDGE_PROB_NAME    = "Navigate_bridge_prob";
 
 
 template<typename T>
@@ -70,7 +70,7 @@ class Navigate : public Action<T>, Observer {
 
     Geography  *m_pGeography;
     Navigation *m_pNavigation;
-
+public:
     static const char *asNames[];
 
 };

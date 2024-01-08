@@ -6,7 +6,7 @@ class SCellGrid;
 class Environment {
 public:
 
-    Environment(SCellGrid *pCG) : m_pCG(pCG) {};
+    Environment(SCellGrid *pCG);
 
     void setCellGrid(SCellGrid *pCG) { m_pCG = pCG;};
 

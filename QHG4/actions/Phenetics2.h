@@ -17,17 +17,17 @@
 class LBController;
 class BinomialDist;
 
-#define ATTR_PHENETICS_NAME               "Phenetics"
-#define ATTR_PHENETICS_PHENOME_SIZE       "Phenetics_phenome_size"
-#define ATTR_PHENETICS_MUTATION_RATE      "Phenetics_mutation_rate"
-#define ATTR_PHENETICS_MUTATION_SIGMA     "Phenetics_mutation_sigma"
-#define ATTR_PHENETICS_CREATE_NEW_PHENOME "Phenetics_create_new_phenome"
-#define ATTR_PHENETICS_INITIAL_SIGMA      "Phenetics_initial_sigma"
-#define ATTR_PHENETICS_MIX_AVG            "Phenetics_mix_avg"
-#define ATTR_PHENETICS_MUTATION_TYPE      "Phenetics_mutation_type"
-#define ATTR_PHENETICS_PLOIDY             "Phenetics_ploidy"
+const static std::string ATTR_PHENETICS_NAME                 = "Phenetics";
+const static std::string ATTR_PHENETICS_PHENOME_SIZE         = "Phenetics_phenome_size";
+const static std::string ATTR_PHENETICS_MUTATION_RATE        = "Phenetics_mutation_rate";
+const static std::string ATTR_PHENETICS_MUTATION_SIGMA       = "Phenetics_mutation_sigma";
+const static std::string ATTR_PHENETICS_CREATE_NEW_PHENOME   = "Phenetics_create_new_phenome";
+const static std::string ATTR_PHENETICS_INITIAL_SIGMA        = "Phenetics_initial_sigma";
+const static std::string ATTR_PHENETICS_MIX_AVG              = "Phenetics_mix_avg";
+const static std::string ATTR_PHENETICS_MUTATION_TYPE        = "Phenetics_mutation_type";
+const static std::string ATTR_PHENETICS_PLOIDY               = "Phenetics_ploidy";
 
-#define PHENOME_DATASET_NAME    "Phenome"
+const static std::string PHENOME_DATASET_NAME      = "Phenome";
 
 
 #define MUT_TYPE_ALL 0

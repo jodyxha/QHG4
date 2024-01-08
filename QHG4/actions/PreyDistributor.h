@@ -30,9 +30,9 @@ typedef  std::pair<std::string, float> preyratio;
 
 typedef std::map<std::string, bool> flagmap;
 
-#define ATTR_PD_TEMPLATE_PREY    "%s_prey"
-#define ATTR_PD_TEMPLATE_INDEXES "%s_indexes"
-#define ATTR_PD_TEMPLATE_ASSMAP  "%s_ass"
+const static std::string ATTR_PD_TEMPLATE_PREY      = "%s_prey";
+const static std::string ATTR_PD_TEMPLATE_INDEXES   = "%s_indexes";
+const static std::string ATTR_PD_TEMPLATE_ASSMAP    = "%s_ass";
 
 class PreyDistributor {
 public:

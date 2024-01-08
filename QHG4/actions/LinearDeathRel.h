@@ -4,10 +4,10 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_LINDEATHREL_NAME "LinearDeathRel"
-#define ATTR_LINDEATHREL_D0_NAME "LinearDeathRel_d0"
-#define ATTR_LINDEATHREL_TURNOVER_NAME "LinearDeathRel_theta"
-#define ATTR_LINDEATHREL_CAPACITY_NAME "LinearDeathRel_K"
+const static std::string ATTR_LINDEATHREL_NAME   = "LinearDeathRel";
+const static std::string ATTR_LINDEATHREL_D0_NAME   = "LinearDeathRel_d0";
+const static std::string ATTR_LINDEATHREL_TURNOVER_NAME   = "LinearDeathRel_theta";
+const static std::string ATTR_LINDEATHREL_CAPACITY_NAME   = "LinearDeathRel_K";
 
 class WELL512;
 

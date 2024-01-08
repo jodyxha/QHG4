@@ -6,8 +6,8 @@
 #include "PolyLine.h"
 #include "Geography.h" // for denbug message
 
-#define ATTR_WEIGHTEDMOVERAND_NAME      "WeightedMoveRand"
-#define ATTR_WEIGHTEDMOVERAND_PROB_NAME "WeightedMoveRand_prob"
+const static std::string ATTR_WEIGHTEDMOVERAND_NAME        = "WeightedMoveRand";
+const static std::string ATTR_WEIGHTEDMOVERAND_PROB_NAME   = "WeightedMoveRand_prob";
 
 template<typename T>
 class WeightedMoveRand : public Action<T> {

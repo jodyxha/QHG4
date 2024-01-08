@@ -23,7 +23,9 @@ class OccTracker;
 #include "Climate.h"
 #include "Vegetation.h"
 #include "Navigation.h"
+#include "Navigation2.h"
 //#include "OccTracker.h"
+#include "GraphDesc.h"
 
 #include "surfconsts.h"
 
@@ -33,12 +35,13 @@ const int GRID_TYPE_FLAT4 =   0;
 const int GRID_TYPE_FLAT6 =   1;
 const int GRID_TYPE_ICO   =   2;
 const int GRID_TYPE_IEQ   =   3;
+const int GRID_TYPE_GRAPH =   4;
 
 
 
 class SCellGrid {
 public:
-//    static SCellGrid *createInstance(IcoGridNodes *pIGN);
+    static SCellGrid *createInstance(GraphDesc *pGD);
 
     SCellGrid(int iID, uint iNumCells, const stringmap &smSurfaceData);    
     ~SCellGrid();
@@ -65,6 +68,8 @@ public:
     // navigation
     Navigation *m_pNavigation;
     // occupation tracking
+    Navigation2 *m_pNavigation2;
+    // occupation tracking
     OccTracker *m_pOccTracker;
 
 
@@ -74,12 +79,14 @@ public:
     void setClimate(Climate* pClim);
     void setVegetation(Vegetation* pVeg);
     void setNavigation(Navigation* pNav);
+    void setNavigation2(Navigation2* pNav);
     void setOccTracker(OccTracker* pOcc);
  
     void delGeography();
     void delClimate();
     void delVegetation();
     void delNavigation();
+    void delNavigation2();
     void delOckTracker();
  
     bool isCartesian();   

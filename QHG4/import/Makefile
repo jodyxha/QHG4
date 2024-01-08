@@ -26,7 +26,7 @@ UTIL_DIR=~/utils
 
 COPT=-c -g $< -I$(UTILS) -o $@ $(CADD) $(CFLAGS) $(C_STD) $(CRAY_DEF) $(COMP)
 
-APPS=Coastal VectorImport SeaWays
+APPS=Coastal VectorImport SeaWays NavToNav2
 
 app: $(APPS)
 
@@ -131,6 +131,21 @@ SeaWays: SeaWays.o ComponentBuilder.o CoastalDistances.o SubComponentManager.o S
 	-L$(CORE)   -lCore \
 	-L$(UTILS)  -lUtils \
 	-lhdf5 -lz
+
+NavToNav2Converter.o: NavToNav2Converter.cpp NavToNav2Converter.h
+	$(CC) $(COPT) $(DEFS) -I$(CORE) -I$(ICOSA) -I$(IO)
+
+NavToNav2.o: NavToNav2.cpp 
+	$(CC) $(COPT) $(DEFS) -I$(CORE) -I$(ICOSA) -I$(IO)
+
+NavToNav2: NavToNav2.o NavToNav2Converter.o
+	$(CC) $(COMP) -o NavToNav2 \
+	NavToNav2.o NavToNav2Converter.o \
+        -L$(ICOSA)  -lIcosa \
+        -L$(IO)     -lIO \
+        -L$(CORE)   -lCore \
+        -L$(UTILS)  -lUtils \
+        -lhdf5
 
 
 

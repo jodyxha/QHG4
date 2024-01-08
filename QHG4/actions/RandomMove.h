@@ -4,8 +4,8 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_RANDOMMOVE_NAME "RandomMove"
-#define ATTR_RANDOMMOVE_PROB_NAME "RandomMove_prob"
+const static std::string ATTR_RANDOMMOVE_NAME   = "RandomMove";
+const static std::string ATTR_RANDOMMOVE_PROB_NAME   = "RandomMove_prob";
 
 class WELL512;
 

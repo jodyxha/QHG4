@@ -17,6 +17,7 @@ const std::string VEGGROUP_NAME   = "Vegetation";
 const std::string GRIDGROUP_NAME  = "Grid";
 const std::string MSTATGROUP_NAME = "MoveStatistics";
 const std::string NAVGROUP_NAME   = "Navigation";
+const std::string NAV2GROUP_NAME   = "Navigation2";
 const std::string OCCGROUP_NAME   = "Occupation";
 const std::string SUBPOPGROUP_NAME = "SubPopulations";
 
@@ -94,10 +95,20 @@ const std::string NAV_ATTR_NUM_DESTS     = "NumDests";
 const std::string NAV_ATTR_NUM_DISTS     = "NumDists";
 const std::string NAV_ATTR_SAMPLE_DIST   = "SampleDist";
 const std::string NAV_ATTR_NUM_BRIDGES   = "NumBridges";
+const std::string NAV_DS_DISTANCES       = "Distances";
 const std::string NAV_DS_MULTIPLICITIES  = "Multiplicities";
 const std::string NAV_DS_DEST_IDS        = "DestIDs";
-const std::string NAV_DS_DISTANCES       = "Distances";
 const std::string NAV_DS_BRIDGES         = "Bridges";
+
+
+const std::string NAV2_ATTR_NUM_CELLS     = "NumCells";
+const std::string NAV2_ATTR_NUM_WATERWAYS = "NumWaterWays";
+const std::string NAV2_ATTR_SAMPLE_DIST   = "SampleDist";
+const std::string NAV2_ATTR_NUM_BRIDGES   = "NumBridges";
+const std::string NAV2_DS_START_NODES     = "StartNodes";
+const std::string NAV2_DS_DEST_NODES      = "DestNodes";
+const std::string NAV2_DS_DISTANCES       = "Distances";
+const std::string NAV2_DS_BRIDGES         = "Bridges";
 
 const std::string OCC_ATTR_POP_NAMES     = "PopNames";
 const std::string OCC_DS_OCCTRACK        = "OccTrack";
@@ -145,7 +156,7 @@ const int CMP_ERR_NAME      = -6;
 
 hid_t qdf_createFile(const std::string sFileName, int fStep, float fStartTime, const std::string sInfoString);
 hid_t qdf_openFile(const std::string sFileName, bool bRW=false);
-hid_t qdf_opencreateFile(const std::string sFileName, int fStep, float fStartTime, const std::string sInfoString);
+hid_t qdf_opencreateFile(const std::string sFileName, int fStep, float fStartTime, const std::string sInfoString, bool bRW=false);
 void  qdf_closeFile(hid_t hFile);
 
 hid_t qdf_createGroup(hid_t hGroup, const std::string sGroupName);

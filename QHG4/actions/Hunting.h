@@ -4,10 +4,10 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_HUNTING_NAME       "Hunting"
-#define ATTR_HUNTING_PREYSPECIES_NAME "Hunting_preyspecies"
-#define ATTR_HUNTING_EFFICIENCY_NAME  "Hunting_efficiency"
-#define ATTR_HUNTING_USABILITY_NAME   "Hunting_usability"
+const static std::string ATTR_HUNTING_NAME         = "Hunting";
+const static std::string ATTR_HUNTING_PREYSPECIES_NAME   = "Hunting_preyspecies";
+const static std::string ATTR_HUNTING_EFFICIENCY_NAME    = "Hunting_efficiency";
+const static std::string ATTR_HUNTING_USABILITY_NAME     = "Hunting_usability";
 
 #define NAME_LEN 1024
 

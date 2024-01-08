@@ -6,7 +6,7 @@
 #include "strutils.h"
 
 //#include "IcoGridNodes.h"
-#include "IcoNode.h"
+//#include "IcoNode.h"
 
 #include "SCell.h"
 #include "SCellGrid.h"
@@ -17,22 +17,23 @@
 #include "OccTracker.h"
 #include "MessLoggerT.h"
 
-/*
+
 //-----------------------------------------------------------------------------
 // constructor
 //
-SCellGrid *SCellGrid::createInstance(IcoGridNodes *pIGN) {
+SCellGrid *SCellGrid::createInstance(GraphDesc *pGD) {
     SCellGrid *pCG = NULL;
 
- 
-    pCG = new SCellGrid(0, (uint) pIGN->m_mNodes.size(), pIGN->getData());
+    intvecmap mvLinks = pGD->getLinks();
+    
+    pCG = new SCellGrid(0, (uint) mvLinks.size(), pGD->getData());
     int iC = 0;
     pCG->m_aCells = new SCell[pCG->m_iNumCells];
-    std::map<gridtype, IcoNode*>::const_iterator it;
-    for (it = pIGN->m_mNodes.begin(); it != pIGN->m_mNodes.end(); ++it) {
+    intvecmap::const_iterator it;
+    for (it = mvLinks.begin(); it != mvLinks.end(); ++it) {
         pCG->m_mIDIndexes[it->first]=iC;
         pCG->m_aCells[iC].m_iGlobalID    = it->first;
-        pCG->m_aCells[iC].m_iNumNeighbors = (uchar)it->second->m_iNumLinks;
+        pCG->m_aCells[iC].m_iNumNeighbors = (uchar)it->second.size();
         iC++;
     }
 
@@ -40,13 +41,12 @@ SCellGrid *SCellGrid::createInstance(IcoGridNodes *pIGN) {
 
     // linking and distances
     for (uint i =0; i < pCG->m_iNumCells; ++i) {
-        // get link info from IcCell
-        IcoNode *pIN = pIGN->m_mNodes[pCG->m_aCells[i].m_iGlobalID];
-
+        // get links info from IcCell
+        uintvec vLinks = mvLinks[pCG->m_aCells[i].m_iGlobalID];
         // in partial grids not all neighbors are present
         int iActualNeighbors = 0;
-        for (int j = 0; j < pIN->m_iNumLinks; ++j) {
-            std::map<gridtype, int>::const_iterator it2 = pCG->m_mIDIndexes.find(pIN->m_aiLinks[j]);
+        for (uint j = 0; j < vLinks.size(); ++j) {
+            std::map<gridtype, int>::const_iterator it2 = pCG->m_mIDIndexes.find(vLinks[j]);
             if (it2 != pCG->m_mIDIndexes.end()) {
                 // neighbor here: increase actual neighbor count
                 pCG->m_aCells[i].m_aNeighbors[iActualNeighbors++] = it2->second;
@@ -63,7 +63,7 @@ SCellGrid *SCellGrid::createInstance(IcoGridNodes *pIGN) {
     
     return pCG;
 }
-*/
+
 
 //-----------------------------------------------------------------------------
 // constructor
@@ -74,11 +74,13 @@ SCellGrid::SCellGrid(int iID, uint iNumCells, const stringmap &smSurfaceData)
       m_aCells(NULL),
       m_iMaxNeighbors(MAX_NEIGH),
       m_smSurfaceData(smSurfaceData),
+      m_iType(GRID_TYPE_NONE), 
       m_iConnectivity(6),
       m_pGeography(NULL),
       m_pClimate(NULL),
       m_pVegetation(NULL),
       m_pNavigation(NULL),
+      m_pNavigation2(NULL),
       m_pOccTracker(NULL) {
 
     m_mIDIndexes[-1]=-1;
@@ -101,6 +103,15 @@ SCellGrid::SCellGrid(int iID, uint iNumCells, const stringmap &smSurfaceData)
         } else if (it->second == SURF_ICOSAHEDRON) {
             m_iConnectivity = 6;
             m_iType = GRID_TYPE_ICO;
+        } else if (it->second == SURF_GRAPH) {
+            it = m_smSurfaceData.find(SURF_GRAPH_LINKS);
+            if (it  != m_smSurfaceData.end()) {
+
+                m_iConnectivity = atoi(it->second.c_str());
+                if (m_iConnectivity > 0) {
+                    m_iType = GRID_TYPE_GRAPH;
+                }
+            }
         }
     }
 
@@ -152,6 +163,15 @@ void SCellGrid::delVegetation() {
 void SCellGrid::delNavigation() {
     if (m_pNavigation != NULL) {
         delete m_pNavigation;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// delNavigation2
+//
+void SCellGrid::delNavigation2() {
+    if (m_pNavigation2 != NULL) {
+        delete m_pNavigation2;
     }
 }
 
@@ -210,6 +230,14 @@ void SCellGrid::setVegetation(Vegetation* pVeg) {
 void SCellGrid::setNavigation(Navigation* pNav) {
     m_pNavigation = pNav; 
     m_mEnvironments[ENV_NAV] = pNav;
+};
+
+//-----------------------------------------------------------------------------
+// setNavigation2
+//
+void SCellGrid::setNavigation2(Navigation2* pNav2) {
+    m_pNavigation2 = pNav2; 
+    m_mEnvironments[ENV_NAV2] = pNav2;
 };
 
 

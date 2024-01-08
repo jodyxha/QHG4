@@ -6,12 +6,12 @@
 #include "LinearBirthRel.h"
 #include "LinearDeathRel.h"
 
-#define ATTR_BIRTHDEATHRELCOMP_NAME        "BirthDeathRelComp"
-#define ATTR_BIRTHDEATHRELCOMP_B0_NAME     "BirthDeathRelComp_b0"
-#define ATTR_BIRTHDEATHRELCOMP_D0_NAME     "BirthDeathRelComp_d0"
-#define ATTR_BIRTHDEATHRELCOMP_THETA_NAME  "BirthDeathRelComp_theta"
-#define ATTR_BIRTHDEATHRELCOMP_THIS_NAME   "BirthDeathRelComp_this"
-#define ATTR_BIRTHDEATHRELCOMP_OTHER_NAME  "BirthDeathRelComp_other"
+const static std::string ATTR_BIRTHDEATHRELCOMP_NAME          = "BirthDeathRelComp";
+const static std::string ATTR_BIRTHDEATHRELCOMP_B0_NAME       = "BirthDeathRelComp_b0";
+const static std::string ATTR_BIRTHDEATHRELCOMP_D0_NAME       = "BirthDeathRelComp_d0";
+const static std::string ATTR_BIRTHDEATHRELCOMP_THETA_NAME    = "BirthDeathRelComp_theta";
+const static std::string ATTR_BIRTHDEATHRELCOMP_THIS_NAME     = "BirthDeathRelComp_this";
+const static std::string ATTR_BIRTHDEATHRELCOMP_OTHER_NAME    = "BirthDeathRelComp_other";
 
 template<typename T>
 class BirthDeathRelComp : public Action<T> { 

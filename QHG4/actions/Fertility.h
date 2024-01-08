@@ -4,10 +4,10 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_FERTILITY_NAME            "Fertility"
-#define ATTR_FERTILITY_MIN_AGE_NAME    "Fertility_min_age"
-#define ATTR_FERTILITY_MAX_AGE_NAME    "Fertility_max_age"
-#define ATTR_FERTILITY_INTERBIRTH_NAME "Fertility_interbirth"
+const static std::string ATTR_FERTILITY_NAME              = "Fertility";
+const static std::string ATTR_FERTILITY_MIN_AGE_NAME      = "Fertility_min_age";
+const static std::string ATTR_FERTILITY_MAX_AGE_NAME      = "Fertility_max_age";
+const static std::string ATTR_FERTILITY_INTERBIRTH_NAME   = "Fertility_interbirth";
 
 
 template<typename T>

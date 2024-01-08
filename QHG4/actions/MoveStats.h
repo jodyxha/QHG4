@@ -6,8 +6,8 @@
 #include "ParamProvider2.h"
 #include "Geography.h"
 
-#define ATTR_MOVESTATS_NAME          "MoveStats"
-#define ATTR_MOVESTATS_MODE_NAME     "MoveStats_Mode"
+const static std::string ATTR_MOVESTATS_NAME            = "MoveStats";
+const static std::string ATTR_MOVESTATS_MODE_NAME       = "MoveStats_Mode";
 
 
 static const std::string MOVESTAT_DS_HOPS = "Hops";

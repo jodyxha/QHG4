@@ -6,11 +6,11 @@
 #include "LinearBirth.h"
 #include "LinearDeath.h"
 
-#define ATTR_VERHULST_NAME "Verhulst"
-#define ATTR_VERHULST_B0_NAME "Verhulst_b0"
-#define ATTR_VERHULST_D0_NAME "Verhulst_d0"
-#define ATTR_VERHULST_TURNOVER_NAME "Verhulst_theta"
-#define ATTR_VERHULST_CAPACITY_NAME "Verhulst_K"
+const static std::string ATTR_VERHULST_NAME   = "Verhulst";
+const static std::string ATTR_VERHULST_B0_NAME   = "Verhulst_b0";
+const static std::string ATTR_VERHULST_D0_NAME   = "Verhulst_d0";
+const static std::string ATTR_VERHULST_TURNOVER_NAME   = "Verhulst_theta";
+const static std::string ATTR_VERHULST_CAPACITY_NAME   = "Verhulst_K";
 
 template<typename T>
 class Verhulst : public Action<T> { 

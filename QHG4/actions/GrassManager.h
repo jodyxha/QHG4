@@ -5,10 +5,10 @@
 #include "ParamProvider2.h"
 #include "ArrayShare.h"
 
-#define ATTR_GRASSMAN_NAME    "GrassManager"
-#define ATTR_GRASSMAN_MIN_MASS_NAME    "MinMass"
-#define ATTR_GRASSMAN_MAX_MASS_NAME    "MaxMass"
-#define ATTR_GRASSMAN_GROWTH_RATE_NAME "GrowthRate"
+const static std::string ATTR_GRASSMAN_NAME      = "GrassManager";
+const static std::string ATTR_GRASSMAN_MIN_MASS_NAME      = "MinMass";
+const static std::string ATTR_GRASSMAN_MAX_MASS_NAME      = "MaxMass";
+const static std::string ATTR_GRASSMAN_GROWTH_RATE_NAME   = "GrowthRate";
         
 
 template<typename T>

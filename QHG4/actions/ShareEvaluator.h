@@ -8,9 +8,9 @@
 #include "Evaluator.h"
 #include "Geography.h"
 
-#define ATTR_SHAREEVAL_NAME "ShareEvaluator"
-#define ATTR_SHAREEVAL_ARRAYNAME "ShareEvaluator_%s_arrayname"
-#define ATTR_SHAREEVAL_POLYNAME  "ShareEvaluator_%s_polyname"
+const static std::string ATTR_SHAREEVAL_NAME   = "ShareEvaluator";
+const static std::string ATTR_SHAREEVAL_ARRAYNAME   = "ShareEvaluator_%s_arrayname";
+const static std::string ATTR_SHAREEVAL_POLYNAME    = "ShareEvaluator_%s_polyname";
 
 #define SHARE_NAME_LEN 512
 

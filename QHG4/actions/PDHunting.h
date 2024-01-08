@@ -5,8 +5,8 @@
 #include "ParamProvider2.h"
 #include "PreyDistributor.h"
 
-#define ATTR_PDHUNTING_NAME           "PDHunting"
-#define ATTR_PDHUNTING_RELATIONS_NAME "PDHunting_relations"
+const static std::string ATTR_PDHUNTING_NAME             = "PDHunting";
+const static std::string ATTR_PDHUNTING_RELATIONS_NAME   = "PDHunting_relations";
 
 #define NAME_LEN 1024
 

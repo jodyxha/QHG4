@@ -7,8 +7,8 @@
 #include "MoveCondition.h"
 #include "Geography.h"
 
-#define ATTR_CONDWEIGHTEDMOVE_NAME "CondWeightedMove"
-#define ATTR_CONDWEIGHTEDMOVE_PROB_NAME "CondWeightedMove_prob"
+const static std::string ATTR_CONDWEIGHTEDMOVE_NAME   = "CondWeightedMove";
+const static std::string ATTR_CONDWEIGHTEDMOVE_PROB_NAME   = "CondWeightedMove_prob";
 
 
 

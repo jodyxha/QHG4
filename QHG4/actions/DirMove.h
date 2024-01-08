@@ -6,7 +6,7 @@
 #include "PolyLine.h"
 #include "Geography.h"
 
-#define ATTR_DIRMOVE_NAME "DirMove"
+const static std::string ATTR_DIRMOVE_NAME   = "DirMove";
 
 template<typename T>
 class DirMove : public Action<T> {

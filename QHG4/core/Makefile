@@ -37,28 +37,30 @@ lib: libCore.a
 
 core:  libCore.a
 
-libCore.a:  Geography.o Climate.o Vegetation.o \
+libCore.a:  Environment.o Geography.o Climate.o Vegetation.o \
 	      NPPCalc.o NPPCalcMiami.o NPPCalcNCEAS.o \
-              MoveStats_old.o Navigation.o SCellGrid.o OccTracker.o OccHistory.o PopLooper.o  \
+              MoveStats_old.o Navigation.o Navigation2.o SCellGrid.o OccTracker.o OccHistory.o PopLooper.o  \
 	      SPopulation.o Prioritizer.o EnvInterpolator.o AutoInterpolator.o \
-              clsutils.o
+              clsutils.o GraphDesc.o
 	ar $(ARFL) $@ $?
 
 
 clean:
 	rm -f *.o libCore.a *.ti
 
-
-Geography.o: Geography.cpp Geography.h
+Environment.o: Environment.cpp Environment.h
 	$(CC) $(COPT) $(DEFS)  -I$(ICOSA)
 
-Climate.o: Climate.cpp Climate.h Geography.h
+Geography.o: Geography.cpp Geography.h Environment.h
+	$(CC) $(COPT) $(DEFS)  -I$(ICOSA)
+
+Climate.o: Climate.cpp Climate.h Geography.h Environment.h
 	$(CC) $(COPT) $(DEFS) -I$(QMAPS)  -I$(ICOSA) -I$(UTILS_QHG)
 
-Vegetation.o: Vegetation.cpp Vegetation.h Climate.h Geography.h
+Vegetation.o: Vegetation.cpp Vegetation.h Climate.h Geography.h Environment.h
 	$(CC) $(COPT) $(DEFS) -I$(ICOSA) 
 
-NPPCalc.o: NPPCalc.cpp NPPCalc.h Climate.h Geography.h
+NPPCalc.o: NPPCalc.cpp NPPCalc.h Climate.h Geography.h Environment.h
 	$(CC) $(COPT) $(DEFS)  
 
 NPPCalcMiami.o: NPPCalcMiami.cpp NPPCalcMiami.h NPPCalc.h Climate.h Geography.h
@@ -70,7 +72,10 @@ NPPCalcNCEAS.o: NPPCalcNCEAS.cpp NPPCalcNCEAS.h NPPCalc.h Climate.h Geography.h
 MoveStats_old.o: MoveStats_old.cpp MoveStats_old.h 
 	$(CC) $(COPT) $(DEFS) -I$(IO) 
 
-Navigation.o: Navigation.cpp Navigation.h 
+Navigation.o: Navigation.cpp Navigation.h Environment.h
+	$(CC) $(COPT) $(DEFS)  -I$(ICOSA) 
+
+Navigation2.o: Navigation2.cpp Navigation2.h Environment.h
 	$(CC) $(COPT) $(DEFS)  -I$(ICOSA) 
 
 SCellGrid.o: SCellGrid.cpp SCellGrid.h SCell.h Geography.h Climate.h
@@ -102,5 +107,8 @@ EnvInterpolator.o: EnvInterpolator.cpp EnvInterpolator.h SCellGrid.h
 
 AutoInterpolator.o: AutoInterpolator.cpp AutoInterpolator.h SCellGrid.h
 	$(CC) $(COPT) $(DEFS)  -I$(ICOSA)  -I$(IO)  -I$(UTILS_QHG)
+
+GraphDesc.o: GraphDesc.cpp GraphDesc.h 
+	$(CC) $(COPT) $(DEFS)  -I$(ICOSA)  -I$(IO) 
 
 

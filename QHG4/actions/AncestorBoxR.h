@@ -7,8 +7,8 @@
 
 #define ANCESTOR_BLOCK_SIZE     3
 
-#define ANCPOP_ATTR_LAYERSIZE   "LayerSize"
-#define ANCESTOR_DATASET_NAME   "Ancestors"
+const static std::string ANCPOP_ATTR_LAYERSIZE     = "LayerSize";
+const static std::string ANCESTOR_DATASET_NAME     = "Ancestors";
 
 class AncestorBoxR {
 

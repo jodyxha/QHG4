@@ -4,7 +4,7 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_GETOLD_NAME "GetOld"
+const static std::string ATTR_GETOLD_NAME   = "GetOld";
 
 
 template<typename T>

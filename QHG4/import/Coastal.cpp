@@ -176,9 +176,9 @@ int main(int iArgC, char*apArgV[]) {
     if (pPR != NULL) {
         pPR->setVerbose(true);
         bool bOK = pPR->setOptions(3,
-                                   "-i:S!",      &sInputQDF,
+                                   "-i:s!",      &sInputQDF,
                                    "-d:i!",      &iDistance,
-                                   "-o:S!",      &sOutputQDF);
+                                   "-o:s!",      &sOutputQDF);
         if (bOK) {
             iResult = pPR->getParams(iArgC, apArgV);
             if (iResult >= 0) {

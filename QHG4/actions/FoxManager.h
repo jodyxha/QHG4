@@ -5,7 +5,7 @@
 #include "ParamProvider2.h"
 #include "ArrayShare.h"
 
-#define ATTR_FOXMAN_NAME "FoxManager"
+const static std::string ATTR_FOXMAN_NAME   = "FoxManager";
 
 
 template<typename T>

@@ -8,9 +8,9 @@
 #include "ParamProvider2.h"
 #include "Genetics.h"
 
-#define ATTR_ASSPAIRHAM_NAME     "AssortativePairHamming"
-#define ATTR_ASSPAIRHAM_CUTOFF   "AssortativePairHamming_cutoff"
-#define ATTR_ASSPAIRHAM_PERMUTE  "AssortativePairHamming_permute"
+const static std::string ATTR_ASSPAIRHAM_NAME       = "AssortativePairHamming";
+const static std::string ATTR_ASSPAIRHAM_CUTOFF     = "AssortativePairHamming_cutoff";
+const static std::string ATTR_ASSPAIRHAM_PERMUTE    = "AssortativePairHamming_permute";
 
 class WELL512;
 

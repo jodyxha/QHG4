@@ -7,9 +7,9 @@
 #include "Action.h"
 #include "WELL512.h"
 
-#define ATTR_FOODMAN_NAME             "FoodManager"
-#define ATTR_FOODMAN_GROWTH_RATE_NAME "FoodManager_growthrate"
-#define ATTR_FOODMAN_MIN_AMOUNT_NAME  "FoodManager_minamount"
+const static std::string ATTR_FOODMAN_NAME               = "FoodManager";
+const static std::string ATTR_FOODMAN_GROWTH_RATE_NAME   = "FoodManager_growthrate";
+const static std::string ATTR_FOODMAN_MIN_AMOUNT_NAME    = "FoodManager_minamount";
 
 
 

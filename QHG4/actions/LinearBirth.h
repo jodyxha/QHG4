@@ -4,10 +4,10 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_LINBIRTH_NAME "LinearBirth"
-#define ATTR_LINBIRTH_B0_NAME "LinearBirth_b0"
-#define ATTR_LINBIRTH_TURNOVER_NAME "LinearBirth_theta"
-#define ATTR_LINBIRTH_CAPACITY_NAME "LinearBirth_K"
+const static std::string ATTR_LINBIRTH_NAME   = "LinearBirth";
+const static std::string ATTR_LINBIRTH_B0_NAME   = "LinearBirth_b0";
+const static std::string ATTR_LINBIRTH_TURNOVER_NAME   = "LinearBirth_theta";
+const static std::string ATTR_LINBIRTH_CAPACITY_NAME   = "LinearBirth_K";
 
 class WELL512;
 

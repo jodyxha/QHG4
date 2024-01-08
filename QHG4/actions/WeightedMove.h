@@ -6,8 +6,8 @@
 #include "PolyLine.h"
 #include "Geography.h"
 
-#define ATTR_WEIGHTEDMOVE_NAME      "WeightedMove"
-#define ATTR_WEIGHTEDMOVE_PROB_NAME "WeightedMove_prob"
+const static std::string ATTR_WEIGHTEDMOVE_NAME        = "WeightedMove";
+const static std::string ATTR_WEIGHTEDMOVE_PROB_NAME   = "WeightedMove_prob";
 
 template<typename T>
 class WeightedMove : public Action<T> {

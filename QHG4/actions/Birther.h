@@ -4,10 +4,10 @@
 #include "Action.h"
 #include "ParamProvider2.h"
 
-#define ATTR_BIRTHER_NAME       "Birther"
-#define ATTR_BIRTHER_ADULTMASS_NAME   "Birther_adultmass"
-#define ATTR_BIRTHER_BIRTHMASS_NAME   "Birther_birthmass"
-#define ATTR_BIRTHER_UNCERTAINTY_NAME "Birther_uncertainty"
+const static std::string ATTR_BIRTHER_NAME         = "Birther";
+const static std::string ATTR_BIRTHER_ADULTMASS_NAME     = "Birther_adultmass";
+const static std::string ATTR_BIRTHER_BIRTHMASS_NAME     = "Birther_birthmass";
+const static std::string ATTR_BIRTHER_UNCERTAINTY_NAME   = "Birther_uncertainty";
 
 class WELL512;
 class MassInterface;

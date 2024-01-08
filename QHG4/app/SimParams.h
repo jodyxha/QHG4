@@ -17,6 +17,7 @@ class Geography;
 class Climate;  
 class Vegetation;
 class Navigation;
+class Navigation2;
 class PopulationFactory;
 class PopBase;
 class PopLooper;
@@ -81,6 +82,7 @@ protected:
     Climate     *m_pCli;      
     Vegetation  *m_pVeg;      
     Navigation  *m_pNav;      
+    Navigation2 *m_pNav2;      
     PopLooper   *m_pPopLooper;
     IDGen      **m_apIDG;
 
@@ -135,6 +137,7 @@ protected:
     int setVeg(const std::string sFile);
 
     int setNav(const std::string sFile);
+    int setNav2(const std::string sFile);
 
     int setPopList(const std::string sList);
     int setPops(const std::string sFile);
@@ -160,6 +163,7 @@ protected:
     int setVegFromDefFile(const char *pDefFile);
 
     int setNav(hid_t hFile, bool bUpdate);
+    int setNav2(hid_t hFile, bool bUpdate);
 
     int setPops(hid_t hFile, const std::string sPopName, bool bRequired);
     int setPopsFromPopFile(const std::string sClsFile, const std::string sDataFile);

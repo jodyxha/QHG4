@@ -43,6 +43,7 @@ libIO.a:  QDFUtils.o QDFArray.o \
 	ClimateWriter.o ClimateGroupReader.o \
 	VegGroupReader.o VegWriter.o \
 	NavGroupReader.o NavWriter.o \
+	NavGroupReader2.o NavWriter2.o \
 	OccGroupReader.o OccWriter.o StatusWriter.o \
 	WELLDumpRestore.o SequenceIOUtils.o \
 	PermDumpRestore.o qhgXML.o ParamProvider2.o
@@ -98,6 +99,12 @@ NavWriter.o: NavWriter.cpp NavWriter.h
 	$(CC) $(COPT) $(DEFS) -I$(CORE) 
 
 NavGroupReader.o: NavGroupReader.cpp NavGroupReader.h GroupReader.h 
+	$(CC) $(COPT) $(DEFS) -I$(CORE) 
+
+NavWriter2.o: NavWriter2.cpp NavWriter2.h 
+	$(CC) $(COPT) $(DEFS) -I$(CORE) 
+
+NavGroupReader2.o: NavGroupReader2.cpp NavGroupReader2.h GroupReader.h 
 	$(CC) $(COPT) $(DEFS) -I$(CORE) 
 
 OccWriter.o: OccWriter.cpp OccWriter.h 

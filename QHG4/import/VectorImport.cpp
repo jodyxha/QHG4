@@ -596,7 +596,7 @@ int main(int iArgC, char *apArgV[]) {
          
                 if (sFieldName.empty()) {
                     listDBFFields(sDBFFile);
-                } else if ((!sInputQDF.empty()) && (!sSHPFile.empty()) && (!sOutputQDF.empty())) {
+                } else if ((!sInputQDF.empty()) && (!sSHPFile.empty()) /* && (!sOutputQDF.empty())*/) {
 
                     SCellGrid *pCG = NULL;
                     Surface *pSurf = NULL;
@@ -731,6 +731,10 @@ int main(int iArgC, char *apArgV[]) {
                     delete pCG;
         
                 } else {
+                    stdprintf("A required input file is empty:\n");
+                    stdprintf("  sInputQDF [%s]\n", sInputQDF);
+                    stdprintf("  sSHPFile  [%s]\n", sSHPFile);
+                    
                     usage(apArgV[0]);
                 }
             } else {

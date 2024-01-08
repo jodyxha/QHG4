@@ -14,7 +14,7 @@
 #include "ParamProvider2.h"
 
 
-#define ATTR_MULTIEVAL_NAME "MultiEvaluator"
+const static std::string ATTR_MULTIEVAL_NAME   = "MultiEvaluator";
 
 enum MultiEvalModes {
     MODE_ADD_SIMPLE = 0,
