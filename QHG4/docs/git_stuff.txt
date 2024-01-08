@@ -46,7 +46,7 @@ doc root:
 	cd ~/progs/git_qhg4_doc/jodyxha.github.io
 	rm -rf QHG4/*
 	cd QHG4
-	cp -r  /home/jody/progs/QHG4/sphinxdocs/build/html/* .
+ghp	cp -r  /home/jody/progs/QHG4/sphinxdocs/build/html/* .
 	(run ~/progs/git_qhg4_doc/fix_refs.sh if uploaded files see no css)
 	cd ..
 		git add QHG4 (or selectvely add: git add abd/xyz.rst)
