@@ -35,7 +35,8 @@ username:
 
 current access token:
 token old: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
-new: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
+oldnew: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
+new:gghhpp_Fb90IcRu9FKBRSKBBVTIYRWrzUqHA43uqNqP
 ======================================================================
 
 
@@ -66,7 +67,7 @@ adding code
 code handling(repo ~/progs/git_qhg4_code):      
    (create a te,porary directorym e.g. "temp_git")
    cd temp_git
-   svn co svn+ssh://jody@aim-bigfoot.uzh.ch/home/qhg4_svn/QHG4/trunk QHG4
+   svn co svn+ssh://jody@frog.uzh.ch/data/qhg4_svn/QHG4/trunk QHG4
    or
    svn co svn+ssh://jody@frog/data/qhg4_svn/QHG4/trunk QHG4
    (remove unneeded files and directories)
