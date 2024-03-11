@@ -13,6 +13,9 @@
 #include "GeneUtils.h"
 #include "SelPair.h"
 
+template<typename T>
+const std::string SelPair<T>::asNames[] = { 
+    ATTR_SELPAIR_PROB_NAME,};
 
 //-----------------------------------------------------------------------------
 // constructor
@@ -308,7 +311,7 @@ int SelPair<T>::writeAttributesQDF(hid_t hSpeciesGroup) {
 
     iResult = qdf_writePolyLine(hSpeciesGroup, m_pPLDistValues, ATTR_SELPAIR_PROB_NAME);
     if (iResult != 0) {
-        printf("Couldn't write polyline [%s] to QDF\n", ATTR_SELPAIR_PROB_NAME);
+        printf("Couldn't write polyline [%s] to QDF\n", ATTR_SELPAIR_PROB_NAME.c_str());
     }
 
  

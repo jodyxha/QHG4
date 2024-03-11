@@ -12,7 +12,7 @@
 #include "LinearDeath.h"
 
 template<typename T>
-const char *LinearDeath<T>::asNames[] = {
+const std::string LinearDeath<T>::asNames[] = {
     ATTR_LINDEATH_D0_NAME,
     ATTR_LINDEATH_TURNOVER_NAME,
     ATTR_LINDEATH_CAPACITY_NAME};
@@ -31,7 +31,7 @@ LinearDeath<T>::LinearDeath(SPopulation<T> *pPop, SCellGrid *pCG, std::string sI
       m_iStride(1) {
     
     m_adD = new double[this->m_pCG->m_iNumCells];
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 
@@ -50,7 +50,7 @@ LinearDeath<T>::LinearDeath(SPopulation<T> *pPop, SCellGrid *pCG, std::string sI
     
     m_adD = new double[this->m_pCG->m_iNumCells];
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

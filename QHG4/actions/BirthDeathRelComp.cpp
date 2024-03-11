@@ -19,7 +19,7 @@ template<typename T>
 int BirthDeathRelComp<T>::NUM_BIRTHDEATHRELCOMP_PARAMS = 5;
 
 template<typename T>
-const char *BirthDeathRelComp<T>::asNames[] = {
+const std::string BirthDeathRelComp<T>::asNames[] = {
     ATTR_BIRTHDEATHRELCOMP_B0_NAME,
     ATTR_BIRTHDEATHRELCOMP_D0_NAME,
     ATTR_BIRTHDEATHRELCOMP_THETA_NAME,
@@ -51,7 +51,7 @@ BirthDeathRelComp<T>::BirthDeathRelComp(SPopulation<T> *pPop, SCellGrid *pCG, st
     m_dD0 = -1024;
     m_dTheta = -1024;
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
 }
 

@@ -12,7 +12,7 @@
 #include "LinearBirth.h"
 
 template<typename T>
-const char *LinearBirth<T>::asNames[] = {
+const std::string LinearBirth<T>::asNames[] = {
     ATTR_LINBIRTH_B0_NAME,
     ATTR_LINBIRTH_TURNOVER_NAME,
     ATTR_LINBIRTH_CAPACITY_NAME};
@@ -30,7 +30,7 @@ LinearBirth<T>::LinearBirth(SPopulation<T> *pPop, SCellGrid *pCG, std::string sI
       m_iStride(1) {
     
     m_adB = new double[this->m_pCG->m_iNumCells];
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 //-----------------------------------------------------------------------------
@@ -48,7 +48,7 @@ LinearBirth<T>::LinearBirth(SPopulation<T> *pPop, SCellGrid *pCG, std::string sI
     
     m_adB = new double[this->m_pCG->m_iNumCells];
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ LinearBirth<T>::LinearBirth(SPopulation<T> *pPop, SCellGrid *pCG, std::string sI
     
     m_adB = new double[this->m_pCG->m_iNumCells];
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

@@ -13,7 +13,7 @@
 #include "LinearDeathCull.h"
 
 template<typename T>
-const char *LinearDeathCull<T>::asNames[] = {
+const std::string LinearDeathCull<T>::asNames[] = {
     ATTR_LINDEATHCULL_D0_NAME,
     ATTR_LINDEATHCULL_TURNOVER_NAME,
     ATTR_LINDEATHCULL_CAPACITY_NAME,
@@ -37,7 +37,7 @@ LinearDeathCull<T>::LinearDeathCull(SPopulation<T> *pPop, SCellGrid *pCG, std::s
     m_adD        = new double[this->m_pCG->m_iNumCells];
     m_adCullProb = new double[this->m_pCG->m_iNumCells];
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
 }
 
@@ -58,7 +58,7 @@ LinearDeathCull<T>::LinearDeathCull(SPopulation<T> *pPop, SCellGrid *pCG, std::s
     m_adD        = new double[this->m_pCG->m_iNumCells];
     m_adCullProb = new double[this->m_pCG->m_iNumCells];
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 //-----------------------------------------------------------------------------
@@ -78,7 +78,7 @@ LinearDeathCull<T>::LinearDeathCull(SPopulation<T> *pPop, SCellGrid *pCG, std::s
     m_adD        = new double[this->m_pCG->m_iNumCells];
     m_adCullProb = new double[this->m_pCG->m_iNumCells];
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

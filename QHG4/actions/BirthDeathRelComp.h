@@ -57,7 +57,8 @@ protected:
     ulong *m_pOtherCounts;
     bool m_bReadDone;
 
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 };
 
 #endif

@@ -18,7 +18,7 @@ template<typename T>
 int VerhulstVarKCull<T>::NUM_VERHULSTVARKCULL_PARAMS = 4;
 
 template<typename T>
-const char *VerhulstVarKCull<T>::asNames[] = {
+const std::string VerhulstVarKCull<T>::asNames[] = {
     ATTR_VERHULSTVARKCULL_B0_NAME,
     ATTR_VERHULSTVARKCULL_D0_NAME,
     ATTR_VERHULSTVARKCULL_TURNOVER_NAME,
@@ -44,7 +44,7 @@ VerhulstVarKCull<T>::VerhulstVarKCull(SPopulation<T> *pPop, SCellGrid *pCG, std:
     m_dD0 = -1024;
     m_dTheta = -1024;
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

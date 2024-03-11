@@ -13,7 +13,7 @@
 #include "ConfinedMove.h"
 
 template<typename T>
-const char *ConfinedMove<T>::asNames[] = {
+const std::string ConfinedMove<T>::asNames[] = {
     ATTR_CONFINEDMOVE_X_NAME,
     ATTR_CONFINEDMOVE_Y_NAME,
     ATTR_CONFINEDMOVE_R_NAME};
@@ -29,7 +29,7 @@ ConfinedMove<T>::ConfinedMove(SPopulation<T> *pPop, SCellGrid *pCG, std::string 
       m_bAllowed(NULL),
       m_bAbsorbing(false) {
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
 }
 

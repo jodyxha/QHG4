@@ -11,7 +11,7 @@
 #include "Starver.h"
 
 template<typename T>
-const char *Starver<T>::asNames[] = {
+const std::string Starver<T>::asNames[] = {
     ATTR_STARVER_STARVE_MASS_NAME,
     ATTR_STARVER_MASS_DECAY_NAME,
 };
@@ -26,7 +26,7 @@ Starver<T>::Starver(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID)
       m_dStarveMass(0),
       m_dMassDecay(0) {
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
     
 }
 

@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstring>
+#include <string>
 
 #include <hdf5.h>
 #include "Permutator.h"
@@ -7,16 +8,16 @@
 #include "QDFUtilsT.h"
 #include "PermDumpRestore.h"
 
-#define PERM_ATTR_NUM_STATES   "PermNumStates"
-#define PERM_ATTR_CUR_SIZE     "PermCurSize"
-#define PERM_ATTR_PREV_SIZE    "PermPrevSize"
-#define PERM_ATTR_BUFFERS      "PermBuffers"
+const static std::string PERM_ATTR_NUM_STATES = "PermNumStates";
+const static std::string PERM_ATTR_CUR_SIZE   = "PermCurSize";
+const static std::string PERM_ATTR_PREV_SIZE  = "PermPrevSize";
+const static std::string PERM_ATTR_BUFFERS    = "PermBuffers";
 
 //-----------------------------------------------------------------------------
 //  dumpPerm
 //    dumps permutators to QDF
 //
-int dumpPerm(Permutator **apPerm, int iNumPerm, const char *pOwner, hid_t hSpeciesGroup) {
+int dumpPerm(Permutator **apPerm, int iNumPerm, const std::string sOwner, hid_t hSpeciesGroup) {
 
     int iResult = 0;
 
@@ -25,14 +26,14 @@ int dumpPerm(Permutator **apPerm, int iNumPerm, const char *pOwner, hid_t hSpeci
 
     // number of Perm states
     if (iResult == 0) {
-        sprintf(sAttrName, "%s_%s", pOwner, PERM_ATTR_NUM_STATES);
+        sprintf(sAttrName, "%s_%s", sOwner.c_str(), PERM_ATTR_NUM_STATES.c_str());
         iResult = qdf_insertAttribute(hSpeciesGroup, sAttrName, 1, &iNumPerm); 
     }
 
     // current size of the perm buffer
     uint32_t *auiCurSizes = new uint32_t[iNumPerm];
     if (iResult == 0) {
-        sprintf(sAttrName, "%s_%s", pOwner, PERM_ATTR_CUR_SIZE);
+        sprintf(sAttrName, "%s_%s", sOwner.c_str(), PERM_ATTR_CUR_SIZE.c_str());
         for (int i = 0; i < iNumPerm; i++) {
             auiCurSizes[i] = apPerm[i]->getSize();
             iTotSize += apPerm[i]->getSize();
@@ -45,7 +46,7 @@ int dumpPerm(Permutator **apPerm, int iNumPerm, const char *pOwner, hid_t hSpeci
 
     uint32_t *auiPrevSizes = new uint32_t[iNumPerm];
     if (iResult == 0) {
-        sprintf(sAttrName, "%s_%s", pOwner, PERM_ATTR_PREV_SIZE);
+        sprintf(sAttrName, "%s_%s", sOwner.c_str(), PERM_ATTR_PREV_SIZE.c_str());
         for (int i = 0; i < iNumPerm; i++) {
             auiPrevSizes[i] = apPerm[i]->getPrevTot();
         }
@@ -56,7 +57,7 @@ int dumpPerm(Permutator **apPerm, int iNumPerm, const char *pOwner, hid_t hSpeci
 
     // the PERM states
     if (iResult == 0) {
-        sprintf(sAttrName, "%s_%s", pOwner, PERM_ATTR_BUFFERS);
+        sprintf(sAttrName, "%s_%s", sOwner.c_str(), PERM_ATTR_BUFFERS.c_str());
             
         uint32_t *pSuperState = new uint32_t[iTotSize];
         uint32_t *pCur = pSuperState;
@@ -76,7 +77,7 @@ int dumpPerm(Permutator **apPerm, int iNumPerm, const char *pOwner, hid_t hSpeci
 //    restores Permutators from QDF
 //    
 //
-int restorePerm(Permutator **apPerm, int iNumPerm, const char *pOwner, hid_t hSpeciesGroup) {
+int restorePerm(Permutator **apPerm, int iNumPerm, const std::string sOwner, hid_t hSpeciesGroup) {
     int iResult = 0;
 
     int iNumStates = 0;
@@ -84,7 +85,7 @@ int restorePerm(Permutator **apPerm, int iNumPerm, const char *pOwner, hid_t hSp
         
 
     // number of Permutator states dumped
-    sprintf(sAttrName, "%s_%s", pOwner, PERM_ATTR_NUM_STATES);
+    sprintf(sAttrName, "%s_%s", sOwner.c_str(), PERM_ATTR_NUM_STATES.c_str());
     printf("[restorePerm] searching for attribute [%s]\n", sAttrName);fflush(stdout);
     iResult = qdf_extractAttribute(hSpeciesGroup, sAttrName, 1, &iNumStates); 
     if (iNumStates == iNumPerm) {
@@ -93,7 +94,7 @@ int restorePerm(Permutator **apPerm, int iNumPerm, const char *pOwner, hid_t hSp
         uint32_t *auiCurSizes = new uint32_t[iNumStates];
     
         if (iResult == 0) {
-            sprintf(sAttrName, "%s_%s", pOwner, PERM_ATTR_CUR_SIZE);
+            sprintf(sAttrName, "%s_%s", sOwner.c_str(), PERM_ATTR_CUR_SIZE.c_str());
             printf("[restorePerm] searching for attribute [%s]\n", sAttrName);fflush(stdout);
             // current index values of the states
             iResult = qdf_extractAttribute(hSpeciesGroup, sAttrName, iNumStates, auiCurSizes); 
@@ -105,7 +106,7 @@ int restorePerm(Permutator **apPerm, int iNumPerm, const char *pOwner, hid_t hSp
         uint32_t *auiPrevSizes = new uint32_t[iNumStates];
     
         if (iResult == 0) {
-            sprintf(sAttrName, "%s_%s", pOwner, PERM_ATTR_PREV_SIZE);
+            sprintf(sAttrName, "%s_%s", sOwner.c_str(), PERM_ATTR_PREV_SIZE.c_str());
             printf("[restorePerm] searching for attribute [%s]\n", sAttrName);fflush(stdout);
             // current index values of the states
             iResult = qdf_extractAttribute(hSpeciesGroup, sAttrName, iNumStates, auiPrevSizes); 
@@ -113,7 +114,7 @@ int restorePerm(Permutator **apPerm, int iNumPerm, const char *pOwner, hid_t hSp
 
         if (iResult == 0) {
             // The Perm states themselves
-            sprintf(sAttrName, "%s_%s", pOwner, PERM_ATTR_BUFFERS);
+            sprintf(sAttrName, "%s_%s", sOwner.c_str(), PERM_ATTR_BUFFERS.c_str());
             printf("[restorePerm] searching for attribute [%s]\n", sAttrName);fflush(stdout);
             
             uint32_t *pSuperState = new uint32_t[iTotSize];

@@ -11,7 +11,7 @@
 #include "SigDeath.h"
 
 template<typename T>
-const char *SigDeath<T>::asNames[] = {
+const std::string SigDeath<T>::asNames[] = {
     ATTR_SIGDEATH_MAXAGE_NAME,
     ATTR_SIGDEATH_RANGE_NAME,
     ATTR_SIGDEATH_SLOPE_NAME,
@@ -28,7 +28,7 @@ SigDeath<T>::SigDeath(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, WEL
     m_dRange(0),
     m_dSlope(0) {
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
     
 }
 

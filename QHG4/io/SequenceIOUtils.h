@@ -3,6 +3,7 @@
 
 #include <hdf5.h>
 #include <vector>
+#include <string>
 #include "LBBase.h"
 
 #include "LayerArrBuf.h"
@@ -14,7 +15,7 @@ template<typename T>
 class SequenceIOUtils {
 
 public:
-    static SequenceIOUtils *createInstance(const char *pDataSetName, 
+    static SequenceIOUtils *createInstance(std::string sDataSetName, 
                                            hid_t hdf_type, 
                                            LayerArrBuf<T> *paSequence,
                                            LBController *pSequenceController,
@@ -30,7 +31,7 @@ public:
 
     virtual ~SequenceIOUtils();
 protected:
-    SequenceIOUtils(const char *pDataSetName, 
+    SequenceIOUtils(std::string sDataSetName, 
                     hid_t hdf_type, 
                     LayerArrBuf<T> *paSequence,
                     LBController *pSequenceController,
@@ -39,7 +40,7 @@ protected:
     int init();
 
 
-    const char     *m_pDataSetName;
+    std::string     m_sDataSetName;
     hid_t           m_hdf_type;
     LayerArrBuf<T> *m_paSequence;
     LBController   *m_pSequenceController;

@@ -16,7 +16,7 @@
 
 
 template<typename T>
-const char *Navigate<T>::asNames[] = {
+const std::string Navigate<T>::asNames[] = {
     ATTR_NAVIGATE_DECAY_NAME,
     ATTR_NAVIGATE_DIST0_NAME,
     ATTR_NAVIGATE_PROB0_NAME,
@@ -42,7 +42,7 @@ Navigate<T>::Navigate(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, WEL
 
     pPop->addObserver(this);
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
 }
 

@@ -47,7 +47,8 @@ class LinearBirthRel : public Action<T> {
     int       m_iWhich;
     ulong    *m_pNumAgentsPerCell;
 
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 };
 
 #endif

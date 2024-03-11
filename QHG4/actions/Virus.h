@@ -45,7 +45,7 @@ protected:
     cellagentmap  *m_amCellAgents;
     agentloadmap  *m_amAgentInfects; 
 
-    static const char *asNames[];
+    static const std::string asNames[];
     
 };
     

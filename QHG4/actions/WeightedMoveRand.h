@@ -30,6 +30,8 @@ class WeightedMoveRand : public Action<T> {
     double m_dMoveProb;
 
     Geography *m_pGeography;
+public:
+    static const std::string asNames[];
 };
 
 #endif

@@ -52,7 +52,8 @@ protected:
     std::vector<LayerBuf<T>>    *m_pvLBs;   // numthread array of LB vectors
 
     bool m_bVerbose;
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 };
 
 

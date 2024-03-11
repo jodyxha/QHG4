@@ -20,7 +20,7 @@ template<typename T>
 int BirthDeathRel<T>::NUM_BIRTHDEATHREL_PARAMS = 3;
 
 template<typename T>
-const char *BirthDeathRel<T>::asNames[] = {
+const std::string BirthDeathRel<T>::asNames[] = {
     ATTR_BIRTHDEATHREL_B0_NAME,
     ATTR_BIRTHDEATHREL_D0_NAME,
     ATTR_BIRTHDEATHREL_THETA_NAME};
@@ -46,7 +46,7 @@ BirthDeathRel<T>::BirthDeathRel(SPopulation<T> *pPop, SCellGrid *pCG, std::strin
     m_dD0 = -1024;
     m_dTheta = -1024;
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
 }
 

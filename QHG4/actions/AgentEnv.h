@@ -65,6 +65,7 @@ protected:
     double  *m_pFoodAvailable;
     int     *m_pAgentCounts;
 
+public:
     static const stringvec s_vNames;
    
 

@@ -11,7 +11,7 @@
 #include "ATanDeath.h"
 
 template<typename T>
-const char *ATanDeath<T>::asNames[] = {
+const std::string ATanDeath<T>::asNames[] = {
     ATTR_ATANDEATH_MAXAGE_NAME,
     ATTR_ATANDEATH_RANGE_NAME,
     ATTR_ATANDEATH_SLOPE_NAME,
@@ -28,7 +28,7 @@ ATanDeath<T>::ATanDeath(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, W
     m_dRange(0),
     m_dSlope(0) {
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
     
 }
 

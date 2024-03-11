@@ -62,7 +62,8 @@ class LotkaVolterra : public Action<T> {
     double *m_adB;
     double *m_adD;
 
-    static const char *asNames[];    
+public:
+    static const std::string asNames[];    
 };
 
 

@@ -13,7 +13,7 @@
 #include "MoveStats.h"
 
 template<typename T>
-const char *MoveStats<T>::asNames[] = {
+const std::string MoveStats<T>::asNames[] = {
     ATTR_MOVESTATS_MODE_NAME};
 
 //-----------------------------------------------------------------------------
@@ -37,7 +37,7 @@ MoveStats<T>::MoveStats(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID)
     m_pGeography(pCG->m_pGeography)  {
 
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
     if (m_pGeography != NULL) {
         if (pCG->isCartesian()) {

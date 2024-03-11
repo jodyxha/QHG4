@@ -36,6 +36,9 @@ class CondWeightedMove : public Action<T> {
     MoveCondition *m_pMC;
 
     Geography *m_pGeography;
+
+public:
+    static const std::string asNames[];
 };
 
 #endif

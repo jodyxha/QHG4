@@ -11,6 +11,9 @@
 #include "QDFUtils.h"
 #include "WeightedMove.h"
 
+template<typename T>
+const std::string WeightedMove<T>::asNames[] = {
+    ATTR_WEIGHTEDMOVE_PROB_NAME,};
 
 //-----------------------------------------------------------------------------
 // constructor

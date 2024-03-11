@@ -51,7 +51,8 @@ protected:
     omp_lock_t* m_aPredLocks;
     omp_lock_t* m_aPreyLocks;
 
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 };
 
 

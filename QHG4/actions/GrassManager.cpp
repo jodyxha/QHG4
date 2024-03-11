@@ -16,7 +16,7 @@
 #include "GrassManager.h"
 
 template<typename T>
-const char *GrassManager<T>::asNames[] = {
+const std::string GrassManager<T>::asNames[] = {
     ATTR_GRASSMAN_MIN_MASS_NAME,
     ATTR_GRASSMAN_MAX_MASS_NAME,
     ATTR_GRASSMAN_GROWTH_RATE_NAME};
@@ -42,7 +42,7 @@ GrassManager<T>::GrassManager(SPopulation<T> *pPop, SCellGrid *pCG, std::string 
         omp_init_lock(&m_aGLocks[i]);
     }
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

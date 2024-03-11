@@ -20,7 +20,7 @@
 #include "Hunting.h"
 
 template<typename T>
-const char *Hunting<T>::asNames[] = {
+const std::string Hunting<T>::asNames[] = {
     ATTR_HUNTING_EFFICIENCY_NAME,
     ATTR_HUNTING_USABILITY_NAME,
     ATTR_HUNTING_PREYSPECIES_NAME};
@@ -53,7 +53,7 @@ Hunting<T>::Hunting(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, WELL5
         omp_init_lock(&m_aPreyLocks[i]);
     }
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
 }
 

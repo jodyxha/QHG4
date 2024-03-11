@@ -14,7 +14,7 @@
 #include "LinearBirthRel.h"
 
 template<typename T>
-const char *LinearBirthRel<T>::asNames[] = {
+const std::string LinearBirthRel<T>::asNames[] = {
     ATTR_LINBIRTHREL_B0_NAME,
     ATTR_LINBIRTHREL_TURNOVER_NAME};
 
@@ -39,7 +39,7 @@ LinearBirthRel<T>::LinearBirthRel(SPopulation<T> *pPop, SCellGrid *pCG, std::str
     for (int i = 0; i < m_iNumThreads; i++) {
         m_aaiNumTemp[i] = new int[this->m_pCG->m_iNumCells];
     }
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
 }
 
@@ -66,7 +66,7 @@ LinearBirthRel<T>::LinearBirthRel(SPopulation<T> *pPop, SCellGrid *pCG, std::str
         m_aaiNumTemp[i] = new int[this->m_pCG->m_iNumCells];
     }
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

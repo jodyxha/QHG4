@@ -26,7 +26,7 @@
 #include "AgentBinSplitter.h"
 
 template<typename T>
-const char *AgentBinSplitter<T>::asNames[] = {
+const std::string AgentBinSplitter<T>::asNames[] = {
     ATTR_ABS_BIN_MIN_NAME,
     ATTR_ABS_BIN_MAX_NAME,
     ATTR_ABS_NUM_BINS_NAME,
@@ -54,7 +54,7 @@ AgentBinSplitter<T>::AgentBinSplitter(SPopulation<T> *pPop,  SCellGrid *pCG, std
     m_pvLBCs = new std::vector<LBController *>[m_iNumThreads];
     m_pvLBs  = new std::vector<LayerBuf<T>>[m_iNumThreads];
    
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

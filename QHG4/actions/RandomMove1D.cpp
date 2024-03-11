@@ -10,6 +10,9 @@
 #include "QDFUtilsT.h"
 #include "RandomMove1D.h"
 
+template<typename T>
+const std::string RandomMove1D<T>::asNames[] = {
+    ATTR_RANDOMMOVE1D_PROB_NAME,};
 
 //-----------------------------------------------------------------------------
 // constructor

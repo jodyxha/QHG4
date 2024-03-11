@@ -79,7 +79,7 @@ protected:
     Geography  *m_pGeography;
     Climate    *m_pClimate;
     Vegetation *m_pVegetation;
-
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 };    
 #endif

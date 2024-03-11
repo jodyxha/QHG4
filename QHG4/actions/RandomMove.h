@@ -32,6 +32,9 @@ class RandomMove : public Action<T> {
     double m_dMoveProb;
     int **m_apDirCounts;
     int m_iNumDirs;
+
+public:
+    const static std::string asNames[];
 };
 
 #endif

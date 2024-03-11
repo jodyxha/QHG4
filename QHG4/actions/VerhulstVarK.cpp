@@ -18,10 +18,10 @@ template<typename T>
 int VerhulstVarK<T>::NUM_VERHULSTVARK_PARAMS = 3;
 
 template<typename T>
-const char *VerhulstVarK<T>::asNames[] = {
-    ATTR_VERHULST_B0_NAME,
-    ATTR_VERHULST_D0_NAME,
-    ATTR_VERHULST_TURNOVER_NAME};
+const std::string VerhulstVarK<T>::asNames[] = {
+    ATTR_VERHULSTVARK_B0_NAME,
+    ATTR_VERHULSTVARK_D0_NAME,
+    ATTR_VERHULSTVARK_TURNOVER_NAME};
 
 //-----------------------------------------------------------------------------
 // constructor
@@ -42,7 +42,7 @@ VerhulstVarK<T>::VerhulstVarK(SPopulation<T> *pPop, SCellGrid *pCG, std::string 
     m_dD0 = -1024;
     m_dTheta = -1024;
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 
@@ -143,23 +143,23 @@ int VerhulstVarK<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
     int iResult = 0;
     
     if (iResult == 0) {
-        iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_VERHULST_B0_NAME, 1, &m_dB0);
+        iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_VERHULSTVARK_B0_NAME, 1, &m_dB0);
         if (iResult != 0) {
-            LOG_ERROR("[VerhulstVarK] couldn't read attribute [%s]", ATTR_VERHULST_B0_NAME);
+            LOG_ERROR("[VerhulstVarK] couldn't read attribute [%s]", ATTR_VERHULSTVARK_B0_NAME);
         }
     }
      
     if (iResult == 0) {
-        iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_VERHULST_D0_NAME, 1, &m_dD0);
+        iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_VERHULSTVARK_D0_NAME, 1, &m_dD0);
         if (iResult != 0) {
-            LOG_ERROR("[VerhulstVarK] couldn't read attribute [%s]", ATTR_VERHULST_D0_NAME);
+            LOG_ERROR("[VerhulstVarK] couldn't read attribute [%s]", ATTR_VERHULSTVARK_D0_NAME);
         }
     }
      
     if (iResult == 0) {
-        iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_VERHULST_TURNOVER_NAME, 1, &m_dTheta);
+        iResult = qdf_extractAttribute(hSpeciesGroup, ATTR_VERHULSTVARK_TURNOVER_NAME, 1, &m_dTheta);
         if (iResult != 0) {
-            LOG_ERROR("[VerhulstVarK] couldn't read attribute [%s]", ATTR_VERHULST_TURNOVER_NAME);
+            LOG_ERROR("[VerhulstVarK] couldn't read attribute [%s]", ATTR_VERHULSTVARK_TURNOVER_NAME);
         }
     }
 
@@ -199,9 +199,9 @@ int VerhulstVarK<T>::writeAttributesQDF(hid_t hSpeciesGroup) {
     
     int iResult = 0;
    
-    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_VERHULST_B0_NAME, 1, &m_dB0);
-    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_VERHULST_D0_NAME, 1, &m_dD0);
-    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_VERHULST_TURNOVER_NAME, 1, &m_dTheta);
+    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_VERHULSTVARK_B0_NAME, 1, &m_dB0);
+    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_VERHULSTVARK_D0_NAME, 1, &m_dD0);
+    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_VERHULSTVARK_TURNOVER_NAME, 1, &m_dTheta);
 
     return iResult;
 }
@@ -215,11 +215,11 @@ template<typename T>
 int VerhulstVarK<T>::modifyAttributes(const std::string sAttrName, double dValue) {
     
     int iResult = 0;
-    if (sAttrName == ATTR_VERHULST_B0_NAME) {
+    if (sAttrName == ATTR_VERHULSTVARK_B0_NAME) {
         m_dB0 = dValue;
-    } else if (sAttrName == ATTR_VERHULST_D0_NAME) {
+    } else if (sAttrName == ATTR_VERHULSTVARK_D0_NAME) {
         m_dD0 = dValue;
-    } else if (sAttrName == ATTR_VERHULST_TURNOVER_NAME) {
+    } else if (sAttrName == ATTR_VERHULSTVARK_TURNOVER_NAME) {
         m_dTheta = dValue;
     } else {
         iResult = -1;
@@ -244,9 +244,9 @@ int VerhulstVarK<T>::tryGetAttributes(const ModuleComplex *pMC) {
     const stringmap &mParams = pMC->getAttributes();
     if (this->checkAttributes(mParams) == 0) {
         iResult = 0;
-        iResult += getAttributeVal(mParams,  ATTR_VERHULST_B0_NAME, &m_dB0);
-        iResult += getAttributeVal(mParams,  ATTR_VERHULST_D0_NAME, &m_dD0);
-        iResult += getAttributeVal(mParams,  ATTR_VERHULST_TURNOVER_NAME, &m_dTheta);
+        iResult += getAttributeVal(mParams,  ATTR_VERHULSTVARK_B0_NAME, &m_dB0);
+        iResult += getAttributeVal(mParams,  ATTR_VERHULSTVARK_D0_NAME, &m_dD0);
+        iResult += getAttributeVal(mParams,  ATTR_VERHULSTVARK_TURNOVER_NAME, &m_dTheta);
     }
 
     if (iResult == 0) {

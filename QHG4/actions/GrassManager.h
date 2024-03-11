@@ -50,10 +50,11 @@ protected:
 
     omp_lock_t* m_aGLocks;
 
-    static const char * asNames[];
-
     int setAvailableMass();
     int subtractMassConsumed();
+
+public:
+    static const std::string  asNames[];
 };
 
 #endif

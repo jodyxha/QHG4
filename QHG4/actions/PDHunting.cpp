@@ -20,6 +20,9 @@
 #include "PopFinder.h"
 #include "PDHunting.h"
 
+template<typename T>
+const std::string PDHunting<T>::asNames[] = {
+    ATTR_PDHUNTING_RELATIONS_NAME,};
 //-----------------------------------------------------------------------------
 // constructor
 //

@@ -62,9 +62,10 @@ protected:
     double (*m_fCalcDist)(double dX1, double  dY1, double dX2, double dY2, double dScale);
     double m_dDistScale;
     int initializeOccupied();
- 
-    static const char *asNames[];
 
     Geography *m_pGeography;
+
+public: 
+    static const std::string asNames[];
 };
 #endif

@@ -28,7 +28,7 @@ const static std::string ATTR_PHENETICS_INITIAL_SIGMA        = "Phenetics_initia
 const static std::string ATTR_PHENETICS_MIX_AVG              = "Phenetics_mix_avg";
 const static std::string ATTR_PHENETICS_MUTATION_TYPE        = "Phenetics_mutation_type";
 
-const static std::string PHENOME_DATASET_NAME      = "Phenome";
+//const static std::string PHENOME_DATASET_NAME      = "Phenome";
 
 
 #define MUT_TYPE_ALL 0
@@ -140,7 +140,8 @@ protected:
     int    *m_aiLocs;
     double *m_adMuts;
 
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 };
 
 

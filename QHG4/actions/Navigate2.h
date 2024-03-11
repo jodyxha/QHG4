@@ -71,7 +71,8 @@ class Navigate2 : public Action<T>, Observer {
     Geography  *m_pGeography;
     Navigation2 *m_pNavigation2;
 
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 
 };
 

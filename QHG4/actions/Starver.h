@@ -28,7 +28,7 @@ protected:
     double m_dStarveMass;
     double m_dMassDecay;
 
-    static const char *asNames[];
+    static const std::string asNames[];
 
 };
 

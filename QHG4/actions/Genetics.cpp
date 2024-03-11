@@ -40,7 +40,7 @@ template<typename T, class U>
 int Genetics<T,U>::NUM_GENETIC_PARAMS = 6;
 
 template<typename T, class U>
-const char *Genetics<T,U>::asNames[] = {
+const std::string Genetics<T,U>::asNames[] = {
     ATTR_GENETICS_GENOME_SIZE,
     ATTR_GENETICS_NUM_CROSSOVER,
     ATTR_GENETICS_MUTATION_RATE,
@@ -80,7 +80,7 @@ Genetics<T,U>::Genetics(SPopulation<T> *pPop,  SCellGrid *pCG, std::string sID, 
     // GenomeCreator must exist before init() is called
     m_pGenomeCreator = new GenomeCreator<U>(m_iNumParents);
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

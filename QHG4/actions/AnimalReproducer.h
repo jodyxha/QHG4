@@ -31,8 +31,8 @@ protected:
     double m_dMassFert;
     double m_dMassBaby;
     double m_dBirthProb;
-
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 
 };
 

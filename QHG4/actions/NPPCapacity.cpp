@@ -25,7 +25,7 @@ const double REG_OCEANIA_LATMIN = -12.0;
 const double REG_OCEANIA_LATMAX =   1.0;
 
 template<typename T>
-const char *NPPCapacity<T>::asNames[] = {//ATTR_NPPCAP_VEGSELECTION_NAME, 
+const std::string NPPCapacity<T>::asNames[] = {//ATTR_NPPCAP_VEGSELECTION_NAME, 
                          ATTR_NPPCAP_WATERFACTOR_NAME,
                          ATTR_NPPCAP_COASTALFACTOR_NAME,
                          ATTR_NPPCAP_COASTAL_MIN_LAT_NAME,
@@ -69,7 +69,7 @@ NPPCapacity<T>::NPPCapacity(SPopulation<T> *pPop, SCellGrid *pCG, std::string sI
     this->m_pPop->addObserver(this);
 
     m_pNPPCalc = new NPPCalcMiami(m_apWELL);
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

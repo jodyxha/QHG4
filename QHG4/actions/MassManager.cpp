@@ -14,7 +14,7 @@
 #include "MassManager.h"
 
 template<typename T>
-const char *MassManager<T>::asNames[] = {
+const std::string MassManager<T>::asNames[] = {
     ATTR_MASSMANAGER_MIN_NAME,
     ATTR_MASSMANAGER_MAX_NAME,
     ATTR_MASSMANAGER_DELTA_NAME};
@@ -30,7 +30,7 @@ MassManager<T>::MassManager(SPopulation<T> *pPop, SCellGrid *pCG, std::string sI
       m_dDelta(0),
       m_pMI(NULL) {
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
 }
 

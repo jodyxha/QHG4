@@ -18,7 +18,7 @@
 #include "ProteomeComparator.h"
 
 template<typename T, class U>
-const char *AssortativePair<T,U>::asNames[] = {
+const std::string AssortativePair<T,U>::asNames[] = {
     ATTR_ASSPAIR_PERMUTE,
     ATTR_ASSPAIR_CUTOFF};
 
@@ -46,7 +46,7 @@ AssortativePair<T,U>::AssortativePair(SPopulation<T> *pPop, SCellGrid *pCG, std:
         omp_init_lock(&m_aMLocks[i]);
     }
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
 }
 

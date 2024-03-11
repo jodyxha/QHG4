@@ -11,7 +11,7 @@
 #include "OldAgeDeath.h"
 
 template<typename T>
-const char *OldAgeDeath<T>::asNames[] = {
+const std::string OldAgeDeath<T>::asNames[] = {
     ATTR_OLDAGEDEATH_MAXAGE_NAME,
     ATTR_OLDAGEDEATH_UNCERTAINTY_NAME,
 };
@@ -26,7 +26,7 @@ OldAgeDeath<T>::OldAgeDeath(SPopulation<T> *pPop, SCellGrid *pCG, std::string sI
       m_dMaxAge(0),
       m_dUncertainty(0) {
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
     
 }
 

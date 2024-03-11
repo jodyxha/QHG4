@@ -15,7 +15,7 @@
 #include "Birther.h"
 
 template<typename T>
-const char *Birther<T>::asNames[] = {
+const std::string Birther<T>::asNames[] = {
     ATTR_BIRTHER_ADULTMASS_NAME,
     ATTR_BIRTHER_BIRTHMASS_NAME,
     ATTR_BIRTHER_UNCERTAINTY_NAME};
@@ -32,7 +32,7 @@ Birther<T>::Birther(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, WELL5
       m_dUncertainty(0),
       m_pMI(NULL) {
  
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

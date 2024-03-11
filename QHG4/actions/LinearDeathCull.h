@@ -46,7 +46,8 @@ class LinearDeathCull : public Action<T> {
     int m_iStride;
     double *m_adCullProb;
 
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 };
 
 #endif

@@ -6,10 +6,10 @@
 #include "LinearBirth.h"
 #include "LinearDeath.h"
 
-const static std::string ATTR_VERHULSTVARK_NAME   = "VerhulstVarK";
-const static std::string ATTR_VERHULST_B0_NAME   = "Verhulst_b0";
-const static std::string ATTR_VERHULST_D0_NAME   = "Verhulst_d0";
-const static std::string ATTR_VERHULST_TURNOVER_NAME   = "Verhulst_theta";
+const static std::string ATTR_VERHULSTVARK_NAME            = "VerhulstVarK";
+const static std::string ATTR_VERHULSTVARK_B0_NAME         = "VerhulstVarK_b0";
+const static std::string ATTR_VERHULSTVARK_D0_NAME         = "VerhulsVarKt_d0";
+const static std::string ATTR_VERHULSTVARK_TURNOVER_NAME   = "VerhulstVarK_theta";
 
 template<typename T>
 class VerhulstVarK : public Action<T> { 
@@ -44,8 +44,8 @@ protected:
     WELL512 **m_apWELL;
     LinearBirth<T> *m_pLB;
     LinearDeath<T> *m_pLD;
-    
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 };
 
 #endif

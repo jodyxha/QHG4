@@ -12,14 +12,14 @@
 // createInstance
 //
 template<typename T>
-SequenceIOUtils<T> *SequenceIOUtils<T>::createInstance(const char *pDataSetName, 
+SequenceIOUtils<T> *SequenceIOUtils<T>::createInstance(std::string sDataSetName, 
                                                        hid_t hdf_type, 
                                                        LayerArrBuf<T> *paSequence,
                                                        LBController *pSequenceController,
                                                        std::vector<int> *pvDeadList,
                                                        uint iBlockSize) {
 
-    SequenceIOUtils *pSIO = new SequenceIOUtils(pDataSetName, 
+    SequenceIOUtils *pSIO = new SequenceIOUtils(sDataSetName, 
                                                 hdf_type, 
                                                 paSequence, 
                                                 pSequenceController,
@@ -37,13 +37,13 @@ SequenceIOUtils<T> *SequenceIOUtils<T>::createInstance(const char *pDataSetName,
 // constructor
 //
 template<typename T>
-SequenceIOUtils<T>::SequenceIOUtils(const char *pDataSetName, 
+SequenceIOUtils<T>::SequenceIOUtils(std::string sDataSetName, 
                                     hid_t hdf_type, 
                                     LayerArrBuf<T> *paSequence,
                                     LBController *pSequenceController,
                                     std::vector<int> *pvDeadList,
                                     uint iBlockSize)
-    : m_pDataSetName(pDataSetName),
+    : m_sDataSetName(sDataSetName),
       m_hdf_type(hdf_type),
       m_paSequence(paSequence),
       m_pSequenceController(pSequenceController),
@@ -109,7 +109,7 @@ int SequenceIOUtils<T>::writeSequenceDataQDF(hid_t hSpeciesGroup, uint iNumArray
         
         // Create the dataset
 
-        hid_t hDataSet = H5Dcreate2(hSpeciesGroup, m_pDataSetName, m_hdf_type, hDataSpace, 
+        hid_t hDataSet = H5Dcreate2(hSpeciesGroup, m_sDataSetName.c_str(), m_hdf_type, hDataSpace, 
                                     H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
         
@@ -212,7 +212,7 @@ int SequenceIOUtils<T>::readSequenceDataQDF(hid_t hSpeciesGroup, uint iNumReadIt
     int iResult = -1;
     printf("[SequenceIOUtils<T>::readSequenceDataQDF]\n");
     
-    if (qdf_link_exists(hSpeciesGroup, m_pDataSetName)) {
+    if (qdf_link_exists(hSpeciesGroup, m_sDataSetName)) {
         iResult = 0;
         
         // the buffer must hold a mulPhenetics<T>::init()tiple of the array length
@@ -220,7 +220,7 @@ int SequenceIOUtils<T>::readSequenceDataQDF(hid_t hSpeciesGroup, uint iNumReadIt
         T *aBuf = new T[iReadBufSize];
 
         // open the data set
-        hid_t hDataSet = H5Dopen2(hSpeciesGroup, m_pDataSetName, H5P_DEFAULT);
+        hid_t hDataSet = H5Dopen2(hSpeciesGroup, m_sDataSetName.c_str(), H5P_DEFAULT);
         hid_t hDataSpace = H5Dget_space(hDataSet);
 
         // get toal number of elements in dataset
@@ -293,7 +293,7 @@ int SequenceIOUtils<T>::readSequenceDataQDF(hid_t hSpeciesGroup, uint iNumReadIt
         
         delete[] aBuf;
     } else {
-        printf("WARNING: no dataset [%s] found\n", m_pDataSetName);
+        printf("WARNING: no dataset [%s] found\n", m_sDataSetName.c_str());
     }
     return iResult;
 
@@ -316,7 +316,7 @@ int SequenceIOUtils<T>::dumpSequenceDataQDF(hid_t hSpeciesGroup) {
 
     if (hDataSpace > 0) {
         // Create the dataset
-        hid_t hDataSet = H5Dcreate2(hSpeciesGroup, m_pDataSetName, m_hdf_type, hDataSpace, 
+        hid_t hDataSet = H5Dcreate2(hSpeciesGroup, m_sDataSetName.c_str(), m_hdf_type, hDataSpace, 
                                     H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
        
         if (hDataSet > 0) {
@@ -378,7 +378,7 @@ int SequenceIOUtils<T>::restoreSequenceDataQDF(hid_t hSpeciesGroup) {
 
     hsize_t dims;
 
-    hid_t hDataSet = H5Dopen2(hSpeciesGroup, m_pDataSetName, H5P_DEFAULT);
+    hid_t hDataSet = H5Dopen2(hSpeciesGroup, m_sDataSetName.c_str(), H5P_DEFAULT);
     hid_t hDataSpace = H5Dget_space(hDataSet);
 
     if (hDataSpace > 0) {

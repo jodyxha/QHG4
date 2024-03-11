@@ -46,7 +46,7 @@ protected:
     LinearBirth<T> *m_pLB;
     LinearDeathCull<T> *m_pLD;
   
-    static const char*asNames[];
+    static const std::string asNames[];
 };
 
 #endif

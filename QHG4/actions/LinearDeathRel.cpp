@@ -14,7 +14,7 @@
 #include "LinearDeathRel.h"
 
 template<typename T>
-const char *LinearDeathRel<T>::asNames[] = {
+const std::string LinearDeathRel<T>::asNames[] = {
     ATTR_LINDEATHREL_D0_NAME,
     ATTR_LINDEATHREL_TURNOVER_NAME};
 
@@ -35,7 +35,7 @@ LinearDeathRel<T>::LinearDeathRel(SPopulation<T> *pPop, SCellGrid *pCG, std::str
       m_pNumAgentsPerCell(NULL) {
     
     m_adD = new double[this->m_pCG->m_iNumCells];
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 
@@ -57,7 +57,7 @@ LinearDeathRel<T>::LinearDeathRel(SPopulation<T> *pPop, SCellGrid *pCG, std::str
     
     m_adD = new double[this->m_pCG->m_iNumCells];
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

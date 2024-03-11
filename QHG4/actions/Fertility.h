@@ -34,8 +34,8 @@ protected:
     float m_fFertilityMinAge;
     float m_fFertilityMaxAge;
     float m_fInterbirth;
-
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 };
 
 #endif

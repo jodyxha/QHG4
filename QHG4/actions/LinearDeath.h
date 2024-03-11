@@ -43,7 +43,8 @@ class LinearDeath : public Action<T> {
     double *m_adK;
     int m_iStride;
 
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 };
 
 #endif

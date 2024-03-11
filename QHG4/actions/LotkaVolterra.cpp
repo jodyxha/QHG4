@@ -15,7 +15,7 @@
 #include "LotkaVolterra.h"
 
 template<typename T>
-const char *LotkaVolterra<T>::asNames[] = {
+const std::string LotkaVolterra<T>::asNames[] = {
     ATTR_LOTKAVOLTERRA_SELFRATE_NAME,
     ATTR_LOTKAVOLTERRA_MIXRATE_NAME,
     ATTR_LOTKAVOLTERRA_OTHERPOP_NAME,
@@ -39,7 +39,7 @@ LotkaVolterra<T>::LotkaVolterra(SPopulation<T> *pPop, SCellGrid *pCG, std::strin
     m_adB = new double[this->m_pCG->m_iNumCells];
     m_adD = new double[this->m_pCG->m_iNumCells];
       
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
 }
 

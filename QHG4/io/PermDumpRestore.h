@@ -5,7 +5,7 @@
 
 #include "Permutator.h"
 
-int dumpPerm(Permutator **apPerm, int iNumPerm, const char *pOwner, hid_t hSpeciesGroup);
-int restorePerm(Permutator **apPerm, int iNumPerm, const char *pOwner, hid_t hSpeciesGroup);
+int dumpPerm(Permutator **apPerm, int iNumPerm, const std::string sOwner, hid_t hSpeciesGroup);
+int restorePerm(Permutator **apPerm, int iNumPerm, const std::string sOwner, hid_t hSpeciesGroup);
 
 #endif

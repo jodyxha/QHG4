@@ -11,7 +11,7 @@
 #include "Fertility.h"
 
 template<typename T>
-const char *Fertility<T>::asNames[] = {
+const std::string Fertility<T>::asNames[] = {
     ATTR_FERTILITY_MIN_AGE_NAME,
     ATTR_FERTILITY_MAX_AGE_NAME,
     ATTR_FERTILITY_INTERBIRTH_NAME};
@@ -26,7 +26,7 @@ Fertility<T>::Fertility(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID)
       m_fFertilityMaxAge(0),
       m_fInterbirth(0) {
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
     
 }
 

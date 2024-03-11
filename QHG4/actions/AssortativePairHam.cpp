@@ -16,7 +16,7 @@
 #include "RankTable.h"
 
 template<typename T, class U>
-const char *AssortativePairHam<T,U>::asNames[] = {
+const std::string AssortativePairHam<T,U>::asNames[] = {
     ATTR_ASSPAIRHAM_CUTOFF,
     ATTR_ASSPAIRHAM_PERMUTE};
 
@@ -44,7 +44,7 @@ AssortativePairHam<T,U>::AssortativePairHam(SPopulation<T> *pPop, SCellGrid *pCG
         omp_init_lock(&m_aMLocks[i]);
     }
 
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

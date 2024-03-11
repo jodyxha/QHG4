@@ -114,7 +114,8 @@ protected:
 
     SequenceIOUtils<ulong> *m_pSeqIO;
 
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 };
 
 

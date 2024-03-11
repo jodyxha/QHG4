@@ -41,7 +41,7 @@ template<typename T>
 int Phenetics2<T>::NUM_PHENETIC_PARAMS = 8;
 
 template<typename T>
-const char *Phenetics2<T>::asNames[] = {
+const std::string Phenetics2<T>::asNames[] = {
     ATTR_PHENETICS_PHENOME_SIZE,
     ATTR_PHENETICS_MUTATION_RATE,
     ATTR_PHENETICS_MUTATION_SIGMA,
@@ -84,7 +84,7 @@ Phenetics2<T>::Phenetics2(SPopulation<T> *pPop,  SCellGrid *pCG, std::string sID
 
     m_iNumThreads = omp_get_max_threads();
  
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
 }
 
@@ -124,7 +124,7 @@ Phenetics2<T>::Phenetics2(SPopulation<T> *pPop,  SCellGrid *pCG, std::string sID
     printf("[Phenetics::Phenetics] using %u as seed for WELLs\n", iSeed);
     m_apWELL = WELLUtils::buildWELLs(m_iNumThreads, iSeed);
  
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
 }
 

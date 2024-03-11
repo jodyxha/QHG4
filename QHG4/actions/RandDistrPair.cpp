@@ -14,7 +14,7 @@
 #include "RandDistrPair.h"
 
 template<typename T, class U>
-const char *RandDistrPair<T,U>::asNames[] = {
+const std::string RandDistrPair<T,U>::asNames[] = {
     ATTR_RANDDISTRPAIR_DCRIT, 
     ATTR_RANDDISTRPAIR_VCRIT};
 
@@ -50,7 +50,7 @@ RandDistrPair<T,U>::RandDistrPair(SPopulation<T> *pPop, SCellGrid *pCG, std::str
         m_ppPermutators[i] = Permutator::createInstance(INIT_PERM_SIZE);
     }
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 }
 
 

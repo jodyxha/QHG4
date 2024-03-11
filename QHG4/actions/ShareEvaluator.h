@@ -8,11 +8,11 @@
 #include "Evaluator.h"
 #include "Geography.h"
 
-const static std::string ATTR_SHAREEVAL_NAME   = "ShareEvaluator";
+const static std::string ATTR_SHAREEVAL_NAME        = "ShareEvaluator";
 const static std::string ATTR_SHAREEVAL_ARRAYNAME   = "ShareEvaluator_%s_arrayname";
 const static std::string ATTR_SHAREEVAL_POLYNAME    = "ShareEvaluator_%s_polyname";
 
-#define SHARE_NAME_LEN 512
+const static uint  SHARE_NAME_LEN = 512;
 
 class PolyLine;
 

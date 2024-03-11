@@ -37,7 +37,8 @@ protected:
     double m_dUncertainty;
     MassInterface *m_pMI;
 
-    static const char *asNames[];
+public:
+    static const std::string asNames[];
 };
 
 #endif

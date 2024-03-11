@@ -11,7 +11,7 @@
 #include "AnimalReproducer.h"
 
 template<typename T>
-const char *AnimalReproducer<T>::asNames[] = {
+const std::string AnimalReproducer<T>::asNames[] = {
     ATTR_ANIMALREP_MASS_FERT_NAME,
     ATTR_ANIMALREP_MASS_BABY_NAME,
     ATTR_ANIMALREP_BIRTH_PROB_NAME,
@@ -28,7 +28,7 @@ AnimalReproducer<T>::AnimalReproducer(SPopulation<T> *pPop, SCellGrid *pCG, std:
       m_dMassBaby(0),
       m_dBirthProb(0) {
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
     
 }
 

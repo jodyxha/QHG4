@@ -13,7 +13,7 @@
 
 
 template<typename T>
-const char *Virus<T>::asNames[] = {
+const std::string Virus<T>::asNames[] = {
     ATTR_VIRUS_INFECTION_PROB_NAME,
     ATTR_VIRUS_INITIAL_LOAD_NAME,
     ATTR_VIRUS_GROWTH_RATE_NAME,
@@ -36,7 +36,7 @@ Virus<T>::Virus(SPopulation<T> *pPop, SCellGrid *pCG, std::string sID, WELL512 *
     m_fLethalityLevel(0),
     m_iNumThreads(omp_get_max_threads()) {
         
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
 
     // create array with one int map for each thread
     m_amCellAgents = new cellagentmap[m_iNumThreads];

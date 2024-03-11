@@ -13,7 +13,9 @@
 #include "QDFUtilsT.h"
 #include "GroupMemberMove.h"
 
-
+template<typename T>
+const std::string GroupMemberMove<T>::asNames[] = {
+    ATTR_GROUPMEMBERMOVE_PROB_NAME,};
 //-----------------------------------------------------------------------------
 // constructor
 //
