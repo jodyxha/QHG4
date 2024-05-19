@@ -7,6 +7,7 @@
 
 #include "stdstrutils.h"
 #include "stdstrutilsT.h"
+
 #include "LineReader.h"
 #include "SubSpace.h"
 
@@ -132,8 +133,7 @@ int SubSpace<T>::dims2Sizes(std::string sDims, uintvec &vSizes, const std::strin
         if (strToNum(vsSizes[i], &k)) {
             vSizes.push_back(k);
         } else {
-            stdprintf("invalid dimension size [%s]\n", vsSizes[i]);
-            iResult = -1;
+            throw SubSpaceException(stdsprintf("invalid dimension size [%s]", vsSizes[i]));
         }
     }
     return iResult; 
@@ -278,8 +278,7 @@ int SubSpace<T>::pos_to_coord(uint iPos, uintvec &vCoord) {
         }
         iResult = 0;
     } else {
-        stdfprintf(stderr, "iPos (%d) should be less than %d\n", iPos, m_iNumVals);
-        iResult = -1;
+        throw SubSpaceException(stdsprintf("iPos (%d) should be less than %d", iPos, m_iNumVals));
     }
     return iResult;
 }
@@ -298,13 +297,11 @@ int SubSpace<T>::coord_to_pos(uintvec vCoord) {
             if (vCoord[i] <  m_vSizesX[i+1]) {
                 iPos = m_vSizesX[i]*(vCoord[i] + iPos);
             } else {
-                stdfprintf(stderr, "coord[%d]:%d should be less than %d\n", i, vCoord[i], m_vSizesX[i+1]);
-                iPos = -1;
+                throw SubSpaceException(stdsprintf("coord[%d]:%d should be less than %d", i, vCoord[i], m_vSizesX[i+1]));
             }
         }
     } else {
-        stdfprintf(stderr, "coords should have size %u, not %u\n", m_iNumDims, vCoord.size());
-        iPos = -1;
+        throw SubSpaceException(stdsprintf("coords should have size %u, not %u", m_iNumDims, vCoord.size()));
     }
 
     return iPos;
@@ -323,8 +320,7 @@ int SubSpace<T>::set_data(T *pNewData, uint iOffset, uint iNumElements) {
     if (iOffset + iNumElements <= m_iNumVals) {
         memcpy(m_adData+iOffset, pNewData, iNumElements*sizeof(T));
     } else {
-        stdfprintf(stderr, "offset (%d) + numelements (%d) > numvals (%d)\n", iOffset, iNumElements, m_iNumVals);
-        iResult = -1;
+        throw SubSpaceException(stdsprintf("offset (%d) + numelements (%d) > numvals (%d)", iOffset, iNumElements, m_iNumVals));
     }
     return iResult;
 }
@@ -343,8 +339,7 @@ int SubSpace<T>::set_dim_names(stringvec vDimNames) {
         m_vDimNames.insert(m_vDimNames.end(), vDimNames.begin(), vDimNames.end());
         iResult = 0;
     } else {
-        stdfprintf(stderr, "The number of dimension names (%zd) should be equal to the number of dimensions (%zd)\n", vDimNames.size(), m_iNumDims);
-        iResult = 0;
+        throw SubSpaceException(stdsprintf("The number of dimension names (%zd) should be equal to the number of dimensions (%zd)", vDimNames.size(), m_iNumDims));
     }
 
     return iResult;
@@ -362,8 +357,7 @@ int SubSpace<T>::set_coord_names(stringvecvec vvCoordNames) {
     if (vvCoordNames.size() == m_iNumDims) {
         for (uint i = 0; (iResult == 0) && (i < m_iNumDims); i++) {
             if ((vvCoordNames[i].size() > 0) && (vvCoordNames[i].size() != m_vSizes[i])) {
-                stdfprintf(stderr, "The sizes of coordinate name vector[%d] (%zd) should be equal to the size of dimension %d (%zd)\n", i, vvCoordNames[i].size(), i, m_vSizes[i]);
-                iResult = -1;
+                throw SubSpaceException(stdsprintf("The sizes of coordinate name vector[%d] (%zd) should be equal to the size of dimension %d (%zd)", i, vvCoordNames[i].size(), i, m_vSizes[i]));
             }
         }
         if (iResult == 0) {
@@ -379,8 +373,7 @@ int SubSpace<T>::set_coord_names(stringvecvec vvCoordNames) {
         }
 
     } else {
-        stdfprintf(stderr, "The number of coordinate name vectors (%zd) should be equal to the number of dimensions (%zd)\n", vvCoordNames.size(), m_iNumDims);
-        iResult = 0;
+        throw SubSpaceException(stdsprintf("The number of coordinate name vectors (%zd) should be equal to the number of dimensions (%zd)", vvCoordNames.size(), m_iNumDims));
     }
 
     return iResult;
@@ -476,8 +469,7 @@ int SubSpace<T>::calculate_slice_description(uintvecvec vvIndexes) {
         }
     } else {
         m_vSliceDescription.clear();
-        stdfprintf(stderr, "Bad index values\n");
-        iResult = -1;
+        throw SubSpaceException("Bad index values");
     }
 
     return iResult;
@@ -503,7 +495,7 @@ int SubSpace<T>::single_slice(uintvec vIndexes, uintuintvec &vStartNums) {
         vStartNums.push_back(std::pair<int,int>{s,v});
 
     } else {
-        stdfprintf(stderr, "there must be %d slice vectors provided\n", m_iNumDims);
+        throw SubSpaceException(stdsprintf("there must be %d slice vectors provided", m_iNumDims));
     }
     return iResult;
 }
@@ -579,11 +571,11 @@ SubSpace<T> *SubSpace<T>::create_slice(uintvecvec vAllIndexes) {
                 pSS = NULL;
             }
         } else {
-            stdfprintf(stderr, "slice creation failed\n");
+            throw SubSpaceException("slice creation failed");
         }
 
     } else {
-        stdfprintf(stderr, "no SliceDescription or SliceDimensions found. run calculate_slice_description() before create_slice()\n");
+        throw SubSpaceException("no SliceDescription or SliceDimensions found. run calculate_slice_description() before create_slice()");
     }
     return pSS;
 }
@@ -648,7 +640,7 @@ SubSpace<T> *SubSpace<T>::create_reductions(uintuintmap &mRedDims) {
         uint iRedType = mRedDims[iCurDim];
 
         vRedDims.pop_back();;
-            uintuintmap::iterator it = mRedDims.find(iCurDim);
+        uintuintmap::iterator it = mRedDims.find(iCurDim);
         if (it != mRedDims.end()) {
             mRedDims.erase(it);
         } else {
@@ -763,11 +755,12 @@ void SubSpace<T>::show_data() {
 template<typename T>
 void SubSpace<T>::show_data_nice(int iType, FILE *fOut, stringvec vSeparators, bool bFrame) {
     char sMask[16];
+    uint iRowLen = 0;
 
     switch (iType) {
     case DISP_INT:
         sprintf(sMask, "%%%dd ", 6);
-       
+        iRowLen = m_vSizes[0]*7;
         break;
     case DISP_FLOAT:
         {
@@ -784,23 +777,46 @@ void SubSpace<T>::show_data_nice(int iType, FILE *fOut, stringvec vSeparators, b
         }
         T tMax1 = (tMax > fabs(tMin))?tMax:fabs(tMin);
         // get number of digits: (max>0)->log(max)+1, (max==0)->1
-        uint iNumDigits = (fabs(tMax1) > 0)?(uint)(log(fabs(tMax1))+1):1;
+        uint iNumDigits = (fabs(tMax1) > 0)?(uint)(log(fabs(tMax1))/log(10)+1):1;
         if (tMin < 0) {
             iNumDigits++;
         }
-        sprintf(sMask, "%%0%d.4f ", iNumDigits/*+5*/); //+5: decimal point and 4 digits after it
-
+        sprintf(sMask, "%%%d.4f ", iNumDigits+5); //+5: decimal point and 4 digits after it
+        iRowLen = m_vSizes[0]*(iNumDigits+5+1)-1;
+        
         }
         break;
     case DISP_FLOAT_01:
         strcpy(sMask, "%08.6f "); 
+        iRowLen = m_vSizes[0]*9;
         break;
     default:
         strcpy(sMask, "%09.4f "); 
+        iRowLen = m_vSizes[0]*10;
+    }
+    
+    // create a frame row 2 chars longer than the data lines
+    std::string sFrame("");
+    if (bFrame) {
+        uint iRowLenF = iRowLen + 2;
+        for (uint j = 0;j < iRowLenF/2; j++) {
+            sFrame += "-+";
+        }
+        if ((iRowLenF%2) == 1) {
+            sFrame += "-";
+        }
     }
 
-    if (bFrame) {printf("-+-+-+-+-+-+-+-+-+-+-+-+-\n");}
+    // create separators consisting of iRowLen identical chars 
+    for (uint i = 0; i < vStandardSepChars.size(); i++) {
+        if (vStandardSepChars[i] != '\0') {
+            vStandardSeps[i] = std::string(iRowLen, vStandardSepChars[i])+"\n";
+        }
+    }
+ 
+    if (bFrame) {stdprintf("%s\n ", sFrame);}
 
+    // print sll numbers sequentially, but insert separators if necessary
     uint i = 0;
     while (i < m_iNumVals) {
         if (i > 0) {
@@ -810,14 +826,14 @@ void SubSpace<T>::show_data_nice(int iType, FILE *fOut, stringvec vSeparators, b
                 //printf("((  %d, s%d ))", i, m_vSubVolumes[j]);
                 if ((i%m_vSubVolumes[j]) == 0) {
                     uint j0 = j;
-                    if (j >= vSeparators.size()) {
-                        j0 = vSeparators.size()-1;
+                    if (j >= vStandardSeps.size()) {
+                        j0 = vStandardSeps.size()-1;
                     }
 
                     if (j0 == 1) {
-                        fprintf(fOut, "\n");
+                        fprintf(fOut, "\n ");
                     } else {
-                        sSep = vSeparators[j0];
+                        sSep = vStandardSeps[j0]+" ";
                     }
                 }
             }
@@ -830,7 +846,8 @@ void SubSpace<T>::show_data_nice(int iType, FILE *fOut, stringvec vSeparators, b
         
         i++;
     }
-    if (bFrame) {printf("\n-+-+-+-+-+-+-+-+-+-+-+-+-\n");}
+    if (bFrame) {stdprintf("\n%s\n", sFrame);}
+
 
 
 }
