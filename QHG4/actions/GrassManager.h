@@ -10,6 +10,8 @@ const static std::string ATTR_GRASSMAN_MIN_MASS_NAME      = "MinMass";
 const static std::string ATTR_GRASSMAN_MAX_MASS_NAME      = "MaxMass";
 const static std::string ATTR_GRASSMAN_GROWTH_RATE_NAME   = "GrowthRate";
         
+const static std::string  SHARE_GRASS_MASS_AVAILABLE = "grass_mass_available";
+const static std::string  SHARE_GRASS_MASS_CONSUMED  = "grass_mass_consumed";
 
 template<typename T>
 class GrassManager : public Action<T> {
