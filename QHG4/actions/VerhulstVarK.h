@@ -8,7 +8,7 @@
 
 const static std::string ATTR_VERHULSTVARK_NAME            = "VerhulstVarK";
 const static std::string ATTR_VERHULSTVARK_B0_NAME         = "VerhulstVarK_b0";
-const static std::string ATTR_VERHULSTVARK_D0_NAME         = "VerhulsVarKt_d0";
+const static std::string ATTR_VERHULSTVARK_D0_NAME         = "VerhulstVarK_d0";
 const static std::string ATTR_VERHULSTVARK_TURNOVER_NAME   = "VerhulstVarK_theta";
 
 template<typename T>
