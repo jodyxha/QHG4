@@ -479,7 +479,7 @@ int Simulator::handleWriteEvent(const std::string sDesc, int iDumpMode) {
     std::string sOther = "";
     std::vector<std::pair<std::string, popwrite_flags>> vSubs;
 
-    int iWhat = WR_NONE;
+    uint iWhat = WR_NONE;
 
     stringvec vEvents;
     uint iNum = splitString(sDesc, vEvents, "+");
