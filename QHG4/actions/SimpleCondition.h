@@ -1,10 +1,11 @@
 #ifndef __SIMPLECONDITION_H__
 #define __SIMPLECONDITION_H__
 
+#include "types.h"
 #include "MoveCondition.h"
 
 const static uint ALLOW_NEVER     = 0;
-const static uint_ALWAYS          = 1;
+const static uint ALLOW_ALWAYS    = 1;
 const static uint ALLOW_GREATER   = 2;
 const static uint ALLOW_LESS      = 3;
 const static uint ALLOW_EQUAL     = 4;

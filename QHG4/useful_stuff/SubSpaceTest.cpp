@@ -11,6 +11,7 @@
 #include "stdstrutilsT.h"
 
 #include "ParamReader.h"
+#include "LineReader.h"
 #include "SubSpace.h"
 #include "SubSpace.cpp"
 
@@ -33,10 +34,10 @@ void usage(std::string sApp) {
     stdprintf("  slice-indexes  ::= <slice-index> [\":\"<slice-index>]\n");
     stdprintf("  slice-index    ::= <numeric> | \"*\" | \"#\" | \"%%\"\n");
     stdprintf("    numeric      ::= <number> [\"+\"] <number>}\n");
-    stdprintf("If the format is numeric, slices will made for the specified numbers\n"); 
+    stdprintf("If the format is numeric, slices will be extracted for the specified numbers\n"); 
     stdprintf("If the format is \"*\" this dimension is kept (shorthand for 0+1+2+..+n)\n"); 
     stdprintf("If the format is \"#\" the SubSpace will be reduced along this dimension\n"); 
-    stdprintf("If the format is \"%\" the SubSpace will be averaged along this dimension\n"); 
+    stdprintf("If the format is \"%%\" the SubSpace will be averaged along this dimension\n"); 
     stdprintf("requirements:\n");
     stdprintf("  * the number of slice indexes must be equal to the number of dimensions\n"); 
     stdprintf("  * the numbers used in the i-th <numeric> must be less than the size of the i-th dimension\n"); 
@@ -172,6 +173,10 @@ double *readInputFile(const std::string sInputFile, uintvec &vSizes) {
             pD++;
             // convert dimensions to sizes
             iResult = SubSpace<double>::dims2Sizes(pD, vSizes, " ");
+
+            // must reverse user dimension order to get SubSpace dimension order
+            std::reverse(vSizes.begin(), vSizes.end());
+
             if (iResult == 0) {
                 uint iNumVals = 1;
                 for (uint i = 0; i < vSizes.size(); i++) {
@@ -226,7 +231,7 @@ double *readInputFile(const std::string sInputFile, uintvec &vSizes) {
 //
 int parseIndexElements(uintvec vSizes, std::string sIndexDesc, uintvecvec &vAllIndexes, uintuintmap &mAllReds, bool bVerbose) {
     int iResult = -1;
-    setlocale(LC_ALL, "");
+    //setlocale(LC_ALL, "");
     vAllIndexes.clear();
     mAllReds.clear();
 
@@ -235,6 +240,8 @@ int parseIndexElements(uintvec vSizes, std::string sIndexDesc, uintvecvec &vAllI
     uint iNumDims = vSizes.size();
     uint iDims2 = splitString(sIndexDesc, vsA, ":");
     if (iDims2 == iNumDims) {
+        // must reverse user dimension order to get SubSpace dimension order
+        std::reverse(vsA.begin(), vsA.end());
         iResult = 0;
         // each part has the form "<int>[<int>]" or "+" or "*"
         for (uint i = 0; (iResult == 0) && (i < iNumDims); i++) {
@@ -319,9 +326,13 @@ int main(int iArgC, char *apArgV[]) {
                 
                 pSS = SubSpace<double>::create_instance_from_dims(sDims, bVerbose);
                 if (pSS != NULL) {
-                    pData = createBuffer(pSS);
-                    pSS->set_data(pData, 0, pSS->getNumVals());
-                    delete[] pData;
+                    try {
+                        pData = createBuffer(pSS);
+                        pSS->set_data(pData, 0, pSS->getNumVals());
+                        delete[] pData;
+                    } catch (const SubSpaceException &sse) {
+                        stdfprintf(stderr, sse.what());
+                    }
 
                 } else {
                     stdfprintf(stderr, "failed to create SubSpace from dimension string [%s]\n");
@@ -334,8 +345,12 @@ int main(int iArgC, char *apArgV[]) {
                                    
                     pSS = SubSpace<double>::create_instance_from_sizes(vSizes, bVerbose); 
                     if (pSS != NULL) {
-                        pSS->set_data(pData, 0, pSS->getNumVals());
-                        stdfprintf(stderr, "read file\n");
+                        try {
+                            pSS->set_data(pData, 0, pSS->getNumVals());
+                            stdfprintf(stderr, "read file\n");
+                        } catch (const SubSpaceException &sse) {
+                            stdfprintf(stderr, sse.what());
+                        }
                     }
                     
                     delete[] pData;
@@ -405,20 +420,29 @@ int main(int iArgC, char *apArgV[]) {
                     SubSpace<double> *pSSResult = NULL;  
 
                     if (vAllIndexes.size() > 0) {
-                        pSSResult = pSS->create_slice(vAllIndexes);
+                        try {
+                            pSSResult = pSS->create_slice(vAllIndexes);
 
-                        if (pSSResult != NULL) {
-                            stdprintf("Have slice\n");
+                            if (pSSResult != NULL) {
+                                stdprintf("Have slice\n");
 
-                            pSSResult->show_sizes();
-                            if (bVerbose) {
-                                pSSResult->show_data_nice(DISP_FLOAT, stdout, vStandardSeps, true);
+                                pSSResult->show_sizes();
+                                if (bVerbose) {
+                                    pSSResult->show_data_nice(DISP_FLOAT, stdout, vStandardSeps, true);
+                                }
                             }
+                        } catch (const SubSpaceException &sse) {
+                            stdfprintf(stderr, sse.what());
                         }
+
                     }
                     if (mRedDims.size() > 0) {
                         SubSpace<double> *pOldSS = pSSResult;
-                        pSSResult = pOldSS->create_reductions(mRedDims);
+                        try {
+                            pSSResult = pOldSS->create_reductions(mRedDims);
+                        } catch (const SubSpaceException &sse) {
+                            stdfprintf(stderr, sse.what());
+                        }
                         delete pOldSS;
 
                         if (pSSResult != NULL) {
@@ -432,7 +456,11 @@ int main(int iArgC, char *apArgV[]) {
                     }
                     if (bSqueeze) {
                         SubSpace<double> *pOldSS = pSSResult;
-                        pSSResult = pOldSS->squeeze();
+                        try {
+                            pSSResult = pOldSS->squeeze();
+                        } catch (const SubSpaceException &sse) {
+                            stdfprintf(stderr, sse.what());
+                        }
                         delete pOldSS;
                         
                         if (pSSResult != NULL) {

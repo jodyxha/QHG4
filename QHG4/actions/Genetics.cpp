@@ -250,7 +250,7 @@ int Genetics<T,U>::init() {
                     }
                 }
 
-                m_pSeqIO = SequenceIOUtils<ulong>::createInstance(GENOME_DATASET_NAME, H5T_NATIVE_ULONG, &m_aGenome, m_pAgentController, m_pvDeadList, m_iNumParents*m_iNumBlocks);
+                m_pSeqIO = SequenceIOUtils<ulong>::createInstance(GENOME_DATASET_NAME.c_str(), H5T_NATIVE_ULONG, &m_aGenome, m_pAgentController, m_pvDeadList, m_iNumParents*m_iNumBlocks);
 
             } else {
                 stdprintf("Couldn't add buffer to controller\n");

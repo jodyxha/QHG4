@@ -1,8 +1,11 @@
 #ifndef __SUBSPACE_H__
 #define __SUBSPACE_H__
 
+#include <exception> 
+
 #include "types.h"
 
+typedef std::vector<char> charvec;
 typedef std::vector<intvec> intvecvec;
 typedef std::vector<uintvec> uintvecvec;
 typedef std::vector<std::pair<int,int>> intintvec;
@@ -11,11 +14,30 @@ typedef std::map<uint,uint> uintuintmap;
 typedef std::vector<intintvec> intintvecvec;
 typedef std::vector<stringvec> stringvecvec;
 
+class SubSpaceException : public std::exception { 
+private: 
+    std::string message; 
+  
+public: 
+    // Constructor accepts a const char* that is used to set 
+    // the exception message 
+    SubSpaceException(const std::string msg) 
+        : message(msg) 
+    { 
+    } 
+  
+    // Override the what() method to return our message 
+    const char* what() const throw() 
+    { 
+        return message.c_str(); 
+    } 
+}; 
+  
 const int DISP_INT      = 0;
 const int DISP_FLOAT_01 = 1;
 const int DISP_FLOAT    = 2;
  
-const static stringvec vStandardSeps = {
+static stringvec vStandardSeps = {
     "\n",
     "\n",
     "-------------\n",
@@ -24,6 +46,17 @@ const static stringvec vStandardSeps = {
     "=========================\n",
     "#############################\n",
     ":::::::::::::::::::::::::::::::::\n",
+    };
+
+const static charvec vStandardSepChars = {
+    '\0',
+    '\0',
+    '-',
+    '+',
+    '*', 
+    '=', 
+    '#',
+    ':',
     };
 
 const static stringvec vFileSeps = {
@@ -92,6 +125,7 @@ protected:
     T       *m_adData;
     uint     m_iNumVals;
     uintvec  m_vSubVolumes;
+    uintvec  m_vSubVolumesR;
     bool     m_bVerbose;
 
     uintuintvec m_vSliceDescription;

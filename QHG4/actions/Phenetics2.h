@@ -11,6 +11,7 @@
 #include "WELL512.h"
 #include "BinomialDist.h"
 #include "Permutator.h"
+#include "QDFUtils.h"
 #include "SequenceIOUtils.h"
 #include "GenomeCreator.h"
 
