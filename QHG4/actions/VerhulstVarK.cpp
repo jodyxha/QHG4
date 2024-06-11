@@ -18,7 +18,7 @@ template<typename T>
 int VerhulstVarK<T>::NUM_VERHULSTVARK_PARAMS = 3;
 
 template<typename T>
-const std::string VerhulstVarK<T>::asNames[] = {
+const char *VerhulstVarK<T>::asNames[] = {
     ATTR_VERHULSTVARK_B0_NAME,
     ATTR_VERHULSTVARK_D0_NAME,
     ATTR_VERHULSTVARK_TURNOVER_NAME};
@@ -42,7 +42,7 @@ VerhulstVarK<T>::VerhulstVarK(SPopulation<T> *pPop, SCellGrid *pCG, std::string 
     m_dD0 = -1024;
     m_dTheta = -1024;
     
-    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(std::string));
+    this->m_vNames.insert(this->m_vNames.end(), asNames, asNames+sizeof(asNames)/sizeof(char*));
 }
 
 
@@ -132,9 +132,9 @@ int VerhulstVarK<T>::finalize(float fT) {
 // extractAttributesQDF
 //
 //  tries to read the attributes
-//    ATTR_VERHULST_B0_NAME
-//    ATTR_VERHULST_D0_NAME
-//    ATTR_VERHULST_TURNOVER_NAME
+//    ATTR_VERHULSTVARK_B0_NAME
+//    ATTR_VERHULSTVARK_D0_NAME
+//    ATTR_VERHULSTVARK_TURNOVER_NAME
 //  and then creates a LinearBirth and a LinearDeath object
 //
 template<typename T>
@@ -190,9 +190,9 @@ int VerhulstVarK<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
 // writeAttributesQDF
 //
 //  tries to write the attributes
-//    ATTR_VERHULST_B0_NAME
-//    ATTR_VERHULST_D0_NAME
-//    ATTR_VERHULST_TURNOVER_NAME
+//    ATTR_VERHULSTVARK_B0_NAME
+//    ATTR_VERHULSTVARK_D0_NAME
+//    ATTR_VERHULSTVARK_TURNOVER_NAME
 //
 template<typename T>
 int VerhulstVarK<T>::writeAttributesQDF(hid_t hSpeciesGroup) {
