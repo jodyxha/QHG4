@@ -197,7 +197,7 @@ int CoastalDistances::findCoastalNeighborhoods() {
             double dLat = pGeo->m_adLatitude[iIndex];
             
             if  ((iIndex != iCurCell) && isCoastalCell(iIndex)) {
-                double dCurDist = spherdist(dLon0*M_PI/180, dLat0*M_PI/180, dLon*M_PI/180, dLat*M_PI/180, pGeo->m_dRadius);
+                double dCurDist = spherdist(dLon0*Q_PI/180, dLat0*Q_PI/180, dLon*Q_PI/180, dLat*Q_PI/180, pGeo->m_dRadius);
                 if (dCurDist < m_dMaxDist) {
                     // save distance information
                     asCoastRanges[omp_get_thread_num()].insert(iIndex);

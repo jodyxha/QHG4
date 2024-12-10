@@ -72,7 +72,7 @@ Def2QDF: Def2QDF.o GridFactory.o
 	-L$(CORE)     -lCore \
 	-L$(ICOSA)    -lIcosa \
 	-L$(UTILS)    -lUtils \
-	-lhdf5 -lz -lgsl
+	-lhdf5 -lz 
 
 CreateEmptyQDF.o: CreateEmptyQDF.cpp  
 	$(CC) $(COPT) $(DEFS)  -I$(CORE) -I$(ICOSA) -I$(IO)

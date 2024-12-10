@@ -8,7 +8,7 @@
 #include "types.h"
 #include "stdstrutils.h"
 #include "stdstrutilsT.h"
-#include "utils.h"
+#include "qhg_consts.h"
 #include "ParamReader.h"
 
 /*****************************************************************************\

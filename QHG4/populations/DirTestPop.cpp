@@ -98,7 +98,7 @@ int DirTestPop::preLoop() {
 
 #pragma omp parallel for
             for (int iAgent = iFirstAgent; iAgent <= iLastAgent; iAgent++) {
-                m_aAgents[iAgent].m_fDirection = M_PI/127;
+                m_aAgents[iAgent].m_fDirection = Q_PI/127;
                 m_aAgents[iAgent].m_fError     = 0;
                 m_aAgents[iAgent].m_fOldError  = 0;
             }

@@ -30,7 +30,7 @@ protected:
     WELL512 **m_apWELL;
     double m_dMaxAge;
     double m_dUncertainty;
-public:
+
     static const std::string asNames[];
 
 };

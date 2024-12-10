@@ -2,7 +2,7 @@
 #define __SIMLoader_H__
 
 #include <string>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "SPopulation.h"
 
 const int         LAYERSIZE    =  65536;

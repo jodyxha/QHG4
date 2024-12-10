@@ -22,7 +22,7 @@
 #include <vector>
 #include <string>
 
-#include "utils.h"
+#include "qhg_consts.h"
 
 class Trigger {
 public:

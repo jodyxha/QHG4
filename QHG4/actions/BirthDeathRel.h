@@ -50,7 +50,6 @@ protected:
     LinearDeathRel<T> *m_pLD;
     ulong    *m_pNumAgentsPerCell;
 
-public:
     static const std::string asNames[];    
 };
 

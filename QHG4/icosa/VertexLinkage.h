@@ -7,6 +7,7 @@
 #include <vector>
 #include <set>
 
+#include "qhg_consts.h"
 #include "types.h"
 #include "Vec3D.h"
 #include "icoutil.h"

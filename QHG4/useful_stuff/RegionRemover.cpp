@@ -1,7 +1,7 @@
 #include <cstdio>
 
 #include <hdf5.h>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "stdstrutilsT.h"
 #include "geomutils.h"
 #include "QDFUtils.h"

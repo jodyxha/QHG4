@@ -20,7 +20,7 @@
 #include <cstdio>
 #include <vector>
 #include <string>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "zlib.h"
 
 const int MAX_LINE2 = 8192;

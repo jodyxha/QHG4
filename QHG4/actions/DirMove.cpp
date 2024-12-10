@@ -54,7 +54,7 @@ int DirMove<T>::execute(int iAgentIndex, float fT) {
 
         
         
-        double d0 = 2*M_PI;
+        double d0 = 2*Q_PI;
         double fAng0 = 0;
         int iCellIndex = pa->m_iCellIndex;
         int iMaxNeighbors = this->m_pCG->m_aCells[iCellIndex].m_iNumNeighbors;//bad: m_iConnectivity
@@ -68,19 +68,19 @@ int DirMove<T>::execute(int iAgentIndex, float fT) {
             if (((fAngle >= 0) && (fAng >= 0)) ||
                 ((fAngle < 0)  && (fAng < 0))) {
                 d = fAngle - fAng;
-            } else if (((fAngle >= 0) && (fAngle < M_PI/2)) &&
-                       ((fAng   < 0)  && (fAng >= -M_PI/2))) {
+            } else if (((fAngle >= 0) && (fAngle < Q_PI/2)) &&
+                       ((fAng   < 0)  && (fAng >= -Q_PI/2))) {
                 d = fAngle - fAng;
                 
             } else {
-                d = fAngle - (fAng + 2*M_PI);
+                d = fAngle - (fAng + 2*Q_PI);
             }
             */
             d = fAngle - fAng;
-            if (d > M_PI/2) {
-                d -= 2*M_PI;
-            } else if (d < -M_PI/2) {
-                d += 2*M_PI;
+            if (d > Q_PI/2) {
+                d -= 2*Q_PI;
+            } else if (d < -Q_PI/2) {
+                d += 2*Q_PI;
             }
                 
             /*

@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 #include "LineReader.h"
 #include "LookUp.h"

@@ -18,16 +18,16 @@ class OccWriter;
 
 
 
-const static uint WR_NONE =   0;
-const static uint WR_GRID =   1;
-const static uint WR_GEO  =   2;
-const static uint WR_CLI  =   4;
-const static uint WR_VEG  =   8;
-const static uint WR_NAV  =  16;
-const static uint WR_ALL  =  31; // WR_GRID + WR_GEO + WR_CLI + WR_VEG + WR_NAV
-const static uint WR_MOV  =  32;
-const static uint WR_OCC  =  64;
-const static uint WR_POP  = 128; // must be the highest value because we add these (one for each population)
+#define WR_NONE    0
+#define WR_GRID   1
+#define WR_GEO    2
+#define WR_CLI    4
+#define WR_VEG    8
+#define WR_NAV   16
+#define WR_ALL   31
+#define WR_MOV   32
+#define WR_OCC   64
+#define WR_POP  128 // must be the highest value because we add these
 
 
 

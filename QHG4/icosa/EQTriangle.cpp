@@ -43,17 +43,17 @@
 const double D0  = (1.0/(2*sqrt(3)));
 
 const double S3  = sqrt(3);
-const double T0  = tan(M_PI/5);
+const double T0  = tan(Q_PI/5);
 // side of projected ico-face (inscribed in unit sphere) 
 const double A   = sqrt(9*T0*T0-3);
 /*
 // proportionality factor
-const double ETA = A*sqrt(5*S3/(4*M_PI)); // 1.09843845
+const double ETA = A*sqrt(5*S3/(4*Q_PI)); // 1.09843845
 */
 const double EPS = 1e-6;
 
-const double C2PI3 = cos(2*M_PI/3);
-const double S2PI3 = sin(2*M_PI/3);
+const double C2PI3 = cos(2*Q_PI/3);
+const double S2PI3 = sin(2*Q_PI/3);
 
 #define KEY_START "IEQ3"
 #define KEY_LEVEL "LEVEL:"

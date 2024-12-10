@@ -13,7 +13,7 @@
 #include "BufWriter.h"
 #include "BufReader.h"
 #include "Vec3D.h"
-#include "utils.h"
+#include "qhg_consts.h"
 #include "stdstrutilsT.h"
 
 #include "icoutil.h"
@@ -36,7 +36,7 @@ static int s_aiVertNum[] = { 12, 6, 4 };
 #define DOT '.'
 #define CBR ')'
 
-#define PIPLUS (M_PI*1.00)
+#define PIPLUS (Q_PI*1.00)
 //-----------------------------------------------------------------------------
 // constructor
 //
@@ -50,7 +50,7 @@ Icosahedron::Icosahedron(double dRadius)
       m_iPolyType(POLY_TYPE_NONE),
       m_iCurFace(0),
       m_iSubLevel(0),
-      m_curBox(-M_PI,M_PI+1e-8,-M_PI/2, M_PI/2+1e-8),
+      m_curBox(-Q_PI,Q_PI+1e-8,-Q_PI/2, Q_PI/2+1e-8),
       m_bPreSel(false),
       m_bStrict(true) {
     stdprintf("%p: constr%s\n", this, "(normal)");
@@ -86,11 +86,11 @@ Icosahedron::~Icosahedron() {
 // calcSinAngle
 //
 double Icosahedron::calcSinAngle() {
-    double dDPhi = 2*M_PI/5;
+    double dDPhi = 2*Q_PI/5;
     double sps=sin(dDPhi/2);
     sps=2*sps*sps;
     double dSA = (1 - sqrt(1 - 4* sps*(1-sps)))/(2*sps);
-    //    stdprintf("dSA = %f -> (%f°)\n", dSA, 180*asin(dSA)/M_PI);
+    //    stdprintf("dSA = %f -> (%f°)\n", dSA, 180*asin(dSA)/Q_PI);
     return dSA;
 }
 
@@ -158,7 +158,7 @@ int Icosahedron::initIco() {
 
     double dPhi = 0;
     // first row
-    double dDPhi = 2*M_PI/5;
+    double dDPhi = 2*Q_PI/5;
     for (int i = 0; i < 5; i++) {
         m_apMainVertices[i+1]=new Vec3D(dC*cos(dPhi), dC*sin(dPhi), dS);
         dPhi += dDPhi;
@@ -1056,8 +1056,8 @@ gridtype Icosahedron::findNode(Vec3D *pv) {
 //  fin id of node closest to coords
 //  
 gridtype Icosahedron::findNode(double dLon, double dLat) {
-    dLat = dLat * M_PI / 180.0;
-    dLon = dLon * M_PI / 180.0;
+    dLat = dLat * Q_PI / 180.0;
+    dLon = dLon * Q_PI / 180.0;
     double c1=cos(dLat);
     Vec3D v(c1*cos(dLon), c1*sin(dLon), sin(dLat));
     

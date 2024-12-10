@@ -154,8 +154,8 @@ int PheneWriter2::writePhenesBin(SequenceProvider<float> *pGP, const std::string
             tloc_ids::const_iterator it;
             for (it = mSelected.begin(); (iResult == 0) && (it != mSelected.end()); ++it) {
                 const locitem &li = mLocDefs.at(it->first.first);
-                double dLon = li.dLon;//*180/M_PI;
-                double dLat = li.dLat;//*180/M_PI;
+                double dLon = li.dLon;//*180/Q_PI;
+                double dLat = li.dLat;//*180/Q_PI;
                 // write the location header
                 size_t iNumPhenomes = it->second.size();
 
@@ -311,7 +311,7 @@ int PheneWriter2::writePhenesAsc(SequenceProvider<float> *pGP, const std::string
                     
                 const locitem &li = mLocDefs.at(it_ltd->first);
                 // location header
-                // fprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first.c_str(), li.dLon*180/M_PI, li.dLat*180/M_PI, li.dDist, it_td->first);
+                // fprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first.c_str(), li.dLon*180/Q_PI, li.dLat*180/Q_PI, li.dDist, it_td->first);
 		// location files have coordinates in degrees
                 if (bHeaders) {
                     stdfprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first, li.dLon, li.dLat, li.dDist, it_td->first);
@@ -333,12 +333,12 @@ int PheneWriter2::writePhenesAsc(SequenceProvider<float> *pGP, const std::string
                                 stdfprintf(fOut, "%12ld %9ld %9ld %9d %9d % 9.4f % 8.4f  ", 
                                         iID, 
                                         pAD->iMomID, pAD->iDadID, pAD->iGender,
-                                        pAD->iCellID, pAD->dLon/* *180/M_PI*/, pAD->dLat/* *180/M_PI*/);
+                                        pAD->iCellID, pAD->dLon/* *180/Q_PI*/, pAD->dLat/* *180/Q_PI*/);
                             } else {
                                 // changes here must be reflected in the G-Offset-value
                                 stdfprintf(fOut, "%12ld %9d % 9.4f % 8.4f  ", 
                                         iID, 
-                                        pAD->iCellID, pAD->dLon/**180/M_PI*/, pAD->dLat/* *180/M_PI*/);
+                                        pAD->iCellID, pAD->dLon/**180/Q_PI*/, pAD->dLat/* *180/Q_PI*/);
                             }
                         }
                         // ... and agent genome

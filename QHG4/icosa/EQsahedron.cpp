@@ -5,7 +5,7 @@
 
 #include <omp.h>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 #include "stdstrutilsT.h"
 #include "Vec3D.h"
@@ -201,7 +201,7 @@ EQsahedron::EQsahedron()
       m_apIcoFaces(NULL),
       m_pVL(NULL),
       m_curBox(0,0,0,0),
-      //      m_curBox(-M_PI,M_PI+1e-8,-M_PI/2, M_PI/2+1e-8),
+      //      m_curBox(-Q_PI,Q_PI+1e-8,-Q_PI/2, Q_PI/2+1e-8),
       //      m_fMinAlt(fNaN),
       m_bPartial(false) {
 
@@ -379,11 +379,11 @@ void EQsahedron::makeIcoFaces() {
 // calcSinAngle
 //
 double EQsahedron::calcSinAngle() {
-    double dDPhi = 2*M_PI/5;
+    double dDPhi = 2*Q_PI/5;
     double sps=sin(dDPhi/2);
     sps=2*sps*sps;
     double dSA = (1 - sqrt(1 - 4* sps*(1-sps)))/(2*sps);
-    //    printf("dSA = %f -> (%f deg)\n", dSA, 180*asin(dSA)/M_PI);
+    //    printf("dSA = %f -> (%f deg)\n", dSA, 180*asin(dSA)/Q_PI);
     return dSA;
 }
 
@@ -404,7 +404,7 @@ void EQsahedron::calcIcoVerts() {
 
     double dPhi = 0;
     // first row
-    double dDPhi = 2*M_PI/5;
+    double dDPhi = 2*Q_PI/5;
     for (int i = 0; i < 5; i++) {
         m_apMainVertices[i+1]=new Vec3D(dC*cos(dPhi), dC*sin(dPhi), dS);
         dPhi += dDPhi;
@@ -572,9 +572,9 @@ void EQsahedron::mapTriangle(EQTriangle *pEQ, int iFaceNum) {
     setGlobalIDs(pEQC, iFaceNum);
 
 
-    double T0  = tan(M_PI/5);
+    double T0  = tan(Q_PI/5);
     double dSideEQTri =  sqrt(9*T0*T0-3);
-    double dSideIcoTri = 1/sin(2*M_PI/5);
+    double dSideIcoTri = 1/sin(2*Q_PI/5);
     
   
     // the vertices of the face pEQC is mapped to
@@ -938,8 +938,8 @@ void EQsahedron::display() {
 //  fin id of node closest to coords
 //  
 gridtype EQsahedron::findNode(double dLon, double dLat) {
-    dLat = dLat * M_PI / 180.0;
-    dLon = dLon * M_PI / 180.0;
+    dLat = dLat * Q_PI / 180.0;
+    dLon = dLon * Q_PI / 180.0;
     double c1=cos(dLat);
     Vec3D v(c1*cos(dLon), c1*sin(dLon), sin(dLat));
     

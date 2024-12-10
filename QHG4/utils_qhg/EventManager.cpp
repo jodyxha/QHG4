@@ -10,7 +10,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include <vector>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "types.h"
 #include "Triggers.h"
 #include "EventData.h"

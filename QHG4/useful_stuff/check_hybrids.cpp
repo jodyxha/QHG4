@@ -67,7 +67,7 @@ BinFunc *createVecBin(char *pParams) {
 }
 
 double atanfunc(double x, double a, double slant, double shift) {
-    return shift + 2*a*atan(slant*(x - 0.5))/M_PI;
+    return shift + 2*a*atan(slant*(x - 0.5))/Q_PI;
 }
 
 

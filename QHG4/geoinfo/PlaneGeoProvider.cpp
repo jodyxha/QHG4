@@ -1,6 +1,6 @@
 #include <cstdio>
 #include <cmath>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "Projector.h"
 #include "GeoInfo.h"
 #include "PlaneGeoProvider.h"

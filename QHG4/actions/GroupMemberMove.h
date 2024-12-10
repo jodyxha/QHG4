@@ -30,9 +30,7 @@ class GroupMemberMove : public Action<T> {
     WELL512      **m_apWELL;
     AgentEnv<T>   *m_pAE;
     double m_dMoveProb;
-
-public:
-    static const std::string asNames[];    
+    
 };
 
 #endif

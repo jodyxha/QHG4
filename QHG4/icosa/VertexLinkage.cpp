@@ -82,7 +82,7 @@ int VertexLinkage::insertCenter(gridtype lNode, Vec3D *pvCenter) {
         }
         dAngle = atan2(dSinAng, dCosAng);
         if (dAngle < 0) {
-            dAngle += 2*M_PI;
+            dAngle += 2*Q_PI;
         }
         //        printf("... s %f, c %f, a %f\n", dSinAng, dCosAng, dAngle);
         delete p1;
@@ -118,7 +118,7 @@ int VertexLinkage::insertFlatCenter(gridtype lNode, Vec3D *pvCenter) {
     vDiff1.subtract(m_mI2V[lNode]);
     dAngle = atan2(vDiff1.m_fY, vDiff1.m_fX);
     if (dAngle < 0) {
-        dAngle += 2*M_PI;
+        dAngle += 2*Q_PI;
     }
 
     m_mI2H[lNode].insert(std::pair<double, int>(dAngle, iIndex));

@@ -2,7 +2,7 @@
 
 #include "QDFImageExtractor.h"
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 #include "stdstrutilsT.h"
 #include "Vec3D.h"
@@ -1210,7 +1210,7 @@ double **QDFImageExtractor::createDataMatrix(double *pData) {
     for (int i = 0; i < m_iH; i++) {
         double dCurLon = dDeltaLon+m_dOLon;
         for (int j = 0; j < m_iW; j++) {
-            IcoFace *pF = dynamic_cast<IcoFace*>(pSurf->findFace(dCurLon*M_PI/180, dCurLat*M_PI/180));
+            IcoFace *pF = dynamic_cast<IcoFace*>(pSurf->findFace(dCurLon*Q_PI/180, dCurLat*Q_PI/180));
            
             idtype ids[3];
             int    idx[3];
@@ -1224,9 +1224,9 @@ double **QDFImageExtractor::createDataMatrix(double *pData) {
             double d0;
             double d1;
 
-            double dX1 = cos(dCurLon*M_PI/180)*cos(dCurLat*M_PI/180);    
-            double dY1 = sin(dCurLon*M_PI/180)*cos(dCurLat*M_PI/180);    
-            double dZ1 = sin(dCurLat*M_PI/180);    
+            double dX1 = cos(dCurLon*Q_PI/180)*cos(dCurLat*Q_PI/180);    
+            double dY1 = sin(dCurLon*Q_PI/180)*cos(dCurLat*Q_PI/180);    
+            double dZ1 = sin(dCurLat*Q_PI/180);    
             Vec3D P(dX1, dY1, dZ1);
             
 

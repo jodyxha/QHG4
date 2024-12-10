@@ -9,7 +9,7 @@
 #include <hdf5.h>
 
 #include "types.h"
-#include "utils.h"
+#include "qhg_consts.h"
 #include "stdstrutilsT.h"
 #include "ParamReader.h"
 #include "SurfaceGrid.h"

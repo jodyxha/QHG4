@@ -1,19 +1,20 @@
 #include <cstdio>
 #include <cmath>
 
+#include "qhg_consts.h"
 #include "Vec3D.h"
 #include "Tegmark.h"
 
 const double S3  = sqrt(3);
-const double T0  = tan(M_PI/5);
+const double T0  = tan(Q_PI/5);
 // side of projected ico-face (inscribed in unit sphere) 
 const double A   = sqrt(9*T0*T0-3);
 // proportionality factor
-const double ETA = A*sqrt(5*S3/(4*M_PI)); // 1.09843845
+const double ETA = A*sqrt(5*S3/(4*Q_PI)); // 1.09843845
 
 // elements of 120° rotations
-const double CC = cos(2*M_PI/3);
-const double SS = sin(2*M_PI/3);
+const double CC = cos(2*Q_PI/3);
+const double SS = sin(2*Q_PI/3);
 
 //--------------------------------------------------------------
 // mirr 

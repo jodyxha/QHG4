@@ -3,7 +3,7 @@
 #include <vector>
 #include <map>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 #include "types.h"
 #include "LineReader.h"

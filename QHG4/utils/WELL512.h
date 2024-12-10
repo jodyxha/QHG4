@@ -13,7 +13,7 @@
 
 #include <cstdlib>
 #include <cstdint>
-#include "utils.h"
+#include "qhg_consts.h"
 
 static const unsigned int STATE_SIZE = 16;
 static const unsigned long MAX_WRAND = 0xffffffff;

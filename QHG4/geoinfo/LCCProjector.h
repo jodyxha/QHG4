@@ -11,7 +11,7 @@
 #define __LCCPROJECTOR_H__
 
 #include <cmath>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "Projector.h"
 
 /** ***************************************************************************\

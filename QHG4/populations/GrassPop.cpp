@@ -27,9 +27,9 @@ GrassPop::GrassPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen 
     m_pdGrassAvailable = new double[pCG->m_iNumCells];
     int iResult = pAS->shareArray(SHARE_GRASS_MASS_AVAILABLE, pCG->m_iNumCells, m_pdGrassAvailable);
     if (iResult != 0) {
-        printf("Couldnt share array [%p] with name [%s]\n", m_pdGrassAvailable, SHARE_GRASS_MASS_AVAILABLE.c_str()); 
+        printf("Couldnt share array [%p] with name [%s]\n", m_pdGrassAvailable, SHARE_GRASS_MASS_AVAILABLE); 
     } else {
-        printf("GrassPop shared [%p] as [%s]\n", m_pdGrassAvailable, SHARE_GRASS_MASS_AVAILABLE.c_str()); 
+        printf("GrassPop shared [%p] as [%s]\n", m_pdGrassAvailable, SHARE_GRASS_MASS_AVAILABLE); 
             
     }
 
@@ -37,9 +37,9 @@ GrassPop::GrassPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGen 
     m_pdGrassConsumed  = new double[pCG->m_iNumCells];
     iResult = pAS->shareArray(SHARE_GRASS_MASS_CONSUMED, pCG->m_iNumCells, m_pdGrassConsumed);
     if (iResult != 0) {
-        printf("Couldnt share array [%p] with name [%s]\n", m_pdGrassConsumed, SHARE_GRASS_MASS_CONSUMED.c_str()); 
+        printf("Couldnt share array [%p] with name [%s]\n", m_pdGrassConsumed, SHARE_GRASS_MASS_CONSUMED); 
     } else {
-        printf("GrassPop shared [%p] as [%s]\n", m_pdGrassConsumed, SHARE_GRASS_MASS_CONSUMED.c_str()); 
+        printf("GrassPop shared [%p] as [%s]\n", m_pdGrassConsumed, SHARE_GRASS_MASS_CONSUMED); 
     }
 
     // we only have one action

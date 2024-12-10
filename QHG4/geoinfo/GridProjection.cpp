@@ -91,15 +91,15 @@ bool GridProjection::gridToSphere(double dGridX,
     // project from plane to sphere
     m_pProj->plane2Sphere(dV, dW, dLon, dLat);
     if (m_pProj->getID() != PR_LINEAR) {
-        if (dLon < -M_PI-EPS) {
-            dLon += 2*M_PI;
-        } else if (dLon > M_PI+EPS) {
-            dLon -= 2*M_PI;
+        if (dLon < -Q_PI-EPS) {
+            dLon += 2*Q_PI;
+        } else if (dLon > Q_PI+EPS) {
+            dLon -= 2*Q_PI;
         }
-        if (dLat < -M_PI/2-EPS) {
-            dLat += M_PI;
-        } else if (dLat > M_PI/2+EPS) {
-            dLat -= M_PI;
+        if (dLat < -Q_PI/2-EPS) {
+            dLat += Q_PI;
+        } else if (dLat > Q_PI/2+EPS) {
+            dLat -= Q_PI;
         }
     }
     //    printf("g %f,%f -> p %f,%f -> s %f, %f\n", dGridX, dGridY, dV, dW, dLon, dLat);
@@ -127,8 +127,8 @@ bool GridProjection::sphereToGrid(double  dLon,
 
     /*
     // convert lat lon to radians
-    double dLambda = M_PI*dLon/180;
-    double dPhi    = M_PI*dLat/180;
+    double dLambda = Q_PI*dLon/180;
+    double dPhi    = Q_PI*dLat/180;
     */
 
 
@@ -217,15 +217,15 @@ double calcTriangleArea(double dLon0, double dLat0,
     // angle between the normals is PI - angle between the planes,
     // i.e. angles of the triangle
     double a01, a12, a20;
-    a01 = M_PI - pN0->getAngle(pN1);
-    a12 = M_PI - pN1->getAngle(pN2);
-    a20 = M_PI - pN2->getAngle(pN0);
+    a01 = Q_PI - pN0->getAngle(pN1);
+    a12 = Q_PI - pN1->getAngle(pN2);
+    a20 = Q_PI - pN2->getAngle(pN0);
 
     delete pN0;
     delete pN1;
     delete pN2;
     // spherical excess: alpha+beta+gamma-pi
-    return a01+a12+a20-M_PI;
+    return a01+a12+a20-Q_PI;
     // alternative: a_xy=pN_x->getAngle(pN_y)
     // excess = 2*PI-(a_01+a12+a20)
 }

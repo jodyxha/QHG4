@@ -11,7 +11,6 @@
 #include "WELL512.h"
 #include "BinomialDist.h"
 #include "Permutator.h"
-#include "QDFUtils.h"
 #include "SequenceIOUtils.h"
 #include "GenomeCreator.h"
 
@@ -149,7 +148,6 @@ protected:
     int    *m_aiLocs;
     double *m_adMuts;
 
-public:
     static const std::string asNames[];
 };
 

@@ -15,7 +15,7 @@
 
 #include <cstring>
 #include <cstdlib>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 
 const char DEF_SEP[]=" \t\n";

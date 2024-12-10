@@ -43,7 +43,7 @@ protected:
     WELL512 **m_apWELL;
     LinearBirth<T> *m_pLB;
     LinearDeath<T> *m_pLD;
-public:   
+   
     static const std::string asNames[];
 };
 

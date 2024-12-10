@@ -705,7 +705,7 @@ double **createDataMatrix(SurfaceGrid *pSG, double *pData, int iW, int iH, doubl
     for (int i = 0; i < iH; i++) {
         double dCurLon = dDeltaLon+dLonStart;
         for (int j = 0; j < iW; j++) {
-            IcoFace *pF = dynamic_cast<IcoFace*>(pSurf->findFace(dCurLon*M_PI/180, dCurLat*M_PI/180));
+            IcoFace *pF = dynamic_cast<IcoFace*>(pSurf->findFace(dCurLon*Q_PI/180, dCurLat*Q_PI/180));
            
             idtype ids[3];
             int    idx[3];
@@ -719,9 +719,9 @@ double **createDataMatrix(SurfaceGrid *pSG, double *pData, int iW, int iH, doubl
             double d0;
             double d1;
 
-            double dX1 = cos(dCurLon*M_PI/180)*cos(dCurLat*M_PI/180);    
-            double dY1 = sin(dCurLon*M_PI/180)*cos(dCurLat*M_PI/180);    
-            double dZ1 = sin(dCurLat*M_PI/180);    
+            double dX1 = cos(dCurLon*Q_PI/180)*cos(dCurLat*Q_PI/180);    
+            double dY1 = sin(dCurLon*Q_PI/180)*cos(dCurLat*Q_PI/180);    
+            double dZ1 = sin(dCurLat*Q_PI/180);    
             Vec3D P(dX1, dY1, dZ1);
             
 

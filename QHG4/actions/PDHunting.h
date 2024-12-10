@@ -54,8 +54,7 @@ protected:
     std::string m_sPredName;
 
     std::string m_sRelationInput;
-public:
-    static const std::string asNames[];
+
 };
 
 

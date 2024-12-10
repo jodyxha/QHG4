@@ -6,7 +6,7 @@
 #include <map>
 #include <vector>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "stdstrutilsT.h"
 #include "IDSampler2.h"
 

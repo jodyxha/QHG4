@@ -1,5 +1,5 @@
 #include "FreeLookUp.h"
-#include "utils.h"
+#include "qhg_consts.h"
 
 
 //virtual void getColor(double dValue, double &dRed, double &dGreen, double &dBlue, double &dAlpha);

@@ -9,7 +9,7 @@
 #include "Angulator.h"
 
 
-const double RAD = M_PI/180.0;
+const double RAD = Q_PI/180.0;
 const double EPS = 1e-6;
 //const int    MAX_NEIGHBORS = 6;
 

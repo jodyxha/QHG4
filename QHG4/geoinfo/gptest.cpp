@@ -1,7 +1,7 @@
 
 #include <cstdlib>
 #include <cmath>
-#include "utils.h" 
+#include "qhg_consts.h" 
 #include "GeoInfo.h" 
 #include "Projector.h" 
 #include "GridProjection.h"
@@ -10,18 +10,18 @@
 
 ProjType pt1(
     PR_LAMBERT_AZIMUTHAL_EQUAL_AREA,
-    15.5*M_PI/180,
-    44.4*M_PI/180,
+    15.5*Q_PI/180,
+    44.4*Q_PI/180,
     0,
     NULL
 );
 
-double adAdd[] = {30.0*M_PI/180, 60.0*M_PI/180};
+double adAdd[] = {30.0*Q_PI/180, 60.0*Q_PI/180};
 
 ProjType pt2(
     PR_LAMBERT_CONFORMAL_CONIC,
-    12.5*M_PI/180,
-    53.0*M_PI/180,
+    12.5*Q_PI/180,
+    53.0*Q_PI/180,
     2,
     adAdd
 );
@@ -108,8 +108,8 @@ int main(int iArgC, char *apArgV[]) {
     printf("(%f,%f) -> Lon %f, Lat %f\n", dGridX, dGridY, dLon, dLat);
 
 
-    dLon = -17.723*M_PI/180;
-    dLat =  52.328*M_PI/180;
+    dLon = -17.723*Q_PI/180;
+    dLat =  52.328*Q_PI/180;
     pr->sphere2Plane(dLon, dLat, dGridX, dGridY);
     printf("pr Lambda %f, Phi %f -> (%f,%f)\n", dLon, dLat, dGridX, dGridY);
     dGridX *= pd2.m_dRadius/60.0;

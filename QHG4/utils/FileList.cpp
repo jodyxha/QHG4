@@ -14,7 +14,7 @@
 #include <vector>
 #include <algorithm>
 #include "FileList.h"
-#include "utils.h"
+#include "qhg_consts.h"
 
 //------------------------------------------------------------------------------
 // constructor

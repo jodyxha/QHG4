@@ -2,6 +2,7 @@
 #include <cstring>
 #include <cmath>
 
+#include "qhg_consts.h"
 #include "Vec3D.h"
 #include "geomutils.h"
 //#include "ValReader.h"
@@ -288,8 +289,8 @@ bool IcoFace::subdivideLand(ValReader *pVR, float fMinAlt, int iNumLevels) {
     } else {
         // last level : check nodes
         for (int i = 0;  (i < 3); i++) {
-            double dLat = asin(m_apVerts[i]->m_fZ)*180/M_PI;
-            double dLon = atan2(m_apVerts[i]->m_fY,m_apVerts[i]->m_fX)*180/M_PI;
+            double dLat = asin(m_apVerts[i]->m_fZ)*180/Q_PI;
+            double dLon = atan2(m_apVerts[i]->m_fY,m_apVerts[i]->m_fX)*180/Q_PI;
 
             bKeep = (pVR->getDValue(dLon, dLat) > fMinAlt) || bKeep;
         }
@@ -445,8 +446,8 @@ void IcoFace::displayLL() {
     printf("[");
     for (int i = 0; i < 3; i++) {
         printf("(%f %f)", 
-               m_adLons[i]*180/M_PI, 
-               m_adLats[i]*180/M_PI);
+               m_adLons[i]*180/Q_PI, 
+               m_adLats[i]*180/Q_PI);
     }
     printf("]\n"); 
 }

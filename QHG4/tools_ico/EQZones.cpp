@@ -4,7 +4,7 @@
 #include <set>
 #include <map>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "dbgprint.h"
 #include "geomutils.h"
 #include "Vec3D.h"

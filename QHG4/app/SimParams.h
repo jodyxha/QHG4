@@ -3,7 +3,7 @@
 
 
 #include <string>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "WELL512.h"
 #include "SPopulation.h"
  

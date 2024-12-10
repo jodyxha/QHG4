@@ -5,7 +5,7 @@
 #include <deque>
 
 #include "types.h"
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 #include "LineReader.h"
 #include "IcoNode.h"

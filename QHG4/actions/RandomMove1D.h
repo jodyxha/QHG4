@@ -28,9 +28,6 @@ class RandomMove1D : public Action<T> {
     WELL512 **m_apWELL;
     double m_dMoveProb;
     bool m_bAbsorbing;
-
-public:
-    static const std::string asNames[];
 };
 
 #endif

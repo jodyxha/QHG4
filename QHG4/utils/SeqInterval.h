@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "types.h"
 #include <deque>
 

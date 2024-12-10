@@ -1,4 +1,4 @@
-#include "utils.h"
+#include "qhg_consts.h"
 #include "TabReader.h"
 
 //------------------------------------------------------------------------------

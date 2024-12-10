@@ -254,7 +254,7 @@ std::string simpleFormat(const std::string sFormat, const std::string t) {
 //  termination function for fetchNextParam
 //
 int fetchNextParam(){
-    throw std::runtime_error("Wrong number of argument");
+    throw std::runtime_error("Wrong number of arguments");
 }
 
 
@@ -263,7 +263,7 @@ int fetchNextParam(){
 //  termination function for fetchNextParam
 //
 int fetchNextParam2(){
-    throw std::runtime_error("Wrong number of argument");
+    throw std::runtime_error("Wrong number of arguments");
 }
 
 #endif

@@ -188,8 +188,8 @@ int insertRiverData(vecvecdoubledouble &vRecs, vecdouble &vVals, SCellGrid *pCG,
             if (iResult == 0) {
                 if (bDeg2Rad) {
                     /*
-                    dLon *= M_PI/180;
-                    dLat *= M_PI/180;
+                    dLon *= Q_PI/180;
+                    dLat *= Q_PI/180;
                     */
                 }
                 gridtype lNode = pSurf->findNode(dLon, dLat);
@@ -199,7 +199,7 @@ int insertRiverData(vecvecdoubledouble &vRecs, vecdouble &vVals, SCellGrid *pCG,
                 if (dVal == 0) {
                     dVal = 1;
                 }
-                stdprintf("Path %d, segment %d:(%f,%f)->%d:  %f\n", i, j, dLon*180/M_PI, dLat*180/M_PI, iIndex, dVal);
+                stdprintf("Path %d, segment %d:(%f,%f)->%d:  %f\n", i, j, dLon*180/Q_PI, dLat*180/Q_PI, iIndex, dVal);
                 pGeo->m_adRivers[iIndex] = vVals[i];
             }
             
@@ -261,8 +261,8 @@ int initializeGeography(SCellGrid *pCG, IcoGridNodes *pIGN) {
                 pGeo->m_adLatitude[iIndex]  =  pIN->m_dLat;
                 pGeo->m_adLongitude[iIndex] =  pIN->m_dLon;
                 if (bDeg2Rad) {
-                    pGeo->m_adLatitude[iIndex]  *=  180/M_PI;
-                    pGeo->m_adLongitude[iIndex] *=  180/M_PI;
+                    pGeo->m_adLatitude[iIndex]  *=  180/Q_PI;
+                    pGeo->m_adLongitude[iIndex] *=  180/Q_PI;
                 }
                 // the neighbor arrays are arranged sequentially into a big 1-d array
                 int i0 = pGeo->m_iMaxNeighbors*iIndex;

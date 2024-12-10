@@ -22,8 +22,8 @@
 
 
 Quat *calcIcoInv() {
-    Quat *q1 = Quat::createRotation(M_PI/5, 0, 0, 1);
-    Quat *q2 = Quat::createRotation(M_PI,   1, 0, 0);
+    Quat *q1 = Quat::createRotation(Q_PI/5, 0, 0, 1);
+    Quat *q2 = Quat::createRotation(Q_PI,   1, 0, 0);
     
     q2->mult(q1);
     return q2;

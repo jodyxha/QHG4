@@ -1,6 +1,6 @@
 #include <cstdio>
 #include <cmath>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "TPGeoProvider.h"
 
 //----------------------------------------------------------------------------
@@ -53,8 +53,8 @@ bool TPGeoProvider::getWorldCoordsImpl(double dGridX,
         double dZ = m_matTrans[2][0]*dU + m_matTrans[2][1]*dV + m_matTrans[2][2]*dW;
 
         // get longitude/latitude in degrees
-        dLat = 180*asin(dZ/m_dRadius)/M_PI;
-        dLon = 180*atan2(dY, dX)/M_PI;
+        dLat = 180*asin(dZ/m_dRadius)/Q_PI;
+        dLon = 180*atan2(dY, dX)/Q_PI;
 
         double dLatDeg = RAD2DEG(asin(dZ/m_dRadius));
         double dLonDeg = RAD2DEG(atan2(dY, dX));
@@ -80,11 +80,11 @@ bool TPGeoProvider::getWorldCoordsImpl(double dGridX,
 // calcMat
 //
 void TPGeoProvider::calcMat(double dLonCenter, double dLatCenter) {
-    double dPhi = dLatCenter*M_PI/180;
+    double dPhi = dLatCenter*Q_PI/180;
     double cPhi = cos(dPhi);
     double sPhi = sin(dPhi);
 
-    double dTheta = dLonCenter*M_PI/180;
+    double dTheta = dLonCenter*Q_PI/180;
     double cTheta = cos(dTheta);
     double sTheta = sin(dTheta);
 

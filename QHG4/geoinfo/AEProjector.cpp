@@ -5,7 +5,7 @@
 \*****************************************************************************************/
 
 #include <cmath>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "GeoInfo.h"
 #include "AEProjector.h"
 
@@ -54,10 +54,10 @@ void AzimuthalEquidistantProjector::plane2Sphere(double dX,
     
     double dL;
                 
-    if (m_dPhi0 == M_PI/2) {
+    if (m_dPhi0 == Q_PI/2) {
         // must be atan
         dL = atan(-dX/dY);
-    } else if (m_dPhi0 == -M_PI/2) {
+    } else if (m_dPhi0 == -Q_PI/2) {
         // must be atan
         dL = atan(dX/dY);
     } else {

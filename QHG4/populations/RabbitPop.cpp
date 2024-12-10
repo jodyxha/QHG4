@@ -7,7 +7,6 @@
 #include "Prioritizer.cpp"
 #include "Action.cpp"
 
-#include "GrassManager.cpp"
 #include "RabbitManager.cpp"
 #include "Starver.cpp"
 #include "WeightedMove.cpp"
@@ -52,21 +51,21 @@ RabbitPop::RabbitPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGe
     m_avRabbitLocIDs = new cellnmvec[pCG->m_iNumCells];
     iResult = pAS->shareArray(SHARE_RABBIT_LOC_IDS, pCG->m_iNumCells, m_avRabbitLocIDs);
     if (iResult != 0) {
-        printf("Couldnt share array [%p] with name [%s]\n", m_avRabbitLocIDs, SHARE_RABBIT_LOC_IDS.c_str()); 
+        printf("Couldnt share array [%p] with name [%s]\n", m_avRabbitLocIDs, SHARE_RABBIT_LOC_IDS); 
     }
    
     // create and share rabbit total mass percell array
     m_adRabbitMassAvail = new double[pCG->m_iNumCells];
     iResult = pAS->shareArray(SHARE_RABBIT_MASS_AVAILABLE, pCG->m_iNumCells, m_adRabbitMassAvail);
     if (iResult != 0) {
-        printf("Couldnt share array [%p] with name [%s]\n", m_adRabbitMassAvail, SHARE_RABBIT_MASS_AVAILABLE.c_str()); 
+        printf("Couldnt share array [%p] with name [%s]\n", m_adRabbitMassAvail, SHARE_RABBIT_MASS_AVAILABLE); 
     }
 
     // create and share the dead rabbis array
     m_avRabbitDead = new agcellvec[1];
     iResult = pAS->shareArray(SHARE_RABBIT_DEAD, pCG->m_iNumCells, m_avRabbitDead);
     if (iResult != 0) {
-        printf("Couldnt share array [%p] with name [%s]\n", m_avRabbitDead, SHARE_RABBIT_DEAD.c_str()); 
+        printf("Couldnt share array [%p] with name [%s]\n", m_avRabbitDead, SHARE_RABBIT_DEAD); 
     }
 
     // create and share fox count array (the rabbit's fox radar)
@@ -75,7 +74,7 @@ RabbitPop::RabbitPop(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSize, IDGe
     memset(m_adFoxCount, 0, pCG->m_iNumCells*sizeof(double));
     iResult = pAS->shareArray(SHARE_FOX_COUNT, pCG->m_iNumCells, m_adFoxCount);
     if (iResult != 0) {
-        printf("Couldnt share array [%p] with name [%s]\n", m_adFoxCount, SHARE_FOX_COUNT.c_str()); 
+        printf("Couldnt share array [%p] with name [%s]\n", m_adFoxCount, SHARE_FOX_COUNT); 
     }
 
 

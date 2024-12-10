@@ -7,7 +7,7 @@
 
 #include "types.h"
 #include "stdstrutilsT.h"
-#include "utils.h"
+#include "qhg_consts.h"
 #include "colors.h"
 #include "geomutils.h"
 #include "WELL512.h"
@@ -209,7 +209,7 @@ int IDSampler2::getCandidatesNew1(loc_data  &mLocData, loc_varrpos &mvCandidates
             double dLat1 = m_mCoords[m_pCellIDs[i]].second;
         
             
-            //            double d = spherdist(dLon0*M_PI/180, dLat0*M_PI/180, dLon1*M_PI/180, dLat1*M_PI/180, RADIUS);
+            //            double d = spherdist(dLon0*Q_PI/180, dLat0*Q_PI/180, dLon1*Q_PI/180, dLat1*Q_PI/180, RADIUS);
             double d = m_fCalcDist(dLon0, dLat0, dLon1, dLat1, m_dScale);
             
 
@@ -273,7 +273,7 @@ int IDSampler2::getCandidatesNew2(loc_data  &mLocData, loc_varrpos &mvCandidates
             double dLon0 = it->second.dLon;
             double dLat0 = it->second.dLat;
            
-            //            double d = spherdist(dLon0*M_PI/180, dLat0*M_PI/180, dLon1*M_PI/180, dLat1*M_PI/180, RADIUS);
+            //            double d = spherdist(dLon0*Q_PI/180, dLat0*Q_PI/180, dLon1*Q_PI/180, dLat1*Q_PI/180, RADIUS);
             double d = m_fCalcDist(dLon0, dLat0, dLon1, dLat1, m_dScale);
 
             if (d < it->second.dDist) {
@@ -507,12 +507,12 @@ IDSample *IDSampler2::getAttributesCore(loc_data  &mLocData, idset &sSelected) {
             idset_cit it0 = sSelected.find(m_pIDs[i]);
             if (it0 != sSelected.end()) {
                 // the coordinates are in degrees! make them radians
-                double dLon0 = m_mCoords[m_pCellIDs[i]].first*M_PI/180;
-                double dLat0 = m_mCoords[m_pCellIDs[i]].second*M_PI/180;
+                double dLon0 = m_mCoords[m_pCellIDs[i]].first*Q_PI/180;
+                double dLat0 = m_mCoords[m_pCellIDs[i]].second*Q_PI/180;
                 bool bSearching = true;
                 loc_data::const_iterator it;
                 for (it = mLocData.begin(); (iResult == 0) && bSearching && (it != mLocData.end()); ++it) {
-                    //                    double d = spherdist(dLon0, dLat0, it->second.dLon*M_PI/180, it->second.dLat*M_PI/180, RADIUS);
+                    //                    double d = spherdist(dLon0, dLat0, it->second.dLon*Q_PI/180, it->second.dLat*Q_PI/180, RADIUS);
                     double d = m_fCalcDist(dLon0, dLat0, it->second.dLon, it->second.dLat, m_dScale);
                     if (d < it->second.dDist) {
 

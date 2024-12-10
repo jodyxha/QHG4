@@ -63,18 +63,18 @@
 //   <!ATTLIST var       value        CDATA #REQUIRED >
 
 // the symbols
-#define SYM_NONE            0
-#define SYM_WORD            1
-#define SYM_OPEN_BRA        2
-#define SYM_CLOSE_BRA       3
-#define SYM_OPEN_SLASH_BRA  4
-#define SYM_CLOSE_SLASH_BRA 5
-#define SYM_QUOTE           6
-#define SYM_EQUALS          7
-#define SYM_SLASH           8
+static const uint SYM_NONE            = 0;
+static const uint SYM_WORD            = 1;
+static const uint SYM_OPEN_BRA        = 2;
+static const uint SYM_CLOSE_BRA       = 3;
+static const uint SYM_OPEN_SLASH_BRA  = 4;
+static const uint SYM_CLOSE_SLASH_BRA = 5;
+static const uint SYM_QUOTE           = 6;
+static const uint SYM_EQUALS          = 7;
+static const uint SYM_SLASH           = 8;
 
 // the symbol names (for debugging)
-const char *pSymNames[] = {
+static const std::string asSymNames[] = {
     "SYM_NONE",
     "SYM_WORD", 
     "SYM_OPEN_BRA",
@@ -87,12 +87,12 @@ const char *pSymNames[] = {
 };
 
 // tag types
-#define TYPE_NO_TAG     0
-#define TYPE_START_TAG  1
-#define TYPE_EMPTY_TAG  2
-#define TYPE_END_TAG    3
+static const uint TYPE_NO_TAG     = 0;
+static const uint TYPE_START_TAG  = 1;
+static const uint TYPE_EMPTY_TAG  = 2;
+static const uint TYPE_END_TAG    = 3;
 
-#define NAME_ROOT "root"
+static const std::string NAME_ROOT = "root";
 
 bool s_bVerbose = false;
 
@@ -354,7 +354,7 @@ int qhgXMLNode::parseTag(char *pLine)  {
                     stdprintf("expected '=' in attribute\n");
                     m_iErr = -1;
                 }
-                if (s_bVerbose) stdprintf("end of attr loop: sym %s [%s]\n", pSymNames[iSym], m_pCur);
+                if (s_bVerbose) stdprintf("end of attr loop: sym %s [%s]\n", asSymNames[iSym], m_pCur);
             }
             // after attributes either a '>" or  "/>"
             if ((m_iErr == 0) && (iSym == SYM_CLOSE_BRA)) {

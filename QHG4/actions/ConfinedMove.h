@@ -39,7 +39,6 @@ class ConfinedMove : public Action<T> {
     bool* m_bAllowed;
     bool m_bAbsorbing;
 
-public:
     static const std::string asNames[];
 };
 

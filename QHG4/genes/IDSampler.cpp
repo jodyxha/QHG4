@@ -6,7 +6,7 @@
 #include <omp.h>
 
 #include "types.h"
-#include "utils.h"
+#include "qhg_consts.h"
 #include "stdstrutilsT.h"
 #include "geomutils.h"
 #include "LineReader.h"
@@ -129,8 +129,8 @@ int IDSampler::getSamplesP(const std::string sQDFTime, const std::string sPopNam
                 // normal spherical distance
 #pragma omp parallel for
                 for (int i = 0; i < m_iNumAgents; i++) {
-                    double dLon0 = m_mCoords[m_pCellIDs[i]].first*M_PI/180;
-                    double dLat0 = m_mCoords[m_pCellIDs[i]].second*M_PI/180;
+                    double dLon0 = m_mCoords[m_pCellIDs[i]].first*Q_PI/180;
+                    double dLat0 = m_mCoords[m_pCellIDs[i]].second*Q_PI/180;
                     m_pHits[i] = (it->second.dDist > spherdist(dLon0, dLat0, dLo, dLa, RADIUS));
                 }
             }
@@ -258,8 +258,8 @@ int IDSampler::getSamples(const std::string sQDFTime, const std::string sPopName
                     d = sqrt((dLon0 - dLo) * (dLon0 - dLo) + (dLat0 - dLa) * (dLat0 - dLa));
                 } else {
 	        	    // the coordinates are in degrees! make them radians
-    	        	dLon0 = m_mCoords[m_pCellIDs[i]].first*M_PI/180;
-        	    	dLat0 = m_mCoords[m_pCellIDs[i]].second*M_PI/180;
+    	        	dLon0 = m_mCoords[m_pCellIDs[i]].first*Q_PI/180;
+        	    	dLat0 = m_mCoords[m_pCellIDs[i]].second*Q_PI/180;
                     // normal spherical distance
                     d = spherdist(dLon0, dLat0, it->second.dLon, it->second.dLat, RADIUS);
                 }
@@ -379,8 +379,8 @@ int IDSampler::getAttributes(const std::string sQDFTime, const std::string sPopN
             idset_cit it0 = sSelected.find(m_pIDs[i]);
             if (it0 != sSelected.end()) {
                 // the coordinates are in degrees! make them radians
-                double dLon0 = m_mCoords[m_pCellIDs[i]].first*M_PI/180;
-                double dLat0 = m_mCoords[m_pCellIDs[i]].second*M_PI/180;
+                double dLon0 = m_mCoords[m_pCellIDs[i]].first*Q_PI/180;
+                double dLat0 = m_mCoords[m_pCellIDs[i]].second*Q_PI/180;
                 bool bSearching = true;
                 locdata::const_iterator it;
                 for (it = mLocData.begin(); (iResult == 0) && bSearching && (it != mLocData.end()); ++it) {
@@ -651,8 +651,8 @@ int IDSampler::fillLocData(const std::string sLocFile, stringvec &vNames, locdat
             }
             if (iC == iReq) {
                 // the coordinates are in degrees! make them radians
-                li.dLon *= M_PI/180;
-                li.dLat *= M_PI/180;
+                li.dLon *= Q_PI/180;
+                li.dLat *= Q_PI/180;
                 vNames.push_back(sName);
                 mLocData[sName] = li;
             } else {

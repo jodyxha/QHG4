@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cmath>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 //#include "stdstrutils.h"
 #include "stdstrutilsT.h"
@@ -56,8 +56,8 @@ std::string ProjType::toString(bool bDegrees) const {
     std::string sPrType = stdsprintf("%d [%s] %f %f %zd",
                                      m_iProjType,
                                      GeoInfo::getName(m_iProjType),
-                                     m_dLambda0*(bDegrees?180/M_PI:1),
-                                     m_dPhi0*(bDegrees?180/M_PI:1),
+                                     m_dLambda0*(bDegrees?180/Q_PI:1),
+                                     m_dPhi0*(bDegrees?180/Q_PI:1),
                                      m_vdAdd.size());
     for (uint i =0; i < m_vdAdd.size(); ++i) {
         sPrType += stdsprintf(" %f", m_vdAdd[i]);
@@ -90,8 +90,8 @@ int ProjType::fromString(const std::string sLine, bool bDegrees) {
             
             iResult = 0;
             if (bDegrees) {
-                m_dLambda0 *= M_PI/180;
-                m_dPhi0    *= M_PI/180;
+                m_dLambda0 *= Q_PI/180;
+                m_dPhi0    *= Q_PI/180;
             }
             
             if (iNumAdd > 0) {
@@ -237,8 +237,8 @@ ProjType *ProjType::createPT(const std::string sPTData, bool bDegrees) {
             if (strToNum(vParts[1], &dLambda0)) {
                 if (strToNum(vParts[2], &dPhi0)) {
                     if (bDegrees) {
-                        dLambda0 *= M_PI/180;
-                        dPhi0 *= M_PI/180;
+                        dLambda0 *= Q_PI/180;
+                        dPhi0 *= Q_PI/180;
                     }   
                     if (strToNum(vParts[3], &iNumAdd)) {
                         

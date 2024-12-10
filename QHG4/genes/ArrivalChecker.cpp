@@ -7,7 +7,7 @@
 
 
 #include "types.h"
-#include "utils.h"
+#include "qhg_consts.h"
 #include "stdstrutilsT.h"
 #include "colors.h"
 #include "geomutils.h"
@@ -597,8 +597,8 @@ int ArrivalChecker::calcSphericalDistances() {
 #pragma omp parallel for
     for (uint iCell = 0; iCell < m_iNumCells; ++iCell) {
         std::pair<double,double> &coords1 = m_mCoords[iCell];
-        double dLon0 = coords1.first*M_PI/180;
-        double dLat0 = coords1.second*M_PI/180;
+        double dLon0 = coords1.first*Q_PI/180;
+        double dLat0 = coords1.second*Q_PI/180;
         double dX0 = cos(dLon0)*cos(dLat0);    
         double dY0 = sin(dLon0)*cos(dLat0);    
         double dZ0 = sin(dLat0);    
@@ -606,8 +606,8 @@ int ArrivalChecker::calcSphericalDistances() {
         int iT = omp_get_thread_num();
         loc_data::const_iterator it;
         for (it = m_mLocData.begin(); it !=  m_mLocData.end(); ++it) {
-            double dLon1 = it->second.dLon*M_PI/180;
-            double dLat1 = it->second.dLat*M_PI/180;
+            double dLon1 = it->second.dLon*Q_PI/180;
+            double dLat1 = it->second.dLat*Q_PI/180;
             double dX1   = cos(dLon1)*cos(dLat1);    
             double dY1   = sin(dLon1)*cos(dLat1);    
             double dZ1   = sin(dLat1);    

@@ -7,7 +7,7 @@
 #include <algorithm>
 
 #include "types.h"
-#include "utils.h"
+#include "qhg_consts.h"
 #include "geomutils.h"
 #include "strutils.h"
 #include "GeneUtils.h"

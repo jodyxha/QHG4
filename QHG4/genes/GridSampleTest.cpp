@@ -451,8 +451,8 @@ int main(int iArgC, char *apArgV[]) {
                 double dDist = 0;
                 
                 if (splitRaster(sRasterDef, &dDLon, &dDLat, &dDist)==0) {
-                    // dDLon *= M_PI/180;
-                    // dDLat *= M_PI/180;
+                    // dDLon *= Q_PI/180;
+                    // dDLat *= Q_PI/180;
                     GridSampler *pGS = GridSampler::createInstance(sQDFGeo, sQDFStats, sQDFPop, sSpecies);
                     if (pGS != NULL) {
                         

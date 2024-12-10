@@ -11,7 +11,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "Pattern.h"
 
 Pattern::Pattern() {

@@ -9,7 +9,7 @@
 #include <cstring>
 #include <string>
 #include <cstdlib>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "stdstrutilsT.h"
 #include "PolyLine.h"
 

@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "types.h"
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 #include "OccHistory.h"
 

@@ -38,7 +38,6 @@ protected:
     double m_dSlope;
     double m_dScale;
 
-public:
     static const std::string asNames[];
 
 };

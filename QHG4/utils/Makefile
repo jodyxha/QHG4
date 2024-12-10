@@ -43,7 +43,7 @@ all: libUtils.a
 utils: libUtils.a
 
 
-libUtils.a: utils.o strutils.o stdstrutils.o geomutils.o calcutils.o PolyLine.o gzutils.o \
+libUtils.a: strutils.o stdstrutils.o geomutils.o calcutils.o PolyLine.o gzutils.o \
       LineReader.o \
       Pattern.o FileList.o  \
       Quat.o \
@@ -70,9 +70,6 @@ clean:
 
 
 
-utils.o: utils.cpp  utils.h 
-	$(CC) $(COPT) $(DEFS)
-
 strutils.o: strutils.cpp  strutils.h 
 	$(CC) $(COPT) $(DEFS) -fPIC
 
@@ -80,7 +77,7 @@ stdstrutils.o: stdstrutils.cpp  stdstrutils.h
 	$(CC) $(COPT) $(DEFS) -fPIC	
 
 
-geomutils.o: geomutils.cpp  geomutils.h utils.h
+geomutils.o: geomutils.cpp  geomutils.h qhg_consts.h
 	$(CC) $(COPT) $(DEFS)
 
 calcutils.o: calcutils.cpp  calcutils.h PolyLine.h
@@ -89,7 +86,7 @@ calcutils.o: calcutils.cpp  calcutils.h PolyLine.h
 gzutils.o: gzutils.cpp  gzutils.h
 	$(CC) $(COPT) $(DEFS)
 
-LineReader.o: LineReader.cpp  LineReader.h  utils.h
+LineReader.o: LineReader.cpp  LineReader.h  qhg_consts.h
 	$(CC) $(COPT) $(DEFS)
 
 Vec3D.o: Vec3D.cpp  Vec3D.h
@@ -161,7 +158,7 @@ BinoDistTest: BinoDistTest.o BinomialDist.o bino_tools.o
 Permutator.o: Permutator.cpp Permutator.h
 	$(CC) $(COPT) $(DEFS)
 
-SeqInterval.o: SeqInterval.cpp SeqInterval.h utils.h types.h
+SeqInterval.o: SeqInterval.cpp SeqInterval.h qhg_consts.h qhg_consts.h types.h
 	$(CC) $(COPT) $(DEFS)
 
 smallprimes.o: smallprimes.cpp smallprimes.h 

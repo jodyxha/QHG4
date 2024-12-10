@@ -45,7 +45,7 @@ clean:
 test: gptest
 
 Projector.o: Projector.cpp  Projector.h \
-             $(UTILS)/utils.h
+             $(UTILS)/qhg_consts.h
 	$(CC) $(COPT) $(DEFS)
 
 EQRProjector.o: EQRProjector.cpp EQRProjector.h Projector.h  
@@ -55,7 +55,7 @@ OrthoProjector.o: OrthoProjector.cpp OrthoProjector.h Projector.h
 	$(CC) $(COPT) $(DEFS)
 
 AEProjector.o: AEProjector.cpp AEProjector.h Projector.h   \
-               $(UTILS)/utils.h
+               $(UTILS)/qhg_consts.h
 	$(CC) $(COPT) $(DEFS)
 
 LAEAProjector.o: LAEAProjector.cpp LAEAProjector.h Projector.h  
@@ -68,18 +68,18 @@ CEAProjector.o: CEAProjector.cpp CEAProjector.h Projector.h
 	$(CC) $(COPT) $(DEFS)
 
 LCCProjector.o: LCCProjector.cpp LCCProjector.h Projector.h   \
-             $(UTILS)/utils.h
+             $(UTILS)/qhg_consts.h
 	$(CC) $(COPT) $(DEFS)
 
 LINProjector.o: LINProjector.cpp LINProjector.h Projector.h   \
-             $(UTILS)/utils.h
+             $(UTILS)/qhg_consts.h
 	$(CC) $(COPT) $(DEFS)
 
 GeoInfo.o: GeoInfo.cpp GeoInfo.h  \
                Projector.h EQRProjector.h OrthoProjector.h \
                AEProjector.h TCEAProjector.h LAEAProjector.h LCCProjector.h  \
 	       LINProjector.h \
-             $(UTILS)/utils.h 
+             $(UTILS)/qhg_consts.h 
 	$(CC) $(COPT) $(DEFS) 
 
 DEM.o: DEM.cpp DEM.h 
@@ -98,31 +98,31 @@ DynXYZDEM.o: DynXYZDEM.cpp DynXYZDEM.h DynDEM.h DEM.h
 	$(CC) $(COPT) $(DEFS)
 
 GeoProvider.o: GeoProvider.cpp GeoProvider.h DEM.h  \
-                 $(UTILS)/utils.h
+                 $(UTILS)/qhg_consts.h
 	$(CC) $(COPT) $(DEFS)
 
 TPGeoProvider.o: TPGeoProvider.cpp TPGeoProvider.h GeoProvider.h DEM.h  \
-                 $(UTILS)/utils.h 
+                 $(UTILS)/qhg_consts.h 
 	$(CC) $(COPT) $(DEFS)
 
 PrGeoProvider.o: PrGeoProvider.cpp PrGeoProvider.h GeoProvider.h DEM.h  GridProjection.h \
-                 $(UTILS)/utils.h 
+                 $(UTILS)/qhg_consts.h 
 	$(CC) $(COPT) $(DEFS)
 
 SimpleGeoProvider.o: SimpleGeoProvider.cpp SimpleGeoProvider.h GeoProvider.h \
-                     $(UTILS)/utils.h
+                     $(UTILS)/qhg_consts.h
 	$(CC) $(COPT) $(DEFS)
 
 PlaneGeoProvider.o: PlaneGeoProvider.cpp PlaneGeoProvider.h GeoProvider.h DEM.h GridProjection.h \
-                     $(UTILS)/utils.h
+                     $(UTILS)/qhg_consts.h
 	$(CC) $(COPT) $(DEFS)
 
 GridProjection.o: GridProjection.cpp GridProjection.h Projector.h GeoInfo.h \
-                     $(UTILS)/utils.h
+                     $(UTILS)/qhg_consts.h
 	$(CC) $(COPT) $(DEFS)
 
 GeoMapper.o: GeoMapper.cpp GeoMapper.h GridProjection.h Projector.h GeoInfo.h \
-                     $(UTILS)/utils.h $(UTILS)/Interpolator.h
+                     $(UTILS)/qhg_consts.h $(UTILS)/Interpolator.h
 	$(CC) $(COPT) $(DEFS)
 
 gt.o:gt.cpp GeoInfo.h

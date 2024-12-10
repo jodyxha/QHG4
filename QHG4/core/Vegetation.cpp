@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <cstring>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 
 #include <omp.h>

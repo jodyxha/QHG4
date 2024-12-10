@@ -2,7 +2,7 @@
 
 #include <hdf5.h>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "QDFUtils.h"
 
 

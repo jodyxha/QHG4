@@ -250,8 +250,8 @@ int GeneWriter2::writeGenesBin(SequenceProvider<ulong> *pGP, const std::string s
             tloc_ids::const_iterator it;
             for (it = mSelected.begin(); (iResult == 0) && (it != mSelected.end()); ++it) {
                 const locitem &li = mLocDefs.at(it->first.first);
-                double dLon = li.dLon;//*180/M_PI;
-                double dLat = li.dLat;//*180/M_PI;
+                double dLon = li.dLon;//*180/Q_PI;
+                double dLat = li.dLat;//*180/Q_PI;
                 // write the location header
                 size_t iNumGenomes = it->second.size();
                 const char *pName = it->first.first.c_str();
@@ -409,7 +409,7 @@ int GeneWriter2::writeGenesAsc(SequenceProvider<ulong> *pGP, const std::string s
                     
                 const locitem &li = mLocDefs.at(it_ltd->first);
                 // location header
-                // stdfprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first.c_str(), li.dLon*180/M_PI, li.dLat*180/M_PI, li.dDist, it_td->first);
+                // stdfprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first.c_str(), li.dLon*180/Q_PI, li.dLat*180/Q_PI, li.dDist, it_td->first);
 		// location files have coordinates in degrees
                 if (bHeaders) {
                     stdfprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first.c_str(), li.dLon, li.dLat, li.dDist, it_td->first);
@@ -431,12 +431,12 @@ int GeneWriter2::writeGenesAsc(SequenceProvider<ulong> *pGP, const std::string s
                                 stdfprintf(fOut, "%12ld %9ld %9ld %9d %9d % 9.4f % 8.4f  ", 
                                         iID, 
                                         pAD->iMomID, pAD->iDadID, pAD->iGender,
-                                        pAD->iCellID, pAD->dLon/* *180/M_PI*/, pAD->dLat/* *180/M_PI*/);
+                                        pAD->iCellID, pAD->dLon/* *180/Q_PI*/, pAD->dLat/* *180/Q_PI*/);
                             } else {
                                 // changes here must be reflected in the G-Offset-value
                                 stdfprintf(fOut, "%12ld %9d % 9.4f % 8.4f  ", 
                                         iID, 
-                                        pAD->iCellID, pAD->dLon/**180/M_PI*/, pAD->dLat/* *180/M_PI*/);
+                                        pAD->iCellID, pAD->dLon/**180/Q_PI*/, pAD->dLat/* *180/Q_PI*/);
                             }
                         }
 

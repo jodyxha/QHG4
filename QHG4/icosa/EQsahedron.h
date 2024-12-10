@@ -1,7 +1,7 @@
 #ifndef __EQSAHEDRON_H__
 #define __EQSAHEDRON_H__
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "Quat.h"
 #include "IcoFace.h"
 #include "Surface.h"

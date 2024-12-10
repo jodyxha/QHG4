@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "types.h"
 #include "QDFUtils.h"
 

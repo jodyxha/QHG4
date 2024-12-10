@@ -46,7 +46,7 @@ class AssortativePair : public Action<T> {
 
     omp_lock_t* m_aFLocks;
     omp_lock_t* m_aMLocks;
-public:
+
     static const std::string asNames[];
 };
 

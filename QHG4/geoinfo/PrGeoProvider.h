@@ -9,7 +9,7 @@
 #ifndef __PRGEOPROVIDER_H__
 #define __PRGEOPROVIDER_H__
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "DEM.h"
 #include "GeoProvider.h"
 

@@ -54,8 +54,8 @@ int addGeography(int iTile, SCellGrid *pCG, IcoGridNodes *pIGN) {
         if(pIN != NULL) {
             pGeo->m_adAltitude[i] = 3*iTile;
             
-            pGeo->m_adLatitude[i]  =  pIN->m_dLat*180/M_PI;
-            pGeo->m_adLongitude[i] =  pIN->m_dLon*180/M_PI;
+            pGeo->m_adLatitude[i]  =  pIN->m_dLat*180/Q_PI;
+            pGeo->m_adLongitude[i] =  pIN->m_dLon*180/Q_PI;
             
             // the neighbor arrays are arranged sequentially into a big 1-d array
             int i0 = pGeo->m_iMaxNeighbors*i;

@@ -1,6 +1,6 @@
 #include <cstdio>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 #include "MessLoggerT.h"
 
@@ -40,7 +40,7 @@ bool LonLatTile::contains(IcoNode *pBC) {
 //  display
 //
 void LonLatTile::display() {
-    printf("Id %d Lon [%7.3f,%7.3f], Lat [%6.3f,%6.3f]\n", m_iID, (m_dLonMin-EPS)*180/M_PI, m_dLonMax*180/M_PI, (m_dLatMin-EPS)*180/M_PI, m_dLatMax*180/M_PI);
+    printf("Id %d Lon [%7.3f,%7.3f], Lat [%6.3f,%6.3f]\n", m_iID, (m_dLonMin-EPS)*180/Q_PI, m_dLonMax*180/Q_PI, (m_dLatMin-EPS)*180/Q_PI, m_dLatMax*180/Q_PI);
     //    printf("Id %d Lon [%30.27f,%30.27f], Lat [%30.27f,%30.27f]\n", m_iID, m_dLonMin-EPS, m_dLonMax, m_dLatMin-EPS, m_dLatMax);
 }
 

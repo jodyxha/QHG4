@@ -1,7 +1,7 @@
 #include <cstring>
 #include <omp.h>
 
-#include "utils.h" /// for dNegInf
+#include "qhg_consts.h" /// for dNegInf
 #include "clsutils.cpp"
 #include "ParamProvider2.h"
 #include "EventConsts.h"

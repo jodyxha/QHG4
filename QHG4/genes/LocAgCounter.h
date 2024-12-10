@@ -7,7 +7,7 @@
 #include <string>
 
 #include "types.h"
-#include "utils.h"
+#include "qhg_consts.h"
 #include "AnalysisUtils.h"
 
 typedef std::map<std::string, int> loccounts;

@@ -20,7 +20,7 @@ LonLatSplitter::LonLatSplitter(EQsahedron *pEQ, int iNX, int iNY, double dCapSiz
 
     : m_iNX(iNX),
       m_iNY(iNY),
-      m_dCapSize(dCapSize*M_PI/180),
+      m_dCapSize(dCapSize*Q_PI/180),
       m_bFree(false),
       m_pEQ(pEQ) {
     m_pBox = NULL;
@@ -40,7 +40,7 @@ LonLatSplitter::LonLatSplitter(EQsahedron *pEQ, int iNX, int iNY, double dCapSiz
 LonLatSplitter::LonLatSplitter(int iNumTiles, double dCapSize, bool bFree)
     : m_iNX(0),
       m_iNY(0),
-      m_dCapSize(dCapSize*M_PI/180),
+      m_dCapSize(dCapSize*Q_PI/180),
       m_bFree(bFree) {
     m_pBox = NULL;
     printf("LonLatSplitter %d C:%f\n", iNumTiles, dCapSize);
@@ -62,7 +62,7 @@ BasicTile **LonLatSplitter::createTiles(int *piNumTiles) {
     BasicTile **pTiles = NULL;
     if (m_iNumTiles > 2) {
         *piNumTiles = 0;
-        m_pBox = new box(-M_PI, M_PI+1e-8, -M_PI/2, M_PI/2+1e-8);
+        m_pBox = new box(-Q_PI, Q_PI+1e-8, -Q_PI/2, Q_PI/2+1e-8);
 
             
         if (m_dCapSize != 0) {
@@ -87,7 +87,7 @@ BasicTile **LonLatSplitter::createTiles(int *piNumTiles) {
 //  we get "equal" area zones if the sinuses are equally spaced
 //
 BasicTile **LonLatSplitter::createTilesBalancedCaps() {
-    double PIP = M_PI+0.01;
+    double PIP = Q_PI+0.01;
     BasicTile **apTiles = new BasicTile*[m_iNumTiles];
     double dLat1 = 0;
     if (m_dCapSize < 0) {
@@ -105,7 +105,7 @@ BasicTile **LonLatSplitter::createTilesBalancedCaps() {
     }
     printf("Using 2+%dx%d\n", m_iNX, m_iNY);
 
-    double ddLon=2*M_PI/m_iNX;
+    double ddLon=2*Q_PI/m_iNX;
 
     
 

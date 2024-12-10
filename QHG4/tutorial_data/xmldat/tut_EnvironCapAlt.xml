@@ -39,9 +39,9 @@
   </module>
 
   <module name="VerhulstVarK">
-    <param  name="VerhulstVarK_b0" value="0.8" />
-    <param  name="VerhulstVarK_d0" value="0.001" />
-    <param  name="VerhulstVarK_theta" value="0.1" />
+    <param  name="Verhulst_b0" value="0.8" />
+    <param  name="Verhulst_d0" value="0.001" />
+    <param  name="Verhulst_theta" value="0.1" />
    </module>
 
   <priorities>

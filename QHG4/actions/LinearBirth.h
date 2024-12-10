@@ -5,7 +5,7 @@
 #include "ParamProvider2.h"
 
 const static std::string ATTR_LINBIRTH_NAME   = "LinearBirth";
-const static std::string ATTR_LINBIRTH_B0_NAME         = "LinearBirth_b0";
+const static std::string ATTR_LINBIRTH_B0_NAME   = "LinearBirth_b0";
 const static std::string ATTR_LINBIRTH_TURNOVER_NAME   = "LinearBirth_theta";
 const static std::string ATTR_LINBIRTH_CAPACITY_NAME   = "LinearBirth_K";
 
@@ -42,7 +42,6 @@ class LinearBirth : public Action<T> {
     double* m_adK;
     int m_iStride;
 
-public:
     static const std::string asNames[];
 };
 

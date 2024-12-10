@@ -253,7 +253,7 @@ int Phenetics2<T>::init() {
 
 	    }
             
-            m_pSeqIO = SequenceIOUtils<float>::createInstance(PHENOME_DATASET_NAME, H5T_NATIVE_FLOAT, &m_aPhenome, m_pAgentController, m_pvDeadList, m_iTotalSize/*m_iPhenomeSize*/);
+            m_pSeqIO = SequenceIOUtils<float>::createInstance(PHENOME_DATASET_NAME.c_str(), H5T_NATIVE_FLOAT, &m_aPhenome, m_pAgentController, m_pvDeadList, m_iTotalSize/*m_iPhenomeSize*/);
 
         } else {
             printf("Couldn't add buffer to controller\n");
@@ -703,7 +703,7 @@ int Phenetics2<T>::dumpStateQDF(hid_t hSpeciesGroup) {
     }
     
     if (iResult == 0) {
-        iResult = dumpPerm(m_apPerm, m_iNumThreads, ATTR_PHENETICS_NAME, hSpeciesGroup);
+        iResult = dumpPerm(m_apPerm, m_iNumThreads, ATTR_PHENETICS_NAME.c_str(), hSpeciesGroup);
     }
     
     return iResult;
@@ -721,7 +721,7 @@ int Phenetics2<T>::restoreStateQDF(hid_t hSpeciesGroup) {
     }
 
     if (iResult == 0) {
-        iResult = restorePerm(m_apPerm, m_iNumThreads, ATTR_PHENETICS_NAME, hSpeciesGroup);
+        iResult = restorePerm(m_apPerm, m_iNumThreads, ATTR_PHENETICS_NAME.c_str(), hSpeciesGroup);
     }
      
     printf("Phenetics WELLState after restore\n");

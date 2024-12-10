@@ -10,7 +10,7 @@
 #include "PieWriter.h"
 
 const std::string PIEGROUP_NAME      = "PiePlots";
-const std::string PIE_ATTR_NUM_PIES  = "NumPies";
+const std::string PIE_ATTR_NUQ_PIES  = "NumPies";
 const std::string PIE_ATTR_NUM_VALS  = "NumVals";
 const std::string PIE_ATTR_NUM_DIMS  = "NumDims";
 const std::string PIE_DATASET_NAME   = "PieDataSet";
@@ -173,8 +173,8 @@ int PieWriter::prepareData(int iNumCoords, double *dLons, double *dLats, bool bS
         double adPos[3];
         double adNorm[3];
         if (m_bSpherical) {
-            dLon *= M_PI/180;
-            dLat *= M_PI/180;
+            dLon *= Q_PI/180;
+            dLat *= Q_PI/180;
            
             adPos[0] = dRadius*cos(dLon)*cos(dLat);
             adPos[1] = dRadius*sin(dLon)*cos(dLat);
@@ -263,7 +263,7 @@ int PieWriter::writeToQDF(const std::string sQDFFile) {
                 if (hPieItem != H5P_DEFAULT) {
                     // now we add some attributes
 
-                    qdf_insertAttribute(hPieItem,  PIE_ATTR_NUM_PIES,  1, &m_iNumPies);
+                    qdf_insertAttribute(hPieItem,  PIE_ATTR_NUQ_PIES,  1, &m_iNumPies);
                     qdf_insertAttribute(hPieItem,  PIE_ATTR_NUM_VALS,  1, &m_iNumVals);
                     qdf_insertAttribute(hPieItem,  PIE_ATTR_NUM_DIMS,  1, &m_iNumDims);
                     qdf_insertSAttribute(hPieItem, PIE_ATTR_VAL_NAMES,     m_sValNames);

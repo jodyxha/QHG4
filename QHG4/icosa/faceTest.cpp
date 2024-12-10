@@ -3,7 +3,7 @@
 #include <cmath>
 #include <set>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "Vec3D.h"
 #include "PolyFace.h"
 #include "IcoFace.h"
@@ -217,9 +217,9 @@ void check(IcoFace *pF, Vec3D *pv) {
 
 void check(IcoFace *apF[], int iC, double dLon, double dLat) {
     IcoFace *pF = NULL;
-    Vec3D v(cos(dLat*M_PI/180)*cos(dLon*M_PI/180),
-            cos(dLat*M_PI/180)*sin(dLon*M_PI/180),
-            sin(dLat*M_PI/180));
+    Vec3D v(cos(dLat*Q_PI/180)*cos(dLon*Q_PI/180),
+            cos(dLat*Q_PI/180)*sin(dLon*Q_PI/180),
+            sin(dLat*Q_PI/180));
 
     for (int i = 0; (pF == NULL) && (i < iC); i++) {
         pF = apF[i]->contains(&v);
@@ -302,7 +302,7 @@ int main2(int iArgC, char *apArgV[]) {
     Vec3D v5(0.2,0.2, 0.8);
     check(pF, &v5);
 
-    Vec3D v6(cos(90.0*M_PI/180)*0.5, sin(90.0*M_PI/180)*0.5, 0.86603);
+    Vec3D v6(cos(90.0*Q_PI/180)*0.5, sin(90.0*Q_PI/180)*0.5, 0.86603);
     check(pF, &v6);
     */
     return 0;

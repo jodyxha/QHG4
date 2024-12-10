@@ -12,9 +12,6 @@
 #include "QDFUtilsT.h"
 #include "RandomMove.h"
 
-template<typename T>
-const std::string RandomMove<T>::asNames[] = {
-    ATTR_RANDOMMOVE_PROB_NAME,};
 
 //-----------------------------------------------------------------------------
 // constructor

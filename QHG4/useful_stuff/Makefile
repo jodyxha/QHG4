@@ -21,6 +21,7 @@ UTILS_OUT=~/utils
 TARG=SPTest
 
 
+COPT0=-c $< -I $(UTILS) -o $@ $(CADD) $(CFLAGS) $(C_STD) $(CRAY_DEF)
 COPT=-c $< -I $(UTILS) -o $@ $(CADD) $(CFLAGS) $(C_STD) $(CRAY_DEF) $(COMP)
 
 
@@ -231,14 +232,17 @@ hdf_catenate: hdf_catenate.o
 
 
 SubSpace.o: SubSpace.cpp SubSpace.h
-	$(CC) $(COPT) $(DEFS) -I$(IO) 
+	$(CC) $(COPT0) $(DEFS) -I$(IO) 
+
+SubSpaceIndexParser.o: SubSpaceIndexParser.cpp SubSpaceIndexParser.h
+	$(CC) $(COPT0) $(DEFS) -I$(IO) 
 
 SubSpaceTest.o: SubSpaceTest.cpp SubSpace.h
-	$(CC) $(COPT) $(DEFS) -I$(IO) 
+	$(CC) $(COPT0) $(DEFS) -I$(IO) 
 
-SubSpaceTest: SubSpaceTest.o SubSpace.o
-	$(CC) $(COMP)  -o SubSpaceTest \
-	SubSpaceTest.o SubSpace.o \
+SubSpaceTest: SubSpaceTest.o SubSpace.o SubSpaceIndexParser.o 
+	$(CC)   -o SubSpaceTest \
+	SubSpaceTest.o SubSpace.o SubSpaceIndexParser.o \
 	-L$(UTILS)   -lUtils -lz
 
 

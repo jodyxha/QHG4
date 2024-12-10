@@ -9,7 +9,7 @@
 // expect file with format
 //  file      ::= <dsname><cs><numpies><cr><numvals><cr><dataline>*
 //  dsname    ::= "DATASET="<name_of_dataset>
-//  numpies   ::= "NUM_PIES="<number_of_pies>
+//  numpies   ::= "NUQ_PIES="<number_of_pies>
 //  numvals   ::= "NUM_VALS="<number of_values>
 //  valnames  ::= "VAL_NAMES="<name_list>
 //  name_list ::= <name:[" "<name>}*
@@ -18,7 +18,7 @@
 //  norm      ::= <norm_x> <norm_y> <norm_z>
 
 const std::string PIEGROUP_NAME      = "PiePlots";
-const std::string PIE_ATTR_NUM_PIES  = "NumPies";
+const std::string PIE_ATTR_NUQ_PIES  = "NumPies";
 const std::string PIE_ATTR_NUM_VALS  = "NumVals";
 const std::string PIE_DATASET_NAME   = "PieDataSet";
 const std::string PIE_ATTR_VAL_NAMES = "ValNames";

@@ -22,7 +22,7 @@
 
 template<typename T>
 const stringvec AgentEnv<T>::s_vNames = {
-    ATTR_AGENTENV_REQUIREMENTS_NAME};
+};
 
 
 //-----------------------------------------------------------------------------

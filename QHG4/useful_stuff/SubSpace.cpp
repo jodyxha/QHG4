@@ -11,7 +11,6 @@
 #include "LineReader.h"
 #include "SubSpace.h"
 
-
 static void display_slice_data(std::string sCaption, uintuintvec vSliceData) {
     stdprintf("%s (%zd)\n", sCaption, vSliceData.size());
     for (uint i = 0; i < vSliceData.size(); i++) {
@@ -19,7 +18,34 @@ static void display_slice_data(std::string sCaption, uintuintvec vSliceData) {
     }
 }
 
+static std::string short_array(uintvec vArr, uint max_size, uint border_l, uint border_r) {
+    std::string s = "";
 
+    s = "[";
+    
+    if (((border_l + border_r) < vArr.size()) && (vArr.size() > max_size)) {
+        for (uint i = 0; i < border_l; i++) {
+            s += stdsprintf("%u, ", vArr[i]);
+        }
+        if (vArr.size() > max_size) {
+            s += "... ";
+        }
+        for (uint i = vArr.size() - border_r; i < vArr.size(); i++) {
+            s += stdsprintf(", %u", vArr[i]);
+        }
+    } else {
+        for (uint i = 0; i < vArr.size(); i++) {
+            if (i == 0) {
+                s += stdsprintf("%u", vArr[i]);
+            } else {
+                s += stdsprintf(", %u", vArr[i]);
+            }
+        }
+    }
+    s += "]";
+    return s;
+}
+    
 //----------------------------------------------------------------------------
 // cartesian_product
 //   create all possible combinations of elements taking one from each
@@ -156,11 +182,11 @@ SubSpace<T> *SubSpace<T>::create_instance_from_sizes(const uintvec &vSizes, bool
 
 
 //----------------------------------------------------------------------------
-// create_instance_from_dims
+// create_instance_from_exts
 //   creates an instance SubSpace given a string with ":"-separated dimension sizes
 //
 template<typename T>
-SubSpace<T> *SubSpace<T>::create_instance_from_dims(const std::string sDim, bool bVerbosity) {
+SubSpace<T> *SubSpace<T>::create_instance_from_exts(const std::string sDim, bool bVerbosity) {
     SubSpace *pSS = new SubSpace(bVerbosity);
     uintvec vSizes;
     int iResult = dims2Sizes(sDim, vSizes, ":");
@@ -512,7 +538,7 @@ bool SubSpace<T>::check_indexes(uintvecvec &vvIndexes) {
     for (uint i = 0; i < vvIndexes.size(); i++) {
         uintvec &vIndexes = vvIndexes[i];
         for (uint j = 0; j < vIndexes.size(); j++) {
-            if ((vIndexes[j] < 0) || (vIndexes[j] >= m_vSizes[i])) {
+            if (vIndexes[j] >= m_vSizes[i]) {
                 stdfprintf(stderr, "bad index in dimension %d (max %d): %d\n", i, m_vSizes[i]-1, vIndexes[j]);
                 bOK = false;
             }
@@ -588,44 +614,68 @@ SubSpace<T> *SubSpace<T>::create_slice(uintvecvec vAllIndexes) {
 //    along dimension iDim.
 //
 template<typename T>
-int SubSpace<T>::calculate_sum_description(int iDim, uintvec &vBases, uintvec &vBaseOffsets, uintvec &vSumOffsets) {
+int SubSpace<T>::calculate_sum_description(int iDim, uintvec &vBases, uintvec &vBaseOffsets, uintvec &vElementOffsets) {
     int iResult = 0;
     uint b1 = 1;
-    // "covolume"
+    // covolume
+    stdfprintf(stderr, "sizes: %bv\n", m_vSizes);
     for (uint i = iDim+1; i < m_vSizes.size(); i++) {
         b1 *= m_vSizes[i];
+        stdfprintf(stderr, "csd i:%d  b1:%d\n", i, b1);
     }
+    stdfprintf(stderr, "csd final b1:%d\n", b1);
 
     
-    for (uint i = 0; i < m_vSubVolumes[iDim]; i++) {
-        vBaseOffsets.push_back(i);
-    }
-
+    stdfprintf(stderr, "m_vSubVolumes:%bv\n", m_vSubVolumes);
+   
     for (uint i = 0; i < b1; i++) {
         vBases.push_back(i*m_vSubVolumes[iDim+1]);
+        // stdfprintf(stderr, "csd i:%d  vbases:%bv\n", i, vBases);
     }
-    // we use each vBase[i]+vBaseOffsets[j] as summation start
+    // stdfprintf(stderr, "csd final vbases: %bv\n", vBases);
+    stdfprintf(stderr, "csd final vbases: %s\n", short_array(vBases, 9, 3, 2));
+   
+    for (uint i = 0; i < m_vSubVolumes[iDim]; i++) {
+        vBaseOffsets.push_back(i);  
+    }
+    //stdfprintf(stderr, "csd final vbo:    %bv\n", vBaseOffsets);
+    stdfprintf(stderr, "csd final vbo:    %s\n", short_array(vBaseOffsets, 9, 3, 2));
+        
+    // the projection hyperplane consists of all vBase[i]+vBaseOffsets[j]
+    // each of these points reeceives the reduction from all "projected" opints
 
 
+    // m_vSubVolumes[iDim] is equal to the position increase for 1 step in direction iDim
+    // The number of steps we can go is m_vSizes[iDim]
     for (uint i = 0; i < m_vSizes[iDim]; i++) {
-        vSumOffsets.push_back(i*m_vSubVolumes[iDim]);
+        vElementOffsets.push_back(i*m_vSubVolumes[iDim]);
     }
+    //stdfprintf(stderr, "csd final eloff:  %bv\n", vElementOffsets);
+    stdfprintf(stderr, "csd final eloff:  %s\n", short_array(vElementOffsets, 9, 3, 2));
     // from the summation start we will sum up all items at offsets vSumOffset[i] after 
 
- 
+    if (m_bVerbose) {
+        stdfprintf(stderr, "[:calculate_sum_description(%d)]:\n", iDim);
+        stdfprintf(stderr, "[:calculate_sum_description(%d)]vBases:   %bv\n", iDim, vBases);
+        stdfprintf(stderr, "[:calculate_sum_description(%d)]vBaseOffsets:  %bv\n", iDim, vBaseOffsets);
+        
+        stdfprintf(stderr, "[:calculate_sum_description(%d)]vSumOffsets:  %bv\n", iDim, vElementOffsets);
+    }
     return iResult;
 }
 
 
 
 //----------------------------------------------------------------------------
-// create_red
-//
+// create_reductions
+//    create the reduction for the first dimension thenrecursively call
+//    this function again for one less dimension with reduction
+//   
 template<typename T>
-SubSpace<T> *SubSpace<T>::create_reductions(uintuintmap &mRedDims) {
+SubSpace<T> *SubSpace<T>::create_reductions(uintuintmap mRedDims) {
     SubSpace<T> *pSS = NULL;
 
-    stringvec vRedNames{"sum", "avg"};
+    stringvec vRedNames{"all", "sum", "avg"};
     uintvec vRedDims;
     for (auto const& imap: mRedDims) {
         vRedDims.push_back(imap.first);
@@ -636,10 +686,11 @@ SubSpace<T> *SubSpace<T>::create_reductions(uintuintmap &mRedDims) {
     //    show_intvec("create_sum for", vSumDims);
     
     if (vRedDims.size() > 0) {
+        // still got reductions dimensions to handle
         uint iCurDim = vRedDims.back();
         uint iRedType = mRedDims[iCurDim];
 
-        vRedDims.pop_back();;
+        vRedDims.pop_back();
         uintuintmap::iterator it = mRedDims.find(iCurDim);
         if (it != mRedDims.end()) {
             mRedDims.erase(it);
@@ -649,24 +700,25 @@ SubSpace<T> *SubSpace<T>::create_reductions(uintuintmap &mRedDims) {
     
         uintvec vBases;
         uintvec vBaseOffsets;
-        uintvec vAvgOffsets;
+        uintvec vElementOffsets;
         
-        calculate_sum_description(iCurDim, vBases, vBaseOffsets, vAvgOffsets);
+        calculate_sum_description(iCurDim, vBases, vBaseOffsets, vElementOffsets);
 
         uintvec vSubSizes{m_vSizes};
         vSubSizes[iCurDim] = 1;
 
+        // create a new Subspace with thickness 1 in current dimension (thats where the reductions go)
         SubSpace<T> *pNewSS = SubSpace<T>::create_instance_from_sizes(vSubSizes, m_bVerbose);
 
         for (uint iBase = 0; iBase < vBases.size(); iBase++) {
             for (uint iBaseOffset = 0; iBaseOffset < vBaseOffsets.size(); iBaseOffset++) {
                 uint iPos = vBases[iBase] + vBaseOffsets[iBaseOffset];
                 T dAvg = 0;
-                for (uint iAvgOff = 0; iAvgOff < vAvgOffsets.size(); iAvgOff++) {
-                    dAvg += m_adData[iPos+vAvgOffsets[iAvgOff]];
+                for (uint iAvgOff = 0; iAvgOff < vElementOffsets.size(); iAvgOff++) {
+                    dAvg += m_adData[iPos+vElementOffsets[iAvgOff]];
                 }
-                if (iRedType == 1) {
-                    dAvg /=  vAvgOffsets.size();
+                if (iRedType == RED_TYPE_AVG) {
+                    dAvg /=  vElementOffsets.size();
                 }
                 uintvec vCoords;
                 /*int iResult = */pos_to_coord(iPos, vCoords);
@@ -683,7 +735,7 @@ SubSpace<T> *SubSpace<T>::create_reductions(uintuintmap &mRedDims) {
 
             }
         }
-        // pNewSS->showDataNice(DISP_INT);
+        // handle the following dimensions with a reduction (recursion)
         pSS = pNewSS->create_reductions(mRedDims);
         if (pSS == NULL) {
             pSS = pNewSS;
@@ -691,10 +743,40 @@ SubSpace<T> *SubSpace<T>::create_reductions(uintuintmap &mRedDims) {
             delete pNewSS;
         }
         
+    } else {
+        // no more dimensions with reduction: nothing to do (recursion bottom)
     }
 
     return pSS;
 }
+
+//----------------------------------------------------------------------------
+// squeeze
+//   remove all dimensions of size 1
+template<typename T>
+SubSpace<T> *SubSpace<T>::squeeze(const uintuintmap &mSqueezeDims) {
+   
+
+    uintvec vNewSizes;
+    uintvec vSqueezes;
+    for (auto const& imap: mSqueezeDims) {
+        vSqueezes.push_back(imap.first);
+    }
+    stdprintf("Squeeze got: %bv\n", vSqueezes);
+
+    for (uint i = 0; i < m_vSizes.size(); i++) {
+        if ((std::find(vSqueezes.begin(), vSqueezes.end(), i) == 
+             vSqueezes.end()) ||
+            (m_vSizes[i] > 1)) {
+            vNewSizes.push_back(m_vSizes[i]);
+        }
+    }
+
+    SubSpace *pSS = create_instance_from_sizes(vNewSizes, false);
+    pSS->set_data(m_adData, 0, m_iNumVals);
+    return pSS;
+};
+
 
 //----------------------------------------------------------------------------
 // squeeze
@@ -722,13 +804,21 @@ SubSpace<T> *SubSpace<T>::squeeze() {
 template<typename T>
 void SubSpace<T>::show_sizes() {
     stdprintf("sizes:      ");
-    for (uint i = 0; i < m_vSizes.size(); i++) {
-        stdprintf(" %d", m_vSizes[i]);
+    if (m_vSizes.size() > 0) {
+        for (uint i = 0; i < m_vSizes.size(); i++) {
+            stdprintf(" %d", m_vSizes[i]);
+        }
+    } else {
+        stdprintf(" -");
     }
     stdprintf("\n");
     stdprintf("subvolumes: ");
-    for (uint i = 1; i < m_vSubVolumes.size(); i++) {
-        stdprintf(" %d", m_vSubVolumes[i]);
+    if (m_vSubVolumes.size() > 1) {
+        for (uint i = 1; i < m_vSubVolumes.size(); i++) {
+            stdprintf(" %d", m_vSubVolumes[i]);
+        }
+    } else {
+        stdprintf(" -");
     }
     stdprintf("\n");
 
@@ -756,11 +846,12 @@ template<typename T>
 void SubSpace<T>::show_data_nice(int iType, FILE *fOut, stringvec vSeparators, bool bFrame) {
     char sMask[16];
     uint iRowLen = 0;
+    uint iMaxSize = (m_vSizes.size() > 0)?m_vSizes[0]:1;
 
     switch (iType) {
     case DISP_INT:
         sprintf(sMask, "%%%dd ", 6);
-        iRowLen = m_vSizes[0]*7;
+        iRowLen = iMaxSize*7;
         break;
     case DISP_FLOAT:
         {
@@ -777,28 +868,28 @@ void SubSpace<T>::show_data_nice(int iType, FILE *fOut, stringvec vSeparators, b
         }
         T tMax1 = (tMax > fabs(tMin))?tMax:fabs(tMin);
         // get number of digits: (max>0)->log(max)+1, (max==0)->1
-        uint iNumDigits = (fabs(tMax1) > 0)?(uint)(log(fabs(tMax1))/log(10)+1):1;
+        uint iNumDigits = (fabs(tMax1) > 0)?(uint)(log(fabs(tMax1))/log(10)+2):1;
         if (tMin < 0) {
             iNumDigits++;
         }
         sprintf(sMask, "%%%d.4f ", iNumDigits+5); //+5: decimal point and 4 digits after it
-        iRowLen = m_vSizes[0]*(iNumDigits+5+1)-1;
+        iRowLen = iMaxSize*(iNumDigits+5+1)/*-1*/;
         
         }
         break;
     case DISP_FLOAT_01:
         strcpy(sMask, "%08.6f "); 
-        iRowLen = m_vSizes[0]*9;
+        iRowLen = iMaxSize*9;
         break;
     default:
         strcpy(sMask, "%09.4f "); 
-        iRowLen = m_vSizes[0]*10;
+        iRowLen = iMaxSize*10;
     }
     
     // create a frame row 2 chars longer than the data lines
     std::string sFrame("");
     if (bFrame) {
-        uint iRowLenF = iRowLen + 2;
+        uint iRowLenF = iRowLen/* + 2*/;
         for (uint j = 0;j < iRowLenF/2; j++) {
             sFrame += "-+";
         }
@@ -814,7 +905,7 @@ void SubSpace<T>::show_data_nice(int iType, FILE *fOut, stringvec vSeparators, b
         }
     }
  
-    if (bFrame) {stdprintf("%s\n ", sFrame);}
+    if (bFrame) {stdfprintf(fOut, "%s\n", sFrame);}
 
     // print sll numbers sequentially, but insert separators if necessary
     uint i = 0;
@@ -831,22 +922,22 @@ void SubSpace<T>::show_data_nice(int iType, FILE *fOut, stringvec vSeparators, b
                     }
 
                     if (j0 == 1) {
-                        fprintf(fOut, "\n ");
+                        stdfprintf(fOut, "\n");
                     } else {
-                        sSep = vStandardSeps[j0]+" ";
+                        sSep = vStandardSeps[j0]/*+" "*/;
                     }
                 }
             }
             if (!sSep.empty()) {
-                fprintf(fOut, "%s", sSep.c_str());
+                stdfprintf(fOut, "%s", sSep.c_str());
             }
 
         }
-        fprintf(fOut, sMask, m_adData[i]);
+        stdfprintf(fOut, sMask, m_adData[i]);
         
         i++;
     }
-    if (bFrame) {stdprintf("\n%s\n", sFrame);}
+    if (bFrame) {stdfprintf(fOut, "\n%s\n", sFrame);}
 
 
 

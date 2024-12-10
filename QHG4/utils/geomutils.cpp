@@ -6,8 +6,8 @@
 |  Author: Jody Weissmann
 \===========================================================================*/ 
 
-#include "utils.h"
-#include "math.h"
+#include "qhg_consts.h"
+//#include "math.h"
 #include "geomutils.h"
 #include "types.h"
 #include "Vec3D.h"
@@ -142,8 +142,8 @@ int isPointInPoly2(double fX0, double fY0,
         for (int i = 0; (iResult == 0) && (i < iN); ++i) {
             double fXCur = afX[i];
             double fYCur = afY[i];
-            if ((fX0>=jmin(fXPrev, fXCur)) && (jmax(fXPrev,fXCur)>=fX0) &&
-                (fY0>=jmin(fYPrev, fYCur)) && (jmax(fYPrev,fYCur)>=fY0)) {
+            if ((fX0>=std::min(fXPrev, fXCur)) && (std::max(fXPrev,fXCur)>=fX0) &&
+                (fY0>=std::min(fYPrev, fYCur)) && (std::max(fYPrev,fYCur)>=fY0)) {
                 if (whichSide(fX0, fY0, fXPrev, fYPrev, fXCur, fYCur) == 0) {
                     ++iResult;
                 }
@@ -203,8 +203,8 @@ int isPointInPoly2(double fX0, double fY0, VEC_POINTS vp) {
             DPOINT *p = vp.at(i);
             double fXCur = p->first;
             double fYCur = p->second;
-            if ((fX0>=jmin(fXPrev, fXCur)) && (jmax(fXPrev,fXCur)>=fX0) &&
-                (fY0>=jmin(fYPrev, fYCur)) && (jmax(fYPrev,fYCur)>=fY0)) {
+            if ((fX0>std::min(fXPrev, fXCur)) && (std::max(fXPrev,fXCur)>=fX0) &&
+                (fY0>=std::min(fYPrev, fYCur)) && (std::max(fYPrev,fYCur)>=fY0)) {
                 if (whichSide(fX0, fY0, fXPrev, fYPrev, fXCur, fYCur) == 0) {
                     ++iResult;
                 }
@@ -252,7 +252,7 @@ Vec3D spherInterpol(const Vec3D &v1, const Vec3D &v2, double dT) {
 
 }
 
-const double RAD = M_PI/180;
+const double RAD = Q_PI/180;
 
 //----------------------------------------------------------------------------
 //  cart2PolarD
@@ -329,7 +329,7 @@ double spherdist(double dLon1, double  dLat1, double dLon2, double dLat2, double
 //  spherdistDeg
 //
 double spherdistDeg(double dLon1, double  dLat1, double dLon2, double dLat2, double dR) {
-    return spherdist(dLon1*M_PI/180, dLat1*M_PI/180, dLon2*M_PI/180, dLat2*M_PI/180, dR);
+    return spherdist(dLon1*Q_PI/180, dLat1*Q_PI/180, dLon2*Q_PI/180, dLat2*Q_PI/180, dR);
 }
 
 

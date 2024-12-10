@@ -5,7 +5,7 @@
 #include <string>
 #include <omp.h>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "stdstrutilsT.h"
 #include "geomutils.h"
 #include "QDFUtils.h"
@@ -204,7 +204,7 @@ int CellSampler::selectCells(loc_cells &mvCandidates) {
             double dLon1 = m_mCoords[iC].first;
             double dLat1 = m_mCoords[iC].second;
         
-            //            double d = spherdist(dLon0*M_PI/180, dLat0*M_PI/180, dLon1*M_PI/180, dLat1*M_PI/180, RADIUS);
+            //            double d = spherdist(dLon0*Q_PI/180, dLat0*Q_PI/180, dLon1*Q_PI/180, dLat1*Q_PI/180, RADIUS);
             double d = spherdistDeg(dLon0, dLat0, dLon1, dLat1, RADIUS_EARTH_KM);
             
 

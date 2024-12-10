@@ -2,7 +2,7 @@
 #include <omp.h>
 
 #include "types.h"
-#include "utils.h"
+#include "qhg_consts.h"
 
 #include "OccHistory.h"
 #include "OccAnalyzer.h"

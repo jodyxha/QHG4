@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "types.h"
 #include "SeqInterval.h"
 

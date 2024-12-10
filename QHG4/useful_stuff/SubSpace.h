@@ -37,6 +37,11 @@ const int DISP_INT      = 0;
 const int DISP_FLOAT_01 = 1;
 const int DISP_FLOAT    = 2;
  
+static const uint RED_TYPE_ALL = 0;
+static const uint RED_TYPE_SUM = 1;
+static const uint RED_TYPE_AVG = 2;
+
+
 static stringvec vStandardSeps = {
     "\n",
     "\n",
@@ -73,7 +78,7 @@ template<typename T>
 class SubSpace {
 public:
     static SubSpace *create_instance_from_sizes(const uintvec &vSizes, bool bVerbosity);
-    static SubSpace *create_instance_from_dims(const std::string sDim, bool bVerbosity);
+    static SubSpace *create_instance_from_exts(const std::string sDim, bool bVerbosity);
 
     virtual ~SubSpace();
 
@@ -94,12 +99,13 @@ public:
 
     uint getNumDims() {return m_iNumDims;};
     uint getNumVals() { return m_iNumVals;};
-    const uintvec &getSizes() { return m_vSizes;}; 
-    uintvec &getSizesCopy() { return m_vSizes;}; 
+    const uintvec &get_sizes() { return m_vSizes;}; 
+    uintvec &get_sizes_copy() { return m_vSizes;}; 
     const T* getBuffer() {return m_adData;};
 
     SubSpace *create_slice(uintvecvec vvIndexes);
-    SubSpace *create_reductions(uintuintmap &mRedDims);
+    SubSpace *create_reductions(uintuintmap mRedDims);
+    SubSpace *squeeze(const uintuintmap &mSqueezeDims);
     SubSpace *squeeze();
 
     const stringvecvec &get_coord_names(){ return m_vvCoordNames;};
@@ -125,7 +131,7 @@ protected:
     T       *m_adData;
     uint     m_iNumVals;
     uintvec  m_vSubVolumes;
-    uintvec  m_vSubVolumesR;
+    //uintvec  m_vSubVolumesR;
     bool     m_bVerbose;
 
     uintuintvec m_vSliceDescription;

@@ -17,14 +17,14 @@
 // perhaps we should store them in a singleton?
 
 // shares created by GrassPop
-//const static std::string SHARE_GRASS_MASS_AVAILABLE  = "grass_mass_available";
-//const static std::string SHARE_GRASS_MASS_CONSUMED   = "grass_mass_consumed";
+#define SHARE_GRASS_MASS_AVAILABLE  "grass_mass_available"
+#define SHARE_GRASS_MASS_CONSUMED   "grass_mass_consumed"
 // shared arrays created by RabbitPop
-const static std::string SHARE_RABBIT_MASS_AVAILABLE = "rabbit_mass_available";
-const static std::string SHARE_RABBIT_LOC_IDS        = "rabbit_loc_ids";
+#define SHARE_RABBIT_MASS_AVAILABLE "rabbit_mass_available"
+#define SHARE_RABBIT_LOC_IDS        "rabbit_loc_ids"
 // shared array created by FoxPop (@@TODO)
-const static std::string SHARE_FOX_COUNT             = "fox_count";
-const static std::string SHARE_RABBIT_DEAD           = "rabbit_dead";
+#define SHARE_FOX_COUNT             "fox_count"
+#define SHARE_RABBIT_DEAD           "rabbit_dead"
 
 struct RabbitAgent : Agent {
     double m_dMass;

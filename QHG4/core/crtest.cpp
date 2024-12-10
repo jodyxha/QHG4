@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <hdf5.h>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 #include "Geography.h"
 #include "SCellGrid.h"

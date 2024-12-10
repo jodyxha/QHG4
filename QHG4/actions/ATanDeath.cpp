@@ -48,7 +48,7 @@ ATanDeath<T>::~ATanDeath() {
 template<typename T>
 int ATanDeath<T>::preLoop() {
     
-    m_dScale = (M_PI/2-EPS)/atan(m_dSlope*m_dRange);
+    m_dScale = (Q_PI/2-EPS)/atan(m_dSlope*m_dRange);
 
     stdprintf("[ATanDeath<T>::preLoop()] MaxAge: %f\n", m_dMaxAge);
     stdprintf("[ATanDeath<T>::preLoop()] Range:  %f\n", m_dRange);
@@ -72,7 +72,7 @@ int ATanDeath<T>::execute(int iAgentIndex, float fT) {
     if (pa->m_iLifeState > 0) {
         pa->m_fAge = fT - pa->m_fBirthTime;
 
-        double dDeathProb = 0.5+m_dScale*atan(m_dSlope*(pa->m_fAge - m_dMaxAge))/M_PI;
+        double dDeathProb = 0.5+m_dScale*atan(m_dSlope*(pa->m_fAge - m_dMaxAge))/Q_PI;
 
 
         // death possible starting at 0.8 times m_dMaxAge

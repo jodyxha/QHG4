@@ -140,7 +140,6 @@ protected:
     int    *m_aiLocs;
     double *m_adMuts;
 
-public:
     static const std::string asNames[];
 };
 

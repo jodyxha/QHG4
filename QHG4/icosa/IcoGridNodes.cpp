@@ -5,7 +5,7 @@
 #include <string>
 
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 #include "stdstrutilsT.h"
 #include "LineReader.h"
@@ -114,8 +114,8 @@ int IcoGridNodes::blockWrite(FILE *fOut, int iMaxLinks) {
 
             if (bDisplay) {
                 stdprintf("\e[1;34m%d\e[0m ", pN->m_lID);
-                stdprintf("%f ", pN->m_dLon*180/M_PI);
-                stdprintf("%f\n", pN->m_dLat*180/M_PI);
+                stdprintf("%f ", pN->m_dLon*180/Q_PI);
+                stdprintf("%f\n", pN->m_dLat*180/Q_PI);
                 stdprintf("  %d links:", pN->m_iNumLinks);
             }
             int D = iMaxLinks - pN->m_iNumLinks;

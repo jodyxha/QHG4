@@ -2,7 +2,7 @@
 #include <cstring>
 
 #include "types.h"
-#include "utils.h"
+#include "qhg_consts.h"
 #include "strutils.h"
 
 #include "Geography.h"
@@ -175,11 +175,11 @@ void Geography::calcAngles() {
         double dLat0 = m_adLatitude[iIndex];
         if (dLat0 > 90-EPS) {
             for (uint j  = 0; j < m_iMaxNeighbors; j++) {
-                m_adAngles[iIndex*m_iMaxNeighbors+j] = -M_PI/2;
+                m_adAngles[iIndex*m_iMaxNeighbors+j] = -Q_PI/2;
             }
         } else if (dLat0 < -90+EPS) {
             for (uint j  = 0; j < m_iMaxNeighbors; j++) {
-                m_adAngles[iIndex*m_iMaxNeighbors+j] = M_PI/2;
+                m_adAngles[iIndex*m_iMaxNeighbors+j] = Q_PI/2;
             }
         } else {
 
@@ -187,14 +187,14 @@ void Geography::calcAngles() {
                 if (j < sc.m_iNumNeighbors) {
                     // sc.m_aNeighbors: indexes, not IDs
                     int k = sc.m_aNeighbors[j];
-                    double dLon = (m_adLongitude[k] - dLon0)*M_PI/180;
-                    if (dLon > M_PI) {
-                        dLon -= 2*M_PI;
-                    } else if (dLon < -M_PI) {
-                        dLon += 2*M_PI;
+                    double dLon = (m_adLongitude[k] - dLon0)*Q_PI/180;
+                    if (dLon > Q_PI) {
+                        dLon -= 2*Q_PI;
+                    } else if (dLon < -Q_PI) {
+                        dLon += 2*Q_PI;
                     } 
                     
-                    double dLat = (m_adLatitude[k]  - dLat0)*M_PI/180;
+                    double dLat = (m_adLatitude[k]  - dLat0)*Q_PI/180;
                     m_adAngles[iIndex*m_iMaxNeighbors+j] = atan2(dLat, dLon);
                 } else {
                     m_adAngles[iIndex*m_iMaxNeighbors+j] = dNaN;

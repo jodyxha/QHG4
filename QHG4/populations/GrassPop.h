@@ -6,8 +6,8 @@
 #include "SPopulation.h"
 #include "GrassManager.h"
 
-//const static std::string  SHARE_GRASS_MASS_AVAILABLE = "grass_mass_available";
-//const static std::string  SHARE_GRASS_MASS_CONSUMED  = "grass_mass_consumed";
+#define SHARE_GRASS_MASS_AVAILABLE "grass_mass_available"
+#define SHARE_GRASS_MASS_CONSUMED  "grass_mass_consumed"
 
 struct GrassAgent : Agent {
     double m_dMass;

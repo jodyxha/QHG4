@@ -35,7 +35,6 @@ protected:
     double m_dDelta;
     MassInterface *m_pMI;
 
-public:
     static const std::string asNames[];
 };
 

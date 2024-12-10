@@ -28,7 +28,7 @@ const static std::string ATTR_LOTKAVOLTERRA_OTHERPOP_NAME    = "LV_otherpop";
 const static std::string ATTR_LOTKAVOLTERRA_K_NAME           = "LV_K";
 
 
-const static int NAME_LEN = 1024;
+#define NAME_LEN 1024
 
 class WELL512;
 
@@ -62,7 +62,6 @@ class LotkaVolterra : public Action<T> {
     double *m_adB;
     double *m_adD;
 
-public:
     static const std::string asNames[];    
 };
 

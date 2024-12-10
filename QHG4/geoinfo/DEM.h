@@ -10,7 +10,7 @@
 #ifndef __DEM_H__
 #define __DEM_H__
 
-#include "utils.h"
+#include "qhg_consts.h"
 const double NO_VAL = dNaN;
 
 

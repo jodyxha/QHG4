@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <string>
 
-#include "utils.h"
+#include "qhg_consts.h"
 #include "types.h"
 #include "geomutils.h"
 #include "strutils.h"
@@ -1403,8 +1403,8 @@ int GridFactory::initializeGeography(NodeIndex *pNI) {
                 m_pGeo->m_adLatitude[iIndex]  =  pIN->m_dLat;
                 m_pGeo->m_adLongitude[iIndex] =  pIN->m_dLon;
                 if (bDeg2Rad) {
-                    m_pGeo->m_adLatitude[iIndex]  *=  180/M_PI;
-                    m_pGeo->m_adLongitude[iIndex] *=  180/M_PI;
+                    m_pGeo->m_adLatitude[iIndex]  *=  180/Q_PI;
+                    m_pGeo->m_adLongitude[iIndex] *=  180/Q_PI;
                 }
                 // the neighbor arrays are arranged sequentially into a big 1-d array
                 int i0 = m_pGeo->m_iMaxNeighbors*iIndex;

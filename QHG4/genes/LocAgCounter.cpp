@@ -5,7 +5,7 @@
 
 #include <omp.h>
 #include "types.h"
-#include "utils.h"
+#include "qhg_consts.h"
 #include "stdstrutilsT.h"
 #include "colors.h"
 #include "geomutils.h"
@@ -146,7 +146,7 @@ int LocAgCounter::getCandidatesNew() {
             double dLat1 = m_mCoords[m_pCellIDs[i]].second;
         
             
-            //            double d = spherdist(dLon0*M_PI/180, dLat0*M_PI/180, dLon1*M_PI/180, dLat1*M_PI/180, RADIUS);
+            //            double d = spherdist(dLon0*Q_PI/180, dLat0*Q_PI/180, dLon1*Q_PI/180, dLat1*Q_PI/180, RADIUS);
             double d = m_fCalcDist(dLon0, dLat0, dLon1, dLat1, m_dScale);
             
 

@@ -17,7 +17,7 @@
 #include <map>
 #include <string>
 #include "types.h"
-#include "utils.h"
+#include "qhg_consts.h"
 
 #include "Pattern.h"
 

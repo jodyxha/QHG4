@@ -3,7 +3,7 @@
 #include <cstring>
 #include <unistd.h>
 #include <ccma>
-#include "utils.h"
+#include "qhg_consts.h"
 #include "QMapUtils.h"
 #include "QMapHeader.h"
 #include "UDelReader.h"
