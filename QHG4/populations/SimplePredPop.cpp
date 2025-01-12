@@ -3,7 +3,7 @@
 #include "LayerBuf.cpp"
 #include "LayerArrBuf.cpp"
 #include "Action.cpp"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 ////////////////////////////
 #include "ArrayShare.h"
 
@@ -105,9 +105,9 @@ int SimplePredPop::preLoop() {
     // share before calling action's preLooop (in SPopulation::preLoop)
 
     // now we know the species name and can share the array as "<speciesname>_Masses"
-    std::string sArrName = stdsprintf("%s_Masses", m_sSpeciesName);
+    std::string sArrName = xha_sprintf("%s_Masses", m_sSpeciesName);
     ArrayShare::getInstance()->shareArray(sArrName, m_pCG->m_iNumCells, m_afMassArray[0]);
-    stdprintf("[SimplePredPop::preLoop] Share m_afMassArray[0] (%p) as [%s]\n", m_afMassArray[0], sArrName);
+    xha_printf("[SimplePredPop::preLoop] Share m_afMassArray[0] (%p) as [%s]\n", m_afMassArray[0], sArrName);
 
 
     iResult = SPopulation<SimplePredAgent>::preLoop();
@@ -131,8 +131,8 @@ int SimplePredPop::initializeStep(float fTime) {
     int iResult = SPopulation<SimplePredAgent>::initializeStep(fTime);
 
     // later: update number of local agents array for SimplePred
-    std::string sArrName = stdsprintf("%s_Masses", m_sSpeciesName);
-    stdprintf("[SimplePredPop::initializeStep] Updating shared m_afMassArray[0] (%p) [%s]\n", m_afMassArray[0], sArrName);
+    std::string sArrName = xha_sprintf("%s_Masses", m_sSpeciesName);
+    xha_printf("[SimplePredPop::initializeStep] Updating shared m_afMassArray[0] (%p) [%s]\n", m_afMassArray[0], sArrName);
     // update mass array
 
 #pragma omp parallel 
@@ -161,7 +161,7 @@ int SimplePredPop::initializeStep(float fTime) {
             m_afMassArray[0][iC] += m_afMassArray[iT][iC];
         }
     }
-    stdprintf("[SimplePredPop::initializeStep] Updated shared m_afMassArray[0] (%p) [%s]\n", m_afMassArray[0], sArrName);
+    xha_printf("[SimplePredPop::initializeStep] Updated shared m_afMassArray[0] (%p) [%s]\n", m_afMassArray[0], sArrName);
         
     return iResult;
 }

@@ -10,7 +10,7 @@
 #include "hdf5.h"
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "geomutils.h"
 #include "SPopulation.h"
 #include "QDFUtils.h"
@@ -83,9 +83,9 @@ int AgentYMTCollector::init(const std::string sPopQDF, const std::string sSpecie
     if (iResult == 0) {
         separateValues();
         
-        stdfprintf(stderr, "Successfully read agent items from [%s] (%fs)\n", sPopQDF, f2 - f1);
+        xha_fprintf(stderr, "Successfully read agent items from [%s] (%fs)\n", sPopQDF, f2 - f1);
     } else {
-        stdfprintf(stderr, "Couldn't get agent items\n");
+        xha_fprintf(stderr, "Couldn't get agent items\n");
     }
 
     return iResult;
@@ -109,19 +109,19 @@ int AgentYMTCollector::getRootAttributes(hid_t hFile) {
                     iResult = 0;
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "Couldn't convert attribute [%s] (%s) to number\n", ROOT_TIME_NAME, sValue);
+                    xha_fprintf(stderr, "Couldn't convert attribute [%s] (%s) to number\n", ROOT_TIME_NAME, sValue);
                 }
             } else {
                 iResult = -1;
-                stdfprintf(stderr, "Couldn't get attribute [%s]\n", ROOT_TIME_NAME);
+                xha_fprintf(stderr, "Couldn't get attribute [%s]\n", ROOT_TIME_NAME);
             }
         } else {
             iResult = -1;
-            stdfprintf(stderr, "Couldn't convert attribute [%s] (%s) to number\n", ROOT_STEP_NAME, sValue);
+            xha_fprintf(stderr, "Couldn't convert attribute [%s] (%s) to number\n", ROOT_STEP_NAME, sValue);
         }
     } else {
         iResult = -1;
-        stdfprintf(stderr, "Couldn't get attribute [%s]\n", ROOT_STEP_NAME);
+        xha_fprintf(stderr, "Couldn't get attribute [%s]\n", ROOT_STEP_NAME);
     }
     return iResult;
 }
@@ -166,7 +166,7 @@ int AgentYMTCollector::loadAgentsCell(const std::string sPop, const std::string 
     int iResult = getRootAttributes(hFilePop);
     
     hid_t hPopulation  = qdf_openGroup(hFilePop, POPGROUP_NAME);
-    stdfprintf(stderr, "[loadAgentsCell] pop %s,popname %s\n", sPop, sPopName);
+    xha_fprintf(stderr, "[loadAgentsCell] pop %s,popname %s\n", sPop, sPopName);
     // at this point m_iNumCells should be known (loadNPP() loadAltIce() already called)
 
 
@@ -186,18 +186,18 @@ int AgentYMTCollector::loadAgentsCell(const std::string sPop, const std::string 
         hid_t hMemSpace = H5Screate_simple (1, &dims, NULL); 
         herr_t status = H5Dread(hDataSet, hAgentDataType, hMemSpace, hDataSpace, H5P_DEFAULT, m_pInfos);
         if (status >= 0) {
-            stdfprintf(stderr, "pop %s: %llu\n", sPopName, dims);
+            xha_fprintf(stderr, "pop %s: %llu\n", sPopName, dims);
             /*
-            stdfprintf(stderr, "AgnetYMTCollector: some values after readin\n");
+            xha_fprintf(stderr, "AgnetYMTCollector: some values after readin\n");
             for (uint i = 0; i < 5; i++) {
                 aginfo_ymt *pai = (aginfo_ymt  *)m_pInfos;
-                stdfprintf(stderr, "%d: gender %d, hyb %f, y %d, mt %d\n", i, pai[i].m_iGender, pai[i].m_fHybridization, pai[i].m_iYchr, pai[i].m_imtDNA);
+                xha_fprintf(stderr, "%d: gender %d, hyb %f, y %d, mt %d\n", i, pai[i].m_iGender, pai[i].m_fHybridization, pai[i].m_iYchr, pai[i].m_imtDNA);
                 int j = m_iNumAgents-i-1;
-                stdfprintf(stderr, "%d: gender %d, hyb %f, y %d, mt %d\n", j, pai[j].m_iGender, pai[j].m_fHybridization, pai[j].m_iYchr, pai[j].m_imtDNA);
+                xha_fprintf(stderr, "%d: gender %d, hyb %f, y %d, mt %d\n", j, pai[j].m_iGender, pai[j].m_fHybridization, pai[j].m_iYchr, pai[j].m_imtDNA);
             }
             */
         } else {
-            stdfprintf(stderr, "bad status for pop %s\n", sPopName);
+            xha_fprintf(stderr, "bad status for pop %s\n", sPopName);
             
             delete[] m_pInfos;
             m_pInfos = NULL;

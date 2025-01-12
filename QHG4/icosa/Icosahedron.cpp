@@ -14,7 +14,7 @@
 #include "BufReader.h"
 #include "Vec3D.h"
 #include "qhg_consts.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "icoutil.h"
 #include "IcoLoc.h"
@@ -53,7 +53,7 @@ Icosahedron::Icosahedron(double dRadius)
       m_curBox(-Q_PI,Q_PI+1e-8,-Q_PI/2, Q_PI/2+1e-8),
       m_bPreSel(false),
       m_bStrict(true) {
-    stdprintf("%p: constr%s\n", this, "(normal)");
+    xha_printf("%p: constr%s\n", this, "(normal)");
 
 }
 
@@ -90,7 +90,7 @@ double Icosahedron::calcSinAngle() {
     double sps=sin(dDPhi/2);
     sps=2*sps*sps;
     double dSA = (1 - sqrt(1 - 4* sps*(1-sps)))/(2*sps);
-    //    stdprintf("dSA = %f -> (%f°)\n", dSA, 180*asin(dSA)/Q_PI);
+    //    xha_printf("dSA = %f -> (%f°)\n", dSA, 180*asin(dSA)/Q_PI);
     return dSA;
 }
 
@@ -99,7 +99,7 @@ double Icosahedron::calcSinAngle() {
 //  create an icosahedron (dRadius currntly without effect)
 //
 Icosahedron *Icosahedron::create(double dRadius, int iPolyType) {
-    stdprintf("create  - create%s\n", "(normal)");
+    xha_printf("create  - create%s\n", "(normal)");
 
     Icosahedron *pI = new Icosahedron(dRadius);
     int iResult = pI->init(iPolyType);
@@ -118,7 +118,7 @@ int Icosahedron::init(int iPolyType) {
     int iResult = -1;
 
     if (iPolyType != POLY_TYPE_NONE) {
-        stdprintf("poly type is %d\n", iPolyType);
+        xha_printf("poly type is %d\n", iPolyType);
         m_iPolyType = iPolyType;
         m_iNumMainFaces = s_aiFaceNum[m_iPolyType];
         m_iNumMainVerts = s_aiVertNum[m_iPolyType];
@@ -330,11 +330,11 @@ void Icosahedron::relinkR(IcoFace *pF) {
             }
 
             /*
-            stdprintf("at level %d/%d: |", pF->getLevel(), m_iSubLevel); 
+            xha_printf("at level %d/%d: |", pF->getLevel(), m_iSubLevel); 
             for (int i = 0; i < 3; i++) {
-                stdprintf("(%f %f %f)|", pF->getVertex(i)->m_fX, pF->getVertex(i)->m_fY, pF->getVertex(i)->m_fZ);
+                xha_printf("(%f %f %f)|", pF->getVertex(i)->m_fX, pF->getVertex(i)->m_fY, pF->getVertex(i)->m_fZ);
             }
-            stdprintf("\n")
+            xha_printf("\n")
             */
                     } 
     }
@@ -347,7 +347,7 @@ void Icosahedron::relinkR(IcoFace *pF) {
 //  start for the recursive relinking
 //
 void Icosahedron::relink() {
-    stdprintf("%p: relinking%s\n", this, "(normal)");
+    xha_printf("%p: relinking%s\n", this, "(normal)");
     double dTot1=0;
 
     dTot1 = omp_get_wtime();
@@ -367,7 +367,7 @@ void Icosahedron::relink() {
     }
 
     double dTot2 = omp_get_wtime();
-    stdprintf("relinking (%d faces, %lld nodes) used %fs\n", m_pVL->getNumFaces(),m_pVL->getNumVertices(), dTot2-dTot1);
+    xha_printf("relinking (%d faces, %lld nodes) used %fs\n", m_pVL->getNumFaces(),m_pVL->getNumVertices(), dTot2-dTot1);
     
 }
 
@@ -381,12 +381,12 @@ void Icosahedron::facedisplay(IcoFace *pF, const char *pIndent, bool bAll) {
         
         if (bAll || !pF->isSubdivided()) {
             /*
-            stdprintf("%s(%04lld,%04lld,%04lld)\n", pIndent, 
+            xha_printf("%s(%04lld,%04lld,%04lld)\n", pIndent, 
                    m_pVL->getVertexID(pF->getVertex(0)),
                    m_pVL->getVertexID(pF->getVertex(1)),
                    m_pVL->getVertexID(pF->getVertex(2)));
             */
-            stdprintf("%s(%04d,%04d,%04d)\n", pIndent, 
+            xha_printf("%s(%04d,%04d,%04d)\n", pIndent, 
                    pF->getVertexID(0),
                    pF->getVertexID(1),
                    pF->getVertexID(2));
@@ -411,11 +411,11 @@ void Icosahedron::facedisplay(IcoFace *pF, const char *pIndent, bool bAll) {
 void Icosahedron::display() {
     if (m_pVL != NULL) {
         for (int i = 0; i < m_iNumMainFaces; i++) {
-            stdprintf("*---%02d--\n", i);
+            xha_printf("*---%02d--\n", i);
             facedisplay(m_apMainFaces[i], "  ", true);
         }
     } else {
-        stdprintf("have no linkage\n");
+        xha_printf("have no linkage\n");
     }
 }
 
@@ -452,7 +452,7 @@ PolyFace *Icosahedron::getNextFace() {
 void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, double dDLat) {
     m_curBox = tBox;
 
-    stdprintf("Starting variableSubDivOMPB\n");
+    xha_printf("Starting variableSubDivOMPB\n");
     m_iSubLevel = iMaxLevel;
 
     double dTot1 = omp_get_wtime();
@@ -475,7 +475,7 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
                 iNum = omp_get_num_threads();
             }
         } 
-    stdprintf("%d processes at work\n", iNum);
+    xha_printf("%d processes at work\n", iNum);
 
 
     
@@ -492,7 +492,7 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
     dMinSide = (dMinSide < d3)?dMinSide:d3;
     double dBigSide = m_apMainFaces[0]->getVertex(0)->dist(m_apMainFaces[0]->getVertex(1));
     int iMaxLevel1 = (int)(-log(dMinSide/dBigSide)/log(2))+iMaxLevel/2;
-    stdprintf("Minside %f, bigside %f -> levs %d\n",  dMinSide, dBigSide, iMaxLevel1);
+    xha_printf("Minside %f, bigside %f -> levs %d\n",  dMinSide, dBigSide, iMaxLevel1);
     //do this for "old" functionality:    iMaxLevel1 = iMaxLevel;
     //    if (iMaxLevel > 3) {
     //    iMaxLevel1 = iMaxLevel-1;
@@ -522,7 +522,7 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
 
         int chunk = (int)(((m_curBox.dLatMax-m_curBox.dLatMin)/dDLat)/iNum);
 
-        stdprintf("Doing level %d/%d on %d faces (chunk:%d)\n", iLevel, iMaxLevel, iFlatCount, chunk);
+        xha_printf("Doing level %d/%d on %d faces (chunk:%d)\n", iLevel, iMaxLevel, iFlatCount, chunk);
 
         int iMax = (int)(1+((m_curBox.dLatMax-m_curBox.dLatMin)/dDLat));
         int iFacesLeft = k;
@@ -541,14 +541,14 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
                     double dSLat = sin(dLat);
                     for (double dLon = m_curBox.dLonMin; (iFacesLeft > 0) && (dLon <  m_curBox.dLonMax+dDLon); dLon += dDLon) {
                         Vec3D v(dCLat*cos(dLon), dCLat*sin(dLon), dSLat);
-                        //                stdprintf("Checking (%f,%f)->(%f,%f,%f)\n", dLon, dLat, v.m_fX, v.m_fY, v.m_fZ);
+                        //                xha_printf("Checking (%f,%f)->(%f,%f,%f)\n", dLon, dLat, v.m_fX, v.m_fY, v.m_fZ);
                         
                         for (int j = 0; j < k; j++) {
                             IcoFace *pF = apOldFaces[j];
                             
                             if (pF != NULL) {
                                 if (pF->contains(&v)) {
-                                    //  stdprintf("proc %d faces[%d/%d] adding %p\n", iCur, aiFC[iCur], aiCaps[iCur], pF);
+                                    //  xha_printf("proc %d faces[%d/%d] adding %p\n", iCur, aiFC[iCur], aiCaps[iCur], pF);
                                     apFaces[iCur][aiFC[iCur]++] = pF;
                                     apOldFaces[j] = NULL;
                                     --iFacesLeft;
@@ -559,7 +559,7 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
                                     }
                                     if (aiFC[iCur] >= aiCaps[iCur]) {
                                         aiCaps[iCur] *= 64;
-                                        //    stdprintf("resize %d to %d\n",iCur, aiCaps[iCur]);
+                                        //    xha_printf("resize %d to %d\n",iCur, aiCaps[iCur]);
                                         IcoFace **ppF = new IcoFace*[aiCaps[iCur]];
                                         memcpy(ppF, apFaces[iCur], aiFC[iCur]*sizeof(IcoFace*));
                                         delete[] apFaces[iCur];
@@ -582,7 +582,7 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
         if (iTotal > iFlatSize) {
             delete[] apFlattened;
             apFlattened = new IcoFace*[64*iTotal];
-            stdprintf("Resized to %d items (%zd bytes)\n", iTotal, iTotal*sizeof(IcoFace*));
+            xha_printf("Resized to %d items (%zd bytes)\n", iTotal, iTotal*sizeof(IcoFace*));
             iFlatSize = 64*iTotal;
             bzero(apFlattened, iFlatSize*sizeof(IcoFace*));
         }
@@ -600,11 +600,11 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
             }
         }
         if (iC != iFlatCount) {
-            stdprintf("copied %d items iinstead of %d\n", iC, iFlatCount);
+            xha_printf("copied %d items iinstead of %d\n", iC, iFlatCount);
         }
 
         double dt2 = omp_get_wtime();
-        stdprintf("involved faces: %d (%f secs)\n", iFlatCount,  dt2-dt1);
+        xha_printf("involved faces: %d (%f secs)\n", iFlatCount,  dt2-dt1);
 
         for (int i =0; i < iNum; i++) {
             delete[] apFaces[i];
@@ -618,7 +618,7 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
 
 
     // now second phase (triangles are smaller than box
-    stdprintf("*** switching to phase 2 ***\n");
+    xha_printf("*** switching to phase 2 ***\n");
     
       while (iLevel < iMaxLevel) {
                int k = iFlatCount;
@@ -630,7 +630,7 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
              chunk = 1;
         }
 
-        stdprintf("phase2: Doing level %d/%d on %d faces (chunk:%d)\n", iLevel, iMaxLevel, iFlatCount, chunk);
+        xha_printf("phase2: Doing level %d/%d on %d faces (chunk:%d)\n", iLevel, iMaxLevel, iFlatCount, chunk);
 
         int iCap = 64*iFlatCount;
         for (int i =0; i < iNum; i++) {
@@ -656,7 +656,7 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
                     
                     if (pF != NULL) {
                         if (pF->vertexInBox(m_curBox)) {
-                            //  stdprintf("proc %d faces[%d/%d] adding %p\n", iCur, aiFC[iCur], aiCaps[iCur], pF);
+                            //  xha_printf("proc %d faces[%d/%d] adding %p\n", iCur, aiFC[iCur], aiCaps[iCur], pF);
                             apFaces[iCur][aiFC[iCur]++] = pF;
                             apOldFaces[i] = NULL;
                             --iFacesLeft;
@@ -667,7 +667,7 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
                             }
                             if (aiFC[iCur] >= aiCaps[iCur]) {
                                 aiCaps[iCur] *= 64;
-                                //    stdprintf("resize %d to %d\n",iCur, aiCaps[iCur]);
+                                //    xha_printf("resize %d to %d\n",iCur, aiCaps[iCur]);
                                 IcoFace **ppF = new IcoFace*[aiCaps[iCur]];
                                 memcpy(ppF, apFaces[iCur], aiFC[iCur]*sizeof(IcoFace*));
                                 delete[] apFaces[iCur];
@@ -702,7 +702,7 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
         if (iTotal > iFlatSize) {
             delete[] apFlattened;
             apFlattened = new IcoFace*[64*iTotal];
-            stdprintf("Resized to %d items (%zd bytes)\n", iTotal, iTotal*sizeof(IcoFace*));
+            xha_printf("Resized to %d items (%zd bytes)\n", iTotal, iTotal*sizeof(IcoFace*));
             iFlatSize = 64*iTotal;
         }
         iFlatCount = iTotal;
@@ -721,12 +721,12 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
             }
         }
         if (iC != iFlatCount) {
-            stdprintf("copied %d items iinstead of %d\n", iC, iFlatCount);
+            xha_printf("copied %d items iinstead of %d\n", iC, iFlatCount);
             iFlatCount = iC;
         }
 
         double dt2 = omp_get_wtime();
-        stdprintf("involved faces: %d (%f secs)\n", iFlatCount,  dt2-dt1);
+        xha_printf("involved faces: %d (%f secs)\n", iFlatCount,  dt2-dt1);
 
         for (int i =0; i < iNum; i++) {
             delete[] apFaces[i];
@@ -749,7 +749,7 @@ void Icosahedron::variableSubDivOMP(int iMaxLevel,  tbox &tBox, double  dDLon, d
 
 
     double dTot2 = omp_get_wtime();
-    stdprintf("total time needed: %f secs\n",  dTot2-dTot1);
+    xha_printf("total time needed: %f secs\n",  dTot2-dTot1);
 
 
 }
@@ -783,7 +783,7 @@ int Icosahedron::save(const std::string sFile) {
         iResult = pIH->write(pBW);
 
         for (unsigned char i = 0; (i < m_iNumMainFaces) && (iResult == 0); i++) {
-            stdprintf("s---%02u--\n", i);
+            xha_printf("s---%02u--\n", i);
             char sStart[8];
             m_apMainFaces[i]->calcCompletion();
             sprintf(sStart, "!%02u:", i);
@@ -796,7 +796,7 @@ int Icosahedron::save(const std::string sFile) {
         delete pBW;
     } else {
         iResult = -1;
-        stdprintf("[Icosahedron::save] couldn't open [%s] for reading\n", sFile);
+        xha_printf("[Icosahedron::save] couldn't open [%s] for reading\n", sFile);
     }
     return iResult;
 }
@@ -882,7 +882,7 @@ int Icosahedron::parseSubFace(symbuf *psm, IcoFace *pF) {
             } else if (iSym == SYM_DOT) {
                 // do nothing with face
             } else {
-                stdprintf("Unexpected symbol: [%s](%d)\n", psm->getSymName(iSym), iSym);
+                xha_printf("Unexpected symbol: [%s](%d)\n", psm->getSymName(iSym), iSym);
                 iResult = -1;
             }
             if (iResult == 0) {
@@ -894,7 +894,7 @@ int Icosahedron::parseSubFace(symbuf *psm, IcoFace *pF) {
     // it must end with a closing bracket
     if (iSym != SYM_CBR) {
         iResult = -1;
-        stdprintf("Expected CBR instead of [%s]\n",   psm->getSymName(iSym));
+        xha_printf("Expected CBR instead of [%s]\n",   psm->getSymName(iSym));
     }
     return iResult;
         
@@ -926,7 +926,7 @@ int getStartPoints(const char *pFile, int *aiLocs) {
         aiLocs[iNumLocs++] = (int)ftell(fIn);
         fclose(fIn);
     } else {
-        stdprintf("Couldn't open [%s]\n", pFile);
+        xha_printf("Couldn't open [%s]\n", pFile);
     }
     return iNumLocs;
 }
@@ -946,10 +946,10 @@ int Icosahedron::load(const std::string sFile) {
 
     dTot1 = omp_get_wtime();
 
-    stdprintf("ico[%p] Loading [%s]\n", this,sFile);
+    xha_printf("ico[%p] Loading [%s]\n", this,sFile);
     BufReader *pBR = BufReader::createInstance(sFile.c_str(), ICO_BUF);
     if (pBR != NULL) {
-        stdprintf("Doing header (%s)...\n", m_bStrict?"strict":"free");
+        xha_printf("Doing header (%s)...\n", m_bStrict?"strict":"free");
         IcoHeader *pIH = new IcoHeader();
         iResult = pIH->read(pBR);
         // do something with the data?
@@ -975,7 +975,7 @@ int Icosahedron::load(const std::string sFile) {
         IcoFace *pF = NULL;
         symbuf *psm = new symbuf(pBR);
         int iSym = psm->getNextSym();
-        //        stdprintf("ld:New symbol: [%s](%d)\n", psm->getSymName(iSym), iSym);
+        //        xha_printf("ld:New symbol: [%s](%d)\n", psm->getSymName(iSym), iSym);
         while ((iResult == 0) &&(iSym == SYM_NUM)) {
             int iNum = psm->getCurNum();printf("   N=%02d\n", iNum);
             if ((iNum >= 0) && (iNum < m_iNumMainFaces)) {
@@ -1000,16 +1000,16 @@ int Icosahedron::load(const std::string sFile) {
                     break;
                 }
             } else {
-                stdprintf("invalid face number:%d\n", iNum);
+                xha_printf("invalid face number:%d\n", iNum);
                 iResult = -1;
             }
         }
 
         if (iSym == SYM_NUL) {
-            stdprintf("Icosahedron loaded\n");
+            xha_printf("Icosahedron loaded\n");
             iResult = 0;
         } else {
-            stdprintf("[Exit]Unexpected symbol: [%s](%d)\n",  psm->getSymName(iSym), iSym);
+            xha_printf("[Exit]Unexpected symbol: [%s](%d)\n",  psm->getSymName(iSym), iSym);
             iResult = -1;
         }
         
@@ -1018,11 +1018,11 @@ int Icosahedron::load(const std::string sFile) {
         delete pBR;
 
         double dTot2 = omp_get_wtime();
-        stdprintf("loading  used %fs\n", dTot2-dTot1);
+        xha_printf("loading  used %fs\n", dTot2-dTot1);
 
     } else {
         iResult =-1;
-        stdprintf("Couldn't open [%s] for reading\n", sFile);
+        xha_printf("Couldn't open [%s] for reading\n", sFile);
     }
 
     return iResult;

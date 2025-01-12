@@ -2,7 +2,7 @@
 #include <cstring>
 #include <hdf5.h>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "OccTracker.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
@@ -37,7 +37,7 @@ int OccWriter::write(hid_t hFile) {
 
     if (m_pOcc != NULL) {
         iResult = 0;
-        stdprintf("Occwriter creating group [%s]\n", OCCGROUP_NAME);
+        xha_printf("Occwriter creating group [%s]\n", OCCGROUP_NAME);
         hid_t hOccGroup = qdf_opencreateGroup(hFile, OCCGROUP_NAME);
         if (hOccGroup > 0) {
             writeOccAttributes(hOccGroup);
@@ -50,9 +50,9 @@ int OccWriter::write(hid_t hFile) {
             
             
             if (iResult == 0) {
-                //                stdprintf("[OccWriter] data written\n");
+                //                xha_printf("[OccWriter] data written\n");
             } else {
-                stdprintf("[NavWriter] error writing arrays\n");
+                xha_printf("[NavWriter] error writing arrays\n");
             }
             
             delete[] pOccData;
@@ -63,11 +63,11 @@ int OccWriter::write(hid_t hFile) {
 
         } else {
             iResult = -1;
-            stdprintf("[OccWriter] Couldn't open group [%s]\n", OCCGROUP_NAME);
+            xha_printf("[OccWriter] Couldn't open group [%s]\n", OCCGROUP_NAME);
             // couldn't open group
         }
     } else {
-        stdprintf("[OccWriter] No OccTracker set\n");
+        xha_printf("[OccWriter] No OccTracker set\n");
     }
     return iResult;
 }

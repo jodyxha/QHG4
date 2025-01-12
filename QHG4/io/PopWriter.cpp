@@ -2,7 +2,7 @@
 #include <cstring>
 #include <hdf5.h>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "PopBase.h"
 
 #include "QDFUtils.h"
@@ -15,7 +15,7 @@
 //
 PopWriter::PopWriter(std::vector<PopBase *> vPops) {
     for (uint i = 0; i < vPops.size(); i++) {
-        stdprintf("[PopWriter::PopWriter] adding pop [%s]\n", vPops[i]->getSpeciesName());
+        xha_printf("[PopWriter::PopWriter] adding pop [%s]\n", vPops[i]->getSpeciesName());
         m_mDataTypes[vPops[i]] = vPops[i]->getAgentQDFDataType();
     }
 }
@@ -94,7 +94,7 @@ int PopWriter::write(hid_t hFile, const std::string sSub, popwrite_flags iWSpeci
                             dims = pPop->getNumAgentsEffective(); 
                         }
                         
-                        // stdfprintf(stderr, "PopWriter  [%s] numagents total: %lld\n", it->first->getSpeciesName(), dims);
+                        // xha_fprintf(stderr, "PopWriter  [%s] numagents total: %lld\n", it->first->getSpeciesName(), dims);
                         hid_t hDataSpace = H5Screate_simple(1, &dims, NULL);
                     
                         if (hDataSpace > 0) {
@@ -152,7 +152,7 @@ int PopWriter::write(hid_t hFile, const std::string sSub, popwrite_flags iWSpeci
 
     } else {
         // this should not happen
-        stdprintf("no datatype found for pop [%s]\n", sSub);
+        xha_printf("no datatype found for pop [%s]\n", sSub);
     }
     return iResult;
 }
@@ -190,7 +190,7 @@ int PopWriter::opencreateSpeciesGroup(PopBase *pPB, int iDumpMode) {
 
     const std::string sSpeciesName = pPB->getSpeciesName();
     if (qdf_link_exists(m_hPopGroup, sSpeciesName)) {
-        stdprintf("SpeciesGroup '%s' exists; deleting\n", sSpeciesName);
+        xha_printf("SpeciesGroup '%s' exists; deleting\n", sSpeciesName);
         iResult = qdf_deleteGroup(m_hPopGroup, sSpeciesName);
         if (iResult == 0) {
             printf("  deleted\n");

@@ -8,7 +8,7 @@
 #include <regex>
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
 #include "EQsahedron.h"
@@ -144,24 +144,24 @@ int QDFDataExtractor::getGridAttrs() {
                             iResult = 0;
 
                         } else {
-                            stdprintf("Subdiv attribute in [%s] is not a number:[%s]\n", m_sQDFGrid, sSubDiv);
+                            xha_printf("Subdiv attribute in [%s] is not a number:[%s]\n", m_sQDFGrid, sSubDiv);
                         }
                     } else {
-                        stdprintf("Couldn't extrat attribute [%s] from group [%s]\n", GRID_ATTR_NUM_CELLS, GRIDGROUP_NAME);
+                        xha_printf("Couldn't extrat attribute [%s] from group [%s]\n", GRID_ATTR_NUM_CELLS, GRIDGROUP_NAME);
                     }
                     
                     
                 } else {
-                    stdprintf("Couldn't extrat attribute [%s] from group [%s]\n", GRID_ATTR_NUM_CELLS, GRIDGROUP_NAME);
+                    xha_printf("Couldn't extrat attribute [%s] from group [%s]\n", GRID_ATTR_NUM_CELLS, GRIDGROUP_NAME);
                 }
             } else {
-                stdprintf("Couldn't open group [%s]\n", GRIDGROUP_NAME);
+                xha_printf("Couldn't open group [%s]\n", GRIDGROUP_NAME);
             }
         } else {
-            stdprintf("Group [%s] does not exist in file [%s]\n", GRIDGROUP_NAME, m_sQDFGrid);
+            xha_printf("Group [%s] does not exist in file [%s]\n", GRIDGROUP_NAME, m_sQDFGrid);
         } 
     } else {
-        stdprintf("Couldn't open file [%s]\n", m_sQDFGrid);
+        xha_printf("Couldn't open file [%s]\n", m_sQDFGrid);
     }
     return iResult;
 }
@@ -185,7 +185,7 @@ bool QDFDataExtractor::isCharArray() {
         }
 
     } else {
-        stdprintf("ARray path has no '/': [%s]\n", m_sArrayPath);
+        xha_printf("ARray path has no '/': [%s]\n", m_sArrayPath);
     }
   
     return bIsChar;
@@ -209,22 +209,22 @@ int QDFDataExtractor::getArraySource(const std::string sQDF) {
                         m_pdData[i] = pcData[i];
                     }
                 } else {
-                    stdprintf("Couldn't read array [%s] \n", m_sArrayPath);
+                    xha_printf("Couldn't read array [%s] \n", m_sArrayPath);
                 }
             } else {
                 iResult = qdf_readArray(hFile, m_sArrayPath, m_iNumCells, m_pdData);
                 if (iResult != 0) {
-                    stdprintf("Couldn't read array [%s] \n", m_sArrayPath);
+                    xha_printf("Couldn't read array [%s] \n", m_sArrayPath);
                 }
             }
            
         } else {
-            stdprintf("Couldn't open file [%s] as QDF file\n", m_sQDFGrid);
+            xha_printf("Couldn't open file [%s] as QDF file\n", m_sQDFGrid);
         }
         qdf_closeFile(hFile);
         
     } else {
-        stdprintf("The path [%s] does not exist in [%s]\n", m_sArrayPath, sQDF);
+        xha_printf("The path [%s] does not exist in [%s]\n", m_sArrayPath, sQDF);
     }
     return iResult;
 }

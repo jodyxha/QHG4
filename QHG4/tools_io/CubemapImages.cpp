@@ -5,8 +5,8 @@
 
 #include "types.h"
 #include "strutils.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
 #include "EQsahedron.h"
@@ -90,7 +90,7 @@ int CubemapImages::init(std::string sInputQDF, std::string sArrayPath) {
 
         m_pEQ = EQsahedron::createInstance(m_iNumSubDivs, true);
     } else {
-        stdprintf("Couldn´t get Array [%s] from [%s]\n", sInputQDF, sArrayPath);
+        xha_printf("Couldn´t get Array [%s] from [%s]\n", sInputQDF, sArrayPath);
     }
     return iResult;
 }
@@ -112,7 +112,7 @@ int CubemapImages::readArray(std::string sInputQDF, std::string sArrayPath) {
            
     hid_t hFile = qdf_openFile(sInputQDF.c_str());
     if (hFile != H5P_DEFAULT) {
-        stdprintf("file opened: %ld\n", hFile);
+        xha_printf("file opened: %ld\n", hFile);
         hid_t hGridGroup =  qdf_openGroup(hFile, GRIDGROUP_NAME);
         if (hGridGroup != H5P_DEFAULT) {
             printf("grid group opened: %ld\n", hGridGroup);
@@ -124,33 +124,33 @@ int CubemapImages::readArray(std::string sInputQDF, std::string sArrayPath) {
                 printf("NumCells: %d\n", m_iNumCells);
                 m_pData = new double[m_iNumCells];
 
-                stdprintf("opening datsa group [%s]\n", sArrayGroup);
+                xha_printf("opening datsa group [%s]\n", sArrayGroup);
                 hid_t hDataGroup =  qdf_openGroup(hFile, sArrayGroup);
                 if (hDataGroup != H5P_DEFAULT) {
-                    stdprintf("group2 opened: %ld\n", hDataGroup);
+                    xha_printf("group2 opened: %ld\n", hDataGroup);
                     iResult = qdf_readArray(hDataGroup, pArrayName, m_iNumCells, m_pData);
                     if (iResult == 0) {
                         printf("array read r:%d\n", iResult);
                         
                     } else {
                         iResult = -1;
-                        stdprintf("Couldn't read array [%s]\n", pArrayName);
+                        xha_printf("Couldn't read array [%s]\n", pArrayName);
                     }
                     qdf_closeGroup(hDataGroup);
                 } else {
                     iResult = -1;
-                    stdprintf("Couldn't open group [%s]\n", sArrayPath);
+                    xha_printf("Couldn't open group [%s]\n", sArrayPath);
                 }
             } else {
-                stdprintf("couldn't extract num cells\n");
+                xha_printf("couldn't extract num cells\n");
             }
             //qdf_closeGroup(hGridGroup);
         } else {
-            stdprintf("couldn't open group [%s]\n", GRIDGROUP_NAME);
+            xha_printf("couldn't open group [%s]\n", GRIDGROUP_NAME);
         }
         qdf_closeFile(hFile);
     } else {
-        stdprintf("couldn't open file [%s]\n", sInputQDF);
+        xha_printf("couldn't open file [%s]\n", sInputQDF);
             
     }
  
@@ -188,7 +188,7 @@ int CubemapImages::createImages(std::string sOutBody) {
 
         iResult = getValues(aActives, iClamp);
         if (iResult == 0) {
-            stdprintf("data for image #%u created\n", i);
+            xha_printf("data for image #%u created\n", i);
             for (uint u = 0; u < m_iSize; u++) {
                 for (uint v = 0; v < m_iSize; v++) {
                     double dRed   = 0;
@@ -202,13 +202,13 @@ int CubemapImages::createImages(std::string sOutBody) {
                     aadData[u][v][3] = dAlpha;
                 }
             }
-            std::string sCurOut =  stdsprintf("%s_%d.png", sOutBody, i);
+            std::string sCurOut =  xha_sprintf("%s_%d.png", sOutBody, i);
             bool bOK = pPI->createPNGFromData(aadData, sCurOut.c_str());
             if (bOK) { // now create images from data
-                stdprintf("Image [%s] written ok\n", sCurOut);
+                xha_printf("Image [%s] written ok\n", sCurOut);
                 iResult = 0;
             } else {
-                stdprintf("COuldn't write image #%d\n", i);
+                xha_printf("COuldn't write image #%d\n", i);
             }
         }
 

@@ -5,7 +5,7 @@
 #include "types.h"
 #include "colors.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "Agent2DataExtractor.h"
 #include "AgentDataHistoPie_multi.h"
@@ -15,49 +15,49 @@
 // usage
 //
 void usage(const std::string sApp) {
-    stdprintf("%s - calculate hstogram foran agent data item and write a pie entry in QDF\n", sApp);
-    stdprintf("usage:\n");
-    stdprintf("%s", colors::HICYAN);
-    stdprintf("  %s -i <inputQDF> [-o <outputQDF>] -d <DataItemName>[\";\"<DataItemName>}\n", sApp);
-    stdprintf("     [-p <popName>] -s <samplingInfo> -b <dmin>:<dmax>;<bins>[:!]\n");
-    stdprintf("     [-m <mode>[:<mode>]*]\n");
-    stdprintf("%s", colors::OFF);
-    stdprintf("or\n");
-    stdprintf("%s", colors::HICYAN);
-    stdprintf("  %s -i <inputQDF> -l\n", sApp);
-    stdprintf("%s", colors::OFF);
-    stdprintf("where\n");
-    stdprintf("%s  inputQDF       %sQDF file containing agent data and a geography group\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s  outputQDF      %sQDF file to which pie group is to be added (if omitted, pie grou will be written to input file)\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s  dataItemName   %sname of data item to extract\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s  popName        %sname of population (if omitted,  \"sapiens\" is used)\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s  samplingInfo   %stext file containing snmpling info. format see below\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s  dmin           %sminimum value for bins\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s  dmax           %sminimum value for bins\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s  bins           %snumber of bins\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s  mode           %seither \"txt\", \"csv\" or \"pie\"\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s  -l             %slist data sets in input file\n", colors::HICYAN, colors::OFF);
-    stdprintf("");
-    stdprintf("format for sampling info:\n");
-    stdprintf("%s  file   %s::= <header><NL><dataline>*\n", colors::HIGREEN, colors::OFF);
-    stdprintf("%s  header %s::= \"FullSanpling\" | \"EachSampling\" | \"CellRangeSampling\" |\n", colors::HIGREEN, colors::OFF);
-    stdprintf("%s             %s\"CoordRangeSampling\" | \"GridRangeSampling\"\n", colors::HIGREEN, colors::OFF);
-    stdprintf("datalines for the different sanmplings:\n");
-    stdprintf("  FullSanpling :     use the entire grid as sample; no arguments needed\n");
-    stdprintf("  EachSanpling :     use each cell of the grid as sample; no arguments needed\n");
-    stdprintf("  CellRange :        sampling areas are discs around specified cells ids;\n");
-    stdprintf("%s    dataline %s::= <cell-id> <range>\n", colors::HIGREEN, colors::OFF);
-    stdprintf("  CoordRange :       sampling areas are discs around specified coordinates;\n");
-    stdprintf("%s    dataline %s::= <xcoord> <ycoord> <range>\n", colors::HIGREEN, colors::OFF);
-    stdprintf("  GridRange :        sampling areas are discs around points defined by a grid\n");
-    stdprintf("%s    dataline %s::= <xmin> <xmax> <xstep> [<ymin> <ymax> <ystep>} <range>\n", colors::HIGREEN, colors::OFF);
-    stdprintf("%s    xmin   %sstart of grid in x direction\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s    xmax   %send of grid in x direction\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s    xstep  %sdistance between grid nodes in x direction\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s    ymin   %sstart of grid in y direction\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s    ymax   %send of grid in y direction\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s    ystep  %sdistance between grid nodes in y direction\n", colors::HICYAN, colors::OFF);
-    stdprintf("%s    range  %sradius of disc\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s - calculate hstogram foran agent data item and write a pie entry in QDF\n", sApp);
+    xha_printf("usage:\n");
+    xha_printf("%s", colors::HICYAN);
+    xha_printf("  %s -i <inputQDF> [-o <outputQDF>] -d <DataItemName>[\";\"<DataItemName>}\n", sApp);
+    xha_printf("     [-p <popName>] -s <samplingInfo> -b <dmin>:<dmax>;<bins>[:!]\n");
+    xha_printf("     [-m <mode>[:<mode>]*]\n");
+    xha_printf("%s", colors::OFF);
+    xha_printf("or\n");
+    xha_printf("%s", colors::HICYAN);
+    xha_printf("  %s -i <inputQDF> -l\n", sApp);
+    xha_printf("%s", colors::OFF);
+    xha_printf("where\n");
+    xha_printf("%s  inputQDF       %sQDF file containing agent data and a geography group\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s  outputQDF      %sQDF file to which pie group is to be added (if omitted, pie grou will be written to input file)\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s  dataItemName   %sname of data item to extract\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s  popName        %sname of population (if omitted,  \"sapiens\" is used)\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s  samplingInfo   %stext file containing snmpling info. format see below\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s  dmin           %sminimum value for bins\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s  dmax           %sminimum value for bins\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s  bins           %snumber of bins\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s  mode           %seither \"txt\", \"csv\" or \"pie\"\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s  -l             %slist data sets in input file\n", colors::HICYAN, colors::OFF);
+    xha_printf("");
+    xha_printf("format for sampling info:\n");
+    xha_printf("%s  file   %s::= <header><NL><dataline>*\n", colors::HIGREEN, colors::OFF);
+    xha_printf("%s  header %s::= \"FullSanpling\" | \"EachSampling\" | \"CellRangeSampling\" |\n", colors::HIGREEN, colors::OFF);
+    xha_printf("%s             %s\"CoordRangeSampling\" | \"GridRangeSampling\"\n", colors::HIGREEN, colors::OFF);
+    xha_printf("datalines for the different sanmplings:\n");
+    xha_printf("  FullSanpling :     use the entire grid as sample; no arguments needed\n");
+    xha_printf("  EachSanpling :     use each cell of the grid as sample; no arguments needed\n");
+    xha_printf("  CellRange :        sampling areas are discs around specified cells ids;\n");
+    xha_printf("%s    dataline %s::= <cell-id> <range>\n", colors::HIGREEN, colors::OFF);
+    xha_printf("  CoordRange :       sampling areas are discs around specified coordinates;\n");
+    xha_printf("%s    dataline %s::= <xcoord> <ycoord> <range>\n", colors::HIGREEN, colors::OFF);
+    xha_printf("  GridRange :        sampling areas are discs around points defined by a grid\n");
+    xha_printf("%s    dataline %s::= <xmin> <xmax> <xstep> [<ymin> <ymax> <ystep>} <range>\n", colors::HIGREEN, colors::OFF);
+    xha_printf("%s    xmin   %sstart of grid in x direction\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s    xmax   %send of grid in x direction\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s    xstep  %sdistance between grid nodes in x direction\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s    ymin   %sstart of grid in y direction\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s    ymax   %send of grid in y direction\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s    ystep  %sdistance between grid nodes in y direction\n", colors::HICYAN, colors::OFF);
+    xha_printf("%s    range  %sradius of disc\n", colors::HICYAN, colors::OFF);
 }
 
 //----------------------------------------------------------------------------
@@ -68,11 +68,11 @@ int listDataType(std::string sQDFInputFile, std::string sPopName) {
     std::string sDSPath =  "/Populations/" + sPopName + "/AgentDataSet";
     Agent2DataExtractor *pADE = Agent2DataExtractor::createInstance(sQDFInputFile, sDSPath);
     if (pADE != NULL) {
-        stdprintf("Members of compund data type\n");
+        xha_printf("Members of compund data type\n");
         pADE->listDataType();
         delete pADE;
     } else  {
-        stdprintf("Couldn't create AgentDataExtractor for [%s}", sQDFInputFile);
+        xha_printf("Couldn't create AgentDataExtractor for [%s}", sQDFInputFile);
         iResult = -1;
     }
     return iResult;
@@ -124,14 +124,14 @@ int main(int iArgC, char *apArgV[]) {
             iResult = pPR->getParams(iArgC, apArgV);
             if (iResult == 0) {
                 if (bVerbose) {
-                    stdprintf("-i: [%s]\n", sQDFInputFile);
-                    stdprintf("-o: [%s]\n", sQDFOutputBody);
-                    stdprintf("-d: [%s]\n", sDataItemNames);
-                    stdprintf("-p: [%s]\n", sPopName);
-                    stdprintf("-s: [%s]\n", sSamplingInfo);
-                    stdprintf("-l: [%d]\n", bList);
-                    stdprintf("-m: [%s]\n", sOutputModes);
-                    stdprintf("-v: [%d]\n", bVerbose);
+                    xha_printf("-i: [%s]\n", sQDFInputFile);
+                    xha_printf("-o: [%s]\n", sQDFOutputBody);
+                    xha_printf("-d: [%s]\n", sDataItemNames);
+                    xha_printf("-p: [%s]\n", sPopName);
+                    xha_printf("-s: [%s]\n", sSamplingInfo);
+                    xha_printf("-l: [%d]\n", bList);
+                    xha_printf("-m: [%s]\n", sOutputModes);
+                    xha_printf("-v: [%d]\n", bVerbose);
                 }
 
 
@@ -156,7 +156,7 @@ int main(int iArgC, char *apArgV[]) {
                                 } else if (vParts[i] == "std") {
                                     bstd = true;
                                 } else {
-                                    stdprintf("unknown output mode [%s]\n", vParts[i]);
+                                    xha_printf("unknown output mode [%s]\n", vParts[i]);
                                     bOK = false;
                                 }
                             }
@@ -171,16 +171,16 @@ int main(int iArgC, char *apArgV[]) {
                             iResult = -1;
                         }
                     } else {
-                        stdprintf("Required options missing;\n");
+                        xha_printf("Required options missing;\n");
                                                   
                         if (sDataItemNames.empty()) {
-                            stdprintf("  -d <data_item>\n");
+                            xha_printf("  -d <data_item>\n");
                         }
                         if (sSamplingInfo.empty()) {
-                            stdprintf("  -s <sampling_info>\n");
+                            xha_printf("  -s <sampling_info>\n");
                         } 
                         if (sBinInfo.empty()) {
-                            stdprintf("  -b <bin_info>\n");
+                            xha_printf("  -b <bin_info>\n");
                         }
                         usage(apArgV[0]);
                         iResult = -1;
@@ -216,7 +216,7 @@ int main(int iArgC, char *apArgV[]) {
                                                     sQDFOutputFile = sQDFOutputBody+".qdf";
                                                 }
                                                 std::filesystem::copy_file(sQDFInputFile, sQDFOutputFile);
-                                                stdprintf("copied the input file [%s] to [%s]\n", sQDFInputFile, sQDFOutputFile);
+                                                xha_printf("copied the input file [%s] to [%s]\n", sQDFInputFile, sQDFOutputFile);
                                             } else {
                                                 sQDFOutputFile = sQDFOutputBody+".qdf";
                                             }
@@ -235,15 +235,15 @@ int main(int iArgC, char *apArgV[]) {
                                         }
 
                                         if (iResult == 0) {
-                                            stdprintf("+++ success +++\n");
+                                            xha_printf("+++ success +++\n");
                                         } else {
-                                            stdprintf("--- failure ---\n");
+                                            xha_printf("--- failure ---\n");
                                         } 
                                     }
                                 }
                                 delete pADHP;
                             } else {
-                                stdprintf("Coudn't create AgentDataHistoPie\n");
+                                xha_printf("Coudn't create AgentDataHistoPie\n");
                                 iResult = -1;
                             }
                         } else {

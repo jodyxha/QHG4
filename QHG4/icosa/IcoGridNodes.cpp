@@ -7,7 +7,7 @@
 
 #include "qhg_consts.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "LineReader.h"
 #include "BufReader.h"
 #include "icoutil.h"
@@ -54,21 +54,21 @@ int IcoGridNodes::write(const std::string sOutput, int iMaxLinks, bool bAddTilin
     int iResult = -1;
     FILE *fOut = fopen(sOutput.c_str(), "wb");
     if (fOut != NULL) {
-        stdfprintf(fOut, "%s\n",IGN_MAGIC2);
-        stdfprintf(fOut, "%s %d\n", IGN_MAX_LINKS, iMaxLinks);
-        stdfprintf(fOut, "%s\n", bAddTilingInfo?IGN_TILED:IGN_SINGLE);
+        xha_fprintf(fOut, "%s\n",IGN_MAGIC2);
+        xha_fprintf(fOut, "%s %d\n", IGN_MAX_LINKS, iMaxLinks);
+        xha_fprintf(fOut, "%s\n", bAddTilingInfo?IGN_TILED:IGN_SINGLE);
         
         bool bVerbose = false;
         if (bVerbose) {
-            stdprintf("%s\n",IGN_MAGIC2);
-            stdprintf("%s %d\n", IGN_MAX_LINKS, iMaxLinks);
-            stdprintf("%s\n", bAddTilingInfo?IGN_TILED:IGN_SINGLE);
+            xha_printf("%s\n",IGN_MAGIC2);
+            xha_printf("%s %d\n", IGN_MAX_LINKS, iMaxLinks);
+            xha_printf("%s\n", bAddTilingInfo?IGN_TILED:IGN_SINGLE);
         }
 
         for (stringmap::const_iterator it = mAdditionalHeaderLines.begin(); it != mAdditionalHeaderLines.end(); ++it) {
-            stdfprintf(fOut, "%s:%s\n", it->first, it->second);
+            xha_fprintf(fOut, "%s:%s\n", it->first, it->second);
         }
-        stdfprintf(fOut, "%s\n",IGN_HEADER_END);
+        xha_fprintf(fOut, "%s\n",IGN_HEADER_END);
 
         if ((iMaxLinks > 0) && !bAddTilingInfo) {
             iResult = blockWrite(fOut, MAX_LINKS/*iMaxLinks*/);
@@ -77,7 +77,7 @@ int IcoGridNodes::write(const std::string sOutput, int iMaxLinks, bool bAddTilin
         }
         fclose(fOut);
     } else {
-        stdprintf(" Couldn't open [%s] for writing\n", sOutput);
+        xha_printf(" Couldn't open [%s] for writing\n", sOutput);
     }
     return iResult;
 }
@@ -113,10 +113,10 @@ int IcoGridNodes::blockWrite(FILE *fOut, int iMaxLinks) {
             p = putMem(p, &(pN->m_iNumLinks), sizeof(int));
 
             if (bDisplay) {
-                stdprintf("\e[1;34m%d\e[0m ", pN->m_lID);
-                stdprintf("%f ", pN->m_dLon*180/Q_PI);
-                stdprintf("%f\n", pN->m_dLat*180/Q_PI);
-                stdprintf("  %d links:", pN->m_iNumLinks);
+                xha_printf("\e[1;34m%d\e[0m ", pN->m_lID);
+                xha_printf("%f ", pN->m_dLon*180/Q_PI);
+                xha_printf("%f\n", pN->m_dLat*180/Q_PI);
+                xha_printf("  %d links:", pN->m_iNumLinks);
             }
             int D = iMaxLinks - pN->m_iNumLinks;
             memcpy(p, pN->m_aiLinks,  pN->m_iNumLinks*sizeof(gridtype));
@@ -136,12 +136,12 @@ int IcoGridNodes::blockWrite(FILE *fOut, int iMaxLinks) {
             }
             if (bDisplay) {
                 for (int i =0; i < pN->m_iNumLinks; i++) {
-                    stdprintf("%d; %f ", pN->m_aiLinks[i], pN->m_adDists[i]);
+                    xha_printf("%d; %f ", pN->m_aiLinks[i], pN->m_adDists[i]);
                 }
-                stdprintf("\n");
+                xha_printf("\n");
             }
         } else {
-            stdprintf("Cell# %ld[ID %d] has %d links (MaxLinks given as %d)\n", iTotal,  pN->m_lID, pN->m_iNumLinks, iMaxLinks);
+            xha_printf("Cell# %ld[ID %d] has %d links (MaxLinks given as %d)\n", iTotal,  pN->m_lID, pN->m_iNumLinks, iMaxLinks);
             iResult = -1;
         }
         if (iResult == 0) {
@@ -157,7 +157,7 @@ int IcoGridNodes::blockWrite(FILE *fOut, int iMaxLinks) {
                     p = pBuf;
                     iBlocks = 0;
                 } else {
-                    stdprintf("Error: only written %ld blocks instead of %ld\n", iWritten, iBlocks);
+                    xha_printf("Error: only written %ld blocks instead of %ld\n", iWritten, iBlocks);
                 }
             }
         }
@@ -167,7 +167,7 @@ int IcoGridNodes::blockWrite(FILE *fOut, int iMaxLinks) {
         if (iBlocks > 0) {
             ulong iWritten = fwrite(pBuf, iCSize, iBlocks, fOut);  
             if (iWritten != iBlocks) {
-                stdprintf("Error: only written %ld blocks instead of %ld\n", iWritten, iBlocks);
+                xha_printf("Error: only written %ld blocks instead of %ld\n", iWritten, iBlocks);
             }   
         }
     }

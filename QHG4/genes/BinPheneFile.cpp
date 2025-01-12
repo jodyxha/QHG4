@@ -2,7 +2,7 @@
 #include <cstring>
 
 #include "types.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "BinPheneFile.h"
 
@@ -29,7 +29,7 @@ int BinPheneFile::init(const std::string sFile) {
         m_sCurName = sFile;
         iResult = readHeader();
     } else {
-        stdfprintf(stderr, "Couldn't open file [%s] for reading\n", sFile);
+        xha_fprintf(stderr, "Couldn't open file [%s] for reading\n", sFile);
         iResult = -1;
     }
     return iResult;

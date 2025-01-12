@@ -5,8 +5,8 @@
 #include <hdf5.h>
 
 #include "ParamReader.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 
 
 #include "QDFUtils.h"
@@ -38,23 +38,23 @@ static const int PR_LINEAR = 7;
 // usage
 //
 void usage(const std::string sApp) {
-    stdprintf("%s - converting shp+dbf data to QDF\n", sApp);
-    stdprintf("Usage:\n");
-    stdprintf("  %s -s <surface_> -i <ign_file> \n", sApp);
-    stdprintf("     -v <shp_file> -d <dbf_file> -f <field_name>\n");
-    stdprintf("     -o <qdf_output>\n");
-    stdprintf("where\n");
-    stdprintf("  surface     surface file for icosahdron\n");
-    stdprintf("  ign_file    IGN file corresponding to <surface>\n");
-    stdprintf("  shp_file    a SHP file containing 'PolyLine vector data\n");
-    stdprintf("  dbf_file    DBF file corresponding to <shp_file>\n");
-    stdprintf("  field_name  fieldname in <dbf_file> to extract\n");
-    stdprintf("\n");
-    stdprintf("Example:\n");
-    stdprintf("  %s -s resources/eq128.ieq -i resources/eq128_000.ign\n", sApp);
-    stdprintf("     -v water/ne_10m_coastline.shp -d water/ne_10m_coastline.dbf\n");
-    stdprintf("     -f strokeweig -o coastline_128.qdf\n");
-    stdprintf("\n");
+    xha_printf("%s - converting shp+dbf data to QDF\n", sApp);
+    xha_printf("Usage:\n");
+    xha_printf("  %s -s <surface_> -i <ign_file> \n", sApp);
+    xha_printf("     -v <shp_file> -d <dbf_file> -f <field_name>\n");
+    xha_printf("     -o <qdf_output>\n");
+    xha_printf("where\n");
+    xha_printf("  surface     surface file for icosahdron\n");
+    xha_printf("  ign_file    IGN file corresponding to <surface>\n");
+    xha_printf("  shp_file    a SHP file containing 'PolyLine vector data\n");
+    xha_printf("  dbf_file    DBF file corresponding to <shp_file>\n");
+    xha_printf("  field_name  fieldname in <dbf_file> to extract\n");
+    xha_printf("\n");
+    xha_printf("Example:\n");
+    xha_printf("  %s -s resources/eq128.ieq -i resources/eq128_000.ign\n", sApp);
+    xha_printf("     -v water/ne_10m_coastline.shp -d water/ne_10m_coastline.dbf\n");
+    xha_printf("     -f strokeweig -o coastline_128.qdf\n");
+    xha_printf("\n");
 }
 
 
@@ -79,21 +79,21 @@ int readShapeFile(const std::string sShapeFile, vecvecdoubledouble &vRecs) {
                     vRecs.push_back(vCoords);
                 } else {
                     if (iResult < 0) {
-                        stdprintf("Shape read error\n");
+                        xha_printf("Shape read error\n");
                     }
                 }
             }   
         } else {
-            stdprintf("Reading of shape file failed\n");
+            xha_printf("Reading of shape file failed\n");
         }
         delete pShapeHeader;
     } else {
-        stdprintf("Couldn't open [%s]\n", sShapeFile);
+        xha_printf("Couldn't open [%s]\n", sShapeFile);
     }
     if (iResult == 1) {
         iResult = 0;
     }
-    stdprintf("Finished shapefile, res: %d\n", iResult);
+    xha_printf("Finished shapefile, res: %d\n", iResult);
     return iResult;
 }
 
@@ -111,11 +111,11 @@ int readDBFFile(const std::string sDBFFile, const std::string sFieldName, std::v
         if (iResult == 0) {
             
         } else {
-            stdprintf("Reading of dbf file failed\n");
+            xha_printf("Reading of dbf file failed\n");
         }
         delete pDBFReader;
     } else {
-        stdprintf("Couldn't open [%s]\n", sDBFFile);
+        xha_printf("Couldn't open [%s]\n", sDBFFile);
     }
     
     return iResult;
@@ -137,9 +137,9 @@ int collectData(const std::string sShapeFile,
         iResult = readDBFFile(pDBFFile, sFieldName, vVals);
         if (iResult == 0) {
             if (vRecs.size() == vVals.size()) {
-                stdprintf("Have %zd records\n", vRecs.size());
+                xha_printf("Have %zd records\n", vRecs.size());
             } else {
-                stdprintf("size mismatch: shp [%zd], dbf [%zd]\n", vRecs.size(), vVals.size()); 
+                xha_printf("size mismatch: shp [%zd], dbf [%zd]\n", vRecs.size(), vVals.size()); 
             }
         }
     }
@@ -155,7 +155,7 @@ int insertRiverData(vecvecdoubledouble &vRecs, vecdouble &vVals, SCellGrid *pCG,
 
     Geography *pGeo = pCG->m_pGeography;
     memset(pGeo->m_adRivers, 0, pCG->m_iNumCells*sizeof(double));
-    stdprintf("Looping over %zd recs\n", vRecs.size());
+    xha_printf("Looping over %zd recs\n", vRecs.size());
     for (uint i = 0; i < vRecs.size(); ++i) {
         vecdoubledouble &vdd = vRecs[i];
 
@@ -178,7 +178,7 @@ int insertRiverData(vecvecdoubledouble &vRecs, vecdouble &vVals, SCellGrid *pCG,
                     if (*pEnd == '\0') {
                         iResult = 0;
                         if (iPT == PR_LINEAR) {
-                            // stdprintf("have LINEAR\n");
+                            // xha_printf("have LINEAR\n");
                             bDeg2Rad = false;
                         }
                     }
@@ -199,7 +199,7 @@ int insertRiverData(vecvecdoubledouble &vRecs, vecdouble &vVals, SCellGrid *pCG,
                 if (dVal == 0) {
                     dVal = 1;
                 }
-                stdprintf("Path %d, segment %d:(%f,%f)->%d:  %f\n", i, j, dLon*180/Q_PI, dLat*180/Q_PI, iIndex, dVal);
+                xha_printf("Path %d, segment %d:(%f,%f)->%d:  %f\n", i, j, dLon*180/Q_PI, dLat*180/Q_PI, iIndex, dVal);
                 pGeo->m_adRivers[iIndex] = vVals[i];
             }
             
@@ -223,23 +223,23 @@ int initializeGeography(SCellGrid *pCG, IcoGridNodes *pIGN) {
     bool bDeg2Rad = true;
     // rectangular grids with linear "projection" should not 
     // have their coordinates modified
-    stdprintf("Testing type of IGN surface:[%s]\n", pCG->m_smSurfaceData[SURF_TYPE].c_str());
+    xha_printf("Testing type of IGN surface:[%s]\n", pCG->m_smSurfaceData[SURF_TYPE].c_str());
     if (pCG->m_smSurfaceData[SURF_TYPE].compare(SURF_LATTICE) == 0) {
-        stdprintf("  --> is lattice\n");
+        xha_printf("  --> is lattice\n");
         iResult = -1;
         char sPT[256];
         strcpy(sPT, pCG->m_smSurfaceData[SURF_LTC_PROJ_TYPE].c_str());
-        stdprintf("PROJ type  --> [%s]\n", sPT);
+        xha_printf("PROJ type  --> [%s]\n", sPT);
 
         char *p = strtok(sPT, " ");
         if (p != NULL) {
             char *pEnd;
             int iPT = (int)strtol(p, &pEnd, 10);
-            stdprintf("First word [%s]\n", p);
+            xha_printf("First word [%s]\n", p);
             if (*pEnd == '\0') {
                 iResult = 0;
                 if (iPT == PR_LINEAR) {
-                    stdprintf("have LINEAR\n");
+                    xha_printf("have LINEAR\n");
             
                     bDeg2Rad = false;
                 }
@@ -274,12 +274,12 @@ int initializeGeography(SCellGrid *pCG, IcoGridNodes *pIGN) {
                 pGeo->m_abIce[iIndex] = false;
 
             } else {
-                stdfprintf(stderr,"[initializeGeography] node of index %d not found\n",iIndex);
+                xha_fprintf(stderr,"[initializeGeography] node of index %d not found\n",iIndex);
                 iResult = -1;
             }
         }
     } else {
-        stdfprintf(stderr,"[initializeGeography] couldn't read projection details\n");
+        xha_fprintf(stderr,"[initializeGeography] couldn't read projection details\n");
     }
     
     return iResult;
@@ -359,7 +359,7 @@ int main(int iArgC, char *apArgV[]) {
                 iResult = pLat->load(sSurface);
                 if (iResult == 0) {
                     pSurf = pLat;
-                    stdprintf("Have Lattice\n");
+                    xha_printf("Have Lattice\n");
                     iNumCells = pLat->getLinkage()->getNumVertices();
                 } else {
                     EQsahedron *pEQ = EQsahedron::createEmpty();
@@ -368,7 +368,7 @@ int main(int iArgC, char *apArgV[]) {
                 
                         pEQ->relink();
                         pSurf = pEQ;
-                        stdprintf("Have EQsahedron\n");
+                        xha_printf("Have EQsahedron\n");
                         iNumCells = pEQ->getLinkage()->getNumVertices();
                     } else {
                         Icosahedron *pIco = Icosahedron::create(1, POLY_TYPE_ICO);
@@ -376,7 +376,7 @@ int main(int iArgC, char *apArgV[]) {
                         bool bPreSel = false;
                         pIco->setPreSel(bPreSel);
                         iResult = pIco->load(sSurface);
-                        stdprintf("Have Icosahedron\n");
+                        xha_printf("Have Icosahedron\n");
 
                     }
                 }
@@ -384,7 +384,7 @@ int main(int iArgC, char *apArgV[]) {
                 // get cell grid from ign file
                 SCellGrid *pCG = NULL;
                 if (pSurf != NULL) {
-                    stdprintf("Surface OK\n");
+                    xha_printf("Surface OK\n");
                     IcoGridNodes *pIGN = new IcoGridNodes();
                     iResult = pIGN->read(sIGNFile);
                     if (iResult == 0) {
@@ -401,7 +401,7 @@ int main(int iArgC, char *apArgV[]) {
                 
 
                     } else {
-                        stdprintf("Couldn't read from [%s]\n", apArgV[2]);
+                        xha_printf("Couldn't read from [%s]\n", apArgV[2]);
                     }
                     delete pIGN;
                 }
@@ -409,14 +409,14 @@ int main(int iArgC, char *apArgV[]) {
                 if (iResult ==0) {
                     vecvecdoubledouble vRecs;
                     vecdouble vVals;
-                    stdprintf("collecting data\n");
+                    xha_printf("collecting data\n");
                     iResult = collectData(sSHPFile, sDBFFile, sFieldName, vRecs, vVals);
                     if (iResult == 0) {
-                        stdprintf("inserting rivers\n");
+                        xha_printf("inserting rivers\n");
                         iResult = insertRiverData(vRecs, vVals, pCG, pSurf); 
             
 
-                        stdprintf("result before writing to [%s]: %d\n", sOutputQDF, iResult);
+                        xha_printf("result before writing to [%s]: %d\n", sOutputQDF, iResult);
                         // dummy time value
                         float fTime = -1;
                         // create output file
@@ -427,10 +427,10 @@ int main(int iArgC, char *apArgV[]) {
                             GeoWriter *pGeoW = new GeoWriter(pCG->m_pGeography);
                             pGeoW->write(hFile);
                             qdf_closeFile(hFile);
-                            stdprintf("Written to QDF file [%s]\n", sOutputQDF);
+                            xha_printf("Written to QDF file [%s]\n", sOutputQDF);
                     
                         } else {
-                            stdprintf("Couldn't create QDF file [%s]\n", sOutputQDF);
+                            xha_printf("Couldn't create QDF file [%s]\n", sOutputQDF);
                         }
                     }
                 }
@@ -441,11 +441,11 @@ int main(int iArgC, char *apArgV[]) {
                 usage(apArgV[0]);
             }
         } else {
-            stdprintf("Couldn't set ParamReader options\n");
+            xha_printf("Couldn't set ParamReader options\n");
         }
         delete pPR;
     } else {
-        stdprintf("Couldn't create ParamReader\n");
+        xha_printf("Couldn't create ParamReader\n");
     }
     return iResult;
 }

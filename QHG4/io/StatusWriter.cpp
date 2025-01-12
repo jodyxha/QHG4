@@ -2,7 +2,7 @@
 #include <hdf5.h>
 #include <vector>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "SCellGrid.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
@@ -117,20 +117,20 @@ int StatusWriter::write(const std::string sFileName, int iStep, float fStartTime
     int iCur = iWhat;
     int iTemp = 0;
  
-    stdprintf("[StatusWriter::write]iCur %d, WR_POP: %d, m_pPopW: %p\n", iCur, WR_POP, m_pPopW);
+    xha_printf("[StatusWriter::write]iCur %d, WR_POP: %d, m_pPopW: %p\n", iCur, WR_POP, m_pPopW);
       
     m_hFile = qdf_createFile(sFileName, iStep, fStartTime, sInfoString);
     if (m_hFile > 0) {
 	// there may be several populations - each contributing an additional WR_POP
 
         //        if (((iResult / output_flags::WR_POP) > 0) && (m_pPopW != NULL)) {
-        stdprintf("iCur %d, WR_POP: %d, m_pPopW: %p\n", iCur, WR_POP, m_pPopW);
+        xha_printf("iCur %d, WR_POP: %d, m_pPopW: %p\n", iCur, WR_POP, m_pPopW);
         if ((iCur /  WR_POP  > 0) && (m_pPopW != NULL)) {
             if (vSub.size() > 0) {
-                stdprintf("writing pop\n");
+                xha_printf("writing pop\n");
                 iTemp = 0;
                 for (uint k = 0; (iTemp == 0) && (k < vSub.size()); k++) {
-                    stdprintf("[StatusWriter::write] writing %s, iResult = %d\n",  vSub[k].first, iResult);
+                    xha_printf("[StatusWriter::write] writing %s, iResult = %d\n",  vSub[k].first, iResult);
                     iTemp = m_pPopW->write(m_hFile, vSub[k].first, vSub[k].second, iDumpMode);
                     iCur -= (iTemp == 0)?WR_POP:0;
                 }

@@ -11,7 +11,7 @@
 #include "Action.cpp"
 
 ////////////////////////////
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "NPersWeightedMove.cpp"
 #include "NPersAHybBirthDeathRel.cpp"
@@ -130,10 +130,10 @@ int NPersAOoANavSHybRelPop::setParams(const std::string sParams) {
     if (!sParams.empty()) {
         if (strToNum(sParams, &m_dSDev)) {
             iResult = 0;
-            stdprintf("[NPersAOoANavSHybRelPop::setParams] m_dSDev set to %f\n", m_dSDev);
+            xha_printf("[NPersAOoANavSHybRelPop::setParams] m_dSDev set to %f\n", m_dSDev);
         } else {
             iResult = -1;
-            stdprintf("[NPersAOoANavSHybRelPop::setParams] expected a float, not [%s]\n", sParams);
+            xha_printf("[NPersAOoANavSHybRelPop::setParams] expected a float, not [%s]\n", sParams);
         }
     } 
     return iResult;
@@ -289,7 +289,7 @@ int NPersAOoANavSHybRelPop::addPopSpecificAgentData(int iAgentIndex, char **ppDa
     if (iResult == 0) {
         iResult = addAgentDataSingle(ppData, &newAgent.m_fLastBirth);
     } else {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_fAge from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_fAge from [%s]\n", *ppData);
     }
 
     // last birth are set during the simulation last birth are volatile
@@ -300,73 +300,73 @@ int NPersAOoANavSHybRelPop::addPopSpecificAgentData(int iAgentIndex, char **ppDa
             newAgent.m_fHybridization = newAgent.m_fNeaFrac;
          }
     } else {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_fLastBirth from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_fLastBirth from [%s]\n", *ppData);
     }
 
     if (iResult == 0) {
         iResult = addAgentDataSingle(ppData, &newAgent.m_fNeaSDev);
     } else {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_fNeaFrac from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_fNeaFrac from [%s]\n", *ppData);
     }
 
     //@@ TODO: same for all the other fileds
     if (iResult == 0) {
         iResult = addAgentDataSingle(ppData, &newAgent.m_dMoveProb);
     } else {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_fNeaSDev from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_fNeaSDev from [%s]\n", *ppData);
     }
     
     if (iResult == 0) {
         iResult = addAgentDataSingle(ppData, &newAgent.m_dMaxAge);
     } else {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_dMoveProb from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_dMoveProb from [%s]\n", *ppData);
     }
     
     if (iResult == 0) {
         iResult = addAgentDataSingle(ppData, &newAgent.m_dUncertainty);
     } else {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_dMaxAge from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_dMaxAge from [%s]\n", *ppData);
     }
     
     if (iResult == 0) {
         iResult = addAgentDataSingle(ppData, &newAgent.m_fFertilityMinAge);
     } else {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_dUncertainty from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_dUncertainty from [%s]\n", *ppData);
     }
     
     if (iResult == 0) {
         iResult = addAgentDataSingle(ppData, &newAgent.m_fFertilityMaxAge);
     } else {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_fFertilityMinAge from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_fFertilityMinAge from [%s]\n", *ppData);
     }
     
     if (iResult == 0) {
         iResult = addAgentDataSingle(ppData, &newAgent.m_fInterbirth);
     } else {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_fFertilityMaxAge from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_fFertilityMaxAge from [%s]\n", *ppData);
     }
     
     if (iResult == 0) {
         iResult = addAgentDataSingle(ppData, &newAgent.m_dB0);
     } else {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_fInterbirth from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_fInterbirth from [%s]\n", *ppData);
     }
     
     if (iResult == 0) {
         iResult = addAgentDataSingle(ppData, &newAgent.m_dD0);
     } else {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_dB0 from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_dB0 from [%s]\n", *ppData);
     }
     
     if (iResult == 0) {
         iResult = addAgentDataSingle(ppData, &newAgent.m_dTheta);
     } else {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_dD0 from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_dD0 from [%s]\n", *ppData);
     }
     
     /* bReal is not persistent
     if (iResult != 0) {
-        stdprintf("[addPopSpecificAgentData] Couldn't read m_dBReal from [%s]\n", *ppData);
+        xha_printf("[addPopSpecificAgentData] Couldn't read m_dBReal from [%s]\n", *ppData);
     }
     */
     return iResult;

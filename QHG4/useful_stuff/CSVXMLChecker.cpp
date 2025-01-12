@@ -8,8 +8,8 @@
 #include "types.h"
 #include "ParamReader.h"
 #include "LineReader.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "CSVXMLChecker.h"
 
 //----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ int CSVXMLChecker::extractCSVContents(std::string sCSVFile, stringvec vCSVIgnore
 
         m_vCSVHeadersReduced.clear();
         uint iNumHeads = splitString(pHeaderLine, m_vCSVHeaders, ",;:");
-        stdfprintf(stderr, "headers (%u): %bv\n", iNumHeads, m_vCSVHeaders);
+        xha_fprintf(stderr, "headers (%u): %bv\n", iNumHeads, m_vCSVHeaders);
         iResult = 0;
         int iLine = 1;
         intvec vIgnoreIndexes;
@@ -142,17 +142,17 @@ int CSVXMLChecker::extractCSVContents(std::string sCSVFile, stringvec vCSVIgnore
                                 }
                             }
                         } else {
-                            stdprintf("Key [%s] already in smCur\n", m_vCSVHeaders[i]);
+                            xha_printf("Key [%s] already in smCur\n", m_vCSVHeaders[i]);
                         }
                     }
                     if (smCur.size() == iNumHeads - vIgnoreIndexes.size()) {
                         m_smvCSVContents.push_back(smCur);
                     } else {
-                        stdprintf("There might be a duplicate header key (sm size %zd, h size %u)\n", smCur.size(), iNumHeads);
+                        xha_printf("There might be a duplicate header key (sm size %zd, h size %u)\n", smCur.size(), iNumHeads);
                         iResult = -1;
                     }
                 } else {
-                    stdprintf("Number of values (%u) does not match number of header items(%u) on line %d\n", iNumVals, iNumHeads, iLine);
+                    xha_printf("Number of values (%u) does not match number of header items(%u) on line %d\n", iNumVals, iNumHeads, iLine);
                     iResult = -1;
                 }
             }
@@ -160,7 +160,7 @@ int CSVXMLChecker::extractCSVContents(std::string sCSVFile, stringvec vCSVIgnore
 
         delete pLR;
     } else {
-        stdprintf("Couldn't open [%s] for reading\n", sCSVFile);
+        xha_printf("Couldn't open [%s] for reading\n", sCSVFile);
     }
     
     return iResult; 
@@ -183,7 +183,7 @@ int CSVXMLChecker::extractXMLContents(std::string sXMLFile, stringvec vXMLIgnore
         iResult = 0;
         while ((iResult == 0) && !pLR->isEoF()) {
             char *pCur = pLR->getNextLine();
-            //stdprintf("cur is [%s]\n", pCur);
+            //xha_printf("cur is [%s]\n", pCur);
             if (pCur != NULL) {
                 std::cmatch cm;
                 if (std::regex_match(pCur, cm, rPat,std::regex_constants::match_default)) {
@@ -208,26 +208,26 @@ int CSVXMLChecker::extractXMLContents(std::string sXMLFile, stringvec vXMLIgnore
                         } else {
                             printf("it->first=[%s], it->second=[%s]\n", it->first.c_str(), it->second.c_str());
                             if (it->second == sVal) {
-                                stdprintf("Have duplicate key [%s] with same value\n", sKey);
+                                xha_printf("Have duplicate key [%s] with same value\n", sKey);
                             } else {
-                                stdprintf("Have duplicate key [%s] with different values [%s] != [%s]\n", sKey, it->second, sVal);
+                                xha_printf("Have duplicate key [%s] with different values [%s] != [%s]\n", sKey, it->second, sVal);
                                 iResult = -1;
                             }
                         }
                         
                     } else {
-                        stdprintf("No complete match for name and value (cm:%d)\n", cm.size());
+                        xha_printf("No complete match for name and value (cm:%d)\n", cm.size());
                         iResult = -1;
                     }
                 } else {
-                    //stdprintf("%s] does not match [%s]\n", pCur, sXMLPat);
+                    //xha_printf("%s] does not match [%s]\n", pCur, sXMLPat);
                 }
             }
             
         }
         delete pLR;
     } else {
-        stdprintf("Couldn't open [%s] for reading\n", sXMLFile);
+        xha_printf("Couldn't open [%s] for reading\n", sXMLFile);
     } 
     
     return iResult;
@@ -267,26 +267,26 @@ int CSVXMLChecker::compareValues(stringvec vCommonKeys) {
     int iResult = -1;
     m_vMatches.clear();
     for (uint i = 0; i < m_smvCSVContents.size(); ++i) {
-        //stdfprintf(stderr, "checking for %u\n", i); 
+        //xha_fprintf(stderr, "checking for %u\n", i); 
         stringmap &smCSVContents = m_smvCSVContents[i];
         bool bSame = true;
         for (uint k = 0; k < vCommonKeys.size(); ++k) { 
             if (smCSVContents[vCommonKeys[k]] != m_smXMLContents[vCommonKeys[k]]) {
-                //stdfprintf(stderr, "Fail for[%s]: csv[%s] xml[%s]\n", vCommonKeys[k], smCSVContents[vCommonKeys[k]],  m_smXMLContents[vCommonKeys[k]]);
+                //xha_fprintf(stderr, "Fail for[%s]: csv[%s] xml[%s]\n", vCommonKeys[k], smCSVContents[vCommonKeys[k]],  m_smXMLContents[vCommonKeys[k]]);
                 bSame = false;
             }
         }
         if (bSame) {
-            //stdfprintf(stderr, "match with %d\n", i);
+            //xha_fprintf(stderr, "match with %d\n", i);
             m_vMatches.push_back(i);
         }
     }
     
     if (m_vMatches.size() > 0) {
-        stdfprintf(stderr, "found matches for CSV value line%s %bv\n", (m_vMatches.size()==1)?"":"s", m_vMatches);
+        xha_fprintf(stderr, "found matches for CSV value line%s %bv\n", (m_vMatches.size()==1)?"":"s", m_vMatches);
         iResult = 0;
     } else {
-        stdfprintf(stderr, "no match found\n");
+        xha_fprintf(stderr, "no match found\n");
         iResult = -1;
     }
     

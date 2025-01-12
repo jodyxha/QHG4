@@ -1,6 +1,6 @@
 #include "Action.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "clsutils.cpp"
 
 
@@ -26,7 +26,7 @@ template<typename T>
 void Action<T>::showAttributes() {
     if (this->m_vNames.size() > 0) {
         for (uint i = 0; i < this->m_vNames.size(); i++) {
-            stdprintf("  %s\n", this->m_vNames[i]);
+            xha_printf("  %s\n", this->m_vNames[i]);
         }
     } else {
         printf("  (none)\n");
@@ -59,15 +59,15 @@ int Action<T>::checkAttributes(const stringmap &mParams) {
     if (checkAttributesV(mParams, m_vNames, vRequired, vUnknown) != 0) {
         iResult = -1;
         if (vRequired.size() > 0) {
-            stdprintf("[Action %s] Param%s missing from XML file:\n", m_sActionName, (vRequired.size()>0)?"s":"");
+            xha_printf("[Action %s] Param%s missing from XML file:\n", m_sActionName, (vRequired.size()>0)?"s":"");
             for (uint i = 0; i < vRequired.size(); i++) {
-                stdprintf("[Action %s]     %s\n", m_sActionName,vRequired[i]);
+                xha_printf("[Action %s]     %s\n", m_sActionName,vRequired[i]);
             }
         }
         if (vUnknown.size() > 0) {
-            stdprintf("[Action %s] Unknown param%s in XML file:\n", m_sActionName, (vUnknown.size()>0)?"s":"");
+            xha_printf("[Action %s] Unknown param%s in XML file:\n", m_sActionName, (vUnknown.size()>0)?"s":"");
             for (uint i = 0; i < vUnknown.size(); i++) {
-                stdprintf("[Action %s]     %s\n", m_sActionName, vUnknown[i]);
+                xha_printf("[Action %s]     %s\n", m_sActionName, vUnknown[i]);
             }
         }
     }

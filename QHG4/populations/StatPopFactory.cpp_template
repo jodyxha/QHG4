@@ -3,7 +3,7 @@
 
 //#include "ids.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "LineReader.h"
 #include "StatPopFactory.h"
 #include "PopBase.h"
@@ -44,10 +44,10 @@ PopBase *StatPopFactory::createPopulationByName(const std::string sClassName) {
     bool bVerbose = true;
     if (m_pCG != NULL) {
         if (sClassName.empty()) {
-            stdprintf("empty Class ID\n");
+            xha_printf("empty Class ID\n");
 // CONFIGURE POPS: DO NOT DELETE THIS COMMENT LINE
         } else {
-            stdprintf("unknown  Class Name [%s]\n", sClassName);
+            xha_printf("unknown  Class Name [%s]\n", sClassName);
         }
     }
     return pPop;
@@ -65,13 +65,13 @@ PopBase *StatPopFactory::readPopulation(ParamProvider2 *pPP) {
     if (pPop != NULL) {
         int iResult = pPop->readSpeciesData(pPP);   //<-new
         if (iResult != 0) {
-            stdprintf("error while reading xml config file\n");
+            xha_printf("error while reading xml config file\n");
             delete pPop;
             pPop = NULL;
         } else {
         }
     } else {
-        stdprintf("Couldn't cretae class [%s]\n", pPP->getSelected());
+        xha_printf("Couldn't cretae class [%s]\n", pPP->getSelected());
         
     } 
     return pPop;

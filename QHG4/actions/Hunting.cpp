@@ -6,7 +6,7 @@
 
 #include "MessLoggerT.h"
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "clsutils.cpp"
 #include "ParamProvider2.h"
@@ -89,7 +89,7 @@ int Hunting<T>::preLoop() {
     int iResult = -1;
     m_pPreyPop = m_pPopFinder->getPopByName(m_sPreyPopName);
     if (m_pPreyPop != NULL) {
-        stdprintf("[Hunting<T>::preLoop()] got pointer for [%s]: %p\n", m_sPreyPopName, m_pPreyPop);
+        xha_printf("[Hunting<T>::preLoop()] got pointer for [%s]: %p\n", m_sPreyPopName, m_pPreyPop);
         m_pMIPrey = dynamic_cast<MassInterface *>(m_pPreyPop);
         if (m_pMIPrey != NULL) {
             m_pMIPred = dynamic_cast<MassInterface *>(this->m_pPop);
@@ -98,7 +98,7 @@ int Hunting<T>::preLoop() {
             }
         }
     } else {
-        stdprintf("[Hunting<T>::preLoop()] couldn't find population for species name [%s]\n", m_sPreyPopName);
+        xha_printf("[Hunting<T>::preLoop()] couldn't find population for species name [%s]\n", m_sPreyPopName);
     }
 
     return iResult;

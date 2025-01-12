@@ -3,9 +3,9 @@
 #include <string>
 
 #include "strutils.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
-#include "stdstrutils.cpp"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
+#include "xha_strutils.cpp"
 #include "LookUp.h"
 #include "RainbowLookUp.h"
 #include "Rainbow2LookUp.h"
@@ -90,7 +90,7 @@ int LookUpSampler::init(std::string sLookUpName) {
         createArrays();
     
     } else {
-        stdprintf("Unknown look up [%s]\n", sLookUpName);
+        xha_printf("Unknown look up [%s]\n", sLookUpName);
     }
 
     return iResult;
@@ -120,14 +120,14 @@ int LookUpSampler::makeImage(std::string sOutputName, uint iBorder) {
                      iResult = -1;
                  }
             } else {
-                stdprintf("Couldn't fill PNG arrays\n");
+                xha_printf("Couldn't fill PNG arrays\n");
             }
         } else {
-            stdprintf("Couldn't fill data arrays\n");
+            xha_printf("Couldn't fill data arrays\n");
         }
 
     } else {
-        stdprintf("LookUpSampler has not beein initialized\n");
+        xha_printf("LookUpSampler has not beein initialized\n");
         iResult = -1;
     }
     return iResult;
@@ -277,7 +277,7 @@ int LookUpSampler::insertBorder(uint iBorder) {
     int iResult = 0;
 
     if ((2*iBorder < m_iW) && (2*iBorder < m_iH)) {
-        stdprintf("inserting border [%u]\n", iBorder);
+        xha_printf("inserting border [%u]\n", iBorder);
         for (uint i = 0; i < iBorder; i++) {
             // insert a black line
             for (uint j = 0; j < m_iW; j++) {
@@ -308,7 +308,7 @@ int LookUpSampler::insertBorder(uint iBorder) {
             }
         }
     } else {
-        stdprintf("Border too fat\n");
+        xha_printf("Border too fat\n");
         iResult = -1;
     }
     return iResult;

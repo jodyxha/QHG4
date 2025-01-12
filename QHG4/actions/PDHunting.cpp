@@ -7,7 +7,7 @@
 #include "MessLoggerT.h"
 
 #include "clsutils.cpp"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "ParamProvider2.h"
 #include "WELL512.h"
 #include "ArrayShare.h"
@@ -64,9 +64,9 @@ template<typename T>
 int PDHunting<T>::preLoop() {
     int iResult = 0;
     
-    stdprintf("[PDHunting<T>::preLoop] getting relations from [%s]\n", m_sRelationInput);
+    xha_printf("[PDHunting<T>::preLoop] getting relations from [%s]\n", m_sRelationInput);
     iResult = relationFromString(m_sRelationInput);
-    stdprintf("[PDHunting<T>::preLoop] number of relations: %zd\n", m_mRelations.size());
+    xha_printf("[PDHunting<T>::preLoop] number of relations: %zd\n", m_mRelations.size());
 
     if (iResult == 0) {
         relation::const_iterator it;
@@ -81,11 +81,11 @@ int PDHunting<T>::preLoop() {
                     m_mpMIPrey[it->first] = pMI;
                 } else {
                     iResult = -1;
-                    stdprintf("[PDHunting<T>::preLoop()] couldn't cast prey population [%s] to MassInterface\n", it->first);
+                    xha_printf("[PDHunting<T>::preLoop()] couldn't cast prey population [%s] to MassInterface\n", it->first);
                 }
             } else {
                 iResult = -1;
-                stdprintf("[PDHunting<T>::preLoop()] couldn't find population for species name [%s]\n", it->first);
+                xha_printf("[PDHunting<T>::preLoop()] couldn't find population for species name [%s]\n", it->first);
             }
         }   
         
@@ -95,7 +95,7 @@ int PDHunting<T>::preLoop() {
                 iResult = 0;
             } else {
                 iResult = -1;
-                stdprintf("[PDHunting<T>::preLoop()] couldn't cast pred population [%s] to MassInterface\n", m_sPredName);
+                xha_printf("[PDHunting<T>::preLoop()] couldn't cast pred population [%s] to MassInterface\n", m_sPredName);
             }
         }
 
@@ -110,16 +110,16 @@ int PDHunting<T>::preLoop() {
                 i++;
             }
 
-            std::string s = stdsprintf(ATTR_PD_TEMPLATE_PREY, m_sPredName);
+            std::string s = xha_sprintf(ATTR_PD_TEMPLATE_PREY, m_sPredName);
             ArrayShare::getInstance()->shareArray(s, m_mRelations.size(), m_pPreyEff);
-            stdprintf("[PDHunting<T>::preLoop()][%s] xxxShare Shared m_pPreyEff as [%s]: %p\n", this->m_pPop->getSpeciesName(), s, m_pPreyEff);
+            xha_printf("[PDHunting<T>::preLoop()][%s] xxxShare Shared m_pPreyEff as [%s]: %p\n", this->m_pPop->getSpeciesName(), s, m_pPreyEff);
 
             // call PreyDistributor's addRelation (via getinstance etc)
             PreyDistributor::getInstance()->registerPredator(m_sPredName);
-            stdprintf("[PDHunting<T>::preLoop()] added relation [%s]\n", m_sPredName);
+            xha_printf("[PDHunting<T>::preLoop()] added relation [%s]\n", m_sPredName);
 
         } else {
-            stdprintf("[PDHunting<T>::preLoop()] Need at least one prey relation\n");
+            xha_printf("[PDHunting<T>::preLoop()] Need at least one prey relation\n");
             iResult = -1;
         }
     }
@@ -152,7 +152,7 @@ int PDHunting<T>::execute(int iAgentIndex, float fT) {
     int iResult = 0;
 
     // use shared array "<predname>_ass" to detemine actual hunt results
-    std::string s = stdsprintf(ATTR_PD_TEMPLATE_ASSMAP, this->m_pPop->getSpeciesName());
+    std::string s = xha_sprintf(ATTR_PD_TEMPLATE_ASSMAP, this->m_pPop->getSpeciesName());
     assignmentmap* pAss = (assignmentmap *) ArrayShare::getInstance()->getArray(s);
     if (pAss != NULL) {
         T *pa = &(this->m_pPop->m_aAgents[iAgentIndex]);
@@ -192,7 +192,7 @@ int PDHunting<T>::execute(int iAgentIndex, float fT) {
                     m_pMIPred->addMass(iAgentIndex, dM * dUsability);
                     /*
                     if (itSel->first == "PDSimplePrey") {
-                        stdprintf("*** Killing [%s]#%d (id %ld) (LS %d) in Cell %d\n", 
+                        xha_printf("*** Killing [%s]#%d (id %ld) (LS %d) in Cell %d\n", 
                            itSel->first, 
                            itSel->second[i], 
                            this->m_mpPreyPop[itSel->first]->getAgentID(itSel->second[i]), 
@@ -206,7 +206,7 @@ int PDHunting<T>::execute(int iAgentIndex, float fT) {
         }
     } else {
         /*debug:
-        stdprintf("[PDHunting<T>::execute] no assmap for [%s]\n", this->m_pPop->getSpeciesName());
+        xha_printf("[PDHunting<T>::execute] no assmap for [%s]\n", this->m_pPop->getSpeciesName());
         */
     }
 
@@ -221,7 +221,7 @@ int PDHunting<T>::execute(int iAgentIndex, float fT) {
 //
 template<typename T>
 int PDHunting<T>::postLoop() {
-    stdprintf("yipppediyiyi postLoop\n");
+    xha_printf("yipppediyiyi postLoop\n");
     PreyDistributor::freeInstance();
     return 0;
 }
@@ -261,33 +261,33 @@ int PDHunting<T>::relationFromString(std::string sPredRelations) {
                             char *pUse = strtok_r(NULL, ":", &pCur2);
                             if (pUse != NULL) {
                                 if (strToNum(pUse, &dUsability)) {
-                                    stdprintf("[PDHunting<T>::relationFromString] successsfully extracted relation for %s: %s,%f,%f\n", m_sPredName, pName, dEfficiency,dUsability);
+                                    xha_printf("[PDHunting<T>::relationFromString] successsfully extracted relation for %s: %s,%f,%f\n", m_sPredName, pName, dEfficiency,dUsability);
                                     m_mRelations[pName] = doublepair(dEfficiency, dUsability);
-                                    stdprintf("[PDHunting<T>::relationFromString] num rels: %zd\n", m_mRelations.size());
+                                    xha_printf("[PDHunting<T>::relationFromString] num rels: %zd\n", m_mRelations.size());
                                     iResult = 0;
                                 } else {
-                                    stdprintf("[PDHunting<T>::relationFromString] Expected efficiency (double) [%s]\n", pEff);
+                                    xha_printf("[PDHunting<T>::relationFromString] Expected efficiency (double) [%s]\n", pEff);
                                 }
                             } else {
-                                stdprintf("[PDHunting<T>::relationFromString] Expected usability\n");
+                                xha_printf("[PDHunting<T>::relationFromString] Expected usability\n");
                             }
                         } else {
-                            stdprintf("[PDHunting<T>::relationFromString] Expected efficiency (double) [%s]\n", pEff);
+                            xha_printf("[PDHunting<T>::relationFromString] Expected efficiency (double) [%s]\n", pEff);
                         }
                     } else {
-                        stdprintf("[PDHunting<T>::relationFromString] Expected efficiency\n");
+                        xha_printf("[PDHunting<T>::relationFromString] Expected efficiency\n");
                     }
                 } else {
-                    stdprintf("[PDHunting<T>::relationFromString] Bad string format\n");
+                    xha_printf("[PDHunting<T>::relationFromString] Bad string format\n");
                 }
                 pNext = strtok_r(NULL, ",", &pCur1);
             }
         } else {
-            stdprintf("[PDHunting<T>::relationFromString] expected comma-separated list of relations\n");
+            xha_printf("[PDHunting<T>::relationFromString] expected comma-separated list of relations\n");
             iResult = -1;
         }
     } else {
-        stdprintf("[PDHunting<T>::relationFromString] Bad string format: expected '<predname>|<relations>'\n");
+        xha_printf("[PDHunting<T>::relationFromString] Bad string format: expected '<predname>|<relations>'\n");
     }
     return iResult;
 }
@@ -331,7 +331,7 @@ int PDHunting<T>::writeAttributesQDF(hid_t hSpeciesGroup) {
     relation::const_iterator it;
     for (it = m_mRelations.begin(); it != m_mRelations.end(); ++it) {
         // the first '%s' is for the comma if it is not the first part
-        std::string sPart = stdsprintf("%s%s:%f:%f", (!sRelations.empty())?",":"" , it->first, it->second.first, it->second.second);
+        std::string sPart = xha_sprintf("%s%s:%f:%f", (!sRelations.empty())?",":"" , it->first, it->second.first, it->second.second);
         sPart += sRelations;
     }
 
@@ -377,5 +377,5 @@ bool PDHunting<T>::isEqual(Action<T> *pAction, bool bStrict) {
 template<typename T>
 void PDHunting<T>::showAttributes() {
     
-    stdprintf("  %s\n", ATTR_PDHUNTING_RELATIONS_NAME);
+    xha_printf("  %s\n", ATTR_PDHUNTING_RELATIONS_NAME);
 }

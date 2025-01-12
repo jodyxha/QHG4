@@ -1,16 +1,16 @@
 #include <cstdio>
 
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 
 #include "HybCollector.h"
 
 
 int main(int iArgC, char *apArgV[]) {
 #ifdef  H5_HAVE_THREADSAFE
-    stdprintf("HDF5 threadsafe\n");
+    xha_printf("HDF5 threadsafe\n");
 #else
-    stdprintf("HDF5 not threadsafe\n");
+    xha_printf("HDF5 not threadsafe\n");
 #endif
     int iResult = 0;
     int iNumBins = 9;
@@ -34,7 +34,7 @@ int main(int iArgC, char *apArgV[]) {
             }
         }
     } else {
-        stdprintf("%s <hdf-file> [<num-bins>]\n", apArgV[0]);
+        xha_printf("%s <hdf-file> [<num-bins>]\n", apArgV[0]);
     }
     return iResult;
 }

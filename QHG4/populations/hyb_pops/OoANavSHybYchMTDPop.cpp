@@ -159,7 +159,7 @@ int OoANavSHybYchMTDPop::setParams(const std::string sParams) {
                             } else if (sAvgName == "PaternalContribAvg") {
                                 m_dPaternalContribAvg = dAvg;
                             } else {
-                                stdprintf("[OoANavSHybYchMTDPop::setParams] unknown avg contribution [%s]\n", sAvgName);
+                                xha_printf("[OoANavSHybYchMTDPop::setParams] unknown avg contribution [%s]\n", sAvgName);
                                 iResult = -1;
                             }
 
@@ -168,34 +168,34 @@ int OoANavSHybYchMTDPop::setParams(const std::string sParams) {
                             } else if (sDevName == "PaternalContribSDev") {
                                 m_dPaternalContribSDev = dSDev;
                             } else {
-                                stdprintf("[OoANavSHybYchMTDPop::setParams] unknown sdev contribution [%s]\n", sDevName);
+                                xha_printf("[OoANavSHybYchMTDPop::setParams] unknown sdev contribution [%s]\n", sDevName);
                                 iResult = -1;
                             }
   
                         } else {
-                            stdprintf("[OoANavSHybYchMTDPop::setParams] bad value for pcsdev [%s]\n", vSubs1[1]);
+                            xha_printf("[OoANavSHybYchMTDPop::setParams] bad value for pcsdev [%s]\n", vSubs1[1]);
                             iResult = -1;
                         }
                     } else {
-                        stdprintf("[OoANavSHybYchMTDPop::setParams] expected <ParentContribSDev>=<pcsdev> [%s]\n", sParams);
+                        xha_printf("[OoANavSHybYchMTDPop::setParams] expected <ParentContribSDev>=<pcsdev> [%s]\n", sParams);
                         iResult = -1;
                     }
                 } else {
-                    stdprintf("[OoANavSHybYchMTDPop::setParams] bad value for pcavg [%s]\n", vSubs0[1]);
+                    xha_printf("[OoANavSHybYchMTDPop::setParams] bad value for pcavg [%s]\n", vSubs0[1]);
                     iResult = -1;
                 }
                         
             } else {
-                stdprintf("[OoANavSHybYchMTDPop::setParams] expected <ParentContribSDev>=<pcsdev> [%s]\n", sParams);
+                xha_printf("[OoANavSHybYchMTDPop::setParams] expected <ParentContribSDev>=<pcsdev> [%s]\n", sParams);
                 iResult = -1;
             }
         } else {
-            stdprintf("[OoANavSHybYchMTDPop::setParams] expected <ParentContribAvg>=<pcavg>+<ParentContribSDev>=<pcsdev> [%s]\n", sParams);
+            xha_printf("[OoANavSHybYchMTDPop::setParams] expected <ParentContribAvg>=<pcavg>+<ParentContribSDev>=<pcsdev> [%s]\n", sParams);
             iResult = -1;
 
         }
     } else {
-        stdprintf("[OoANavSHybYchMTDPop::setParams] empty params: do nothing\n");
+        xha_printf("[OoANavSHybYchMTDPop::setParams] empty params: do nothing\n");
         iResult = 0;
     }
 
@@ -207,7 +207,7 @@ int OoANavSHybYchMTDPop::setParams(const std::string sParams) {
 // preLoop
 //
 int OoANavSHybYchMTDPop::preLoop() {
-    //    stdprintf("!!!intertest!!! OoANavSHybYchMTDPop::preLoop\n");
+    //    xha_printf("!!!intertest!!! OoANavSHybYchMTDPop::preLoop\n");
     // here we should createGenomes (if this is a run started from scratch)
     int iResult = SPopulation<OoANavSHybYchMTDAgent>::preLoop();
    
@@ -328,7 +328,7 @@ int OoANavSHybYchMTDPop::makePopSpecificOffspring(int iAgent, int iMother, int i
     curAgent.m_fPhenHyb    = (curAgent.m_fGenHybM + curAgent.m_fGenHybP)/2;
     /*
     if (curAgent.m_fGenHybM != curAgent.m_fGenHybP) {
-        stdprintf("!!!intertest!!! agent #%d: phen=%f\n", iAgent, curAgent.m_fPhenHyb);
+        xha_printf("!!!intertest!!! agent #%d: phen=%f\n", iAgent, curAgent.m_fPhenHyb);
     }
     */
     // so we don't have to change LocEnv & co

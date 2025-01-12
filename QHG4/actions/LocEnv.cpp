@@ -134,7 +134,7 @@ const double *LocEnv<T>::getArr(int iAgentIndex) {
 template<typename T>
 int LocEnv<T>::init() {
     int iResult = -1;
-    stdprintf("init called\n");
+    xha_printf("init called\n");
     
     if ((this->m_pCG != NULL) &&
         (m_pGeography  != NULL) &&
@@ -147,7 +147,7 @@ int LocEnv<T>::init() {
     
 
         // initialize the buffer ...
-        stdprintf("initializing m_aEnvVals with (%d, %d)\n", m_pAgentController->getLayerSize(), m_iLocArrSize);
+        xha_printf("initializing m_aEnvVals with (%d, %d)\n", m_pAgentController->getLayerSize(), m_iLocArrSize);
         m_aEnvVals.init(m_pAgentController->getLayerSize(), m_iLocArrSize);
         
         // ... and add it to the AgentController
@@ -155,20 +155,20 @@ int LocEnv<T>::init() {
         if (iResult == 0) {
             // everything OK
         } else {
-            stdprintf("Couldn't add buffer EnvVals to controller\n");
+            xha_printf("Couldn't add buffer EnvVals to controller\n");
         }
     } else {
         if (this->m_pCG == NULL) {
-            stdprintf("[LocEnv] No cell grid!\n");
+            xha_printf("[LocEnv] No cell grid!\n");
         } else {
             if (m_pGeography  == NULL) {
-                stdprintf("[LocEnv] Cellgrid has no geography\n");
+                xha_printf("[LocEnv] Cellgrid has no geography\n");
             }
             if (m_pClimate    == NULL) {
-                stdprintf("[LocEnv] Cellgrid has no climate\n");
+                xha_printf("[LocEnv] Cellgrid has no climate\n");
             }
             if (m_pVegetation == NULL) {
-                stdprintf("[LocEnv] Cellgrid has no vegetation\n");
+                xha_printf("[LocEnv] Cellgrid has no vegetation\n");
             }
         }
     }
@@ -181,7 +181,7 @@ int LocEnv<T>::init() {
 template<typename T>
 int LocEnv<T>::recalculateGlobalCapacities() {
     if (m_bNeedUpdate) {
-        stdprintf("LocEnv::recalculateGlobalCapacities\n");
+        xha_printf("LocEnv::recalculateGlobalCapacities\n");
         int iNumCells = this->m_pCG->m_iNumCells; 
         double *dT = m_pClimate->m_adAnnualMeanTemp;
         double *dP = m_pClimate->m_adAnnualRainfall;
@@ -360,7 +360,7 @@ int LocEnv<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
 
     for (int iGroup = 0; (iResult == 0) && (iGroup < 2); iGroup++) {
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_WATERFACTOR_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_WATERFACTOR_NAME, asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_dWaterFactor[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[LocEnv] couldn't read attribute [%s]", sNameID);
@@ -368,7 +368,7 @@ int LocEnv<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
         }
 
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_COASTALFACTOR_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_COASTALFACTOR_NAME, asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_dCoastalFactor[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[LocEnv] couldn't read attribute [%s]", sNameID);
@@ -377,7 +377,7 @@ int LocEnv<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
     
 
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_COASTAL_MIN_LAT_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_COASTAL_MIN_LAT_NAME, asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_dCoastalMinLatitude[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[LocEnv] couldn't read attribute [%s]", sNameID);
@@ -385,7 +385,7 @@ int LocEnv<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
         }
 
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_COASTAL_MAX_LAT_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_COASTAL_MAX_LAT_NAME, asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_dCoastalMaxLatitude[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[LocEnv] couldn't read attribute [%s]", sNameID);
@@ -393,7 +393,7 @@ int LocEnv<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
         }
 
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_NPPMIN_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_NPPMIN_NAME, asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_dNPPMin[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[LocEnv] couldn't read attribute [%s]", sNameID);
@@ -401,7 +401,7 @@ int LocEnv<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
         }
 
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_NPPMAX_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_NPPMAX_NAME, asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_dNPPMax[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[LocEnv] couldn't read attribute [%s]", sNameID);
@@ -409,7 +409,7 @@ int LocEnv<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
         }
 
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_KMAX_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_KMAX_NAME, asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_dKMax[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[LocEnv] couldn't read attribute [%s]", sNameID);
@@ -418,7 +418,7 @@ int LocEnv<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
 
 
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_KMIN_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_KMIN_NAME, asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_dKMin[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[LocEnv] couldn't read attribute [%s]", sNameID);
@@ -428,8 +428,8 @@ int LocEnv<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
 
         if (iResult == 0) {
             
-             m_sPLParName[iGroup] = stdsprintf(sMask, ATTR_LOCENV_ALT_PREF_POLY_NAME, asSpecies[iGroup]);
-             stdprintf("SingleEvaluator::extractAttributesQDF will work on %s\n", m_sPLParName[iGroup]);
+             m_sPLParName[iGroup] = xha_sprintf(sMask, ATTR_LOCENV_ALT_PREF_POLY_NAME, asSpecies[iGroup]);
+             xha_printf("SingleEvaluator::extractAttributesQDF will work on %s\n", m_sPLParName[iGroup]);
              m_pAltPrefPoly[iGroup] = qdf_createPolyLine(hSpeciesGroup, m_sPLParName[iGroup]);
              if (m_pAltPrefPoly[iGroup] == NULL) {
                  iResult = -1;
@@ -466,22 +466,22 @@ int LocEnv<T>::writeAttributesQDF(hid_t hSpeciesGroup) {
  
     //    iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_LOCENV_VEGSELECTION_NAME, 3, m_adSelection);
     for (int iGroup = 0; (iResult == 0) && (iGroup < 2); iGroup++) {
-        sNameID = stdsprintf(sMask, ATTR_LOCENV_WATERFACTOR_NAME, asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_LOCENV_WATERFACTOR_NAME, asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_dWaterFactor[iGroup]));
 
-        sNameID = stdsprintf(sMask, ATTR_LOCENV_COASTALFACTOR_NAME, asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_LOCENV_COASTALFACTOR_NAME, asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_dCoastalFactor[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_LOCENV_COASTAL_MIN_LAT_NAME, asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_LOCENV_COASTAL_MIN_LAT_NAME, asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_dCoastalMinLatitude[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_LOCENV_COASTAL_MAX_LAT_NAME, asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_LOCENV_COASTAL_MAX_LAT_NAME, asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup,sNameID , 1, &(m_dCoastalMaxLatitude[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_LOCENV_NPPMIN_NAME, asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_LOCENV_NPPMIN_NAME, asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_dNPPMin[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_LOCENV_NPPMAX_NAME, asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_LOCENV_NPPMAX_NAME, asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_dNPPMax[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_LOCENV_KMAX_NAME, asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_LOCENV_KMAX_NAME, asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_dKMax[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_LOCENV_KMIN_NAME, asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_LOCENV_KMIN_NAME, asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_dKMin[iGroup]));
 
         iResult = qdf_writePolyLine(hSpeciesGroup, m_pAltPrefPoly[iGroup], m_sPLParName[iGroup]);
@@ -508,25 +508,25 @@ int LocEnv<T>::tryGetAttributes(const ModuleComplex *pMC) {
  
 
         for (int iGroup = 0; (iResult == 0) && (iGroup < 2); iGroup++) {
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_WATERFACTOR_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_WATERFACTOR_NAME, asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_dWaterFactor[iGroup]));            
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_COASTALFACTOR_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_COASTALFACTOR_NAME, asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_dCoastalFactor[iGroup]));        
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_COASTAL_MIN_LAT_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_COASTAL_MIN_LAT_NAME, asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_dCoastalMinLatitude[iGroup])); 
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_COASTAL_MAX_LAT_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_COASTAL_MAX_LAT_NAME, asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_dCoastalMaxLatitude[iGroup])); 
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_NPPMIN_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_NPPMIN_NAME, asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_dNPPMin[iGroup]));                      
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_NPPMAX_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_NPPMAX_NAME, asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_dNPPMax[iGroup]));                      
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_KMAX_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_KMAX_NAME, asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_dKMax[iGroup]));                          
-            sNameID = stdsprintf(sMask, ATTR_LOCENV_KMIN_NAME, asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_LOCENV_KMIN_NAME, asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_dKMin[iGroup]));        
 
             std::string sPolyDesc = "";
-            m_sPLParName[iGroup] = stdsprintf(sMask, ATTR_LOCENV_ALT_PREF_POLY_NAME, asSpecies[iGroup]);
+            m_sPLParName[iGroup] = xha_sprintf(sMask, ATTR_LOCENV_ALT_PREF_POLY_NAME, asSpecies[iGroup]);
             iResult = getAttributeStr(mParams, m_sPLParName[iGroup],  sPolyDesc);
             if (iResult == 0) {
                 m_pAltPrefPoly[iGroup] = PolyLine::readFromString(sPolyDesc);

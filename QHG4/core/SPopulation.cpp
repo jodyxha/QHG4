@@ -12,7 +12,7 @@
 
 #include "types.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "geomutils.h"
 //#include "crypto.h"
 #include "CryptoDigest.h"
@@ -71,7 +71,7 @@ SPopulation<T>::SPopulation(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSiz
         m_pReadBuf(NULL) {
 
     m_iNumThreads = omp_get_max_threads();
-    stdprintf("Have %d threads\n", m_iNumThreads);
+    xha_printf("Have %d threads\n", m_iNumThreads);
 
     m_sSpeciesName = "";
     m_sClassName   = "";
@@ -98,7 +98,7 @@ SPopulation<T>::SPopulation(SCellGrid *pCG, PopFinder *pPopFinder, int iLayerSiz
 template<typename T>
 SPopulation<T>::~SPopulation() {
 
-//    stdprintf("TIME TAKEN TO RECYCLE DEAD SPACE: %f\n",m_dRecycleDeadTime);
+//    xha_printf("TIME TAKEN TO RECYCLE DEAD SPACE: %f\n",m_dRecycleDeadTime);
 
     delete[] m_aiNumAgentsPerCell;
     delete m_pAgentController;
@@ -127,10 +127,10 @@ SPopulation<T>::~SPopulation() {
 
     //    H5Tclose(m_hAgentDataType);
 
-    stdprintf("*** %s: time spent in performBirths(ulong iNumBirths, int *piBirthData): %f\n", m_sSpeciesName, fPerfBirthTime);
-    stdprintf("*** total number of births  %lu\n", m_iNumBirths);
-    stdprintf("*** total number of deaths  %lu\n", m_iNumDeaths);
-    stdprintf("*** total number of moves   %lu\n", m_iNumMoves);
+    xha_printf("*** %s: time spent in performBirths(ulong iNumBirths, int *piBirthData): %f\n", m_sSpeciesName, fPerfBirthTime);
+    xha_printf("*** total number of births  %lu\n", m_iNumBirths);
+    xha_printf("*** total number of deaths  %lu\n", m_iNumDeaths);
+    xha_printf("*** total number of moves   %lu\n", m_iNumMoves);
 
 }
 
@@ -156,7 +156,7 @@ void SPopulation<T>::prepareLists(int iAgentLayerSize,int iListLayerSize, uint32
     m_pWriteCopyController->addBuffer(static_cast<LBBase *>(&m_aWriteCopy));
     m_pWriteCopyController->addLayer();
 
-    stdprintf("Making array lists (%d entries)\n", m_iNumThreads);
+    xha_printf("Making array lists (%d entries)\n", m_iNumThreads);
     m_vMoveList  = new std::vector<int>*[m_iNumThreads];
     m_vBirthList = new std::vector<int>*[m_iNumThreads];
     m_vDeathList = new std::vector<int>*[m_iNumThreads];
@@ -196,7 +196,7 @@ void SPopulation<T>::prepareLists(int iAgentLayerSize,int iListLayerSize, uint32
 //
 template<typename T>
 void SPopulation<T>::randomize(int i) {
-    stdprintf("WARNING!!!  RANDOMIZE WAS CALLED!!!\n");
+    xha_printf("WARNING!!!  RANDOMIZE WAS CALLED!!!\n");
     int iT = omp_get_thread_num();
     double dDummy = 0;
     for (unsigned int j = 0; j < STATE_SIZE; j++) {
@@ -261,7 +261,7 @@ int SPopulation<T>::setPrioList() {
 //
 template<typename T>
 void SPopulation<T>::setAgentDataType() {
-    stdprintf("[SPopulation<T>::setAgentDataType] setting agent data type\n");
+    xha_printf("[SPopulation<T>::setAgentDataType] setting agent data type\n");
     m_hAgentDataType = createAgentDataTypeQDF();
 }
 
@@ -338,11 +338,11 @@ int SPopulation<T>::preWrite(float fTime) {
 template<typename T>
     void SPopulation<T>::showWELLStates(const std::string sCaption, bool bNice) {
     for (int iThread = 0; iThread < m_iNumThreads; ++iThread) {
-        stdprintf("%s State of thread %02d:", sCaption,  iThread);
+        xha_printf("%s State of thread %02d:", sCaption,  iThread);
         if (bNice) {
-            stdprintf("\n");
+            xha_printf("\n");
         } else {
-            stdprintf("  ");
+            xha_printf("  ");
         }
         const uint32_t *pCurState = m_apWELL[iThread]->getState();
         char sState[128];
@@ -353,12 +353,12 @@ template<typename T>
                 sprintf(sDig, " %08x", pCurState[4*i+j]);
                 strcat(sState, sDig);
             }
-            stdprintf("    %s", sState);
+            xha_printf("    %s", sState);
             if (bNice) {
-                stdprintf("\n");
+                xha_printf("\n");
             }
         }
-        stdprintf("\n");
+        xha_printf("\n");
     }
 }
 
@@ -409,7 +409,7 @@ int SPopulation<T>::initializeStep(float fTime) {
     updateTotal();
     updateNumAgentsPerCell();
     initListIdx();
-    stdprintf("%d %s agents ready for step\n", m_iTotal, m_sSpeciesName);
+    xha_printf("%d %s agents ready for step\n", m_iTotal, m_sSpeciesName);
     */
 
 
@@ -447,7 +447,7 @@ int SPopulation<T>::finalizeStep() {
                 Action<T> *pA = m_prio.getAction(i,j);
                 iResult = pA->finalize(m_fCurTime);
                 if (iResult != 0) {
-                    stdprintf("Prio:%d, index:%d, act:%s\n", i, j, pA->getActionName());
+                    xha_printf("Prio:%d, index:%d, act:%s\n", i, j, pA->getActionName());
 	    }
             }
         }
@@ -467,9 +467,9 @@ int SPopulation<T>::finalizeStep() {
         updateTotal();
         updateNumAgentsPerCell();
         initListIdx();
-        //stdprintf("after step %d total %lu %s agents\n", (int)m_fCurTime, m_iTotal - m_iNumPrevDeaths, m_sSpeciesName);
+        //xha_printf("after step %d total %lu %s agents\n", (int)m_fCurTime, m_iTotal - m_iNumPrevDeaths, m_sSpeciesName);
     } else {
-        stdprintf("finalize result: %d!!!!\n", iResult);
+        xha_printf("finalize result: %d!!!!\n", iResult);
     }
 
 
@@ -602,9 +602,9 @@ int  SPopulation<A>::recycleDeadSpaceNew() {
         iNumBirths += m_vBirthList[iThread]->size() / BQD_SIZE;
     }
 
-    stdprintf("  %s  % 6zd births r\n", m_sSpeciesName, iNumBirths);
+    xha_printf("  %s  % 6zd births r\n", m_sSpeciesName, iNumBirths);
     m_iNumBirths += iNumBirths;
-    stdprintf("  %s  % 6zd deaths r\n", m_sSpeciesName, iNumDeaths);
+    xha_printf("  %s  % 6zd deaths r\n", m_sSpeciesName, iNumDeaths);
     m_iNumDeaths += iNumDeaths;
 
     // number of reusable dead spaces: min(iNumDeaths, iNumBirths)
@@ -674,7 +674,7 @@ int  SPopulation<A>::recycleDeadSpaceNew() {
     // only use iNumReuse of previous 
     for (uint i = 0; i < iNumReuse; i++) {
         if (m_pReuseB[BQD_SIZE*i] < 0) {
-            stdprintf("[recycleDeadSpaceNew]Attention: agent %d has cellindex %d\n", m_pPrevD[i], m_pReuseB[BQD_SIZE*i]);
+            xha_printf("[recycleDeadSpaceNew]Attention: agent %d has cellindex %d\n", m_pPrevD[i], m_pReuseB[BQD_SIZE*i]);
         }
         makeOffspringAtIndex(m_pPrevD[i],
                              m_pReuseB[BQD_SIZE*i],
@@ -764,7 +764,7 @@ int SPopulation<T>::performBirths() {
         }
     }
     
-    stdprintf("  %s  %6lu births p\n", m_sSpeciesName, iNumBirths);
+    xha_printf("  %s  %6lu births p\n", m_sSpeciesName, iNumBirths);
     m_iNumBirths += iNumBirths;
 
     return iResult;
@@ -784,18 +784,18 @@ int SPopulation<T>::performBirths(ulong iNumBirths, int *piBirthData) {
         //#ifdef OLDBIRTHS
         // this loop must not be parallelized, because the linked list is manipulated    
         for (ulong iIndex = 0; iIndex < iNumBirths*BQD_SIZE; iIndex += BQD_SIZE) {
-            //@@        stdprintf("makeOffSpring %d: %d + %d\n",  piBirthData[iIndex], piBirthData[iIndex+1], piBirthData[iIndex+2]);
+            //@@        xha_printf("makeOffSpring %d: %d + %d\n",  piBirthData[iIndex], piBirthData[iIndex+1], piBirthData[iIndex+2]);
             makeOffspring(piBirthData[iIndex], 
                           piBirthData[iIndex+1], 
                           piBirthData[iIndex+2]);
         }
-        //stdprintf("normal births");fflush(stdout);
+        //xha_printf("normal births");fflush(stdout);
  
         //#else
     } else {
         int iStart = m_pAgentController->reserveSpace2(iNumBirths);
         //        checkLists();
-        stdprintf("parallel births\n");fflush(stdout);
+        xha_printf("parallel births\n");fflush(stdout);
 
 #pragma omp parallel for
         for (ulong iIndex0 = 0; iIndex0 < iNumBirths; iIndex0++) {
@@ -809,7 +809,7 @@ int SPopulation<T>::performBirths(ulong iNumBirths, int *piBirthData) {
     }
     fPerfBirthTime += (omp_get_wtime() - fT0);
 
-    stdprintf("  %s  % 6zd births p\n", m_sSpeciesName, iNumBirths);
+    xha_printf("  %s  % 6zd births p\n", m_sSpeciesName, iNumBirths);
 
     return iResult;
 }
@@ -838,7 +838,7 @@ template<typename T>
 void SPopulation<T>::makeOffspringAtIndex(int iAgentIndex, int iCellIndex, int iMotherIndex, int iFatherIndex) {
     
     if (iCellIndex < 0) {
-        stdprintf("[makeOffspringAtIndex] Attention: agent %d has cellindex %d\n", iAgentIndex, iCellIndex);
+        xha_printf("[makeOffspringAtIndex] Attention: agent %d has cellindex %d\n", iAgentIndex, iCellIndex);
     }
 
     createAgentAtIndex(iAgentIndex, iCellIndex);
@@ -880,7 +880,7 @@ template<typename T>
 int  SPopulation<T>::createAgentAtIndex(int iAgentIndex, int iCellIndex) {
 
     if (iCellIndex < 0) {
-        stdprintf("[createAgentAtIndex] Attention: agent %d has cellindex %d\n", iAgentIndex, iCellIndex);
+        xha_printf("[createAgentAtIndex] Attention: agent %d has cellindex %d\n", iAgentIndex, iCellIndex);
     }
 
     resetAgent(iAgentIndex);
@@ -926,7 +926,7 @@ template<typename T>
 void SPopulation<T>::registerDeath(int iCellIndex, int iAgentIndex) {
 
     if (m_aAgents[iAgentIndex].m_iLifeState == LIFE_STATE_DEAD) {
-        stdprintf("\e[0;31mWARNING - trying to kill an already dead agent!\nCheck action priorities: all pairing actions should occur before killing actions\e[0m\n");
+        xha_printf("\e[0;31mWARNING - trying to kill an already dead agent!\nCheck action priorities: all pairing actions should occur before killing actions\e[0m\n");
     }
     int iThreadNum = omp_get_thread_num();
     
@@ -959,7 +959,7 @@ int SPopulation<T>::performDeaths() {
         }
     }
 
-    stdprintf("  %s  %6lu deaths\n", m_sSpeciesName, iNumDeaths);
+    xha_printf("  %s  %6lu deaths\n", m_sSpeciesName, iNumDeaths);
     m_iNumDeaths += iNumDeaths;
 
     return iResult;
@@ -984,7 +984,7 @@ int SPopulation<T>::performDeaths(ulong iNumDeaths, int *piDeathData) {
 
     }
 
-    stdprintf("  %s  % 6zd deaths p\n", m_sSpeciesName, iNumDeaths);
+    xha_printf("  %s  % 6zd deaths p\n", m_sSpeciesName, iNumDeaths);
     return iResult;  
 }
 
@@ -1014,7 +1014,7 @@ template<typename T>
 int SPopulation<T>::moveAgent(int iCellIndexFrom, int iAgentIndex, int iCellIndexTo) {
     int iResult = 0;
     if (iCellIndexTo < 0) {
-        stdprintf("[moveAgent] Attention: agent %d has cellindex %d\n", iAgentIndex, iCellIndexTo);
+        xha_printf("[moveAgent] Attention: agent %d has cellindex %d\n", iAgentIndex, iCellIndexTo);
     }
     m_aAgents[iAgentIndex].m_iCellIndex = iCellIndexTo;
     m_aAgents[iAgentIndex].m_ulCellID = m_pCG->m_aCells[iCellIndexTo].m_iGlobalID;
@@ -1034,7 +1034,7 @@ int SPopulation<T>::moveAgent(int iCellIndexFrom, int iAgentIndex, int iCellInde
 template<typename T>
 void SPopulation<T>::registerMove(int iCellIndexFrom, int iAgentIndex, int iCellIndexTo) {
     
-    //    stdprintf("[SPopulation<T>::registerMove] registering move: %i %i %i\n", iCellIndexFrom, iAgentIndex, iCellIndexTo);
+    //    xha_printf("[SPopulation<T>::registerMove] registering move: %i %i %i\n", iCellIndexFrom, iAgentIndex, iCellIndexTo);
 
     int iThreadNum = omp_get_thread_num();
     
@@ -1042,7 +1042,7 @@ void SPopulation<T>::registerMove(int iCellIndexFrom, int iAgentIndex, int iCell
     m_aAgents[iAgentIndex].m_iLifeState |= LIFE_STATE_MOVING;
 
     if (iCellIndexTo < 0) {
-        stdprintf("[registerMove] Attention: agent %d has cellindex %d\n", iAgentIndex, iCellIndexTo);
+        xha_printf("[registerMove] Attention: agent %d has cellindex %d\n", iAgentIndex, iCellIndexTo);
     }
     m_vMoveList[iThreadNum]->push_back(iCellIndexFrom);
     m_vMoveList[iThreadNum]->push_back(iAgentIndex);
@@ -1073,7 +1073,7 @@ int SPopulation<T>::performMoves() {
                 
                 //                if (m_aAgents[ (*m_vMoveList[iThreadNum])[iIndex+1] ].m_iLifeState > 0) {
                 if ((*m_vMoveList[iThreadNum])[iIndex+2] < 0) {
-                    stdprintf("[performMoves] Attention agent %d has cellindex %d\n", (*m_vMoveList[iThreadNum])[iIndex+1], (*m_vMoveList[iThreadNum])[iIndex+2]);
+                    xha_printf("[performMoves] Attention agent %d has cellindex %d\n", (*m_vMoveList[iThreadNum])[iIndex+1], (*m_vMoveList[iThreadNum])[iIndex+2]);
                 }
                 iResult = moveAgent((*m_vMoveList[iThreadNum])[iIndex], 
                                     (*m_vMoveList[iThreadNum])[iIndex+1], 
@@ -1084,7 +1084,7 @@ int SPopulation<T>::performMoves() {
         //        m_pMoveListController[iThreadNum]->clear();
     }
 
-    stdprintf("  %s  %6lu moves\n", m_sSpeciesName, iNumMoves);
+    xha_printf("  %s  %6lu moves\n", m_sSpeciesName, iNumMoves);
     m_iNumMoves += iNumMoves;
 
     
@@ -1121,10 +1121,10 @@ int SPopulation<T>::readSpeciesData(ParamProvider2 *pPP) {
         if (iResult == 0) {
            // success
         } else {
-           stdprintf("Couldn't extract action params\n");
+           xha_printf("Couldn't extract action params\n");
         }
     } else {
-        stdprintf("Couldn't extract prios\n");
+        xha_printf("Couldn't extract prios\n");
         iResult = -1;
     }
 
@@ -1135,7 +1135,7 @@ int SPopulation<T>::readSpeciesData(ParamProvider2 *pPP) {
         if (iResult == 0) {
            // success
         } else {
-           stdprintf("Couldn't extract vardefs\n");
+           xha_printf("Couldn't extract vardefs\n");
         }
     }          
     return iResult;
@@ -1177,7 +1177,7 @@ template<typename T>
 int  SPopulation<T>::addAgentData(int iCellIndex, int iAgentIndex, char **ppData) {
     int iResult = 0;
 
-    //    stdprintf("[SPopulation::addAgentData] got [%s]\n", *ppData);
+    //    xha_printf("[SPopulation::addAgentData] got [%s]\n", *ppData);
 
     // must read
     //  uint   m_iLifeState;
@@ -1191,27 +1191,27 @@ int  SPopulation<T>::addAgentData(int iCellIndex, int iAgentIndex, char **ppData
     if (iResult == 0) {
         iResult = this->addAgentDataSingle(ppData, &m_aAgents[iAgentIndex].m_ulID);
     } else {
-        stdprintf("[addAgentData] Couldn't read m_iLifeState from [%s]\n", *ppData);
+        xha_printf("[addAgentData] Couldn't read m_iLifeState from [%s]\n", *ppData);
     }
     if (iResult == 0) {
         iResult = this->addAgentDataSingle(ppData, &m_aAgents[iAgentIndex].m_fBirthTime);
     } else {
-        stdprintf("[addAgentData] Couldn't read m_ulID from [%s]\n", *ppData);
+        xha_printf("[addAgentData] Couldn't read m_ulID from [%s]\n", *ppData);
     }
     if (iResult == 0) {
         iResult = this->addAgentDataSingle(ppData, &m_aAgents[iAgentIndex].m_iGender);
     } else {
-        stdprintf("[addAgentData] Couldn't read m_fBirthTime from [%s]\n", *ppData);
+        xha_printf("[addAgentData] Couldn't read m_fBirthTime from [%s]\n", *ppData);
     }
 
     if (iResult == 0) {
         iResult = addPopSpecificAgentData(iAgentIndex,ppData);
     } else {
-        stdprintf("[addAgentData] Couldn't read m_iGender from [%s]\n", *ppData);
+        xha_printf("[addAgentData] Couldn't read m_iGender from [%s]\n", *ppData);
     }
 
     if (iResult != 0) {
-        stdprintf("[addAgentData] Couldn't read pop specific agent data from [%s]\n", *ppData);
+        xha_printf("[addAgentData] Couldn't read pop specific agent data from [%s]\n", *ppData);
     }
 
     return iResult;
@@ -1294,7 +1294,7 @@ template<typename T>
 int  SPopulation<T>::mergePop(PopBase *pBPop) {
     int iResult = -1;
     SPopulation *pPop = static_cast<SPopulation *>(pBPop);
-    stdprintf("[SPopulation<T>::mergePop]Trying to merge this (%s:%s) to self (%s:%s)\n",  pPop->getClassName(),  pPop->getSpeciesName(), m_sClassName, m_sSpeciesName);
+    xha_printf("[SPopulation<T>::mergePop]Trying to merge this (%s:%s) to self (%s:%s)\n",  pPop->getClassName(),  pPop->getSpeciesName(), m_sClassName, m_sSpeciesName);
     if ((m_sClassName   == pPop->getClassName()) && 
         (m_sSpeciesName == pPop->getSpeciesName()))  {
         if (m_prio.isEqual(&(pPop->m_prio), false)) {
@@ -1313,7 +1313,7 @@ int  SPopulation<T>::mergePop(PopBase *pBPop) {
                 int iCount = pPop->getNumAgentsTotal();
                 // reserve space
                 int iStart = m_pAgentController->reserveSpace2(iCount);
-                stdprintf("[SPopulation<T>::mergePop] reserved %d spaces at pos %d\n", iCount, iStart);
+                xha_printf("[SPopulation<T>::mergePop] reserved %d spaces at pos %d\n", iCount, iStart);
                 
                 // copy block
                 m_aAgents.copyBlock(iStart, &pPop->m_aAgents, 0, (uint)iCount);
@@ -1323,24 +1323,24 @@ int  SPopulation<T>::mergePop(PopBase *pBPop) {
 
                 updateTotal();
                 updateNumAgentsPerCell();
-                stdprintf("[SPopulation<T>::mergePop] population now has %ld agents\n", getNumAgentsTotal());
+                xha_printf("[SPopulation<T>::mergePop] population now has %ld agents\n", getNumAgentsTotal());
 
                 if (ulOtherMaxID > m_iMaxID) {
                     m_iMaxID = ulOtherMaxID;
                 }
                 iResult = 0;
             } else {
-                stdprintf("[SPopulation<T>::mergePop] agent data types differ (res %d)\n", iResult);
+                xha_printf("[SPopulation<T>::mergePop] agent data types differ (res %d)\n", iResult);
                 // same class and species but different rest is fatal
                 iResult = -2;
             }            
         } else {
-            stdprintf("[SPopulation<T>::mergePop] prios differ (res %d)\n", iResult);
+            xha_printf("[SPopulation<T>::mergePop] prios differ (res %d)\n", iResult);
             // same class and species but different rest is fatal
             iResult = -2;
         }
     } else {
-        stdprintf("[SPopulation<T>::mergePop] class or species differ: not compatible\n");
+        xha_printf("[SPopulation<T>::mergePop] class or species differ: not compatible\n");
         iResult = -1;
     }
     return iResult;
@@ -1378,17 +1378,17 @@ hid_t  SPopulation<T>::createAgentDataTypeQDF() {
 template<typename T>
 int SPopulation<T>::checkLists() { 
     int iResult = 0;
-    stdprintf("m_pAgentController check:\n");
+    xha_printf("m_pAgentController check:\n");
     int i1 = m_pAgentController->checkLists();
     if (i1 == 0) {
-        stdprintf("ok\n");
+        xha_printf("ok\n");
     }
 
     iResult += i1;
-    stdprintf("m_pWriteCopyController check:\n");
+    xha_printf("m_pWriteCopyController check:\n");
     int i2 = m_pWriteCopyController->checkLists();
     if (i2 == 0) {
-        stdprintf("ok\n");
+        xha_printf("ok\n");
     }
     iResult += i2;
     
@@ -1405,10 +1405,10 @@ template<typename T>
 int  SPopulation<T>::writeAgentDataQDF(hid_t hDataSpace, hid_t hDataSet, hid_t hAgentType) {
     int iResult = 0;
 
-    stdprintf("[SPopulation<T>::writeAgentDataQDF][%s] at step %d:\n", m_sSpeciesName, (int) m_fCurTime);
-    stdprintf("  total number of births  %lu\n", m_iNumBirths);
-    stdprintf("  total number of deaths  %lu\n", m_iNumDeaths);
-    stdprintf("  total number of moves   %lu\n", m_iNumMoves);
+    xha_printf("[SPopulation<T>::writeAgentDataQDF][%s] at step %d:\n", m_sSpeciesName, (int) m_fCurTime);
+    xha_printf("  total number of births  %lu\n", m_iNumBirths);
+    xha_printf("  total number of deaths  %lu\n", m_iNumDeaths);
+    xha_printf("  total number of moves   %lu\n", m_iNumMoves);
 
     iResult = writeAgentDataQDFSafe(m_pAgentController, m_aAgents, hDataSpace, hDataSet, hAgentType);
         /*@@@iResult = writeAgentDataQDFSafe(hDataSpace, hDataSet, hAgentType);@@@*/
@@ -1464,7 +1464,7 @@ int SPopulation<T>::modifyAttributes(const std::string sAttrName, double dValue)
 template<typename T>
 int  SPopulation<T>::writeAgentDataQDFSafe(LBController *pAgentController, LayerBuf<T> &aBuf, hid_t hDataSpace, hid_t hDataSet, hid_t hAgentType, bool bHandleDead) {
     int iResult = 0;
-    stdprintf("[SPopulation::writeAgentDataQDFSafe] with LBC and LB\n");
+    xha_printf("[SPopulation::writeAgentDataQDFSafe] with LBC and LB\n");
     fflush(stdout);
     pAgentController->calcHolyness();
 
@@ -1515,7 +1515,7 @@ int  SPopulation<T>::writeAgentDataQDFSafe(LBController *pAgentController, Layer
                 uint iNumKilled  = 0;
                 uint iD = 0;
                 while ((iD < m_vMergedDeadList.size()) && (m_vMergedDeadList[iD] < (int)(j+1)*iLayerSize)) {
-                    //stdprintf("[SPopulation<T>::writeAgentDataQDFSafe] deleting id  local %d, global %d (j=%d, ID = %d\n", m_vMergedDeadList[iD],m_vMergedDeadList[iD] - j*iLayerSize, j, iD);
+                    //xha_printf("[SPopulation<T>::writeAgentDataQDFSafe] deleting id  local %d, global %d (j=%d, ID = %d\n", m_vMergedDeadList[iD],m_vMergedDeadList[iD] - j*iLayerSize, j, iD);
                                         
                     iResult = m_pWriteCopyController->deleteElement(m_vMergedDeadList[iD] - j*iLayerSize);
                     
@@ -1548,10 +1548,10 @@ int  SPopulation<T>::writeAgentDataQDFSafe(LBController *pAgentController, Layer
                     
                     offset += count;
                 }  else {
-                    stdprintf("[SPopulation<T>::writeAgentDataQDFSafe] ignored layer %d because it only contains dead\n", j);
+                    xha_printf("[SPopulation<T>::writeAgentDataQDFSafe] ignored layer %d because it only contains dead\n", j);
                 }
             } else {
-                stdprintf("[SPopulation<T>::writeAgentDataQDFSafe] ignored layer %d because it's empty\n", j);
+                xha_printf("[SPopulation<T>::writeAgentDataQDFSafe] ignored layer %d because it's empty\n", j);
             }
         }
         
@@ -1561,7 +1561,7 @@ int  SPopulation<T>::writeAgentDataQDFSafe(LBController *pAgentController, Layer
     
     qdf_closeDataSpace(hMemSpace); 
 
-    stdprintf("[SPopulation<T>::writeAgentDataQDFSafe] written %u agents, killed %d\n", iNumWritten, iTotalKill); fflush(stdout);
+    xha_printf("[SPopulation<T>::writeAgentDataQDFSafe] written %u agents, killed %d\n", iNumWritten, iTotalKill); fflush(stdout);
   
     return (status >= 0)?iResult:-1;
 }
@@ -1581,7 +1581,7 @@ int  SPopulation<T>::writeAgentDataQDFSafe(LBController *pAgentController, Layer
 template<typename T>
 int  SPopulation<T>::writeAgentDataQDFSafe(hid_t hDataSpace, hid_t hDataSet, hid_t hAgentType) {
     int iResult = 0;
-    stdprintf("[SPopulation::writeAgentDataQDFSafe] without LBC and LB\n");
+    xha_printf("[SPopulation::writeAgentDataQDFSafe] without LBC and LB\n");
     fflush(stdout);
     m_pAgentController->calcHolyness();
     // make sure there is a  layer in WriteCopyController 
@@ -1660,10 +1660,10 @@ int  SPopulation<T>::writeAgentDataQDFSafe(hid_t hDataSpace, hid_t hDataSet, hid
                                   hDataSpace, H5P_DEFAULT, pSlab);
                     offset += count;
                 } else {
-                    stdprintf("[SPopulation<T>::writeAgentDataQDFSafe] ignored layer %d because it only contains dead\n", j);
+                    xha_printf("[SPopulation<T>::writeAgentDataQDFSafe] ignored layer %d because it only contains dead\n", j);
                 }
             } else {
-                stdprintf("[SPopulation<T>::writeAgentDataQDFSafe] ignored layer %d because it's empty\n", j);
+                xha_printf("[SPopulation<T>::writeAgentDataQDFSafe] ignored layer %d because it's empty\n", j);
             }
         }
         
@@ -1673,8 +1673,8 @@ int  SPopulation<T>::writeAgentDataQDFSafe(hid_t hDataSpace, hid_t hDataSet, hid
     
     qdf_closeDataSpace(hMemSpace); 
 
-    stdprintf("[SPopulation<T>::writeAgentDataQDFSafe] written %u agents, killed %d\n", iNumWritten, iTotalKill); fflush(stdout);
-    stdprintf("[SPopulation<T>::writeAgentDataQDFSafe] end with status %d\n", status); fflush(stdout);
+    xha_printf("[SPopulation<T>::writeAgentDataQDFSafe] written %u agents, killed %d\n", iNumWritten, iTotalKill); fflush(stdout);
+    xha_printf("[SPopulation<T>::writeAgentDataQDFSafe] end with status %d\n", status); fflush(stdout);
 
     return (status >= 0)?iResult:-1;
 }
@@ -1804,7 +1804,7 @@ int  SPopulation<T>::readSpeciesDataQDF(hid_t hSpeciesGroup) {
             iResult = 0;
         }
     }
-    stdprintf("[SPopulation<T>::readSpeciesDataQDF] have QDF version %d\n", m_iQDFVersionIn);
+    xha_printf("[SPopulation<T>::readSpeciesDataQDF] have QDF version %d\n", m_iQDFVersionIn);
     // now read action-specific parameters
 
     if (iResult == 0) {
@@ -1857,7 +1857,7 @@ int  SPopulation<T>::getPrioInfos(const stringmap &mPrios) {
         if (strToNum(it->second, &iP)) {
             m_mPrioInfo[it->first] = iP;
         } else {
-            stdprintf("invalid prio level [%s]\n",it->second);  
+            xha_printf("invalid prio level [%s]\n",it->second);  
         }
     }
     return iResult;
@@ -1899,7 +1899,7 @@ int SPopulation<T>::insertPrioDataAttribute(hid_t hSpeciesGroup) {
     iMaxLen++; // account for terminating 0
     
     if (iMaxLen > MAX_FUNC_LEN) {
-        stdprintf("Can't translate PrioInfo to array: function name too long (%lu > %u)\n", iMaxLen, MAX_FUNC_LEN);
+        xha_printf("Can't translate PrioInfo to array: function name too long (%lu > %u)\n", iMaxLen, MAX_FUNC_LEN);
     } else {
  
         // create an array to hold the map's data
@@ -1973,19 +1973,19 @@ int SPopulation<T>::extractPrioDataAttribute(hid_t hSpeciesGroup) {
                 iResult = 0;
 
             } else {
-                stdprintf("read priodata attribute err\n");
+                xha_printf("read priodata attribute err\n");
             } 
 
 
             delete[] paPD;
         } else {
-            stdprintf("Bad Rank (%d)\n", rank);
+            xha_printf("Bad Rank (%d)\n", rank);
         }
         qdf_closeDataSpace(hAttrSpace);
         qdf_closeAttribute(hAttribute);
         qdf_closeDataType(hPrioDataType);
     } else {
-        stdprintf("Attribute [%s] does not exist\n", SPOP_ATTR_PRIO_INFO);
+        xha_printf("Attribute [%s] does not exist\n", SPOP_ATTR_PRIO_INFO);
     }
 
 
@@ -2023,14 +2023,14 @@ int SPopulation<T>::extractPrioDataAttribute(hid_t hSpeciesGroup) {
 template<typename T>
 int  SPopulation<T>::dumpAgentDataQDF(hid_t hDataSpace, hid_t hDataSet, hid_t hAgentType) {
     int iResult = 0;
-    stdprintf("[SPopulation::dumpAgentDataQDF]\n");
+    xha_printf("[SPopulation::dumpAgentDataQDF]\n");
     fflush(stdout);
 
     hsize_t dimsm = m_pAgentController->getLayerSize();
     hid_t hMemSpace = H5Screate_simple (1, &dimsm, NULL); 
 
     int iFP = m_pAgentController->getFirstIndex( LBController::PASSIVE);
-    stdprintf("[SPopulation<T>::dumpAgentDataQDF] first index passive=%d\n", iFP);
+    xha_printf("[SPopulation<T>::dumpAgentDataQDF] first index passive=%d\n", iFP);
 
 
     hsize_t offset = 0;
@@ -2058,7 +2058,7 @@ int  SPopulation<T>::dumpAgentDataQDF(hid_t hDataSpace, hid_t hDataSet, hid_t hA
     
     qdf_closeDataSpace(hMemSpace); 
 
-    stdprintf("[SPopulation<T>::dumpAgentDataQDFSafe written %d layers of size %d\n",  m_aAgents.getNumLayers(), m_pWriteCopyController->getLayerSize());
+    xha_printf("[SPopulation<T>::dumpAgentDataQDFSafe written %d layers of size %d\n",  m_aAgents.getNumLayers(), m_pWriteCopyController->getLayerSize());
 
     return (status >= 0)?iResult:-1;
 }
@@ -2123,7 +2123,7 @@ int  SPopulation<T>::restoreAgentDataQDF(hid_t hDataSpace, hid_t hDataSet, hid_t
         }
     }
     m_iMaxID = maxid;
-    stdprintf("Found mac ID: %ld\n", m_iMaxID);
+    xha_printf("Found mac ID: %ld\n", m_iMaxID);
     delete[] pSlab;
     iResult = (status >= 0)?iResult:-1;
     return iResult;
@@ -2136,7 +2136,7 @@ int  SPopulation<T>::restoreAgentDataQDF(hid_t hDataSpace, hid_t hDataSet, hid_t
 //
 template<typename T>
 int  SPopulation<T>::dumpSpeciesDataQDF(hid_t hSpeciesGroup, int iDumpMode) {
-    stdprintf("dumping species data\n");
+    xha_printf("dumping species data\n");
 
     int iResult = 0;
 
@@ -2199,7 +2199,7 @@ int  SPopulation<T>::dumpSpeciesDataQDF(hid_t hSpeciesGroup, int iDumpMode) {
         iResult = dumpController(hSpeciesGroup, iDumpMode);
     }
 
-    stdprintf("After dump\n");
+    xha_printf("After dump\n");
     WELLUtils::showStates(m_apWELL, m_iNumThreads, true);
 
     return iResult;
@@ -2215,7 +2215,7 @@ int  SPopulation<T>::dumpSpeciesDataQDF(hid_t hSpeciesGroup, int iDumpMode) {
 template<typename T>
 int  SPopulation<T>::restoreSpeciesDataQDF(hid_t hSpeciesGroup) {
     int iResult = 0;
-    stdprintf("restoring species data\n");
+    xha_printf("restoring species data\n");
 
     iResult = readSpeciesDataQDF(hSpeciesGroup);
 
@@ -2226,11 +2226,11 @@ int  SPopulation<T>::restoreSpeciesDataQDF(hid_t hSpeciesGroup) {
 
         iResult = restoreWELL(m_apWELL, m_iNumThreads, m_sSpeciesName, hSpeciesGroup);
         if (iResult == 0) {
-            stdprintf("WELL states after restore\n");
+            xha_printf("WELL states after restore\n");
             WELLUtils::showStates(m_apWELL, m_iNumThreads, true);
         } else {
             // num states was missing, or states could not be read
-            stdprintf("[readSpeciesDataQDF] num states was missing, or states could not be read. No full recovery possible\n");
+            xha_printf("[readSpeciesDataQDF] num states was missing, or states could not be read. No full recovery possible\n");
             iResult = 0;
         }
      /*
@@ -2263,7 +2263,7 @@ int  SPopulation<T>::restoreSpeciesDataQDF(hid_t hSpeciesGroup) {
                 // if there are more threads than saved states, the WELLs keep their states from the constructor
                 // it doesn't matter, because continuing with a different number of threads changes everxthing
             }
-            stdprintf("WELL states after restore\n");
+            xha_printf("WELL states after restore\n");
             showStates();
 
             delete[] pSuperState;
@@ -2272,7 +2272,7 @@ int  SPopulation<T>::restoreSpeciesDataQDF(hid_t hSpeciesGroup) {
 */
         if (iResult != 0) {
             // num states was missing, or states could not be read
-            stdprintf("[readSpeciesDataQDF] num states was missing, or states could not be read. No full recovery possible\n");
+            xha_printf("[readSpeciesDataQDF] num states was missing, or states could not be read. No full recovery possible\n");
             iResult = 0;
         }
     }
@@ -2332,7 +2332,7 @@ int  SPopulation<T>::restoreAdditionalDataQDF(hid_t hSpeciesGroup) {
 //
 template<typename T>
 int  SPopulation<T>::dumpController(hid_t hSpeciesGroup, int iDumpMode) {
-    stdprintf("dumping contoller\n");
+    xha_printf("dumping contoller\n");
     int iResult = 0;
     hsize_t iNumWritten = 0;
     herr_t status=-1;
@@ -2392,7 +2392,7 @@ int  SPopulation<T>::dumpController(hid_t hSpeciesGroup, int iDumpMode) {
 template<typename T>
 int  SPopulation<T>::restoreController(hid_t hSpeciesGroup) {
     int iResult = -1;
-    stdprintf("[SPopulation<T>::restoreController] checking lists before\n");
+    xha_printf("[SPopulation<T>::restoreController] checking lists before\n");
     checkLists();
     
     if (qdf_link_exists(hSpeciesGroup, CTRL_DATASET_NAME)) {
@@ -2405,7 +2405,7 @@ int  SPopulation<T>::restoreController(hid_t hSpeciesGroup) {
         // get toal number of elements in dataset
         hsize_t dims;
         herr_t status = H5Sget_simple_extent_dims(hDataSpace, &dims, NULL);
-        stdprintf("Dataspace extent: %lld\n", dims);
+        xha_printf("Dataspace extent: %lld\n", dims);
 
         hsize_t iCount =  TEMP_SIZE;
         hsize_t iNumRead = 0;
@@ -2435,7 +2435,7 @@ int  SPopulation<T>::restoreController(hid_t hSpeciesGroup) {
             iResult = m_pAgentController->deserialize(pBuf);
 
             if (iResult == 0) {
-                stdprintf("[SPopulation<T>::restoreController] checking lists after\n");
+                xha_printf("[SPopulation<T>::restoreController] checking lists after\n");
                 checkLists();
             }
 
@@ -2443,7 +2443,7 @@ int  SPopulation<T>::restoreController(hid_t hSpeciesGroup) {
         delete[] pBuf;
         
     } else {
-        stdprintf("WARNING: no dataset [%s] found\n", CTRL_DATASET_NAME);
+        xha_printf("WARNING: no dataset [%s] found\n", CTRL_DATASET_NAME);
     }
     return iResult;
 }
@@ -2454,7 +2454,7 @@ int  SPopulation<T>::restoreController(hid_t hSpeciesGroup) {
 //
 template<typename T>
 int  SPopulation<T>::dumpDeadSpaces(hid_t hSpeciesGroup) {
-    stdprintf("dumping dead spaces\n");
+    xha_printf("dumping dead spaces\n");
     int iResult = 0;
     uint iNumWritten = 0;
     herr_t status = 0; // status won't be changed if num desd spaces is 0
@@ -2512,7 +2512,7 @@ int  SPopulation<T>::dumpDeadSpaces(hid_t hSpeciesGroup) {
 template<typename T>
 int  SPopulation<T>::restoreDeadSpaces(hid_t hSpeciesGroup) {
     int iResult = -1;
-    stdprintf("restoring contoller\n");
+    xha_printf("restoring contoller\n");
 
     
     if (qdf_link_exists(hSpeciesGroup, DEAD_DATASET_NAME)) {
@@ -2525,7 +2525,7 @@ int  SPopulation<T>::restoreDeadSpaces(hid_t hSpeciesGroup) {
         // get toal number of elements in dataset
         hsize_t dims;
         herr_t status = H5Sget_simple_extent_dims(hDataSpace, &dims, NULL);
-        stdprintf("Dataspace extent: %lld\n", dims);
+        xha_printf("Dataspace extent: %lld\n", dims);
         m_iNumPrevDeaths = dims;
         hsize_t iCount =  TEMP_SIZE;
         hsize_t iOffset = 0;
@@ -2560,7 +2560,7 @@ int  SPopulation<T>::restoreDeadSpaces(hid_t hSpeciesGroup) {
         }
         
     } else {
-        stdprintf("WARNING: no dataset [%s] found\n", DEAD_DATASET_NAME);
+        xha_printf("WARNING: no dataset [%s] found\n", DEAD_DATASET_NAME);
     }
     return iResult;
 
@@ -2610,32 +2610,32 @@ int SPopulation<T>::getLastAgentIndex() {
 //
 template<typename T>
 void SPopulation<T>::agentCheck() {
-    stdprintf("Arrays:\n");
+    xha_printf("Arrays:\n");
     m_pAgentController->displayArray(0, 0, m_pAgentController->getLayerSize());
 
-    stdprintf("States:\n");    
+    xha_printf("States:\n");    
     int iFirstAgent = m_pAgentController->getFirstIndex(LBController::ACTIVE);
     if (iFirstAgent != LBController::NIL) {
         int iLastAgent  = m_pAgentController->getLastIndex(LBController::ACTIVE);
         for (int iAgent = iFirstAgent; iAgent <= iLastAgent; iAgent++) {
-            stdprintf(" %d:", iAgent);
+            xha_printf(" %d:", iAgent);
             int s = m_aAgents[iAgent].m_iLifeState;
             switch (s) {
             case LIFE_STATE_ALIVE:
-                stdprintf("L");
+                xha_printf("L");
                 break;
             case LIFE_STATE_DEAD:
-                stdprintf("D");
+                xha_printf("D");
                 break;
             case LIFE_STATE_MOVING+LIFE_STATE_ALIVE:
-                stdprintf("M");
+                xha_printf("M");
                 break;
             default:
-                stdprintf("?");
+                xha_printf("?");
                 break;
             }
         }
-        stdprintf("\n");
+        xha_printf("\n");
         
     }
     
@@ -2648,12 +2648,12 @@ void SPopulation<T>::agentCheck() {
 //   display a list of all agents by calling the pure virtual function showAgent
 template<typename T>
 void SPopulation<T>::showAgents() {
-    stdprintf("-> %d agents\n", m_pAgentController->getNumUsed());
+    xha_printf("-> %d agents\n", m_pAgentController->getNumUsed());
     int iCur = m_pAgentController->getFirstIndex(LBController::ACTIVE);
     while (iCur != LBController::NIL) {
-        stdprintf("+ ");
+        xha_printf("+ ");
         showAgent(iCur);
-        stdprintf("\n");
+        xha_printf("\n");
         iCur = m_pAgentController->getNextIndex(LBController::ACTIVE, iCur);
     }
  
@@ -2667,7 +2667,7 @@ template<typename T>
 void SPopulation<T>::showAgent(int iAgentIndex) {
     Agent &a = m_aAgents[iAgentIndex];
 
-    stdprintf(" [%d] ID [%ld] LS [%d] Loc [%d] ", iAgentIndex, a.m_ulID, a.m_iLifeState, a.m_ulCellID);
+    xha_printf(" [%d] ID [%ld] LS [%d] Loc [%d] ", iAgentIndex, a.m_ulID, a.m_iLifeState, a.m_ulCellID);
 }
 
 
@@ -2676,16 +2676,16 @@ void SPopulation<T>::showAgent(int iAgentIndex) {
 //
 template<typename T>
 void SPopulation<T>::showControllerState(const char *pCaption) {
-    stdprintf("%s [%s]\n", pCaption, m_sSpeciesName);
-    stdprintf("  layersize: %u\n", m_pAgentController->getLayerSize());
-    stdprintf("  numlayers: %u\n", m_pAgentController->getNumLayers());
-    stdprintf("  numused:   %u\n", m_pAgentController->getNumUsed());
+    xha_printf("%s [%s]\n", pCaption, m_sSpeciesName);
+    xha_printf("  layersize: %u\n", m_pAgentController->getLayerSize());
+    xha_printf("  numlayers: %u\n", m_pAgentController->getNumLayers());
+    xha_printf("  numused:   %u\n", m_pAgentController->getNumUsed());
     uint iSum1 = 0;
     for (uint i = 0; i <  m_pAgentController->getNumLayers(); i++) {
         iSum1 += m_pAgentController->getNumUsed(i);
     }
-    stdprintf("  numused L: %d\n", iSum1);
-    if (iSum1 != m_pAgentController->getNumUsed()) stdprintf("************** numused and layercount differ\n");
+    xha_printf("  numused L: %d\n", iSum1);
+    if (iSum1 != m_pAgentController->getNumUsed()) xha_printf("************** numused and layercount differ\n");
 }
 
  

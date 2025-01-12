@@ -6,8 +6,8 @@
 #include <cstdarg>
 #include <cstring>
 #include "types.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "qhg_consts.h"
 #include "ParamReader.h"
 
@@ -412,10 +412,10 @@ bool OptionList::writeSetOptions(FILE *fOut, bool bLines, std::string sOmit) {
                 if (iter->second->isSet()) {
                     // if omitted in lines mode: comment
                     if (mOmit[iter->first]) {
-                        stdfprintf(fOut, "#");
+                        xha_fprintf(fOut, "#");
                     }
                     if (bLines) {
-                        stdfprintf(fOut, "  ");
+                        xha_fprintf(fOut, "  ");
                     }
 
                     std::string sValue = iter->second->getVal();  
@@ -440,23 +440,23 @@ bool OptionList::writeSetOptions(FILE *fOut, bool bLines, std::string sOmit) {
                         sQuote[0]='\0';
                     }
 
-                    stdfprintf(fOut, "%s", iter->first);
+                    xha_fprintf(fOut, "%s", iter->first);
 
                     //                    if ((iter->second->getType() != 'b') ||
                     //                        (iter->second->requiresArgument())) {
                     if (iter->second->requiresArgument()) {
-                        stdfprintf(fOut, "%s%s%s%s ", sSep, sQuote, sValue, sQuote); fflush(fOut);
+                        xha_fprintf(fOut, "%s%s%s%s ", sSep, sQuote, sValue, sQuote); fflush(fOut);
                     } else if (!iter->second->requiresArgument()) {
-                        stdfprintf(fOut, " ");
+                        xha_fprintf(fOut, " ");
                     }
                     if (bLines) {
-                        stdfprintf(fOut, "\n");
+                        xha_fprintf(fOut, "\n");
                     }
                 }
             }
         }        
     }   
-    //stdfprintf(fOut, "\n"); fflush(fOut);  
+    //xha_fprintf(fOut, "\n"); fflush(fOut);  
     return bOK;
 }
 
@@ -550,7 +550,7 @@ bool ParamReader::setOptions(int iNumOptions, ...) {
             if (m_pOptionList->addOption(sOptionString, pOptionVar)) {
             } else {
                 bOK = false;
-                stdprintf("%p : Error at NewOption(%s, pOptionVar)\n", this,  sOptionString);
+                xha_printf("%p : Error at NewOption(%s, pOptionVar)\n", this,  sOptionString);
                 
                 break;
             }
@@ -588,7 +588,7 @@ int ParamReader::getParams(int argc, char *argv[], bool bOverwrite) {
                         if (sArg[1] == '-') {
                             if (!bValPresent) {
                                 if (m_bVerbose) {
-                                    stdprintf("Missing parameter for option %s\n", sArg);
+                                    xha_printf("Missing parameter for option %s\n", sArg);
                                 }
                                 iResult = PARAMREADER_ERR_MISSING_PARAM;
                                 m_sBadArg = sArg;
@@ -597,7 +597,7 @@ int ParamReader::getParams(int argc, char *argv[], bool bOverwrite) {
                         } else {
                             if ((i+1) >= argc) {
                                 if (m_bVerbose) {
-                                    stdprintf("Missing parameter for option %s\n", sArg);
+                                    xha_printf("Missing parameter for option %s\n", sArg);
                                 }
                                 iResult = PARAMREADER_ERR_MISSING_PARAM;
                                 m_sBadArg = sArg;
@@ -606,7 +606,7 @@ int ParamReader::getParams(int argc, char *argv[], bool bOverwrite) {
                                 std::string sTemp = argv[i+1];
                                 if (m_pOptionList->optionOK(sTemp, false)) {
                                     if (m_bVerbose) {
-                                        stdprintf("Missing parameter for option %s\n", sArg);
+                                        xha_printf("Missing parameter for option %s\n", sArg);
                                     }
                                     iResult = PARAMREADER_ERR_MISSING_PARAM;
                                     m_sBadArg = sArg;
@@ -628,14 +628,14 @@ int ParamReader::getParams(int argc, char *argv[], bool bOverwrite) {
                         m_sBadArg = sArg;
                         m_sBadVal = sVal;
                         if (m_bVerbose) {
-                            stdprintf("Error setting option %s to %s\n", sArg, sVal);
+                            xha_printf("Error setting option %s to %s\n", sArg, sVal);
                         }
                     }
                 }
             } else {
                 // unknown option
                 if (m_bVerbose) {
-                    stdprintf("Unknown Option %s\n", sArg);
+                    xha_printf("Unknown Option %s\n", sArg);
                 }
                 iResult |= PARAMREADER_ERR_UNKNOWN_OPTION;
                 m_sBadArg = sArg;
@@ -644,7 +644,7 @@ int ParamReader::getParams(int argc, char *argv[], bool bOverwrite) {
 
         } else {
             if (m_bVerbose) {
-                stdprintf("expected '-' (instead of %s)\n", sArg);
+                xha_printf("expected '-' (instead of %s)\n", sArg);
             }
             m_vFreeParams.push_back(sArg);
             iResult |= PARAMREADER_ERR_FREE_PARAMS;
@@ -655,7 +655,7 @@ int ParamReader::getParams(int argc, char *argv[], bool bOverwrite) {
     if (iResult >= 0) {
         if (!m_pOptionList->allMandatorySet(m_vMissingManadatory)) {
             if (m_bVerbose) {
-                stdprintf("Not all mandatory arguments set\n");
+                xha_printf("Not all mandatory arguments set\n");
             }
             iResult = PARAMREADER_ERR_MANDATORY_MISSING;
         }
@@ -869,7 +869,7 @@ std::string ParamReader::getErrorMessage(int iResult) {
                 m_sErrorMessage += "\n";
             }
             iNum = m_vMissingManadatory.size();
-            sNum = stdsprintf("[ParamReader Error] %d mandatory option%s missing: ", iNum, (iNum != 1)?"s":"");
+            sNum = xha_sprintf("[ParamReader Error] %d mandatory option%s missing: ", iNum, (iNum != 1)?"s":"");
             m_sErrorMessage += sNum;
             for (int i = 0; i < iNum; ++i) {
                 m_sErrorMessage += " "+m_vMissingManadatory[i];
@@ -886,7 +886,7 @@ std::string ParamReader::getErrorMessage(int iResult) {
             m_sErrorMessage = "[ParamReader Error] config file doesn't exist: " + m_sBadVal;
             break;
         default:
-            sNum = stdsprintf("[ParamReader Error] Unknown error (%d)", iResult);
+            sNum = xha_sprintf("[ParamReader Error] Unknown error (%d)", iResult);
             m_sErrorMessage = sNum;
         }
     } else {
@@ -898,7 +898,7 @@ std::string ParamReader::getErrorMessage(int iResult) {
                     m_sErrorMessage += "\n";
                 }
                 iNum =  getUnknownParams(vVals);
-                sNum = stdsprintf("[ParamReader Warning] %d unknown option%s: ", iNum, (iNum != 1)?"s":"");
+                sNum = xha_sprintf("[ParamReader Warning] %d unknown option%s: ", iNum, (iNum != 1)?"s":"");
                 m_sErrorMessage += sNum;
                 for (int i = 0; i < iNum; ++i) {
                     m_sErrorMessage = m_sErrorMessage + " "+vVals[i];
@@ -909,7 +909,7 @@ std::string ParamReader::getErrorMessage(int iResult) {
                     m_sErrorMessage += "\n";
                 }
                 iNum =  getFreeParams(vVals);
-                sNum = stdsprintf("[ParamReader Warning] %d free param%s: ", iNum, (iNum != 1)?"s":"");
+                sNum = xha_sprintf("[ParamReader Warning] %d free param%s: ", iNum, (iNum != 1)?"s":"");
                 m_sErrorMessage += sNum;
                 for (int i = 0; i < iNum; ++i) {
                     m_sErrorMessage += " "+vVals[i];
@@ -917,7 +917,7 @@ std::string ParamReader::getErrorMessage(int iResult) {
             }
         }
         if (m_sErrorMessage == "") { 
-            sNum = stdsprintf("[ParamReader Warnubg] Unknown warning (%d)", iResult);
+            sNum = xha_sprintf("[ParamReader Warnubg] Unknown warning (%d)", iResult);
             m_sErrorMessage = sNum;
         }
     }
@@ -957,13 +957,13 @@ int main_test(int iArgC,char *apArgV[]) {
                                     "-h:0", &b2) >= 0) {
                                         
                                             
-        stdprintf("i : %d\n", i);
-        stdprintf("f : %f\n", f);
-        stdprintf("b1 : %d\n", b1);
-        stdprintf("b2 : %d\n", b2);
-        stdprintf("sDada : %s\n", sDada);
+        xha_printf("i : %d\n", i);
+        xha_printf("f : %f\n", f);
+        xha_printf("b1 : %d\n", b1);
+        xha_printf("b2 : %d\n", b2);
+        xha_printf("sDada : %s\n", sDada);
     } else {
-        stdprintf("babababa\n");
+        xha_printf("babababa\n");
         
     }
 }

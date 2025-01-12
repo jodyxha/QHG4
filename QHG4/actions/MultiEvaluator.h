@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "Observable.h"
 #include "Observer.h"

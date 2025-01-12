@@ -10,7 +10,7 @@
 #include <string>
 #include <cstdlib>
 #include "qhg_consts.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "PolyLine.h"
 
 PolyLine::PolyLine(unsigned int iNumSegments) 
@@ -109,7 +109,7 @@ PolyLine * PolyLine::readFromString(const std::string sData) {
             }
         }
     } else {
-        stdprintf("[PolyLine::readFromString] Expected non-zero even number of argumend : [%s]", sData);
+        xha_printf("[PolyLine::readFromString] Expected non-zero even number of argumend : [%s]", sData);
         bOK = false;
     }
     
@@ -120,7 +120,7 @@ PolyLine * PolyLine::readFromString(const std::string sData) {
                 pPL->addPoint(i, vecData[2*i], vecData[2*i+1]); 
             }
         } else {
-            stdprintf("Bad Function def (number format) : [%s] or not enough data points (%zd)\n", sData, vecData.size());
+            xha_printf("Bad Function def (number format) : [%s] or not enough data points (%zd)\n", sData, vecData.size());
         } 
     }
     return pPL;
@@ -140,11 +140,11 @@ void PolyLine::write(FILE *fOut) {
 
 
 void PolyLine::display(const char *pIndent, const std::string sCaption) {
-    stdprintf("%s%s [%d]:\n%s  ", pIndent, sCaption, m_iNumSegments, pIndent);
+    xha_printf("%s%s [%d]:\n%s  ", pIndent, sCaption, m_iNumSegments, pIndent);
     if (m_iNumSegments > 0) {
         for (unsigned int j = 0; j < m_iNumSegments+1; j++) {
-            stdprintf("%f %f ", m_afX[j], m_afV[j]);
+            xha_printf("%f %f ", m_afX[j], m_afV[j]);
         }
     }
-    stdprintf("\n");
+    xha_printf("\n");
 }

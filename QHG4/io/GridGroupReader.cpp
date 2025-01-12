@@ -3,7 +3,7 @@
 #include <hdf5.h>
 #include <string>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "types.h"
 #include "SCellGrid.h"
 #include "SCellGrid.h"
@@ -119,8 +119,8 @@ int GridGroupReader::readData(SCellGrid *pCG) {
     } else {
         iResult = -1;
         if (m_pAttributes != NULL) {
-            stdprintf("Number of cells or max neighbors do not correspond:\n");
-            stdprintf("  VegGroupReader::m_iNumCells: %d; SCellGrid::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pCG->m_iNumCells);
+            xha_printf("Number of cells or max neighbors do not correspond:\n");
+            xha_printf("  VegGroupReader::m_iNumCells: %d; SCellGrid::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pCG->m_iNumCells);
         }
     }
 

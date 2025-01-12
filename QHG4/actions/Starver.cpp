@@ -50,10 +50,10 @@ int Starver<T>::execute(int iAgentIndex, float fT) {
     int iResult = 0;
     
     T *pa = &(this->m_pPop->m_aAgents[iAgentIndex]);
-    //stdprintf("Starver<T>::execute for agent %d m%f (starvemass %f)\n", iAgentIndex, pa->m_dMass, m_dStarveMass);
+    //xha_printf("Starver<T>::execute for agent %d m%f (starvemass %f)\n", iAgentIndex, pa->m_dMass, m_dStarveMass);
     if (pa->m_iLifeState > 0) { 
         pa->m_dMass *= (1-m_dMassDecay);
-        //stdprintf("Starver<T>::execute agent %d starved to %f (starvemass %f)\n", iAgentIndex, pa->m_dMass, m_dStarveMass);
+        //xha_printf("Starver<T>::execute agent %d starved to %f (starvemass %f)\n", iAgentIndex, pa->m_dMass, m_dStarveMass);
 
         if (pa->m_dMass < m_dStarveMass) {
 

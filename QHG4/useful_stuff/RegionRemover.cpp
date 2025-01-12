@@ -2,7 +2,7 @@
 
 #include <hdf5.h>
 #include "qhg_consts.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "geomutils.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
@@ -118,17 +118,17 @@ int RegionRemover::removeRegions() {
             }
         }
     }
-    stdprintf("%d flips\n", iFlips);
+    xha_printf("%d flips\n", iFlips);
     if (iResult == 0) {
         herr_t status = H5Ldelete(m_hGeoGroup, GEO_DS_ALTITUDE.c_str(), H5P_DEFAULT);
         if (status >= 0) {
             iResult = qdf_writeArray(m_hGeoGroup, GEO_DS_ALTITUDE, m_iNumCells, m_adAlt);
             if (iResult != 0) {
-                stdprintf("Couldn't write alt array\n");
+                xha_printf("Couldn't write alt array\n");
             }
         } else {
             iResult =-1;
-            stdprintf("Couldn't delete link\n");
+            xha_printf("Couldn't delete link\n");
         }
     }
     
@@ -155,17 +155,17 @@ int RegionRemover::removeRegionsInvert() {
             }
         }
     }
-    stdprintf("%d flips\n", iFlips);
+    xha_printf("%d flips\n", iFlips);
     if (iResult == 0) {
         herr_t status = H5Ldelete(m_hGeoGroup, GEO_DS_ALTITUDE.c_str(), H5P_DEFAULT);
         if (status >= 0) {
             iResult = qdf_writeArray(m_hGeoGroup, GEO_DS_ALTITUDE, m_iNumCells, m_adAlt);
             if (iResult != 0) {
-                stdprintf("Couldn't write alt array\n");
+                xha_printf("Couldn't write alt array\n");
             }
         } else {
             iResult =-1;
-            stdprintf("Couldn't delete link\n");
+            xha_printf("Couldn't delete link\n");
         }
     }
     
@@ -194,7 +194,7 @@ int RegionRemover::init(const std::string sQDF, stringvec &vsRegions) {
 //
 int RegionRemover::checkQDF(const std::string sQDF) {
     int iResult = 0;
-    stdprintf("checking QDF\n");
+    xha_printf("checking QDF\n");
     m_hFile = qdf_openFile(sQDF, true); // true: RW
     if (m_hFile != H5P_DEFAULT) {
         hid_t hGrid = qdf_openGroup(m_hFile, GRIDGROUP_NAME);
@@ -202,7 +202,7 @@ int RegionRemover::checkQDF(const std::string sQDF) {
             iResult = qdf_extractAttribute(hGrid, GRID_ATTR_NUM_CELLS, 1, &m_iNumCells);
             qdf_closeGroup(hGrid);
         } else {
-            stdprintf("No grid group in [%s]\n", sQDF);
+            xha_printf("No grid group in [%s]\n", sQDF);
             iResult =-1;
         }
         printf("have %d cells\n", m_iNumCells);
@@ -239,7 +239,7 @@ int RegionRemover::checkQDF(const std::string sQDF) {
 //
 int RegionRemover::createPolys(stringvec &vsRegions) {
     int iResult = 0;
-    stdprintf("checking %zd polys\n", vsRegions.size());
+    xha_printf("checking %zd polys\n", vsRegions.size());
     for (uint i = 0; i < vsRegions.size(); i++) {
         
         namedcoords::const_iterator it;
@@ -279,7 +279,7 @@ int RegionRemover::createPolys(stringvec &vsRegions) {
             }
         }
         if (bSearching) {
-            stdprintf("Unknown region [%s]\n",  vsRegions[i].c_str());
+            xha_printf("Unknown region [%s]\n",  vsRegions[i].c_str());
             iResult = -1;
         }
 
@@ -298,18 +298,18 @@ void RegionRemover::displayPolys() {
         const std::string &s = it->first;
         const dvec vx = it->second.first;
         const dvec vy = it->second.second;
-        stdprintf("%s (%zd)\n", s, vx.size());
-        stdprintf("  x: ");
+        xha_printf("%s (%zd)\n", s, vx.size());
+        xha_printf("  x: ");
         for (unsigned int i = 0; i < vx.size(); ++i) {
-            stdprintf(" %+9.3f", vx[i]);
+            xha_printf(" %+9.3f", vx[i]);
         }
-        stdprintf("\n");
-        stdprintf("  y: ");
+        xha_printf("\n");
+        xha_printf("  y: ");
         for (unsigned int i = 0; i < vy.size(); ++i) {
             printf(" %+9.3f", vy[i]);
         }
-        stdprintf("\n");
-        stdprintf("\n");
+        xha_printf("\n");
+        xha_printf("\n");
     }
 }
 
@@ -322,9 +322,9 @@ void RegionRemover::displayBoxes() {
     for (it = m_vBoxes.begin(); it != m_vBoxes.end(); ++it) {
         const std::string &s = it->first;
         double *vv = it->second;
-        stdprintf("%s\n", s);
-        stdprintf("  xmin: %+9.3f, xmax: %+9.3f\n", vv[0], vv[2]);
-        stdprintf("  ymin: %+9.3f, ymax: %+9.3f\n", vv[1], vv[3]);
-        stdprintf("\n");
+        xha_printf("%s\n", s);
+        xha_printf("  xmin: %+9.3f, xmax: %+9.3f\n", vv[0], vv[2]);
+        xha_printf("  ymin: %+9.3f, ymax: %+9.3f\n", vv[1], vv[3]);
+        xha_printf("\n");
     }
 }

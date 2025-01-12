@@ -3,7 +3,7 @@
 #include "LayerBuf.cpp"
 #include "LayerArrBuf.cpp"
 #include "Action.cpp"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 ////////////////////////////
 #include "ArrayShare.h"
 
@@ -111,12 +111,12 @@ int PDAltPreyPop::preLoop() {
     if (iResult == 0) {
         // since the action's preLoop is called in SPopulation::preLoop()
         // we do the sharing beforehand
-        std::string s1 = stdsprintf(ATTR_PD_TEMPLATE_INDEXES, m_sSpeciesName);
+        std::string s1 = xha_sprintf(ATTR_PD_TEMPLATE_INDEXES, m_sSpeciesName);
         m_pIC->setShareName(s1);
         
-        std::string s2 = stdsprintf("%s_Masses", m_sSpeciesName);
+        std::string s2 = xha_sprintf("%s_Masses", m_sSpeciesName);
         ArrayShare::getInstance()->shareArray(s2, m_pCG->m_iNumCells, m_afMassArray);
-        stdprintf("[PDPreyPop] Share m_afMassArray[0] (%p) as [%s]\n", m_afMassArray[0], s2);
+        xha_printf("[PDPreyPop] Share m_afMassArray[0] (%p) as [%s]\n", m_afMassArray[0], s2);
 
 
         iResult = SPopulation<PDAltPreyAgent>::preLoop();

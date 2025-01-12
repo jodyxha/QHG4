@@ -6,7 +6,7 @@
 
 #include "types.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "BinGeneFile.h"
 #include "ParamReader.h"
 
@@ -78,22 +78,22 @@ int getHeader(const char *pFile, sHeaderData *pHD) {
                     iResult = 0;
              
                 } else {
-                    stdfprintf(stderr, "Couldn't read header\n");
+                    xha_fprintf(stderr, "Couldn't read header\n");
                     iResult = -1;
                 }
                 delete[] pH;
 
             } else {
-                stdfprintf(stderr, "Uknown magic number [%s]\n", sMagic);
+                xha_fprintf(stderr, "Uknown magic number [%s]\n", sMagic);
             }
         } else {
-            stdfprintf(stderr, "Couldn't read magic number\n");
+            xha_fprintf(stderr, "Couldn't read magic number\n");
             iResult = -1;
         }
         fclose(fIn);
 
     } else {
-        stdfprintf(stderr, "Couldn't open [%s] for reading\n", pFile);
+        xha_fprintf(stderr, "Couldn't open [%s] for reading\n", pFile);
         iResult = -1;
     }
     return iResult;
@@ -223,21 +223,21 @@ int main(int iArgC, char *apArgV[]) {
                 delete[] pLineH;
                 if (iWritten == 1) {
                     for (uint i = 0; (iResult == 0) && (i < vBinGeneFiles.size()); i++) {
-                        stdprintf("Appending [%s]\n",  vBinGeneFiles[i]->getName());
+                        xha_printf("Appending [%s]\n",  vBinGeneFiles[i]->getName());
                         iResult = appendData(fOut, vBinGeneFiles[i]->getFileHandle());
                     }
                 } else {
-                    stdfprintf(stderr, "Error writing to [%s]: written %zd\n", pOutputFile, iWritten);
+                    xha_fprintf(stderr, "Error writing to [%s]: written %zd\n", pOutputFile, iWritten);
                     iResult = -1;
                 }
                 fclose(fOut);
             } else {
-                stdfprintf(stderr, "Couldn't open [%s] for writing\n", pOutputFile);
+                xha_fprintf(stderr, "Couldn't open [%s] for writing\n", pOutputFile);
                 iResult = -1;
             }
             delete pHD;
         } else {
-            stdfprintf(stderr, "Non-compatible headers");
+            xha_fprintf(stderr, "Non-compatible headers");
             iResult = -1;
         }
         

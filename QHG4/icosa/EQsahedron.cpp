@@ -7,7 +7,7 @@
 
 #include "qhg_consts.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "Vec3D.h"
 #include "Quat.h"
 
@@ -789,11 +789,11 @@ int EQsahedron::load(const std::string sFile) {
         */
         fclose(fIn);
     } else {
-        stdprintf("Couldn't open file [%s] for reading\n", sFile);
+        xha_printf("Couldn't open file [%s] for reading\n", sFile);
     }
 
     if (iResult == 0) {
-        stdprintf("Calling init with subdiv %d, equalarea %s\n", 
+        xha_printf("Calling init with subdiv %d, equalarea %s\n", 
                iSubDivs, bEqualArea?"yes":"no");
         iResult = init(iSubDivs, bEqualArea);
         //        setLand(fMinAlt);
@@ -821,7 +821,7 @@ int EQsahedron::save(const std::string sFile) {
 
         fclose(fOut);
     } else {
-        stdprintf("Couldn't open file [%s] for writing reading\n", sFile);
+        xha_printf("Couldn't open file [%s] for writing reading\n", sFile);
     }
     return iResult;
 }
@@ -1306,13 +1306,13 @@ void EQsahedron::show() {
 //
 void EQsahedron::dump(std::string sOut) {
     FILE *fOut = fopen(sOut.c_str(), "wt");
-    stdfprintf(fOut, "%d\n", m_iSubDivs);
+    xha_fprintf(fOut, "%d\n", m_iSubDivs);
     for (int iFace = 0; iFace < ICOFACES; iFace++) {
         EQTriangle *pEQ = m_apEQFaces[iFace];
         int iNumNodes = pEQ->getNumNodes();
         node *pNodes = pEQ->getNodes();
         for (int iNode = 0; iNode < iNumNodes; iNode++) {
-            stdfprintf(fOut, "%7d %f %f %f\n", pNodes[iNode].lID,  pNodes[iNode].v.m_fX,  pNodes[iNode].v.m_fY,  pNodes[iNode].v.m_fZ);
+            xha_fprintf(fOut, "%7d %f %f %f\n", pNodes[iNode].lID,  pNodes[iNode].v.m_fX,  pNodes[iNode].v.m_fY,  pNodes[iNode].v.m_fZ);
         }
     }
     fclose(fOut);

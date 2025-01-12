@@ -155,7 +155,7 @@ int NPersZOoANavSHybRelPop::setParams(const std::string sParams) {
                             } else if (sAvgName == "PaternalContribAvg") {
                                 m_dPaternalContribAvg = dAvg;
                             } else {
-                                stdprintf("[NPersZOoANavSHybRelPop::setParams] unknown avg contribution [%s]\n", sAvgName);
+                                xha_printf("[NPersZOoANavSHybRelPop::setParams] unknown avg contribution [%s]\n", sAvgName);
                                 iResult = -1;
                             }
 
@@ -164,34 +164,34 @@ int NPersZOoANavSHybRelPop::setParams(const std::string sParams) {
                             } else if (sDevName == "PaternalContribSDev") {
                                 m_dPaternalContribSDev = dSDev;
                             } else {
-                                stdprintf("[NPersZOoANavSHybRelPop::setParams] unknown sdev contribution [%s]\n", sDevName);
+                                xha_printf("[NPersZOoANavSHybRelPop::setParams] unknown sdev contribution [%s]\n", sDevName);
                                 iResult = -1;
                             }
   
                         } else {
-                            stdprintf("[NPersZOoANavSHybRelPop::setParams] bad value for pcsdev [%s]\n", vSubs1[1]);
+                            xha_printf("[NPersZOoANavSHybRelPop::setParams] bad value for pcsdev [%s]\n", vSubs1[1]);
                             iResult = -1;
                         }
                     } else {
-                        stdprintf("[NPersZOoANavSHybRelPop::setParams] expected <ParentContribSDev>=<pcsdev> [%s]\n", sParams);
+                        xha_printf("[NPersZOoANavSHybRelPop::setParams] expected <ParentContribSDev>=<pcsdev> [%s]\n", sParams);
                         iResult = -1;
                     }
                 } else {
-                    stdprintf("[NPersZOoANavSHybRelPop::setParams] bad value for pcavg [%s]\n", vSubs0[1]);
+                    xha_printf("[NPersZOoANavSHybRelPop::setParams] bad value for pcavg [%s]\n", vSubs0[1]);
                     iResult = -1;
                 }
                         
             } else {
-                stdprintf("[NPersZOoANavSHybRelPop::setParams] expected <ParentContribSDev>=<pcsdev> [%s]\n", sParams);
+                xha_printf("[NPersZOoANavSHybRelPop::setParams] expected <ParentContribSDev>=<pcsdev> [%s]\n", sParams);
                 iResult = -1;
             }
         } else {
-            stdprintf("[NPersZOoANavSHybRelPop::setParams] expected <ParentContribAvg>=<pcavg>+<ParentContribSDev>=<pcsdev> [%s]\n", sParams);
+            xha_printf("[NPersZOoANavSHybRelPop::setParams] expected <ParentContribAvg>=<pcavg>+<ParentContribSDev>=<pcsdev> [%s]\n", sParams);
             iResult = -1;
 
         }
     } else {
-        stdprintf("[NPersZOoANavSHybRelPop::setParams] empty params: do nothing\n");
+        xha_printf("[NPersZOoANavSHybRelPop::setParams] empty params: do nothing\n");
         iResult = 0;
     }
 

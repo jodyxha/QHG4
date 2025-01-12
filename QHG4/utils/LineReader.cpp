@@ -21,7 +21,7 @@
 
 #include "types.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "qhg_consts.h"
 #include "LineReader.h"
 
@@ -88,7 +88,7 @@ LineReader_std::LineReader_std(const std::string sName, const std::string sMode,
     
     m_fIn = fopen(sName.c_str(), sMode.c_str());
     if (m_fIn == NULL) {
-        stdfprintf(stderr, "(%d)[LineReader_std::LineReader_std] Error opening file [%s] (%d):%s\n", getpid(), sName, errno, strerror(errno));
+        xha_fprintf(stderr, "(%d)[LineReader_std::LineReader_std] Error opening file [%s] (%d):%s\n", getpid(), sName, errno, strerror(errno));
     }
     m_bClose = true;
 
@@ -112,7 +112,7 @@ LineReader_std::~LineReader_std() {
     if (m_bClose && (m_fIn != NULL)) {
         int iResult = fclose(m_fIn);
         if (iResult != 0) {
-            fprintf(stderr, "(%d)[LineReader_std::~LineReader_std] Error closing file (%d):%s\n", getpid(), errno, strerror(errno));
+            xha_fprintf(stderr, "(%d)[LineReader_std::~LineReader_std] Error closing file (%d):%s\n", getpid(), errno, strerror(errno));
         }
     }
 }
@@ -208,7 +208,7 @@ LineReader_gz::~LineReader_gz() {
     if (m_bClose && (m_fIn != NULL)) {
         int iResult = gzclose(m_fIn);
         if (iResult != Z_OK) {
-            fprintf(stderr, "(%d)[LineReader_gz::~LineReader_gz] Error closing files (%d)\n", getpid(), iResult);
+            xha_fprintf(stderr, "(%d)[LineReader_gz::~LineReader_gz] Error closing files (%d)\n", getpid(), iResult);
         }
     }
 }

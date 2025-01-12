@@ -2,7 +2,7 @@
 #include <string>
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "QDFUtils.h"
 #include "QDFArray.h"
@@ -86,12 +86,12 @@ int AgentDataHistoPie_multi::init() {
 
     iResult = extractData();
     if (iResult == 0) {
-        //stdprintf("getting coords\n");
+        //xha_printf("getting coords\n");
         m_apCoords = fillCoordMap(&m_iNumCells, &m_iNumDims, &m_bSpherical);
         if (m_apCoords != NULL) {
-            if (m_bVerbose) stdprintf("Got %u cells with coords\n", m_iNumCells);
+            if (m_bVerbose) xha_printf("Got %u cells with coords\n", m_iNumCells);
         }  else {
-            if (m_bVerbose) stdprintf("Couldn't extract coordinates from [%s]\n", m_sQDFInputFile);
+            if (m_bVerbose) xha_printf("Couldn't extract coordinates from [%s]\n", m_sQDFInputFile);
             iResult = -1;
         }    
     }
@@ -115,34 +115,34 @@ int AgentDataHistoPie_multi::extractData() {
         Agent2DataExtractor *pADE = Agent2DataExtractor::createInstance(m_sQDFInputFile, sDSPath);
         if (pADE != NULL) {
             pADE->setVerbose(m_bVerbose);
-            if (m_bVerbose) stdprintf("Extracting [%s]\n", sDataItemName);
+            if (m_bVerbose) xha_printf("Extracting [%s]\n", sDataItemName);
             stringvec vItems;
             vItems.push_back("CellIdx");
             vItems.push_back(sDataItemName);
             /*
             // displaying items to be extracted
             for (uint i = 0; i < vItems.size(); i++) {
-            stdprintf(" [%s]", vItems[i].c_str());
+            xha_printf(" [%s]", vItems[i].c_str());
             }
-            stdprintf("\n");
+            xha_printf("\n");
             */
             struct_manager *pSM = pADE->extractVarV(vItems);
             if (pSM != NULL) {
                 int iNumItems = pADE->getNumItems();
-                if (m_bVerbose) stdprintf("Extracted %d items.\n", iNumItems);
+                if (m_bVerbose) xha_printf("Extracted %d items.\n", iNumItems);
                 indexedvals<double> vIndexedVals;
                 pSM->makeIndexedVals(iNumItems, vIndexedVals);
                 m_vIndexedVals[sDataItemName] = vIndexedVals;
-                if (m_bVerbose) stdprintf("Got %zd indexed values.\n", vIndexedVals.size());
+                if (m_bVerbose) xha_printf("Got %zd indexed values.\n", vIndexedVals.size());
                 delete pSM;
             } else {
-                stdprintf("Couldn't create struct manager\n");
+                xha_printf("Couldn't create struct manager\n");
             } 
             
             iResult = 0;
             delete pADE;
         } else {
-            stdprintf("Couldn't create AgentDataExtractor for [%s]\n", m_sQDFInputFile);
+            xha_printf("Couldn't create AgentDataExtractor for [%s]\n", m_sQDFInputFile);
             iResult = -1;
         }
     }
@@ -181,13 +181,13 @@ double **AgentDataHistoPie_multi::fillCoordMap(uint *piNumCells, uint *piNumDims
                 //                fprintf(stderr, "Read %d CellIDs\n", iCount);
                 iResult = 0;
             } else {
-                stdfprintf(stderr, "Read bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)\n", m_sQDFInputFile, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, *piNumCells);
+                xha_fprintf(stderr, "Read bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)\n", m_sQDFInputFile, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, *piNumCells);
                 iResult = -1;
             }
             pQA->closeArray();
         } else {
             iResult = -1;
-            stdfprintf(stderr, "Couldn't open QDF array for [%s:%s/%s]\n", m_sQDFInputFile, GRIDGROUP_NAME, CELL_DATASET_NAME);
+            xha_fprintf(stderr, "Couldn't open QDF array for [%s:%s/%s]\n", m_sQDFInputFile, GRIDGROUP_NAME, CELL_DATASET_NAME);
         }
 
         // get the cell Longitudes
@@ -199,15 +199,15 @@ double **AgentDataHistoPie_multi::fillCoordMap(uint *piNumCells, uint *piNumDims
                     pdLon = new double[*piNumCells];
                     uint iCount = pQA->getFirstSlab(pdLon, *piNumCells);
                     if (iCount == *piNumCells) {
-                        //stdfprintf(stderr, "Read %d Longitudes\n", iCount);
+                        //xha_fprintf(stderr, "Read %d Longitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", m_sQDFInputFile, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, *piNumCells);
+                        xha_fprintf(stderr, "Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", m_sQDFInputFile, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, *piNumCells);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "Number of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, m_iNumCells, m_sQDFInputFile, GEOGROUP_NAME, GEO_DS_LONGITUDE);
+                    xha_fprintf(stderr, "Number of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, m_iNumCells, m_sQDFInputFile, GEOGROUP_NAME, GEO_DS_LONGITUDE);
                 }
                 pQA->closeArray();
             }
@@ -222,15 +222,15 @@ double **AgentDataHistoPie_multi::fillCoordMap(uint *piNumCells, uint *piNumDims
                     pdLat = new double[*piNumCells];
                     uint iCount = pQA->getFirstSlab(pdLat, *piNumCells);
                     if (iCount == *piNumCells) {
-                        //stdfprintf(stderr, "Read %d Latitudes\n", iCount);
+                        //xha_fprintf(stderr, "Read %d Latitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "Couldn't read latitudes from [%s:%s/%s]: %d instead of %d\n", m_sQDFInputFile, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL, *piNumCells);
+                        xha_fprintf(stderr, "Couldn't read latitudes from [%s:%s/%s]: %d instead of %d\n", m_sQDFInputFile, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL, *piNumCells);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "Number of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, *piNumCells, m_sQDFInputFile, GEOGROUP_NAME, GEO_DS_LATITUDE);
+                    xha_fprintf(stderr, "Number of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, *piNumCells, m_sQDFInputFile, GEOGROUP_NAME, GEO_DS_LATITUDE);
                 }
 
                 pQA->closeArray();
@@ -239,7 +239,7 @@ double **AgentDataHistoPie_multi::fillCoordMap(uint *piNumCells, uint *piNumDims
     
         delete pQA;
     } else {
-        stdfprintf(stderr, "Couldn't create QDFArray\n");
+        xha_fprintf(stderr, "Couldn't create QDFArray\n");
     }
     
     // we assume that pdLon[i] and pdLat[i] are the longitude, respectively latitude, of cell number i
@@ -287,36 +287,36 @@ int AgentDataHistoPie_multi::createSampling(std::string sSamplingInfo)  {
             std::string sType = trim(pLine);
             if (sType == SAMP_CELL_RANGE) {
 
-                stdprintf("Using %s\n", SAMP_CELL_RANGE);
+                xha_printf("Using %s\n", SAMP_CELL_RANGE);
                 pSamp = createCellRangeSampling(pLR);
                 
             }  else if  (sType == SAMP_COORD_RANGE) {
                 
-                stdprintf("Using %s\n", SAMP_COORD_RANGE);
+                xha_printf("Using %s\n", SAMP_COORD_RANGE);
                 pSamp = createCoordRangeSampling(pLR);
                 
             }  else if  (sType == SAMP_FULL) {
                 // FullSampling
                 // no params needed - one group containing all cells
                 
-                stdprintf("Using %s\n", SAMP_FULL);
+                xha_printf("Using %s\n", SAMP_FULL);
                 pSamp = new FullSampling(m_iNumCells);
 
             }  else if  (sType == SAMP_EACH) {
                 // EachSampling
                 // no params needed - one group per cell
                 
-                stdprintf("Using %s\n", SAMP_EACH);
+                xha_printf("Using %s\n", SAMP_EACH);
                 pSamp = new EachSampling(m_iNumCells);
 
             }  else if  (sType == SAMP_GRID_RANGE) {
                 // GridRangeSampling
 
-                stdprintf("Using %s\n", SAMP_GRID_RANGE);
+                xha_printf("Using %s\n", SAMP_GRID_RANGE);
                 pSamp = createGridRangeSampling(pLR);
                 
             } else {
-                stdprintf("Unknown sampling type [%s]\n", sType);
+                xha_printf("Unknown sampling type [%s]\n", sType);
             }
         }
         delete pLR;
@@ -331,7 +331,7 @@ int AgentDataHistoPie_multi::createSampling(std::string sSamplingInfo)  {
                 if (iResult == 0) {
                     m_vGroupedVals[it->first] = vGroupedVals;
                 } else {
-                    stdprintf("groupValues() failed\n");
+                    xha_printf("groupValues() failed\n");
                 }
             }
         }
@@ -362,23 +362,23 @@ int splitBinInfo(const std::string sBinInfo, double *pdMinVal, double *pdMaxVal,
                             *pbStrict = true;(vParts[3] == "!");
                             iResult = 0;
                         } else {
-                            stdprintf("Expected '!' as last element [%s]\n", sBinInfo);
+                            xha_printf("Expected '!' as last element [%s]\n", sBinInfo);
                             iResult = -1;
                         }
                     } else {
                         iResult = 0;
                     }
                 } else {
-                    stdprintf("Invalid value for numBins [%s}\n", vParts[2]);
+                    xha_printf("Invalid value for numBins [%s}\n", vParts[2]);
                 }
             } else {
-                stdprintf("Invalid value for maxVal [%s}\n", vParts[1]);
+                xha_printf("Invalid value for maxVal [%s}\n", vParts[1]);
             }
         } else {
-            stdprintf("Invalid value for minVal [%s}\n", vParts[0]);
+            xha_printf("Invalid value for minVal [%s}\n", vParts[0]);
         }
     } else {
-        stdprintf("Expected <minVal>:<maxVal>;<numBins> but got %d parts\n", iNumParts);
+        xha_printf("Expected <minVal>:<maxVal>;<numBins> but got %d parts\n", iNumParts);
     }
     return iResult;
 }
@@ -426,7 +426,7 @@ int AgentDataHistoPie_multi::createHisto(std::string sBinInfo){
             }
             printf("[AgentDataHistoPie_multi::createHisto] loop done\n");
         } else {
-            stdprintf("minimum (%f) must be less than maximum (%f) and num bins (%u) mut be greater than 0\n", m_dMinVal, m_dMaxVal, m_iNumBins); 
+            xha_printf("minimum (%f) must be less than maximum (%f) and num bins (%u) mut be greater than 0\n", m_dMinVal, m_dMaxVal, m_iNumBins); 
             iResult = -1;
         }    
     }
@@ -445,7 +445,7 @@ int writeOutput(const std::string sWhat, const std::string sOutputFile, bool bst
     } else if (sWhat == "pie") {
         iResult = writePie(sQDFInputFile);
     } else {
-        stdprintf("[AgentDataHistoPie_multi::writeOutput] Unknown output file [%s]\n", sWhat);
+        xha_printf("[AgentDataHistoPie_multi::writeOutput] Unknown output file [%s]\n", sWhat);
         iResult = -1:
     }
     return iResult;
@@ -457,7 +457,7 @@ int writeOutput(const std::string sWhat, const std::string sOutputFile, bool bst
 int AgentDataHistoPie_multi::writePie(const std::string sQDFOutputFile) {
     int iResult = -1;
 
-    if (m_bVerbose) stdprintf("writing pie output");
+    if (m_bVerbose) xha_printf("writing pie output");
 
     //    PieWriter *pPW = PieWriter::createInstance(m_sDataItemName, m_mHistos, m_iNumBins, m_iNumDims);
     PieWriter_multi *pPW = PieWriter_multi::createInstance(m_mHistos, m_iNumBins, m_iNumDims);
@@ -467,17 +467,17 @@ int AgentDataHistoPie_multi::writePie(const std::string sQDFOutputFile) {
         if (iResult == 0) {
             iResult = pPW->writeToQDF(sQDFOutputFile);
             if (iResult == 0) {
-                if (m_bVerbose) stdprintf("+++ successfully written pie to [%s]\n", sQDFOutputFile);
+                if (m_bVerbose) xha_printf("+++ successfully written pie to [%s]\n", sQDFOutputFile);
                 
             } else {
-                stdprintf("[AgentDataHistoPie_multi::writePie] Couldn't write data to qdf file [%s]\n", sQDFOutputFile);
+                xha_printf("[AgentDataHistoPie_multi::writePie] Couldn't write data to qdf file [%s]\n", sQDFOutputFile);
             }
         } else {
-            stdprintf("[AgentDataHistoPie_multi::writePie] Couldn't prepare data\n");
+            xha_printf("[AgentDataHistoPie_multi::writePie] Couldn't prepare data\n");
         }
         delete pPW;
     } else {
-        stdprintf("[AgentDataHistoPie_multi::writePie] Couldn't create pie writer\n");
+        xha_printf("[AgentDataHistoPie_multi::writePie] Couldn't create pie writer\n");
     }
     return iResult;
 }
@@ -562,16 +562,16 @@ int AgentDataHistoPie_multi::writeText(const std::string sTextOutputFile, bool b
 
                     sLine += " " + s1v + s0v;
                 }
-                stdfprintf(fOut, "%s\n", sLine);
+                xha_fprintf(fOut, "%s\n", sLine);
                 if (bstd) {
-                    stdprintf("%s\n", sLine);
+                    xha_printf("%s\n", sLine);
                 }
             }
         }
         fclose(fOut);
-        if (m_bVerbose) stdprintf("+++ successfully written histograms to [%s]\n", sTextOutputFile);
+        if (m_bVerbose) xha_printf("+++ successfully written histograms to [%s]\n", sTextOutputFile);
     } else {
-        stdsprintf("Couldn't open [%s] for writing\n", sTextOutputFile);
+        xha_sprintf("Couldn't open [%s] for writing\n", sTextOutputFile);
         iResult = -1;
     }
     printf("[AgentDataHistoPie_multi::writeText] done\n");
@@ -605,9 +605,9 @@ int AgentDataHistoPie_multi::writeCSV(const std::string sCSVOutputFile, bool bst
             std::string s1(iNumDigits - s0.size(), '0');
             sHeader += ";item_"+s1+s0;
         }
-        stdfprintf(fOut, "%s\n", sHeader);
+        xha_fprintf(fOut, "%s\n", sHeader);
         if (bstd) {
-            stdprintf("%s\n", sHeader);
+            xha_printf("%s\n", sHeader);
         }
 
         multimaphistos::const_iterator it;
@@ -630,22 +630,22 @@ int AgentDataHistoPie_multi::writeCSV(const std::string sCSVOutputFile, bool bst
                     for (uint i = 0; i < m_iNumBins; i++) {
                         sLine += ";" + std::to_string(ith->second[i]);
                     }
-                    stdfprintf(fOut, "%s\n", sLine);
+                    xha_fprintf(fOut, "%s\n", sLine);
                     if (bstd) {
-                        stdprintf("%s\n", sLine);
+                        xha_printf("%s\n", sLine);
                     }
 
                 } else {
-                    stdprintf("Invalid cellID [%d] should be in [0, %d]\n", iCellID, 0,  m_iNumCells-1);
+                    xha_printf("Invalid cellID [%d] should be in [0, %d]\n", iCellID, 0,  m_iNumCells-1);
                     iResult = -1;
                 }
             }
         }
 
         fclose(fOut);
-        stdprintf("+++ successfully written histogram to [%s]\n", sCSVOutputFile);
+        xha_printf("+++ successfully written histogram to [%s]\n", sCSVOutputFile);
     } else {
-        stdsprintf("Couldn't open [%s] for writing\n", sCSVOutputFile);
+        xha_sprintf("Couldn't open [%s] for writing\n", sCSVOutputFile);
         iResult = -1;
     }
 
@@ -684,16 +684,16 @@ Sampling *AgentDataHistoPie_multi::createCellRangeSampling(LineReader *pLR) {
                 if (strToNum(vParts[1], &d)) {
                     cr.push_back(  std::pair<int, double>(i0, d));
                 } else {
-                    stdprintf("Expected double but got [%s}\n", vParts[1]);
+                    xha_printf("Expected double but got [%s}\n", vParts[1]);
                     iResult = -1;
                 }
                 
             } else {
-                stdprintf("Expected int but got [%s}\n", vParts[0]);
+                xha_printf("Expected int but got [%s}\n", vParts[0]);
                 iResult = -1;
             }
         } else {
-            stdprintf("Need at least 2 numbers for a cell range sampling entry\n");
+            xha_printf("Need at least 2 numbers for a cell range sampling entry\n");
         }
         
         pLine = pLR->getNextLine(GNL_IGNORE_ALL);
@@ -735,20 +735,20 @@ Sampling *AgentDataHistoPie_multi::createCoordRangeSampling(LineReader *pLR) {
                     if (strToNum(vParts[2], &d)) {
                         cr.push_back(coorddata(dX, dY, d));
                     } else {
-                        stdprintf("Expected double but got [%s}\n", vParts[2]);
+                        xha_printf("Expected double but got [%s}\n", vParts[2]);
                         iResult = -1;
                     }
                 } else {
-                    stdprintf("Expected y-coord but got [%s}\n", vParts[1]);
+                    xha_printf("Expected y-coord but got [%s}\n", vParts[1]);
                     iResult = -1;
                 }
                 
             } else {
-                stdprintf("Expected x-cood but got [%s}\n", vParts[0]);
+                xha_printf("Expected x-cood but got [%s}\n", vParts[0]);
                 iResult = -1;
             }
         } else {
-            stdprintf("Need at least 3 numbers for a coord range sampling entry\n");
+            xha_printf("Need at least 3 numbers for a coord range sampling entry\n");
         }
         
         pLine = pLR->getNextLine(GNL_IGNORE_ALL);
@@ -775,7 +775,7 @@ Sampling *AgentDataHistoPie_multi::createGridRangeSampling(LineReader *pLR) {
     int iResult = 0;
     Sampling *pSamp  =NULL; 
 
-    stdprintf("Using grid range sampling\n");
+    xha_printf("Using grid range sampling\n");
     griddef gd;
     char *pLine = pLR->getNextLine(GNL_IGNORE_ALL);
     while ((iResult == 0) && (pLine != NULL) && !pLR->isEoF()) {
@@ -808,15 +808,15 @@ Sampling *AgentDataHistoPie_multi::createGridRangeSampling(LineReader *pLR) {
                                         iResult = 0;
                                         
                                     } else {
-                                        stdprintf("Expected stepY (double) but got [%s}\n", vParts[5]);
+                                        xha_printf("Expected stepY (double) but got [%s}\n", vParts[5]);
                                         iResult = -1;
                                     }
                                 } else {
-                                    stdprintf("Expected maxY (double) but got [%s}\n", vParts[4]);
+                                    xha_printf("Expected maxY (double) but got [%s}\n", vParts[4]);
                                     iResult = -1;
                                 }
                             } else {
-                                stdprintf("Expected minY (double) but got [%s}\n", vParts[3]);
+                                xha_printf("Expected minY (double) but got [%s}\n", vParts[3]);
                                 iResult = -1;
                             }
                         }
@@ -825,25 +825,25 @@ Sampling *AgentDataHistoPie_multi::createGridRangeSampling(LineReader *pLR) {
                             if (strToNum(vParts[iRangeIndex], &dRange)) {
                                 gd.push_back(griddata(dXMin, dXMax, dStepX, dYMin, dYMax, dStepY, dRange));
                             } else {
-                                stdprintf("Expected range (double) but got [%s}\n", vParts[6]);
+                                xha_printf("Expected range (double) but got [%s}\n", vParts[6]);
                                 iResult = -1;
                             }
                         }
                     } else {
-                        stdprintf("Expected stepX (double) but got [%s}\n", vParts[3]);
+                        xha_printf("Expected stepX (double) but got [%s}\n", vParts[3]);
                         iResult = -1;
                     }
                 } else {
-                    stdprintf("Expected maxX (double) but got [%s}\n", vParts[1]);
+                    xha_printf("Expected maxX (double) but got [%s}\n", vParts[1]);
                     iResult = -1;
                 }
                 
             } else {
-                stdprintf("Expected minX (double) but got [%s}\n", vParts[0]);
+                xha_printf("Expected minX (double) but got [%s}\n", vParts[0]);
                 iResult = -1;
             }
         } else {
-            stdprintf("Need at least 7 numbers for a grid range sampling entry\n");
+            xha_printf("Need at least 7 numbers for a grid range sampling entry\n");
         }
         
         pLine = pLR->getNextLine(GNL_IGNORE_ALL);

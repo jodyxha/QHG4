@@ -7,8 +7,8 @@
 
 #include "types.h"
 #include "strutils.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "ParamReader.h"
 
 #include "QDFUtils.h"
@@ -25,14 +25,14 @@
 // usage
 //
 void usage(const std::string sApp) {
-    stdprintf("%s - finding coastal cells and write to QDF\n", sApp);
-    stdprintf("Usage:\n");
-    stdprintf("  %s -i <input_qdf> -d <distance> -o <output_qdf>\n", sApp);
-    stdprintf("where\n");
-    stdprintf("  input_qdf   qdf file with Geography (Altitude) in which to search for coastal cells\n");
-    stdprintf("  distance    max distance to sea (in cell hops)\n");
-    stdprintf("  output_qdf  output file (coastals written to DS 'Coastal')\n");
-    stdprintf("\n");
+    xha_printf("%s - finding coastal cells and write to QDF\n", sApp);
+    xha_printf("Usage:\n");
+    xha_printf("  %s -i <input_qdf> -d <distance> -o <output_qdf>\n", sApp);
+    xha_printf("where\n");
+    xha_printf("  input_qdf   qdf file with Geography (Altitude) in which to search for coastal cells\n");
+    xha_printf("  distance    max distance to sea (in cell hops)\n");
+    xha_printf("  output_qdf  output file (coastals written to DS 'Coastal')\n");
+    xha_printf("\n");
 }
 
 //----------------------------------------------------------------------------
@@ -68,27 +68,27 @@ SCellGrid *createCellGrid(const std::string sQDFFile) {
                             if (iResult == 0) {
                                 pCG->setGeography(pGeo);
                             } else {
-                                stdprintf("Couldn't read geo data from [%s]\n", sQDFFile);
+                                xha_printf("Couldn't read geo data from [%s]\n", sQDFFile);
                             }
                         } else {
-                            stdprintf("Couldn't read geo attributes from [%s]\n", sQDFFile);
+                            xha_printf("Couldn't read geo attributes from [%s]\n", sQDFFile);
                         }
                         delete pGeoR;
                     } else {
-                        stdprintf("Couldn't create GeoGroupReader for QDF file [%s]\n", sQDFFile);
+                        xha_printf("Couldn't create GeoGroupReader for QDF file [%s]\n", sQDFFile);
                     }
                 } else {
-                    stdprintf("Couldn't read geo attributes from [%s]\n", sQDFFile);
+                    xha_printf("Couldn't read geo attributes from [%s]\n", sQDFFile);
                 }
             } else {
-                stdprintf("Couldn't get number of cells from [%s]\n", sQDFFile);
+                xha_printf("Couldn't get number of cells from [%s]\n", sQDFFile);
             }
             delete pGR;
         } else {
-            stdprintf("Couldn't create GridGroupReader for QDF file [%s]\n", sQDFFile);
+            xha_printf("Couldn't create GridGroupReader for QDF file [%s]\n", sQDFFile);
         }
     } else {
-        stdprintf("Couldn't open QDF file [%s]\n", sQDFFile);
+        xha_printf("Couldn't open QDF file [%s]\n", sQDFFile);
     }
     
     if (iResult != 0) {
@@ -205,15 +205,15 @@ int main(int iArgC, char*apArgV[]) {
                             pGeoW->write(hFile);
                             qdf_closeFile(hFile);
                             iResult = 0;
-                            //                            stdprintf("Written to QDF file [%s]\n", sOutputQDF);
+                            //                            xha_printf("Written to QDF file [%s]\n", sOutputQDF);
                         } else {
-                            stdprintf("Couldn't open QDF file [%s]\n", sOutputQDF);
+                            xha_printf("Couldn't open QDF file [%s]\n", sOutputQDF);
                             iResult = -1;
                         }
 
                         if (iResult == 0) {
-                            stdprintf("Coastal checked %d cells, %d coastal\n", iNumCells, iCCount);
-                            stdprintf("+++ success +++\n");
+                            xha_printf("Coastal checked %d cells, %d coastal\n", iNumCells, iCCount);
+                            xha_printf("+++ success +++\n");
                         }
                     }
                     delete pCG;

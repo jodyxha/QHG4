@@ -3,7 +3,7 @@
 
 #include "ParamReader.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "HDataSetCollector.h"
 #include "QDFDataExtractor.h"
 
@@ -12,28 +12,28 @@
 // usage
 //
 void usage(const char *pApp) {
-    stdprintf("%s - extract data from QDF file\n", pApp);
-    stdprintf("Usage:\n");
-    stdprintf("  %s -g <gridfile> [-d <datafile>] -s<width>x<height>\n", pApp);
-    stdprintf("     -p <arrpath> -f <format> [-o <output>]\n");
-    stdprintf("where:\n");
-    stdprintf("  gridfile     a QDF file containing a grid\n");
-    stdprintf("  datafile     a QDF file containing data; if omitted <gridfile> is used\n");
-    stdprintf("  arrpath      HDF path to array\n");
-    stdprintf("  format       output format; either 'table' or 'list'\n"); 
-    stdprintf("  output       name of output txt file; if omitted stdout is used\n");
-    stdprintf("\n");
-    stdprintf("To find possible values for <arrpath> in a qdf file, do\n");
-    stdprintf("  %s -q <QDFfile> \n", pApp);
-    stdprintf("If output format 'table' is chosen, the output will  be a matrix with\n");
-    stdprintf("<height> rows and <width> columns containing the array data.\n");
-    stdprintf("The leftmost column corresponds to -180.0, the rightmost to 180.0\n");
-    stdprintf("The first row corresponds to 90.0, the lowest to -90.0\n");
-    stdprintf("If output format 'list' is chosen, the output will  be a matrix with\n");
-    stdprintf("<height>x<width> rows and 3 columns (<longitude> <latitude> <value>)\n");
+    xha_printf("%s - extract data from QDF file\n", pApp);
+    xha_printf("Usage:\n");
+    xha_printf("  %s -g <gridfile> [-d <datafile>] -s<width>x<height>\n", pApp);
+    xha_printf("     -p <arrpath> -f <format> [-o <output>]\n");
+    xha_printf("where:\n");
+    xha_printf("  gridfile     a QDF file containing a grid\n");
+    xha_printf("  datafile     a QDF file containing data; if omitted <gridfile> is used\n");
+    xha_printf("  arrpath      HDF path to array\n");
+    xha_printf("  format       output format; either 'table' or 'list'\n"); 
+    xha_printf("  output       name of output txt file; if omitted stdout is used\n");
+    xha_printf("\n");
+    xha_printf("To find possible values for <arrpath> in a qdf file, do\n");
+    xha_printf("  %s -q <QDFfile> \n", pApp);
+    xha_printf("If output format 'table' is chosen, the output will  be a matrix with\n");
+    xha_printf("<height> rows and <width> columns containing the array data.\n");
+    xha_printf("The leftmost column corresponds to -180.0, the rightmost to 180.0\n");
+    xha_printf("The first row corresponds to 90.0, the lowest to -90.0\n");
+    xha_printf("If output format 'list' is chosen, the output will  be a matrix with\n");
+    xha_printf("<height>x<width> rows and 3 columns (<longitude> <latitude> <value>)\n");
 
-    stdprintf("Example:\n");
-    stdprintf("  %s -g env_world_256.qdf -s 400x200 -p Geography/Altitude -f table -o poplop.data\n", pApp);
+    xha_printf("Example:\n");
+    xha_printf("  %s -g env_world_256.qdf -s 400x200 -p Geography/Altitude -f table -o poplop.data\n", pApp);
 }
 
 //----------------------------------------------------------------------------
@@ -46,7 +46,7 @@ int printData(double **pdData, int iW, int iH, char *pOutput) {
     if (pOutput != NULL) {
         fOut = fopen(pOutput, "w");
         if (fOut == NULL) {
-            stdprintf("Couldn't open [%s[ for writing\n", pOutput);
+            xha_printf("Couldn't open [%s[ for writing\n", pOutput);
             iResult = -1;
         }
     } else {
@@ -83,10 +83,10 @@ int main(int iArgC, char *apArgV[]) {
             HDataSetCollector *pHDSC = HDataSetCollector::createInstance(apArgV[2]);
             if (pHDSC != NULL) {
                 const stringvec vDataSets= pHDSC->getPaths();
-                stdprintf("available datasets in [%s]:\n", apArgV[2]);
+                xha_printf("available datasets in [%s]:\n", apArgV[2]);
                 stringvec::const_iterator it;
                 for (it = vDataSets.begin(); it != vDataSets.end(); ++it) {
-                    stdprintf("  %s\n", *it);
+                    xha_printf("  %s\n", *it);
                 }
                 
                 const patmap &mPseudoArrPattern = QDFDataExtractor::getPseudoPats();
@@ -95,16 +95,16 @@ int main(int iArgC, char *apArgV[]) {
                     PseudoPopManager *pPPM = PseudoPopManager::createInstance();
                     const stringvec vPseudos = pPPM->findMatches(apArgV[2], apArgV[2]);     
                     for (it = vPseudos.begin(); it != vPseudos.end(); ++it) {
-                        stdprintf("  %s\n", *it);
+                        xha_printf("  %s\n", *it);
                     }
                     delete pPPM;
                     /*
                       const stringvec vPseudos= pHDSC->getPseudos(mPseudoArrPattern);
 
-                    stdprintf("pseudo arrays in [%s]:\n", apArgV[2]);
+                    xha_printf("pseudo arrays in [%s]:\n", apArgV[2]);
                     stringvec::const_iterator it;
                     for (it = vPseudos.begin(); it != vPseudos.end(); ++it) {
-                        stdprintf("  %s\n", *it);
+                        xha_printf("  %s\n", *it);
                     }
                     */
                 }
@@ -180,23 +180,23 @@ int main(int iArgC, char *apArgV[]) {
                                 }
                             }
                         } else {
-                            stdprintf("Bad format [%s] - must be 'table' or 'list'\n", sFormat);
+                            xha_printf("Bad format [%s] - must be 'table' or 'list'\n", sFormat);
                         }   
                         
                         
                         
                     } else {
-                        stdprintf("Not a format string: [%s]\n", sSize);
+                        xha_printf("Not a format string: [%s]\n", sSize);
                     }
                 } else {
                     usage(apArgV[0]);
                 }
             } else {
-                stdprintf("Couldn't set ParamReader options\n");
+                xha_printf("Couldn't set ParamReader options\n");
             }
             delete pPR;
         } else {
-            stdprintf("Couldn't create ParamReader\n");
+            xha_printf("Couldn't create ParamReader\n");
         }
     }
     return iResult;

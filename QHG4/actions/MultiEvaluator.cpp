@@ -66,7 +66,7 @@ void MultiEvaluator<T>::init(evaluatorinfos &mEvalInfo, int iMode) {
         m_aEvaluators[iEval] = it->second;
         m_aEvaluators[iEval]->setOutputWeights(m_adSingleEvalWeights);
         addObserver(static_cast<Observer*>(m_aEvaluators[iEval]));
-        stdprintf("MultiEvaluator added Evaluator for [%s]\n",   m_vCombinationWeightNames[iEval]);
+        xha_printf("MultiEvaluator added Evaluator for [%s]\n",   m_vCombinationWeightNames[iEval]);
         
         m_adCombinationWeights[iEval] = 0; // initialization to 0
     }
@@ -173,7 +173,7 @@ int MultiEvaluator<T>::initialize(float fT) {
             iResult = minSingleWeights(fT);
             break;
         default:
-            stdprintf("Unknown mode [%d]\n", m_iMode);
+            xha_printf("Unknown mode [%d]\n", m_iMode);
             iResult = -1;
         }
     }
@@ -221,7 +221,7 @@ template<typename T>
 int MultiEvaluator<T>::addSingleWeights(float fT) {
    
     int iResult = 0;
-    stdprintf("addEnvWeights\n");
+    xha_printf("addEnvWeights\n");
 
    int iArrSize = this->m_pCG->m_iNumCells * (m_iMaxNeighbors + 1);
 
@@ -266,7 +266,7 @@ int MultiEvaluator<T>::addSingleWeightsBlock(float fT) {
 
     int iArrSize = this->m_pCG->m_iNumCells * (m_iMaxNeighbors + 1);
     
-    stdprintf("addEnvWeightsBlock\n");
+    xha_printf("addEnvWeightsBlock\n");
     findBlockings(fT);
 
     memset(m_adOutputWeights, 0, iArrSize*sizeof(double));
@@ -353,7 +353,7 @@ int MultiEvaluator<T>::maxSingleWeights(float fT) {
 
     int iArrSize = this->m_pCG->m_iNumCells * (m_iMaxNeighbors + 1);
 
-    stdprintf("maxEnvWeights\n");
+    xha_printf("maxEnvWeights\n");
 
     // set all elements to negative infinity
 #pragma omp parallel for
@@ -394,7 +394,7 @@ int MultiEvaluator<T>::maxSingleWeightsBlock(float fT) {
 
     int iArrSize = this->m_pCG->m_iNumCells * (m_iMaxNeighbors + 1);
 
-    stdprintf("maxEnvWeightsBlock\n");
+    xha_printf("maxEnvWeightsBlock\n");
     findBlockings(fT);
 
     // set all elements to negative infinity
@@ -442,7 +442,7 @@ int MultiEvaluator<T>::minSingleWeights(float fT) {
     int iResult = 0;
 
     int iArrSize = this->m_pCG->m_iNumCells * (m_iMaxNeighbors + 1);
-    stdprintf("minEnvWeights\n");
+    xha_printf("minEnvWeights\n");
 
     // set all elements to negative infinity
 #pragma omp parallel for
@@ -495,7 +495,7 @@ int MultiEvaluator<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
                     iResult = m_aEvaluators[i]->extractAttributesQDF(hActionGroup);
                     qdf_closeGroup(hActionGroup);
                 } else {
-                    stdprintf("[MultiEvaluator<T>::extractAttributesQDF] WARNING:  Couldn't open subgroup [%s]\n", m_aEvaluators[i]->getActionName());
+                    xha_printf("[MultiEvaluator<T>::extractAttributesQDF] WARNING:  Couldn't open subgroup [%s]\n", m_aEvaluators[i]->getActionName());
                 } 
             } else {
                 //@@ to be removed
@@ -527,7 +527,7 @@ int MultiEvaluator<T>::writeAttributesQDF(hid_t hSpeciesGroup) {
                     iResult = m_aEvaluators[i]->writeAttributesQDF(hActionGroup);
                     qdf_closeGroup(hActionGroup);
                 } else {
-                    stdprintf("[MultiEvaluator<T>::writeAttributesQDF]Couldn't create subgroup [%s]\n", m_aEvaluators[i]->getActionName());
+                    xha_printf("[MultiEvaluator<T>::writeAttributesQDF]Couldn't create subgroup [%s]\n", m_aEvaluators[i]->getActionName());
                     iResult = -1;
                 }
             } else {
@@ -560,7 +560,7 @@ int MultiEvaluator<T>::tryGetAttributes(const ModuleComplex *pMC) {
             if (it != mSubs.end()) {
                 iResult = m_aEvaluators[i]->tryGetAttributes(it->second);
             } else { 
-                stdprintf("Didn't find '%s' in modulemap\n", m_aEvaluators[i]->getActionName());
+                xha_printf("Didn't find '%s' in modulemap\n", m_aEvaluators[i]->getActionName());
                 iResult = 0; //maybe the action has no parameters to load
             }
         }
@@ -628,7 +628,7 @@ template<typename T>
 void MultiEvaluator<T>::showAttributes() {
     
     for (int i = 0; i < m_iNumEvals; i++) {
-        stdprintf("  %s\n", m_vCombinationWeightNames[i]);
+        xha_printf("  %s\n", m_vCombinationWeightNames[i]);
     }
 
 }

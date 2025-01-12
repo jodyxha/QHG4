@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "qhg_consts.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "IDSampler2.h"
 
 
@@ -194,26 +194,26 @@ int IDSample::write(const std::string sOutputFile) {
                             }
                             if (iWritten != iNumDat) {
                                 iResult = -1;
-                                stdfprintf(stderr, "Couldn't write data items\n");
+                                xha_fprintf(stderr, "Couldn't write data items\n");
                             }
                         } else {
                             iResult = -1;
-                            stdfprintf(stderr, "Couldn't write time and num data items\n");
+                            xha_fprintf(stderr, "Couldn't write time and num data items\n");
                         }
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "Couldn't write namelength name and num submaps\n");
+                    xha_fprintf(stderr, "Couldn't write namelength name and num submaps\n");
                 }
             }
         } else {
             iResult = -1;
-            stdfprintf(stderr, "Couldn't write number of maps\n");
+            xha_fprintf(stderr, "Couldn't write number of maps\n");
         }
     	fclose(fOut);
     } else {
         iResult = -1;
-    	stdfprintf(stderr, "Couldn't open [%s] for writing\n", sOutputFile);
+    	xha_fprintf(stderr, "Couldn't open [%s] for writing\n", sOutputFile);
     }
     return iResult;
 }
@@ -236,7 +236,7 @@ int IDSample::read(const std::string sInputFile) {
 	int iRead = fread(&iNumMaps, sizeof(int), 1, fIn);
         if (iRead != 1) {
             iResult = -1;
-            stdfprintf(stderr, "Couldn't read num maps\n");
+            xha_fprintf(stderr, "Couldn't read num maps\n");
         }
 	
 	for(int i = 0; (iResult == 0) && (i < iNumMaps); i++) {
@@ -251,7 +251,7 @@ int IDSample::read(const std::string sInputFile) {
 	    iRead += fread(&iNumSubMaps, sizeof(int), 1, fIn);
             if (iRead != 3) {
                 iResult = -1;
-                stdfprintf(stderr, "Couldn't read name len, name and num submaps\n");
+                xha_fprintf(stderr, "Couldn't read name len, name and num submaps\n");
             }
 	    time_vagdata mvagd;
 	    for (int j = 0; (iResult == 0) && (j < iNumSubMaps); j++) {
@@ -272,11 +272,11 @@ int IDSample::read(const std::string sInputFile) {
                         mvagd[fTime] = vagd;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "Couldn't read data items\n");
+                        xha_fprintf(stderr, "Couldn't read data items\n");
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "Couldn't read time and num data items\n");
+                    xha_fprintf(stderr, "Couldn't read time and num data items\n");
                 }
 
 	    }
@@ -288,9 +288,9 @@ int IDSample::read(const std::string sInputFile) {
     	fclose(fIn);
     } else {
         iResult = -1;
-    	stdfprintf(stderr, "Couldn't open [%s] for reading\n", sInputFile);
+    	xha_fprintf(stderr, "Couldn't open [%s] for reading\n", sInputFile);
     }
-    stdprintf("IDSample::read() returns %d\n",iResult);
+    xha_printf("IDSample::read() returns %d\n",iResult);
     return iResult;
 }
 
@@ -307,12 +307,12 @@ int IDSample::read(const std::string sInputFile) {
 void IDSample::display() {
     int iResult = 0;
     int iNumMaps = m_mmLocTimeAg.size();
-    stdprintf("Num maps: %d\n", iNumMaps);
+    xha_printf("Num maps: %d\n", iNumMaps);
     sampleinfo::const_iterator it_ltd;
     for (it_ltd = m_mmLocTimeAg.begin(); (iResult == 0) && (it_ltd != m_mmLocTimeAg.end()); ++it_ltd) {
         const std::string &sName = it_ltd->first;
         int iNumSubMaps = it_ltd->second.size();
-        stdprintf("  [%s](%zd) sub %d\n", sName, sName.length(), iNumSubMaps);
+        xha_printf("  [%s](%zd) sub %d\n", sName, sName.length(), iNumSubMaps);
         
         time_vagdata::const_iterator it_td;
         for (it_td = it_ltd->second.begin(); (iResult == 0) && (it_td != it_ltd->second.end()); ++it_td) {
@@ -320,15 +320,15 @@ void IDSample::display() {
             int iNumDat = it_td->second.size();
             printf("    %f dat %d\n", fTime, iNumDat);            
             for (uint i = 0; i < it_td->second.size(); i++) {
-                stdprintf("      item %d\n", i);
-                stdprintf("        ID      %ld\n", it_td->second[i]->iID);
-                stdprintf("        MomID   %ld\n", it_td->second[i]->iMomID);
-                stdprintf("        DadID   %ld\n", it_td->second[i]->iDadID);
-                stdprintf("        Gender  %d\n",  it_td->second[i]->iGender);
-                stdprintf("        CellID  %d\n",  it_td->second[i]->iCellID);
-                stdprintf("        lon     %f\n",  it_td->second[i]->dLon);
-                stdprintf("        lat     %f\n",  it_td->second[i]->dLat);
-                stdprintf("        arrpos  %d\n",  it_td->second[i]->iArrayPos);
+                xha_printf("      item %d\n", i);
+                xha_printf("        ID      %ld\n", it_td->second[i]->iID);
+                xha_printf("        MomID   %ld\n", it_td->second[i]->iMomID);
+                xha_printf("        DadID   %ld\n", it_td->second[i]->iDadID);
+                xha_printf("        Gender  %d\n",  it_td->second[i]->iGender);
+                xha_printf("        CellID  %d\n",  it_td->second[i]->iCellID);
+                xha_printf("        lon     %f\n",  it_td->second[i]->dLon);
+                xha_printf("        lat     %f\n",  it_td->second[i]->dLat);
+                xha_printf("        arrpos  %d\n",  it_td->second[i]->iArrayPos);
             
             }
         }

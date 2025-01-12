@@ -129,63 +129,63 @@ int PrivParamMix<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
             }
         }
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_B0_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_B0_NAME, s_asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_adB0[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[PrivParamMix] couldn't read attribute [%s]", sNameID);
             }
         }
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_D0_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_D0_NAME, s_asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_adD0[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[PrivParamMix] couldn't read attribute [%s]", sNameID);
             }
         }
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_THETA_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_THETA_NAME, s_asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_adTheta[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[PrivParamMix] couldn't read attribute [%s]", sNameID);
             }
         }
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_FMIN_AGE_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_FMIN_AGE_NAME, s_asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_adFertMinAge[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[PrivParamMix] couldn't read attribute [%s]", sNameID);
             }
         }
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_FMAX_AGE_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_FMAX_AGE_NAME, s_asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_adFertMaxAge[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[PrivParamMix] couldn't read attribute [%s]", sNameID);
             }
         }
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_FINTERBIRTH_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_FINTERBIRTH_NAME, s_asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_adInterbirth[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[PrivParamMix] couldn't read attribute [%s]", sNameID);
             }
         }
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_MAXAGE_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_MAXAGE_NAME, s_asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_adMaxAge[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[PrivParamMix] couldn't read attribute [%s]", sNameID);
             }
         }
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_UNCERTAINTY_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_UNCERTAINTY_NAME, s_asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_adUncertainty[iGroup]));
             if (iResult != 0) {
                LOG_ERROR("[PrivParamMix] couldn't read attribute [%s]", sNameID);
             }
         }
         if (iResult == 0) {
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_WEIGHTEDMOVE_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_WEIGHTEDMOVE_NAME, s_asSpecies[iGroup]);
             iResult = qdf_extractAttribute(hSpeciesGroup, sNameID, 1, &(m_adMoveProb[iGroup]));
             if (iResult != 0) {
                 LOG_ERROR("[PrivParamMix] couldn't read attribute [%s]", sNameID);
@@ -228,23 +228,23 @@ int PrivParamMix<T>::writeAttributesQDF(hid_t hSpeciesGroup) {
     iResult += qdf_insertAttribute(hSpeciesGroup, ATTR_PRIVPARAMMIX_MODE_NAME, 1, &m_iMode);
     
     for (int iGroup = 0; (iResult == 0) && (iGroup < 2); iGroup++) {
-        sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_B0_NAME, s_asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_B0_NAME, s_asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_adB0[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_D0_NAME, s_asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_D0_NAME, s_asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_adD0[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_THETA_NAME, s_asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_THETA_NAME, s_asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_adTheta[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_FMAX_AGE_NAME, s_asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_FMAX_AGE_NAME, s_asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_adFertMaxAge[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_FMIN_AGE_NAME, s_asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_FMIN_AGE_NAME, s_asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_adFertMinAge[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_FINTERBIRTH_NAME, s_asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_FINTERBIRTH_NAME, s_asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_adInterbirth[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_WEIGHTEDMOVE_NAME, s_asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_WEIGHTEDMOVE_NAME, s_asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_adMoveProb[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_MAXAGE_NAME, s_asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_MAXAGE_NAME, s_asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_adMaxAge[iGroup]));
-        sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_UNCERTAINTY_NAME, s_asSpecies[iGroup]);
+        sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_UNCERTAINTY_NAME, s_asSpecies[iGroup]);
         iResult += qdf_insertAttribute(hSpeciesGroup, sNameID, 1, &(m_adUncertainty[iGroup]));
     }
     return iResult;
@@ -267,23 +267,23 @@ int PrivParamMix<T>::tryGetAttributes(const ModuleComplex *pMC) {
         iResult += getAttributeVal(mParams, ATTR_PRIVPARAMMIX_MODE_NAME, &m_iMode);            
 
         for (int iGroup = 0; (iResult == 0) && (iGroup < 2); iGroup++) {
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_B0_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_B0_NAME, s_asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_adB0[iGroup]));            
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_D0_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_D0_NAME, s_asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_adD0[iGroup]));            
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_THETA_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_THETA_NAME, s_asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_adTheta[iGroup]));            
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_FMAX_AGE_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_FMAX_AGE_NAME, s_asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_adFertMaxAge[iGroup]));            
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_FMIN_AGE_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_FMIN_AGE_NAME, s_asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_adFertMinAge[iGroup]));            
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_FINTERBIRTH_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_FINTERBIRTH_NAME, s_asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_adInterbirth[iGroup]));            
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_WEIGHTEDMOVE_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_WEIGHTEDMOVE_NAME, s_asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_adMoveProb[iGroup]));            
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_MAXAGE_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_MAXAGE_NAME, s_asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_adMaxAge[iGroup]));            
-            sNameID = stdsprintf(sMask, ATTR_PRIVPARAMMIX_UNCERTAINTY_NAME, s_asSpecies[iGroup]);
+            sNameID = xha_sprintf(sMask, ATTR_PRIVPARAMMIX_UNCERTAINTY_NAME, s_asSpecies[iGroup]);
             iResult += getAttributeVal(mParams, sNameID, &(m_adUncertainty[iGroup]));            
         }
         
@@ -318,7 +318,7 @@ int PrivParamMix<T>::preLoop() {
         curFunc = &PrivParamMix::randomMix;
         break;
     default:
-        stdprintf("Unknown mode %d\n", m_iMode);
+        xha_printf("Unknown mode %d\n", m_iMode);
         iResult = -1;
     }
     return iResult;

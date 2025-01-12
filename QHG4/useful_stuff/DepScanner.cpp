@@ -6,7 +6,7 @@
 
 #include <algorithm>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "DepScanner.h"
 
 
@@ -29,7 +29,7 @@ int split_list(const std::string sList, stringvec &vSuffs) {
                 (vParts[i] == "sh")) {
                 vSuffs.push_back(vParts[i]);
             } else {
-                stdprintf("invalid suffix: [%s]\n", vParts[i]);
+                xha_printf("invalid suffix: [%s]\n", vParts[i]);
                 iResult = -1;
             }
 
@@ -71,7 +71,7 @@ int DepScanner::find_all_deps() {
             std::string &sSuffCaller = m_vCallerSuffs[iCallerSuff];
 
             mapsuffilevec mCalls;
-            stdprintf("++++ callee suff %s, caller suff %s\n", sSuffCallee, sSuffCaller);
+            xha_printf("++++ callee suff %s, caller suff %s\n", sSuffCallee, sSuffCaller);
             find_deps(sSuffCallee, sSuffCaller, mCalls);
             if (mCalls.size() > 0) {
                 m_mAllDeps[stringpair(sSuffCallee, sSuffCaller)] = mCalls;
@@ -97,12 +97,12 @@ void DepScanner::show_deps() {
 
     mfulldeps::const_iterator it;
     for (it = m_mAllDeps.begin(); it != m_mAllDeps.end(); ++it) {
-        stdprintf("%s used by %s:\n", it->first.first, it->first.second);
+        xha_printf("%s used by %s:\n", it->first.first, it->first.second);
         mapsuffilevec::const_iterator it2;
         for (it2 = it->second.begin(); it2 != it->second.end(); it2++) {
-            stdprintf("  %s:\n", it2->first);
+            xha_printf("  %s:\n", it2->first);
             for (uint i = 0; i < it2->second.size(); i++)  {
-                stdprintf("    %s\n", it2->second[i]);
+                xha_printf("    %s\n", it2->second[i]);
             }
         }
     }
@@ -128,7 +128,7 @@ int DepScanner::init(const std::string sCalleeDir, const std::string sCalleeSuff
 
     m_sCallerDir = sCallerDir;
     m_sCalleeDir = sCalleeDir;
-    stdprintf("dirs caller [%s], callee [%s]\n", m_sCallerDir, m_sCalleeDir);
+    xha_printf("dirs caller [%s], callee [%s]\n", m_sCallerDir, m_sCalleeDir);
     if (iResult == 0) {
         iResult = split_list(sCalleeSuffs, m_vCalleeSuffs);
         if (iResult != 0) {
@@ -169,8 +169,8 @@ int DepScanner::collect_files() {
     uint iCount = 0;
     for (uint i = 0; (iResult == 0) && (i < m_vCallerSuffs.size()); i++) {
         const std::string sCallerSuff = m_vCallerSuffs[i];
-        std::string sPattern = stdsprintf("%s/*.%s", m_sCallerDir, sCallerSuff);
-        stdprintf("for caller dir [%s] andsudd [%s]: pat [%s]\n", m_sCallerDir, sCallerSuff, sPattern);
+        std::string sPattern = xha_sprintf("%s/*.%s", m_sCallerDir, sCallerSuff);
+        xha_printf("for caller dir [%s] andsudd [%s]: pat [%s]\n", m_sCallerDir, sCallerSuff, sPattern);
         iResult = glob(sPattern.c_str(), 0, NULL, &glob_data);
         if ((iResult == 0) || (iResult = GLOB_NOMATCH)) {
             iResult = 0;
@@ -179,17 +179,17 @@ int DepScanner::collect_files() {
                 iCount++;
             }
         } else {
-            stdprintf("Error for pattern [%s]\n", sPattern);
+            xha_printf("Error for pattern [%s]\n", sPattern);
         }
         globfree(&glob_data);
     }
-    stdprintf("Collected %u caller files from [%s]\n", iCount, m_sCallerDir);
+    xha_printf("Collected %u caller files from [%s]\n", iCount, m_sCallerDir);
     
     m_mCalleeFiles.clear();
     iCount = 0;
     for (uint i = 0; i < m_vCalleeSuffs.size(); i++) {
         const std::string sCalleeSuff = m_vCalleeSuffs[i];
-        std::string sPattern = stdsprintf("%s/*.%s", m_sCalleeDir, sCalleeSuff);
+        std::string sPattern = xha_sprintf("%s/*.%s", m_sCalleeDir, sCalleeSuff);
         iResult = glob(sPattern.c_str(), 0, NULL, &glob_data);
         if ((iResult == 0) || (iResult = GLOB_NOMATCH)) {
             iResult = 0;
@@ -198,11 +198,11 @@ int DepScanner::collect_files() {
                 iCount++;
             }
         } else {
-            stdprintf("Error for pattern [%s]\n", sPattern);
+            xha_printf("Error for pattern [%s]\n", sPattern);
         }
         globfree(&glob_data);
     }
-    stdprintf("Collected %u callee files from [%s]\n", iCount, m_sCallerDir);
+    xha_printf("Collected %u callee files from [%s]\n", iCount, m_sCallerDir);
 
     return iResult;
 }
@@ -254,15 +254,15 @@ int DepScanner::find_deps(const std::string sCalleeSuff, const std::string sCall
 
     for (uint iCallee = 0; iCallee < vCallees.size(); iCallee++) {
         std::string sCallee = vCallees[iCallee]+"."+sCalleeSuff;
-        //stdprintf("callee bod [%s]\n", vCallees[iCallee]);
-        std::string sCurPat0 = stdsprintf(sPat,  vCallees[iCallee]);
+        //xha_printf("callee bod [%s]\n", vCallees[iCallee]);
+        std::string sCurPat0 = xha_sprintf(sPat,  vCallees[iCallee]);
         std::string sCurPat = sCurPat0;
-        stdprintf("--- [%s] users of [%s]\n", sCallerSuff, sCallee);
+        xha_printf("--- [%s] users of [%s]\n", sCallerSuff, sCallee);
             
         for (uint iCaller = 0; iCaller < vCallers.size(); iCaller++) {
             //std::string sCaller = vCallers[iCaller]+"."+pCallerSuff;
             std::string sCaller = vCallers[iCaller];
-            //stdprintf("   [%s]:[%s]\n",  sCallee, sCaller);
+            //xha_printf("   [%s]:[%s]\n",  sCallee, sCaller);
 
             std::ifstream fIn(sCaller);
             if (fIn.good()) {
@@ -273,14 +273,14 @@ int DepScanner::find_deps(const std::string sCalleeSuff, const std::string sCall
                         stringvec::const_iterator itf = std::find(mCalls[sCallee].begin(),mCalls[sCallee].end(), sCaller);
                         
                         if (itf == mCalls[sCallee].end()) {
-                            stdprintf("  have match for [%s]\n", sCaller);
+                            xha_printf("  have match for [%s]\n", sCaller);
                             mCalls[sCallee].push_back(sCaller);
                     }
                     }
                 } 
                 fIn.close();
             } else {
-                stdprintf("Couldn't open [%s]\n", sCaller);
+                xha_printf("Couldn't open [%s]\n", sCaller);
             }
         }
         

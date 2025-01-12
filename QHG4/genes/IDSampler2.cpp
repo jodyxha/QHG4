@@ -6,7 +6,7 @@
 #include <omp.h>
 
 #include "types.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "qhg_consts.h"
 #include "colors.h"
 #include "geomutils.h"
@@ -139,7 +139,7 @@ int IDSampler2::makeSelectionList(int iNumTotal, int iNumSelect, intset &sSelect
 //
 int IDSampler2::getCandidatesOld(loc_data  &mLocData, loc_varrpos &mvCandidates) {
     int iResult = 0;
-    stdprintf("old version\n");
+    xha_printf("old version\n");
     uint iAssigned = 0;
     uint iDismissed = 0;
     for (int i = 0; i < m_iNumAgents; i++) {
@@ -171,15 +171,15 @@ int IDSampler2::getCandidatesOld(loc_data  &mLocData, loc_varrpos &mvCandidates)
     loc_varrpos::const_iterator it3;
     int iTot = 0;
     for (it3 = mvCandidates.begin(); it3 != mvCandidates.end(); ++it3) {
-        //           stdprintf("For [%s]: %zd elements«\n", it3->first.c_str(), it3->second.size());
+        //           xha_printf("For [%s]: %zd elements«\n", it3->first.c_str(), it3->second.size());
         iTot +=  it3->second.size();
     }
     intset s;
     for (it3 = mvCandidates.begin(); it3 != mvCandidates.end(); ++it3) {
         s.insert(it3->second.begin(), it3->second.end());
     }
-    stdprintf("Old: Summed number of candidate: %d, Cumulated number of candidates %zd\n", iTot, s.size()); 
-    stdprintf("Old: Assigned: %d; dismissed: %d; unhandled: %d\n", iAssigned, iDismissed, m_iNumAgents-iAssigned-iDismissed);
+    xha_printf("Old: Summed number of candidate: %d, Cumulated number of candidates %zd\n", iTot, s.size()); 
+    xha_printf("Old: Assigned: %d; dismissed: %d; unhandled: %d\n", iAssigned, iDismissed, m_iNumAgents-iAssigned-iDismissed);
     return iResult;
 }
 
@@ -190,7 +190,7 @@ int IDSampler2::getCandidatesOld(loc_data  &mLocData, loc_varrpos &mvCandidates)
 int IDSampler2::getCandidatesNew1(loc_data  &mLocData, loc_varrpos &mvCandidates) {
     int iResult = 0;
 
-    stdprintf("new version 1: loc-parag\n");
+    xha_printf("new version 1: loc-parag\n");
     uint *aiAssignedPar  = new uint[omp_get_max_threads()];
     uint *aiDismissedPar = new uint[omp_get_max_threads()];
     memset(aiAssignedPar,  0, omp_get_max_threads()*sizeof(uint));
@@ -236,12 +236,12 @@ int IDSampler2::getCandidatesNew1(loc_data  &mLocData, loc_varrpos &mvCandidates
     loc_varrpos::iterator it3Par;
     int iTotPar = 0;
     for (it3Par = mvCandidates.begin(); it3Par != mvCandidates.end(); ++it3Par) {
-        //       stdprintf("For [%s]: %zd elements«\n", it3Par->first.c_str(), it3Par->second.size());
+        //       xha_printf("For [%s]: %zd elements«\n", it3Par->first.c_str(), it3Par->second.size());
         iTotPar +=  it3Par->second.size();
     }
 
-    // stdprintf("Par: Assigned: %u; dismissed: %u; unhandled: %u\n", iAssignedPar, iDismissedPar, m_iNumAgents-iAssignedPar-iDismissedPar);
-    // stdprintf("iTotPar: %d (mvCandidates:%zd)\n", iTotPar, mvCandidates.size());
+    // xha_printf("Par: Assigned: %u; dismissed: %u; unhandled: %u\n", iAssignedPar, iDismissedPar, m_iNumAgents-iAssignedPar-iDismissedPar);
+    // xha_printf("iTotPar: %d (mvCandidates:%zd)\n", iTotPar, mvCandidates.size());
     delete[] amvCandidatesPar;
     delete[] aiAssignedPar;
     delete[] aiDismissedPar;
@@ -254,7 +254,7 @@ int IDSampler2::getCandidatesNew1(loc_data  &mLocData, loc_varrpos &mvCandidates
 //
 int IDSampler2::getCandidatesNew2(loc_data  &mLocData, loc_varrpos &mvCandidates) {
     int iResult = 0;
-    stdprintf("new version 2: parag-loc\n");
+    xha_printf("new version 2: parag-loc\n");
     uint *aiAssignedPar  = new uint[omp_get_max_threads()];
     uint *aiDismissedPar = new uint[omp_get_max_threads()];
     memset(aiAssignedPar,  0, omp_get_max_threads()*sizeof(uint));
@@ -306,11 +306,11 @@ int IDSampler2::getCandidatesNew2(loc_data  &mLocData, loc_varrpos &mvCandidates
     loc_varrpos::iterator it3Par;
     int iTotPar = 0;
     for (it3Par = mvCandidates.begin(); it3Par != mvCandidates.end(); ++it3Par) {
-        //            stdprintf("For [%s]: %zd elements«\n", it3->first.c_str(), it3->second.size());
+        //            xha_printf("For [%s]: %zd elements«\n", it3->first.c_str(), it3->second.size());
         iTotPar +=  it3Par->second.size();
     }
-    //    stdprintf("Par: Assigned: %u; dismissed: %u; unhandled: %u\n", iAssignedPar, iDismissedPar, m_iNumAgents-iAssignedPar-iDismissedPar);
-    //    stdprintf("iTotPar: %d\n", iTotPar);
+    //    xha_printf("Par: Assigned: %u; dismissed: %u; unhandled: %u\n", iAssignedPar, iDismissedPar, m_iNumAgents-iAssignedPar-iDismissedPar);
+    //    xha_printf("iTotPar: %d\n", iTotPar);
     delete[] amvCandidatesPar;
     return iResult;
 }
@@ -369,9 +369,9 @@ IDSample *IDSampler2::getSamplesCore(loc_data  &mLocData, const std::string sRef
         }
         /*
         double dT3 = omp_get_wtime();
-        stdprintf("IDSampler: time to select IDs:      %f\n", dT1 - dT0);
-        stdprintf("IDSampler: time to get indexes:     %f\n", dT2 - dT1);
-        stdprintf("IDSampler: time to fill attributes: %f\n", dT3 - dT2);
+        xha_printf("IDSampler: time to select IDs:      %f\n", dT1 - dT0);
+        xha_printf("IDSampler: time to get indexes:     %f\n", dT2 - dT1);
+        xha_printf("IDSampler: time to fill attributes: %f\n", dT3 - dT2);
         */
     } else {
         // mlocdata fail
@@ -413,7 +413,7 @@ IDSample *IDSampler2::getSamples(const std::string sQDFTime, const std::string s
                         m_sRefLocName = vNames[0];
                         sRefLocName = m_sRefLocName;
                     } else {
-                        stdfprintf(stderr, "No Reflocname returned\n");
+                        xha_fprintf(stderr, "No Reflocname returned\n");
                         iResult = -1;
                     }
                 }
@@ -450,7 +450,7 @@ IDSample *IDSampler2::getSamples(stringvec &vQDFPops, const std::string sPopName
                     m_sRefLocName = vNames[0];
                     sRefLocName = m_sRefLocName;
                 } else {
-                    stdfprintf(stderr, "No Reflocname returned\n");
+                    xha_fprintf(stderr, "No Reflocname returned\n");
                     iResult = -1;
                 }
             }
@@ -458,7 +458,7 @@ IDSample *IDSampler2::getSamples(stringvec &vQDFPops, const std::string sPopName
         if (iResult == 0) {
             IDSample *pNew = m_pCurSample;
             for (uint i = 0; (pNew != NULL) && (i < vQDFPops.size()); ++i) {
-                stdprintf("Getting samples from [%s]\n", vQDFPops[i]);fflush(stdout);
+                xha_printf("Getting samples from [%s]\n", vQDFPops[i]);fflush(stdout);
                 iResult = readArrays(vQDFPops[i], sPopName);
                 if (iResult == 0) {
                     pNew = getSamplesCore(mLocData, sRefLocName);
@@ -532,7 +532,7 @@ IDSample *IDSampler2::getAttributesCore(loc_data  &mLocData, idset &sSelected) {
                     }
                 }
                 if (bSearching) {
-                    stdfprintf(stderr, "%selement %ld not in range of any location - maybe different location list was used%s\n", colors::RED, m_pIDs[i], colors::OFF);
+                    xha_fprintf(stderr, "%selement %ld not in range of any location - maybe different location list was used%s\n", colors::RED, m_pIDs[i], colors::OFF);
                     iResult = -1;
                 }
             }
@@ -547,7 +547,7 @@ IDSample *IDSampler2::getAttributesCore(loc_data  &mLocData, idset &sSelected) {
             }
         }
     } else {
-        stdfprintf(stderr, "%sCouldn't fill loc data%s\n", colors::RED, colors::OFF);
+        xha_fprintf(stderr, "%sCouldn't fill loc data%s\n", colors::RED, colors::OFF);
     }
     
     if (iResult != 0) {
@@ -699,37 +699,37 @@ int IDSampler2::readArrays(const std::string sQDFTime, const std::string sPopNam
             if (iResult == 0) {
                 int iCount = pQA->getFirstSlab(m_pIDs, m_iNumAgents, "AgentID");
                 if (iCount != m_iNumAgents) {
-                    stdfprintf(stderr, "%sGot %d agent IDs instead of %d%s\n", colors::RED, iCount, m_iNumAgents, colors::OFF);
+                    xha_fprintf(stderr, "%sGot %d agent IDs instead of %d%s\n", colors::RED, iCount, m_iNumAgents, colors::OFF);
                     iResult = -1;
                 }
             }
             if (iResult == 0) {
                 int iCount = pQA->getFirstSlab(m_pCellIDs, m_iNumAgents, "CellID");
                 if (iCount != m_iNumAgents) {
-                    stdfprintf(stderr, "%sGot %d cell IDs instead of %d%s\n", colors::RED, iCount, m_iNumAgents, colors::OFF);
+                    xha_fprintf(stderr, "%sGot %d cell IDs instead of %d%s\n", colors::RED, iCount, m_iNumAgents, colors::OFF);
                     iResult = -1;
                 }
             }
             if (iResult == 0) {
                 int iCount = pQA->getFirstSlab(m_pGenders, m_iNumAgents, "Gender");
                 if (iCount != m_iNumAgents) {
-                    stdfprintf(stderr, "%sGot %d genders instead of %d%s\n", colors::RED, iCount, m_iNumAgents, colors::OFF);
+                    xha_fprintf(stderr, "%sGot %d genders instead of %d%s\n", colors::RED, iCount, m_iNumAgents, colors::OFF);
                     iResult = -1;
                 }
             }
                 
             if (iResult == 0) {
-                stdprintf("  read agent data: %d items\n", m_iNumAgents);
+                xha_printf("  read agent data: %d items\n", m_iNumAgents);
             }
         } else {
-            stdfprintf(stderr, "%sCouldn't open dataset [%s/%s%s]%s\n", colors::RED, POPGROUP_NAME, sPopName, AGENT_DATASET_NAME, colors::OFF);
+            xha_fprintf(stderr, "%sCouldn't open dataset [%s/%s%s]%s\n", colors::RED, POPGROUP_NAME, sPopName, AGENT_DATASET_NAME, colors::OFF);
         }
         pQA->closeArray();
 
         delete pQA;
     } else {
         iResult = -1;
-        stdfprintf(stderr, "%sCouldn't open file [%s]%s\n", colors::RED, sQDFTime, colors::OFF);
+        xha_fprintf(stderr, "%sCouldn't open file [%s]%s\n", colors::RED, sQDFTime, colors::OFF);
     }
     return iResult;
 }
@@ -753,16 +753,16 @@ int IDSampler2::fillCoordMap(const std::string sQDFGeoGrid) {
             pCellIDs = new int[iNumCells];
             uint iCount = pQA->getFirstSlab(pCellIDs, iNumCells, GRID_DS_CELL_ID);
             if (iCount == iNumCells) {
-                //               stdprintf("Read %d CellIDs\n", iCount);
+                //               xha_printf("Read %d CellIDs\n", iCount);
                 iResult = 0;
             } else {
-                stdfprintf(stderr, "%sRead bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)%s\n", colors::RED, sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, iNumCells, colors::OFF);
+                xha_fprintf(stderr, "%sRead bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)%s\n", colors::RED, sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, iNumCells, colors::OFF);
                 iResult = -1;
             }
             pQA->closeArray();
         } else {
             iResult = -1;
-            stdfprintf(stderr, "%sCouldn't open QDF array for [%s:%s/%s]%s\n", colors::RED, sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME, colors::OFF);
+            xha_fprintf(stderr, "%sCouldn't open QDF array for [%s:%s/%s]%s\n", colors::RED, sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME, colors::OFF);
         }
 
         if (iResult == 0) {
@@ -773,15 +773,15 @@ int IDSampler2::fillCoordMap(const std::string sQDFGeoGrid) {
                     pdLon = new double[iNumCells];
                     uint iCount = pQA->getFirstSlab(pdLon, iNumCells);
                     if (iCount == iNumCells) {
-                        stdprintf("Read %d Longitudes\n", iCount);
+                        xha_printf("Read %d Longitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "%sRead bad number of read longitudes from [%s:%s/%s]: %d instead of %d%s\n", colors::RED, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, iNumCells, colors::OFF);
+                        xha_fprintf(stderr, "%sRead bad number of read longitudes from [%s:%s/%s]: %d instead of %d%s\n", colors::RED, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, iNumCells, colors::OFF);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "%sNumber of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]%s\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, colors::OFF);
+                    xha_fprintf(stderr, "%sNumber of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]%s\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, colors::OFF);
                 }
                 pQA->closeArray();
             }
@@ -795,15 +795,15 @@ int IDSampler2::fillCoordMap(const std::string sQDFGeoGrid) {
                     pdLat = new double[iNumCells];
                     uint iCount = pQA->getFirstSlab(pdLat, iNumCells);
                     if (iCount == iNumCells) {
-                        stdprintf("Read %d Latitudes\n", iCount);
+                        xha_printf("Read %d Latitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "%sCouldn't read latitudes from [%s:%s/%s]: %d instead of %d%s\n", colors::RED, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL,iNumCells, colors::OFF);
+                        xha_fprintf(stderr, "%sCouldn't read latitudes from [%s:%s/%s]: %d instead of %d%s\n", colors::RED, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL,iNumCells, colors::OFF);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "%sNumber of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]%s\n", colors::RED, iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, colors::OFF);
+                    xha_fprintf(stderr, "%sNumber of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]%s\n", colors::RED, iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, colors::OFF);
                 }
 
                 pQA->closeArray();
@@ -812,7 +812,7 @@ int IDSampler2::fillCoordMap(const std::string sQDFGeoGrid) {
     
         delete pQA;
     } else {
-        stdfprintf(stderr, "%sCouldn't create QDFArray%s\n", colors::RED, colors::OFF);
+        xha_fprintf(stderr, "%sCouldn't create QDFArray%s\n", colors::RED, colors::OFF);
     }
      
     if (iResult == 0) {

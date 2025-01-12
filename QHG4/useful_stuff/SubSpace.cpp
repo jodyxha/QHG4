@@ -5,16 +5,16 @@
 #include <set>
 #include <algorithm>
 
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 
 #include "LineReader.h"
 #include "SubSpace.h"
 
 static void display_slice_data(std::string sCaption, uintuintvec vSliceData) {
-    stdprintf("%s (%zd)\n", sCaption, vSliceData.size());
+    xha_printf("%s (%zd)\n", sCaption, vSliceData.size());
     for (uint i = 0; i < vSliceData.size(); i++) {
-        stdprintf("    %d: %d %d\n", i, vSliceData[i].first, vSliceData[i].second);
+        xha_printf("    %d: %d %d\n", i, vSliceData[i].first, vSliceData[i].second);
     }
 }
 
@@ -25,20 +25,20 @@ static std::string short_array(uintvec vArr, uint max_size, uint border_l, uint 
     
     if (((border_l + border_r) < vArr.size()) && (vArr.size() > max_size)) {
         for (uint i = 0; i < border_l; i++) {
-            s += stdsprintf("%u, ", vArr[i]);
+            s += xha_sprintf("%u, ", vArr[i]);
         }
         if (vArr.size() > max_size) {
             s += "... ";
         }
         for (uint i = vArr.size() - border_r; i < vArr.size(); i++) {
-            s += stdsprintf(", %u", vArr[i]);
+            s += xha_sprintf(", %u", vArr[i]);
         }
     } else {
         for (uint i = 0; i < vArr.size(); i++) {
             if (i == 0) {
-                s += stdsprintf("%u", vArr[i]);
+                s += xha_sprintf("%u", vArr[i]);
             } else {
-                s += stdsprintf(", %u", vArr[i]);
+                s += xha_sprintf(", %u", vArr[i]);
             }
         }
     }
@@ -130,15 +130,15 @@ int SubSpace<T>::merge_slice_data(uintuintvec vSliceDataIn, uintuintvec &vSliceD
 //
 static void show_uintvecvec(const uintvecvec s){
     for (uint i = 0; i < s.size(); i++) {
-        stdprintf("    %d: {", i);
+        xha_printf("    %d: {", i);
         
         for (uint j = 0; j < s[i].size(); j++) {
             if (j > 0) {
-                stdprintf(",");
+                xha_printf(",");
             }
-            stdprintf("%d", s[i][j]);
+            xha_printf("%d", s[i][j]);
         }
-        stdprintf("}\n");
+        xha_printf("}\n");
     }
 }
 
@@ -159,7 +159,7 @@ int SubSpace<T>::dims2Sizes(std::string sDims, uintvec &vSizes, const std::strin
         if (strToNum(vsSizes[i], &k)) {
             vSizes.push_back(k);
         } else {
-            throw SubSpaceException(stdsprintf("invalid dimension size [%s]", vsSizes[i]));
+            throw SubSpaceException(xha_sprintf("invalid dimension size [%s]", vsSizes[i]));
         }
     }
     return iResult; 
@@ -256,10 +256,10 @@ int SubSpace<T>::init(const uintvec &vSizes) {
         }
 
         for (uint iDim = 0; iDim < m_iNumDims; iDim++) {
-            m_vDimNames.push_back(stdsprintf("%d", iDim));
+            m_vDimNames.push_back(xha_sprintf("%d", iDim));
             stringvec vCoordNames;
             for (uint c = 0; c < m_vSizes[iDim]; c++) {
-                vCoordNames.push_back(stdsprintf("%d", c));
+                vCoordNames.push_back(xha_sprintf("%d", c));
             }
             m_vvCoordNames.push_back(vCoordNames);
         }
@@ -304,7 +304,7 @@ int SubSpace<T>::pos_to_coord(uint iPos, uintvec &vCoord) {
         }
         iResult = 0;
     } else {
-        throw SubSpaceException(stdsprintf("iPos (%d) should be less than %d", iPos, m_iNumVals));
+        throw SubSpaceException(xha_sprintf("iPos (%d) should be less than %d", iPos, m_iNumVals));
     }
     return iResult;
 }
@@ -323,11 +323,11 @@ int SubSpace<T>::coord_to_pos(uintvec vCoord) {
             if (vCoord[i] <  m_vSizesX[i+1]) {
                 iPos = m_vSizesX[i]*(vCoord[i] + iPos);
             } else {
-                throw SubSpaceException(stdsprintf("coord[%d]:%d should be less than %d", i, vCoord[i], m_vSizesX[i+1]));
+                throw SubSpaceException(xha_sprintf("coord[%d]:%d should be less than %d", i, vCoord[i], m_vSizesX[i+1]));
             }
         }
     } else {
-        throw SubSpaceException(stdsprintf("coords should have size %u, not %u", m_iNumDims, vCoord.size()));
+        throw SubSpaceException(xha_sprintf("coords should have size %u, not %u", m_iNumDims, vCoord.size()));
     }
 
     return iPos;
@@ -346,7 +346,7 @@ int SubSpace<T>::set_data(T *pNewData, uint iOffset, uint iNumElements) {
     if (iOffset + iNumElements <= m_iNumVals) {
         memcpy(m_adData+iOffset, pNewData, iNumElements*sizeof(T));
     } else {
-        throw SubSpaceException(stdsprintf("offset (%d) + numelements (%d) > numvals (%d)", iOffset, iNumElements, m_iNumVals));
+        throw SubSpaceException(xha_sprintf("offset (%d) + numelements (%d) > numvals (%d)", iOffset, iNumElements, m_iNumVals));
     }
     return iResult;
 }
@@ -365,7 +365,7 @@ int SubSpace<T>::set_dim_names(stringvec vDimNames) {
         m_vDimNames.insert(m_vDimNames.end(), vDimNames.begin(), vDimNames.end());
         iResult = 0;
     } else {
-        throw SubSpaceException(stdsprintf("The number of dimension names (%zd) should be equal to the number of dimensions (%zd)", vDimNames.size(), m_iNumDims));
+        throw SubSpaceException(xha_sprintf("The number of dimension names (%zd) should be equal to the number of dimensions (%zd)", vDimNames.size(), m_iNumDims));
     }
 
     return iResult;
@@ -383,7 +383,7 @@ int SubSpace<T>::set_coord_names(stringvecvec vvCoordNames) {
     if (vvCoordNames.size() == m_iNumDims) {
         for (uint i = 0; (iResult == 0) && (i < m_iNumDims); i++) {
             if ((vvCoordNames[i].size() > 0) && (vvCoordNames[i].size() != m_vSizes[i])) {
-                throw SubSpaceException(stdsprintf("The sizes of coordinate name vector[%d] (%zd) should be equal to the size of dimension %d (%zd)", i, vvCoordNames[i].size(), i, m_vSizes[i]));
+                throw SubSpaceException(xha_sprintf("The sizes of coordinate name vector[%d] (%zd) should be equal to the size of dimension %d (%zd)", i, vvCoordNames[i].size(), i, m_vSizes[i]));
             }
         }
         if (iResult == 0) {
@@ -399,7 +399,7 @@ int SubSpace<T>::set_coord_names(stringvecvec vvCoordNames) {
         }
 
     } else {
-        throw SubSpaceException(stdsprintf("The number of coordinate name vectors (%zd) should be equal to the number of dimensions (%zd)", vvCoordNames.size(), m_iNumDims));
+        throw SubSpaceException(xha_sprintf("The number of coordinate name vectors (%zd) should be equal to the number of dimensions (%zd)", vvCoordNames.size(), m_iNumDims));
     }
 
     return iResult;
@@ -440,7 +440,7 @@ int SubSpace<T>::calculate_slice_description(uintvecvec vvIndexes) {
     int iResult = 0;
     
     if (m_bVerbose) {
-        stdfprintf(stderr, "got %zd indexes\n", vvIndexes.size());
+        xha_fprintf(stderr, "got %zd indexes\n", vvIndexes.size());
         show_uintvecvec(vvIndexes);
     }
     
@@ -452,11 +452,11 @@ int SubSpace<T>::calculate_slice_description(uintvecvec vvIndexes) {
         iNumSliceVals *= vvIndexes[i].size();
     }
     if (m_bVerbose) {
-        stdfprintf(stderr, "slice sizes calc (%d): ", iNumSliceVals);
+        xha_fprintf(stderr, "slice sizes calc (%d): ", iNumSliceVals);
         for (uint i = 0; i < m_vSliceDimensions.size(); i++) {
-            stdfprintf(stderr, " %d", m_vSliceDimensions[i]);
+            xha_fprintf(stderr, " %d", m_vSliceDimensions[i]);
         }
-        stdfprintf(stderr, "\n");
+        xha_fprintf(stderr, "\n");
     }
     
     if (check_indexes(vvIndexes)) {
@@ -465,7 +465,7 @@ int SubSpace<T>::calculate_slice_description(uintvecvec vvIndexes) {
         cartesian_product(vvIndexes, vvProduct);
             
         if (m_bVerbose) {
-            stdfprintf(stderr, "got %zd combinations\n", vvProduct.size());
+            xha_fprintf(stderr, "got %zd combinations\n", vvProduct.size());
             show_uintvecvec(vvProduct);
         }
             
@@ -521,7 +521,7 @@ int SubSpace<T>::single_slice(uintvec vIndexes, uintuintvec &vStartNums) {
         vStartNums.push_back(std::pair<int,int>{s,v});
 
     } else {
-        throw SubSpaceException(stdsprintf("there must be %d slice vectors provided", m_iNumDims));
+        throw SubSpaceException(xha_sprintf("there must be %d slice vectors provided", m_iNumDims));
     }
     return iResult;
 }
@@ -539,7 +539,7 @@ bool SubSpace<T>::check_indexes(uintvecvec &vvIndexes) {
         uintvec &vIndexes = vvIndexes[i];
         for (uint j = 0; j < vIndexes.size(); j++) {
             if (vIndexes[j] >= m_vSizes[i]) {
-                stdfprintf(stderr, "bad index in dimension %d (max %d): %d\n", i, m_vSizes[i]-1, vIndexes[j]);
+                xha_fprintf(stderr, "bad index in dimension %d (max %d): %d\n", i, m_vSizes[i]-1, vIndexes[j]);
                 bOK = false;
             }
         }
@@ -575,7 +575,7 @@ SubSpace<T> *SubSpace<T>::create_slice(uintvecvec vAllIndexes) {
                     pSS->set_data(m_adData+iStart, iDestOff, iCount);
                     iDestOff += iCount;
                 } else {
-                    stdfprintf(stderr, "description item %u: cant copy %u items\n", i, iCount);
+                    xha_fprintf(stderr, "description item %u: cant copy %u items\n", i, iCount);
                     iResult = 0;
                 }
             }
@@ -618,28 +618,28 @@ int SubSpace<T>::calculate_sum_description(int iDim, uintvec &vBases, uintvec &v
     int iResult = 0;
     uint b1 = 1;
     // covolume
-    stdfprintf(stderr, "sizes: %bv\n", m_vSizes);
+    xha_fprintf(stderr, "sizes: %bv\n", m_vSizes);
     for (uint i = iDim+1; i < m_vSizes.size(); i++) {
         b1 *= m_vSizes[i];
-        stdfprintf(stderr, "csd i:%d  b1:%d\n", i, b1);
+        xha_fprintf(stderr, "csd i:%d  b1:%d\n", i, b1);
     }
-    stdfprintf(stderr, "csd final b1:%d\n", b1);
+    xha_fprintf(stderr, "csd final b1:%d\n", b1);
 
     
-    stdfprintf(stderr, "m_vSubVolumes:%bv\n", m_vSubVolumes);
+    xha_fprintf(stderr, "m_vSubVolumes:%bv\n", m_vSubVolumes);
    
     for (uint i = 0; i < b1; i++) {
         vBases.push_back(i*m_vSubVolumes[iDim+1]);
-        // stdfprintf(stderr, "csd i:%d  vbases:%bv\n", i, vBases);
+        // xha_fprintf(stderr, "csd i:%d  vbases:%bv\n", i, vBases);
     }
-    // stdfprintf(stderr, "csd final vbases: %bv\n", vBases);
-    stdfprintf(stderr, "csd final vbases: %s\n", short_array(vBases, 9, 3, 2));
+    // xha_fprintf(stderr, "csd final vbases: %bv\n", vBases);
+    xha_fprintf(stderr, "csd final vbases: %s\n", short_array(vBases, 9, 3, 2));
    
     for (uint i = 0; i < m_vSubVolumes[iDim]; i++) {
         vBaseOffsets.push_back(i);  
     }
-    //stdfprintf(stderr, "csd final vbo:    %bv\n", vBaseOffsets);
-    stdfprintf(stderr, "csd final vbo:    %s\n", short_array(vBaseOffsets, 9, 3, 2));
+    //xha_fprintf(stderr, "csd final vbo:    %bv\n", vBaseOffsets);
+    xha_fprintf(stderr, "csd final vbo:    %s\n", short_array(vBaseOffsets, 9, 3, 2));
         
     // the projection hyperplane consists of all vBase[i]+vBaseOffsets[j]
     // each of these points reeceives the reduction from all "projected" opints
@@ -650,16 +650,16 @@ int SubSpace<T>::calculate_sum_description(int iDim, uintvec &vBases, uintvec &v
     for (uint i = 0; i < m_vSizes[iDim]; i++) {
         vElementOffsets.push_back(i*m_vSubVolumes[iDim]);
     }
-    //stdfprintf(stderr, "csd final eloff:  %bv\n", vElementOffsets);
-    stdfprintf(stderr, "csd final eloff:  %s\n", short_array(vElementOffsets, 9, 3, 2));
+    //xha_fprintf(stderr, "csd final eloff:  %bv\n", vElementOffsets);
+    xha_fprintf(stderr, "csd final eloff:  %s\n", short_array(vElementOffsets, 9, 3, 2));
     // from the summation start we will sum up all items at offsets vSumOffset[i] after 
 
     if (m_bVerbose) {
-        stdfprintf(stderr, "[:calculate_sum_description(%d)]:\n", iDim);
-        stdfprintf(stderr, "[:calculate_sum_description(%d)]vBases:   %bv\n", iDim, vBases);
-        stdfprintf(stderr, "[:calculate_sum_description(%d)]vBaseOffsets:  %bv\n", iDim, vBaseOffsets);
+        xha_fprintf(stderr, "[:calculate_sum_description(%d)]:\n", iDim);
+        xha_fprintf(stderr, "[:calculate_sum_description(%d)]vBases:   %bv\n", iDim, vBases);
+        xha_fprintf(stderr, "[:calculate_sum_description(%d)]vBaseOffsets:  %bv\n", iDim, vBaseOffsets);
         
-        stdfprintf(stderr, "[:calculate_sum_description(%d)]vSumOffsets:  %bv\n", iDim, vElementOffsets);
+        xha_fprintf(stderr, "[:calculate_sum_description(%d)]vSumOffsets:  %bv\n", iDim, vElementOffsets);
     }
     return iResult;
 }
@@ -762,7 +762,7 @@ SubSpace<T> *SubSpace<T>::squeeze(const uintuintmap &mSqueezeDims) {
     for (auto const& imap: mSqueezeDims) {
         vSqueezes.push_back(imap.first);
     }
-    stdprintf("Squeeze got: %bv\n", vSqueezes);
+    xha_printf("Squeeze got: %bv\n", vSqueezes);
 
     for (uint i = 0; i < m_vSizes.size(); i++) {
         if ((std::find(vSqueezes.begin(), vSqueezes.end(), i) == 
@@ -803,24 +803,24 @@ SubSpace<T> *SubSpace<T>::squeeze() {
 //
 template<typename T>
 void SubSpace<T>::show_sizes() {
-    stdprintf("sizes:      ");
+    xha_printf("sizes:      ");
     if (m_vSizes.size() > 0) {
         for (uint i = 0; i < m_vSizes.size(); i++) {
-            stdprintf(" %d", m_vSizes[i]);
+            xha_printf(" %d", m_vSizes[i]);
         }
     } else {
-        stdprintf(" -");
+        xha_printf(" -");
     }
-    stdprintf("\n");
-    stdprintf("subvolumes: ");
+    xha_printf("\n");
+    xha_printf("subvolumes: ");
     if (m_vSubVolumes.size() > 1) {
         for (uint i = 1; i < m_vSubVolumes.size(); i++) {
-            stdprintf(" %d", m_vSubVolumes[i]);
+            xha_printf(" %d", m_vSubVolumes[i]);
         }
     } else {
-        stdprintf(" -");
+        xha_printf(" -");
     }
-    stdprintf("\n");
+    xha_printf("\n");
 
 }
 
@@ -905,7 +905,7 @@ void SubSpace<T>::show_data_nice(int iType, FILE *fOut, stringvec vSeparators, b
         }
     }
  
-    if (bFrame) {stdfprintf(fOut, "%s\n", sFrame);}
+    if (bFrame) {xha_fprintf(fOut, "%s\n", sFrame);}
 
     // print sll numbers sequentially, but insert separators if necessary
     uint i = 0;
@@ -922,22 +922,22 @@ void SubSpace<T>::show_data_nice(int iType, FILE *fOut, stringvec vSeparators, b
                     }
 
                     if (j0 == 1) {
-                        stdfprintf(fOut, "\n");
+                        xha_fprintf(fOut, "\n");
                     } else {
                         sSep = vStandardSeps[j0]/*+" "*/;
                     }
                 }
             }
             if (!sSep.empty()) {
-                stdfprintf(fOut, "%s", sSep.c_str());
+                xha_fprintf(fOut, "%s", sSep.c_str());
             }
 
         }
-        stdfprintf(fOut, sMask, m_adData[i]);
+        xha_fprintf(fOut, sMask, m_adData[i]);
         
         i++;
     }
-    if (bFrame) {stdfprintf(fOut, "\n%s\n", sFrame);}
+    if (bFrame) {xha_fprintf(fOut, "\n%s\n", sFrame);}
 
 
 
@@ -962,20 +962,20 @@ void SubSpace<T>::show_data_csv() {
                 bLineStart = true;
                 bool bShift = true;
                 for (uint k = 1; k < m_iNumDims; k++) {
-                    //  stdprintf("k:%d sh:%s vni[%d]:%d vcns[%d]:%d \n", k, bShift?"T":"F", k, vNameIndexes[k], k, m_vvCoordNames[k].size());
+                    //  xha_printf("k:%d sh:%s vni[%d]:%d vcns[%d]:%d \n", k, bShift?"T":"F", k, vNameIndexes[k], k, m_vvCoordNames[k].size());
                     if (vNameIndexes[k] < m_vvCoordNames[k].size()-1) {
                         if (bShift) {
                             vNameIndexes[k]++;
                             bShift = false;
-                            // stdprintf("increasing\n");
+                            // xha_printf("increasing\n");
                         } else {
-                            // stdprintf("nop\n");
+                            // xha_printf("nop\n");
                         }
                     } else {
-                        //                        stdprintf("K:%d - idx %d A= #coordnames %d\n", k, vNameIndexes[k] , m_vvCoordNames[k].size()-1);
+                        //                        xha_printf("K:%d - idx %d A= #coordnames %d\n", k, vNameIndexes[k] , m_vvCoordNames[k].size()-1);
                         if (bShift) {
                             vNameIndexes[k] = 0;
-                            // stdprintf("Resetting\n");
+                            // xha_printf("Resetting\n");
                         }
                         bShift = true;
                     }
@@ -989,13 +989,13 @@ void SubSpace<T>::show_data_csv() {
                 sHead += m_vvCoordNames[k][vNameIndexes[k]]+";";
             }
             bLineStart = false;
-            stdprintf("%s", sHead);
+            xha_printf("%s", sHead);
             
         }
-        stdprintf(std::to_string(m_adData[i])+(bLineStart?"":";"));
+        xha_printf(std::to_string(m_adData[i])+(bLineStart?"":";"));
         i++;
     }
-    stdprintf("\n");
+    xha_printf("\n");
 }
 
 
@@ -1005,11 +1005,11 @@ void SubSpace<T>::show_data_csv() {
 template<typename T>
 void SubSpace<T>::show_names() {
 
-    stdprintf("Coord names:\n");
+    xha_printf("Coord names:\n");
     for (uint i = 0; i < m_vDimNames.size(); i++) {
-        stdprintf("  dimension %s\n", m_vDimNames[i]);
+        xha_printf("  dimension %s\n", m_vDimNames[i]);
         for (uint j = 0; j < m_vvCoordNames[i].size(); j++) {
-            stdprintf("    %s\n", m_vvCoordNames[i][j]);
+            xha_printf("    %s\n", m_vvCoordNames[i][j]);
         }
     }
 }

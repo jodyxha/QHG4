@@ -2,7 +2,7 @@
 #include <cstring>
 #include <hdf5.h>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "OccHistory.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
@@ -62,7 +62,7 @@ int OccGroupReader::tryReadAttributes(OccAttributes *pAttributes) {
         if (status >= 0) {
             size_t size = H5Tget_size (hDataType);
             char *pBuf = new char[size*dims[0]];
-            stdprintf("rank %d, dom[0] %llu, size %lu\n", rank, dims[0], size);
+            xha_printf("rank %d, dom[0] %llu, size %lu\n", rank, dims[0], size);
             status = H5Aread(hAttr, hDataType, pBuf);
             if (status >= 0) {
                 // split strings and put innto vector
@@ -70,19 +70,19 @@ int OccGroupReader::tryReadAttributes(OccAttributes *pAttributes) {
                 char *p = pBuf;
                 for (uint i = 0; i <dims[0]; i++) {
                     pAttributes->m_vPopNames.push_back(p);
-                    stdprintf("  [%s]\n", p);
+                    xha_printf("  [%s]\n", p);
                     p+= size;
                 }
                 iResult = 0;
             } else {
-                stdprintf("couldn't read attribute [%s]\n", OCC_ATTR_POP_NAMES);
+                xha_printf("couldn't read attribute [%s]\n", OCC_ATTR_POP_NAMES);
             }
         } else {
-            stdprintf("couldn't get extents for attribute [%s]\n", OCC_ATTR_POP_NAMES);
+            xha_printf("couldn't get extents for attribute [%s]\n", OCC_ATTR_POP_NAMES);
         }
         qdf_closeAttribute(hAttr);
     } else {
-        stdprintf("couldn't open attribute [%s]\n", OCC_ATTR_POP_NAMES);
+        xha_printf("couldn't open attribute [%s]\n", OCC_ATTR_POP_NAMES);
     }
 
     return iResult;
@@ -118,16 +118,16 @@ int OccGroupReader::readData(OccHistory *pOcc) {
         if (iResult == 0) {
             iResult = pOcc->deserialize(pBuf);
             if (iResult == 0) {
-                stdprintf("successfully extracted data\n");
+                xha_printf("successfully extracted data\n");
             } else {
-                stdprintf("couldn't deserialize buffer\n");
+                xha_printf("couldn't deserialize buffer\n");
             }
         } else {
-            stdprintf("couldn't read array\n");
+            xha_printf("couldn't read array\n");
         }
         delete[] pBuf;
     } else {
-        stdprintf("Dataset [%s] does not exist in group\n", OCC_DS_OCCTRACK);
+        xha_printf("Dataset [%s] does not exist in group\n", OCC_DS_OCCTRACK);
     }
     return iResult;
 }

@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <time.h>
 #include "types.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "WELL512.h"
 #include "WELLUtils.h"
 
@@ -17,7 +17,7 @@ int main(int iArgC, char * apArgV[]) {
         vOrig.push_back(i);
     }
 
-    stdprintf("vorig before: %bv\n", vOrig);
+    xha_printf("vorig before: %bv\n", vOrig);
     char *pPhrase;
     time_t tloc;
     time_t t= time(&tloc);
@@ -27,7 +27,7 @@ int main(int iArgC, char * apArgV[]) {
         pPhrase = ctime(&t);
     }
     
-    stdprintf("Phrase:[%s]\n", pPhrase);
+    xha_printf("Phrase:[%s]\n", pPhrase);
 
     WELL512 *pWELL = WELLUtils::createWELL(pPhrase);
     WELLUtils::showState(pWELL);
@@ -36,8 +36,8 @@ int main(int iArgC, char * apArgV[]) {
     intvec vSplit;
 
     iResult = prgs->split(vOrig, vSplit);
-    stdprintf("vorig after:  %bv\n", vOrig);
-    stdprintf("vsplit:       %bv\n", vSplit);
+    xha_printf("vorig after:  %bv\n", vOrig);
+    xha_printf("vsplit:       %bv\n", vSplit);
     
     delete prgs;
     delete pWELL;

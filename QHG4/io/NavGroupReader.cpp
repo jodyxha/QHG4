@@ -3,7 +3,7 @@
 #include <hdf5.h>
 #include <string>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "Navigation.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
@@ -133,10 +133,10 @@ int NavGroupReader::readData(Navigation *pNG) {
             iResult = -1;
         }
         if (iResult != 0) {
-            stdprintf("Consistency check failed:\n");
-            stdprintf("Num Ports %d\n", iNumPorts);
-            stdprintf("Num Dests %d, actual %d\n", iNumDests, iSum);
-            stdprintf("Num Dists %d, actual %d\n", iNumDists, iSum-iNumPorts);
+            xha_printf("Consistency check failed:\n");
+            xha_printf("Num Ports %d\n", iNumPorts);
+            xha_printf("Num Dests %d, actual %d\n", iNumDests, iSum);
+            xha_printf("Num Dists %d, actual %d\n", iNumDists, iSum-iNumPorts);
         }
     }
     
@@ -161,7 +161,7 @@ int NavGroupReader::readData(Navigation *pNG) {
         iResult = pNG->checkSizes(iNumPorts, iNumDests, iNumDists);
         if (iResult == 0) {
         } else {
-            stdprintf("[NavReader] size mismatch!\n");
+            xha_printf("[NavReader] size mismatch!\n");
         }
     }
 

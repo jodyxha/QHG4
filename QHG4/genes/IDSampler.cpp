@@ -7,7 +7,7 @@
 
 #include "types.h"
 #include "qhg_consts.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "geomutils.h"
 #include "LineReader.h"
 
@@ -112,7 +112,7 @@ int IDSampler::getSamplesP(const std::string sQDFTime, const std::string sPopNam
         idagdatamap mAgentDataTemp;
         locdata::const_iterator it;
         for (it = mLocData.begin(); (iResult == 0) && it != mLocData.end(); ++it) {
-            stdprintf("Getting IDs for %s\n", it->first)); fflush(stdout);
+            xha_printf("Getting IDs for %s\n", it->first)); fflush(stdout);
             double dLo = it->second.dLon;
             double dLa = it->second.dLat;
 
@@ -188,7 +188,7 @@ int IDSampler::getSamplesP(const std::string sQDFTime, const std::string sPopNam
                 } else {
                     sTemp.insert(it2->second.begin(), it2->second.end());
                 }
-                stdprintf("  found % *zd ids for [%s]\n", iWidth, sTemp.size(), it2->first);fflush(stdout);
+                xha_printf("  found % *zd ids for [%s]\n", iWidth, sTemp.size(), it2->first);fflush(stdout);
                 std::vector<idtype> &v = mvIDs[it2->first];
                 v.insert(v.end(), sTemp.begin(), sTemp.end());
                     
@@ -211,7 +211,7 @@ int IDSampler::getSamplesP(const std::string sQDFTime, const std::string sPopNam
                     sTemp.insert(it2->second[iIndex]);
                     mAgentData[it2->second[iIndex]] =  mAgentDataTemp[it2->second[iIndex]];
                 } 
-                stdprintf("  found %zd ids for [%s]\n", sTemp.size(), it2->first);fflush(stdout);
+                xha_printf("  found %zd ids for [%s]\n", sTemp.size(), it2->first);fflush(stdout);
                 std::vector<idtype> &v = mvIDs[it2->first];
                 v.insert(v.end(), sTemp.begin(), sTemp.end());
             }
@@ -315,7 +315,7 @@ int IDSampler::getSamples(const std::string sQDFTime, const std::string sPopName
                 } else {
                     sTemp.insert(it2->second.begin(), it2->second.end());
                 }
-                stdprintf("  found % *zd ids for [%s]\n", iWidth, sTemp.size(), it2->first);fflush(stdout);
+                xha_printf("  found % *zd ids for [%s]\n", iWidth, sTemp.size(), it2->first);fflush(stdout);
                 std::vector<idtype> &v = mvIDs[it2->first];
                 v.insert(v.end(), sTemp.begin(), sTemp.end());
                     
@@ -334,10 +334,10 @@ int IDSampler::getSamples(const std::string sQDFTime, const std::string sPopName
 //
 int IDSampler::getSamples(stringvec &vQDFPops, const std::string sPopName, const std::string sLocFile, locdata &mLocData, loctimeids &mmvIDs, idagdatamap &mAgentData, bool bParallel) {
     int iResult = 0;
-    stdprintf("Heellllooo?\n");
+    xha_printf("Heellllooo?\n");
     for (uint i = 0; (iResult == 0) && (i < vQDFPops.size()); ++i) {
         stringvidmap mvIDs;
-        stdprintf("Getting samples from [%s]\n", vQDFPops[i]);fflush(stdout);
+        xha_printf("Getting samples from [%s]\n", vQDFPops[i]);fflush(stdout);
         if (bParallel) {
             iResult = getSamplesP(vQDFPops[i], sPopName, sLocFile, mLocData, mvIDs, mAgentData);
         } else {
@@ -482,37 +482,37 @@ int IDSampler::readArrays(const std::string sQDFTime, const std::string sPopName
             if (iResult == 0) {
                 int iCount = pQA->getFirstSlab(m_pIDs, m_iNumAgents, "AgentID");
                 if (iCount != m_iNumAgents) {
-                    stdprintf("Got %d agent IDs instead of %d\n", iCount, m_iNumAgents);
+                    xha_printf("Got %d agent IDs instead of %d\n", iCount, m_iNumAgents);
                     iResult = -1;
                 }
             }
             if (iResult == 0) {
                 int iCount = pQA->getFirstSlab(m_pCellIDs, m_iNumAgents, "CellID");
                 if (iCount != m_iNumAgents) {
-                    stdprintf("Got %d cell IDs instead of %d\n", iCount, m_iNumAgents);
+                    xha_printf("Got %d cell IDs instead of %d\n", iCount, m_iNumAgents);
                     iResult = -1;
                 }
             }
             if (iResult == 0) {
                 int iCount = pQA->getFirstSlab(m_pGenders, m_iNumAgents, "Gender");
                 if (iCount != m_iNumAgents) {
-                    stdprintf("Got %d genders instead of %d\n", iCount, m_iNumAgents);
+                    xha_printf("Got %d genders instead of %d\n", iCount, m_iNumAgents);
                     iResult = -1;
                 }
             }
                 
             if (iResult == 0) {
-                stdprintf("  read agent data: %d items\n", m_iNumAgents);
+                xha_printf("  read agent data: %d items\n", m_iNumAgents);
             }
         } else {
-            stdprintf("Couldn't open dataset [%s/%s%s]\n", POPGROUP_NAME, sPopName, AGENT_DATASET_NAME);
+            xha_printf("Couldn't open dataset [%s/%s%s]\n", POPGROUP_NAME, sPopName, AGENT_DATASET_NAME);
         }
         pQA->closeArray();
 
         delete pQA;
     } else {
         iResult = -1;
-        stdprintf("Couldn't open file [%s]\n", sQDFTime);
+        xha_printf("Couldn't open file [%s]\n", sQDFTime);
     }
     return iResult;
 }
@@ -539,13 +539,13 @@ int IDSampler::fillCoordMap(const std::string sQDFGeoGrid) {
                 //                printf("Read %d CellIDs\n", iCount);
                 iResult = 0;
             } else {
-                stdprintf("Read bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)\n", sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, iNumCells);
+                xha_printf("Read bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)\n", sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, iNumCells);
                 iResult = -1;
             }
             pQA->closeArray();
         } else {
             iResult = -1;
-            stdprintf("Couldn't open QDF array for [%s:%s/%s]\n", sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME);
+            xha_printf("Couldn't open QDF array for [%s:%s/%s]\n", sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME);
         }
 
         if (iResult == 0) {
@@ -560,18 +560,18 @@ int IDSampler::fillCoordMap(const std::string sQDFGeoGrid) {
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdprintf("Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, iNumCells);
+                        xha_printf("Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, iNumCells);
                     }
                 } else {
                     iResult = -1;
-                    stdprintf("Number of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE);
+                    xha_printf("Number of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE);
                 }
                 pQA->closeArray();
             }
         }
 
         if (iResult == 0) {
-            std::string sPath = stdsprintf("%s/%s", GEOGROUP_NAME, GEO_DS_LATITUDE);
+            std::string sPath = xha_sprintf("%s/%s", GEOGROUP_NAME, GEO_DS_LATITUDE);
             iResult = pQA->openArray(sPath);
             if (iResult == 0) {
                 uint iNumCellsL = pQA->getSize();
@@ -579,15 +579,15 @@ int IDSampler::fillCoordMap(const std::string sQDFGeoGrid) {
                     pdLat = new double[iNumCells];
                     uint iCount = pQA->getFirstSlab(pdLat, iNumCells);
                     if (iCount == iNumCells) {
-                        //                        stdprintf("Read %d Latitudes\n", iCount);
+                        //                        xha_printf("Read %d Latitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdprintf("Couldn't read latitudes from [%s:%s/%s]: %d instead of %d\n", sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL,iNumCells);
+                        xha_printf("Couldn't read latitudes from [%s:%s/%s]: %d instead of %d\n", sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL,iNumCells);
                     }
                 } else {
                     iResult = -1;
-                    stdprintf("Number of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE);
+                    xha_printf("Number of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE);
                 }
 
                 pQA->closeArray();
@@ -596,7 +596,7 @@ int IDSampler::fillCoordMap(const std::string sQDFGeoGrid) {
     
         delete pQA;
     } else {
-        stdprintf("Couldn't create QDFArray\n");
+        xha_printf("Couldn't create QDFArray\n");
     }
      
     if (iResult == 0) {
@@ -605,7 +605,7 @@ int IDSampler::fillCoordMap(const std::string sQDFGeoGrid) {
             m_mCoords[pCellIDs[i]] = std::pair<double, double>(pdLon[i], pdLat[i]);
         }
  
-        stdprintf("  read cell coordinates: %zd items\n", m_mCoords.size());
+        xha_printf("  read cell coordinates: %zd items\n", m_mCoords.size());
     }
 
     if (pCellIDs != NULL) {
@@ -656,7 +656,7 @@ int IDSampler::fillLocData(const std::string sLocFile, stringvec &vNames, locdat
                 vNames.push_back(sName);
                 mLocData[sName] = li;
             } else {
-                stdprintf("Couldn't read enough items from line [%s]\n", pLine);
+                xha_printf("Couldn't read enough items from line [%s]\n", pLine);
                 iResult = -1;
             }
             pLine = pLR->getNextLine();
@@ -664,7 +664,7 @@ int IDSampler::fillLocData(const std::string sLocFile, stringvec &vNames, locdat
 
         delete pLR;
     } else {
-        stdprintf("Couldn't open file [%s]\n", pLocFile);
+        xha_printf("Couldn't open file [%s]\n", pLocFile);
     }
 
     return iResult;

@@ -2,8 +2,8 @@
 #include <map>
 
 #include "types.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "GroupPop.h"
 #include "GroupSplitter.h"
 #include "GroupManager.h"
@@ -60,7 +60,7 @@ int GroupManager::addAgentToGroup(int iGroupID, int iAgentIdx) {
         
         iResult = 0;
     } else {
-        stdprintf("[GroupManager::addAgentToGroup] Agent %d already in gtroup %d\n", iAgentIdx, iGroupID);
+        xha_printf("[GroupManager::addAgentToGroup] Agent %d already in gtroup %d\n", iAgentIdx, iGroupID);
     }
     return iResult;
 
@@ -81,10 +81,10 @@ int GroupManager::removeAgentFromGroup(int iAgentIdx){
             m_mAgentGroup.erase(iAgentIdx);
             iResult = 0;
         } else {
-            stdprintf("[GroupManager::removeAgentFromGroup] COuldn't erase agent %d\n", iAgentIdx);
+            xha_printf("[GroupManager::removeAgentFromGroup] COuldn't erase agent %d\n", iAgentIdx);
         }
     } else {
-        stdprintf("[GroupManager::removeAgentFromGroup] agebt %d not found %d\n", iAgentIdx);
+        xha_printf("[GroupManager::removeAgentFromGroup] agebt %d not found %d\n", iAgentIdx);
     }
     return iResult;
 
@@ -102,7 +102,7 @@ bool GroupManager::groupContainsAgent(int iGroupID, int iAgentIdx) {
         intvec::const_iterator it = std::find(vCur.begin(), vCur.end(), iAgentIdx);
         bContained = (it != vCur.end());
     } else {
-        stdprintf("[GroupManager::groupContainsAgent] no group with id %d\n", iGroupID);
+        xha_printf("[GroupManager::groupContainsAgent] no group with id %d\n", iGroupID);
     }
     return bContained;
 }
@@ -133,10 +133,10 @@ int GroupManager::splitGroup(int iGroupID) {
                 iResult = addAgentToGroup(iSplitGroupID, vSplitOff[i]);
             }
         } else {
-            stdprintf("[ GroupManager::splitGroup] Couldn't split group %d\n", iGroupID);
+            xha_printf("[ GroupManager::splitGroup] Couldn't split group %d\n", iGroupID);
         }
     } else {
-        stdprintf("[ GroupManager::splitGroup] no group with id %d\n", iGroupID);
+        xha_printf("[ GroupManager::splitGroup] no group with id %d\n", iGroupID);
     }
     return iResult;
 }

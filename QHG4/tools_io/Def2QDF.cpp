@@ -3,8 +3,8 @@
 
 #include <hdf5.h>
 
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "MessLogger.h"
 #include "ExecuteCommand.h"
 #include "SCellGrid.h"
@@ -119,32 +119,32 @@ GridFactory *createGridFactory(const std::string sInput) {
     if (pGF->isReady()) {
         iResult = pGF->readDef();
         if (iResult == 0) {
-            stdprintf("Successfully read\n");
+            xha_printf("Successfully read\n");
             if (pGF->getCellGrid() != NULL) {
-                stdprintf("  - grid data\n");
+                xha_printf("  - grid data\n");
             }
             if (pGF->getGeography() != NULL) {
-                stdprintf("  - geo data\n");
+                xha_printf("  - geo data\n");
             }
             if (pGF->getClimate() != NULL) {
                 pGF->getCellGrid()->setClimate(pGF->getClimate());
-                stdprintf("  - climate data\n");
+                xha_printf("  - climate data\n");
             }
             if (pGF->getVeg() != NULL) {
                 pGF->getCellGrid()->setVegetation(pGF->getVeg());
-                stdprintf("  - vegetation data\n");
+                xha_printf("  - vegetation data\n");
             }
             if (pGF->isFromFile()) {
-                stdprintf("from def file [%s]\n", sInput);
+                xha_printf("from def file [%s]\n", sInput);
             } else {
-                stdprintf("from input string\n");
+                xha_printf("from input string\n");
             }
         } else {
-            stdprintf("Couldn't read definintion file [%s]\n", sInput);
+            xha_printf("Couldn't read definintion file [%s]\n", sInput);
             iResult = -1;
         }
     } else {
-        stdprintf("Couldn't open [%s] for reading\n", sInput);
+        xha_printf("Couldn't open [%s] for reading\n", sInput);
         iResult = -1;
     }
     if (iResult != 0) {

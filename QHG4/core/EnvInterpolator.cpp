@@ -4,7 +4,7 @@
 #include <omp.h>
 #include <hdf5.h>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "SCellGrid.h"
 #include "Geography.h"
 #include "Climate.h"
@@ -55,7 +55,7 @@ void EnvInterpolator::setActive(bool bState) {
 // cleanUp
 //
 void EnvInterpolator::cleanUp() {
-    stdprintf("EnvInterpolator::cleanUp\n");
+    xha_printf("EnvInterpolator::cleanUp\n");
     m_vNames.clear();
     m_mTargets.clear();
     for (auto it : m_mArrays) {
@@ -73,7 +73,7 @@ int EnvInterpolator::readInterpolationData(const std::string sQDFInter) {
     // clean up previous stuff
     cleanUp();
 
-    stdprintf("[EnvInterpolator::readInterpolationData] reading [%s]\n", sQDFInter);
+    xha_printf("[EnvInterpolator::readInterpolationData] reading [%s]\n", sQDFInter);
     // open file 
     hid_t hInterp = qdf_openFile(sQDFInter);
     if (hInterp > 0) {
@@ -86,7 +86,7 @@ int EnvInterpolator::readInterpolationData(const std::string sQDFInter) {
         }
         qdf_closeFile(hInterp);
     } else {
-        stdprintf("Couldn't open [%s] as QDF file\n", sQDFInter);
+        xha_printf("Couldn't open [%s] as QDF file\n", sQDFInter);
     }
     return iResult;
 }
@@ -99,7 +99,7 @@ int EnvInterpolator::extractTargets(hid_t hInterp) {
     int iResult = -1;
     hid_t hRoot=qdf_opencreateGroup(hInterp, "/", false);
     
-    stdprintf("[EnvInterpolator::extractTargets] checking root groups\n");
+    xha_printf("[EnvInterpolator::extractTargets] checking root groups\n");
     // check for top-levele attribute "targets"
     if (H5Aexists(hRoot, ATTR_TARG)) {
         // read it
@@ -108,12 +108,12 @@ int EnvInterpolator::extractTargets(hid_t hInterp) {
         hsize_t n = H5Tget_size(atype);
         char *pTargets = new char[n+1]; 
         memset(pTargets, 0, n+1);
-        stdprintf("[EnvInterpolator::extractTargets]  attribute size %llu\n", n);
+        xha_printf("[EnvInterpolator::extractTargets]  attribute size %llu\n", n);
 
         H5Aread(hTarget, atype, pTargets);
         qdf_closeAttribute(hTarget);
 
-        stdprintf("[EnvInterpolator::extractTargets] we have attribute[%s]\n", pTargets);
+        xha_printf("[EnvInterpolator::extractTargets] we have attribute[%s]\n", pTargets);
 
         iResult = 0;
         char *p = strtok(pTargets, "#");
@@ -123,14 +123,14 @@ int EnvInterpolator::extractTargets(hid_t hInterp) {
                 m_vNames.push_back(p);
                 p = strtok(NULL, "#");
             } else {
-                stdprintf("[EnvInterpolator::extractTargets] ERROR: attribute must have form 'GroupName'/'ArrayName' [%s]\n", p);
+                xha_printf("[EnvInterpolator::extractTargets] ERROR: attribute must have form 'GroupName'/'ArrayName' [%s]\n", p);
                 iResult = -1;
             }
         }
         delete[] pTargets;
         showNames();
     } else {
-        stdprintf("[EnvInterpolator::extractTargets] ERROR:Couldn't find attribute [%s] in file\n", ATTR_TARG);
+        xha_printf("[EnvInterpolator::extractTargets] ERROR:Couldn't find attribute [%s] in file\n", ATTR_TARG);
     }
 
 
@@ -144,7 +144,7 @@ int EnvInterpolator::extractTargets(hid_t hInterp) {
 //
 int EnvInterpolator::readArrays(hid_t hInterp) {
     int iResult = 0;
-    stdprintf("[EnvInterpolator::readArrays] reading arrays\n");
+    xha_printf("[EnvInterpolator::readArrays] reading arrays\n");
 
     for (uint i = 0; (iResult == 0) && (i < m_vNames.size()); i++) {
         stringvec vParts;
@@ -169,17 +169,17 @@ int EnvInterpolator::readArrays(hid_t hInterp) {
                     m_mArrays[m_vNames[i]] = length_array(dim, pArr);
                 } else {
                     iResult = -1;
-                    stdprintf("[EnvInterpolator::readArrays] Error reading array [%s]\n", m_vNames[i]);
+                    xha_printf("[EnvInterpolator::readArrays] Error reading array [%s]\n", m_vNames[i]);
                 }
 
             } else {
                 iResult = -1;
-                stdprintf("[EnvInterpolator::readArrays]  ERROR: Interpolation file specifies %s but no group [%s] exists\n", m_vNames[i], sGroup);
+                xha_printf("[EnvInterpolator::readArrays]  ERROR: Interpolation file specifies %s but no group [%s] exists\n", m_vNames[i], sGroup);
             }
         } else {
             // shouldn't happen - we checked this before
             iResult = 1;
-            stdprintf("[EnvInterpolator::readArrays]  ERROR:no '/' in array name\n");
+            xha_printf("[EnvInterpolator::readArrays]  ERROR:no '/' in array name\n");
         }
           
     }
@@ -195,10 +195,10 @@ int EnvInterpolator::findTargetArrays() {
     int iResult = 0;
 
     m_vEvents.clear();
-    stdprintf("[EnvInterpolator::findTargetArrays] finding targets for %zd arrays\n", m_vNames.size());
+    xha_printf("[EnvInterpolator::findTargetArrays] finding targets for %zd arrays\n", m_vNames.size());
     name_list::iterator it;
     for (it = m_vNames.begin(); (iResult == 0) && (it != m_vNames.end()); ++it) {
-        //stdprintf("[EnvInterpolator::findTargetArrays] finding targets for array [%s]\n", *it);
+        //xha_printf("[EnvInterpolator::findTargetArrays] finding targets for array [%s]\n", *it);
   
         
         stringvec vParts;
@@ -213,7 +213,7 @@ int EnvInterpolator::findTargetArrays() {
                     m_vEvents.push_back(EVENT_ID_GEO);
                     iResult = 0;
                 } else {
-                    stdprintf("[EnvInterpolator::findTargetArrays] ERROR: No interpolation supported for array [%s] in group [%s]\n", sArray, sGroup);
+                    xha_printf("[EnvInterpolator::findTargetArrays] ERROR: No interpolation supported for array [%s] in group [%s]\n", sArray, sGroup);
                     iResult = -1;
                 }
             } else if (sGroup == "Vegetation") {
@@ -222,7 +222,7 @@ int EnvInterpolator::findTargetArrays() {
                     m_vEvents.push_back(EVENT_ID_VEG);
                     iResult = 0;
                 } else {
-                    stdprintf("[EnvInterpolator::findTargetArrays] ERROR: No interpolation supported for array [%s] in group [%s]\n", sArray, sGroup);
+                    xha_printf("[EnvInterpolator::findTargetArrays] ERROR: No interpolation supported for array [%s] in group [%s]\n", sArray, sGroup);
                     iResult = -1;
                 }
             } else if (sGroup == "Climate") {
@@ -235,24 +235,24 @@ int EnvInterpolator::findTargetArrays() {
                     m_vEvents.push_back(EVENT_ID_CLIMATE);
                     iResult = 0;
                 } else {
-                    stdprintf("[EnvInterpolator::findTargetArrays] ERROR: No interpolation supported for array [%s] in group [%s]\n", sArray, sGroup);
+                    xha_printf("[EnvInterpolator::findTargetArrays] ERROR: No interpolation supported for array [%s] in group [%s]\n", sArray, sGroup);
                     iResult = -1;
                 }
             } else {
                 // append new interpolation events here;
-                stdprintf("[EnvInterpolator::findTargetArrays] ERROR: No interpolation supported for group [%s]\n", *it);
+                xha_printf("[EnvInterpolator::findTargetArrays] ERROR: No interpolation supported for group [%s]\n", *it);
                 iResult = -1;
             }
 
             if (iResult == 0) {
                 //printf("[EnvInterpolator::findTargetArrays] Target for [%s]: %p\n", *it, m_mTargets[*it]);
             } else {
-                stdprintf("[EnvInterpolator::findTargetArrays] ERROR: No interpolation supported for array [%s] in group [%s]\n", sArray, sGroup);
+                xha_printf("[EnvInterpolator::findTargetArrays] ERROR: No interpolation supported for array [%s] in group [%s]\n", sArray, sGroup);
             }
         } else {
             // shouldn't happen - we checked this before
             iResult = -1;
-            stdprintf("[EnvInterpolator::findTargetArrays] ERROR: no '/' in array name [%s]\n", *it);
+            xha_printf("[EnvInterpolator::findTargetArrays] ERROR: no '/' in array name [%s]\n", *it);
         }
     }
     return iResult;
@@ -263,7 +263,7 @@ int EnvInterpolator::findTargetArrays() {
 // interpolate
 //
 int EnvInterpolator::interpolate(int iSteps) {
-    stdprintf("EnvInterpolator::interpolate\n");
+    xha_printf("EnvInterpolator::interpolate\n");
     if (iSteps == 1) {
         for (std::string name : m_vNames) {
             double *pSource = m_mArrays[name].second;
@@ -291,10 +291,10 @@ int EnvInterpolator::interpolate(int iSteps) {
 // showNames
 //
 void EnvInterpolator::showNames() {
-    stdprintf("Names\n");
+    xha_printf("Names\n");
 
     for (std::string name : m_vNames) {
-        stdprintf("  %s\n", name);
+        xha_printf("  %s\n", name);
     }
 }
 
@@ -303,9 +303,9 @@ void EnvInterpolator::showNames() {
 // showArrays
 //
 void EnvInterpolator::showArrays() {
-    stdprintf("Arrays\n");
+    xha_printf("Arrays\n");
     for (auto la : m_mArrays) {
-        stdprintf("  %s (%d)\n", la.first, la.second.first);
+        xha_printf("  %s (%d)\n", la.first, la.second.first);
     }
 }
 

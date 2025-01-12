@@ -4,7 +4,7 @@
 #include <map>
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "geomutils.h"
 #include "Sampling.h"
@@ -57,9 +57,9 @@ int CellRangeSampling::setRangeDescription(void *pDescr) {
         }
         //printf("%zd elements in group for %d\n", m_mGroups[iRefCell].size(), iRefCell);
     }
-    if (m_bVerbose) stdprintf("before make refs %zd groups\n", m_mGroups.size());
+    if (m_bVerbose) xha_printf("before make refs %zd groups\n", m_mGroups.size());
     makeRefs();
-    if (m_bVerbose) stdprintf("after make refs %zd groups\n", m_mGroups.size());
+    if (m_bVerbose) xha_printf("after make refs %zd groups\n", m_mGroups.size());
     
     return iResult;
 };

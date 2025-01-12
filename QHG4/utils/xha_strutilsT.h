@@ -1,32 +1,32 @@
 /*============================================================================
-| stdstrutilsT.h
+| xha_strutilsT.h
 | 
 |  Templated functions for std::string-capable printf and other tools
 |  
-|  Also see stdstrutils.h, stdstrutils.cpp
+|  Also see xha_strutils.h, xha_strutils.cpp
 |
 |  Author: Jody Weissmann
 \===========================================================================*/ 
 
-#ifndef __STDSTRUTILST_H__
-#define __STDSTRUTILST_H__
+#ifndef __XHASTRUTILST_H__
+#define __XHASTRUTILST_H__
 
 #include <string>
 #include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <type_traits>
-#include "stdstrutils.h" 
+#include "xha_strutils.h" 
 
 /*
 template<typename... Args>
-static std::string stdsprintf(const std::string sFormat, Args... args);
+static std::string xha_sprintf(const std::string sFormat, Args... args);
 
 template<typename... Args>
-static void stdfprintf(FILE *fOut, const std::string sFormat, Args... args);
+static void xha_fprintf(FILE *fOut, const std::string sFormat, Args... args);
 
 template<typename... Args>
-static void stdprintf(const std::string sFormat, Args... args);
+static void xha_printf(const std::string sFormat, Args... args);
 
 template<typename T>
 static bool strToNum(const std::string sData, T *t);
@@ -66,7 +66,7 @@ bool strToHex(const std::string sData, T *t) {
     return (*pEnd == '\0');
 }
 
-/******************* stdprintf & co *******************/
+/******************* xha_printf & co *******************/
 
 struct sp_error:std::runtime_error {
     sp_error(std::string e, std::string _format): runtime_error(e), m_format(_format){};
@@ -139,7 +139,7 @@ std::string vecFormat(const std::string sFormat, const std::vector<T> t) {
 //----------------------------------------------------------------------------
 // fetchNextParam
 //  get next argument from args
-//  (fetchNextParams() with no arguments in stdstrutils.cpp)
+//  (fetchNextParams() with no arguments in xha_strutils.cpp)
 //
 //  CRAY: This function cant be compiled by the current cray compiler in 
 //  Busan (8.7.5), because it doesn't like
@@ -154,7 +154,7 @@ U fetchNextParam(const U value2, Args... args) {
 //----------------------------------------------------------------------------
 // fetchNextTwoParams
 //  get the first two arguments from args
-//  (fetchNextTwoParams() with no arguments in stdstrutils.cpp)
+//  (fetchNextTwoParams() with no arguments in xha_strutils.cpp)
 //
 //  CRAY: This function cant be compiled by the current cray compiler in 
 //  Busan (8.7.5), because it doesn't like
@@ -284,7 +284,7 @@ std::string simpleFormat(const std::string sFormat, const T t) {
 //----------------------------------------------------------------------------
 //  recursiveFormat
 //    normal recursion level
-//    (the termination function is defined in stdstrutils.cpp)
+//    (the termination function is defined in xha_strutils.cpp)
 //    Assumptions
 //    - vParts has one more element than vFormats
 //    - the number of arguments in Args is equal to the number
@@ -339,7 +339,7 @@ std::string recursiveFormat(stringvec &vParts, stringvec &vFormats, uint i, T va
 
 
 //----------------------------------------------------------------------------
-// stdsprintf
+// xha_sprintf
 //   Using sprintf-style formats and an arbitrary number of arguments to
 //   create formatted output.
 //   in addition to the ordinary format characters there are
@@ -357,7 +357,7 @@ std::string recursiveFormat(stringvec &vParts, stringvec &vFormats, uint i, T va
 //   sFormat = vParts[0] + vPureFormats[0] + ... + vPureFormats[N] + vParts[N+1]
 //
 template<typename... Args>
-std::string stdsprintf(const std::string sFormat, Args... args) {
+std::string xha_sprintf(const std::string sFormat, Args... args) {
     // the format codes 
     std::string sConvs {"csdiouxXaAeEfFgGpvO"};
     //std::string sConvs {"csdiouxXaAeEfFgGp"};
@@ -464,21 +464,21 @@ std::string stdsprintf(const std::string sFormat, Args... args) {
 
 
 //----------------------------------------------------------------------------
-// stdprintf
+// xha_printf
 //
 template<typename... Args>
-void stdprintf(const std::string sFormat, Args... args) {
-    std::string sRes = stdsprintf(sFormat, args...);
+void xha_printf(const std::string sFormat, Args... args) {
+    std::string sRes = xha_sprintf(sFormat, args...);
     std::cout << sRes;
 }
 
 
 //----------------------------------------------------------------------------
-// stdfprintf
+// xha_fprintf
 //
 template<typename... Args>
-void stdfprintf(FILE *fOut, const std::string sFormat, Args... args) {
-    std::string sRes = stdsprintf(sFormat, args...);
+void xha_fprintf(FILE *fOut, const std::string sFormat, Args... args) {
+    std::string sRes = xha_sprintf(sFormat, args...);
     fprintf(fOut, "%s", sRes.c_str());
 }
 

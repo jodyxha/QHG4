@@ -2,8 +2,8 @@
 #include <cstring>
 
 #include "strutils.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "ParamProvider2.h"
 
 #define ATTR_HYBRIDS_NAME              "Hybrids"
@@ -23,10 +23,10 @@ int getParamVal(const stringmap *pParams, const string &sName, T *pVal) {
         if (strToNum(it->second, pVal)) {
             iResult = 0;
         } else {
-            stdprintf("Invalid Number format [%s]\n", it->second);
+            xha_printf("Invalid Number format [%s]\n", it->second);
         }
     } else {
-        stdprintf("unknown param name [%s]\n", sName);
+        xha_printf("unknown param name [%s]\n", sName);
     }
     return iResult;
 }
@@ -52,12 +52,12 @@ int getParamValArr(const stringmap *pParams, const std::string &sName, int iNum,
             if (strToNum(vParts[i], &tDummy)) {
                 pVal[iC++] = tDummy;
             } else {
-                stdprintf("Invalid number for \"%s\" [%s]\n", pName, vParts[i]);
+                xha_printf("Invalid number for \"%s\" [%s]\n", pName, vParts[i]);
                 iResult = -1;
             }
         }
     } else {
-        stdprintf("unknown param name [%s]\n", sName);
+        xha_printf("unknown param name [%s]\n", sName);
     }
         
     return iResult;
@@ -96,7 +96,7 @@ int main(int iArgC, char *apArgV[]) {
             pPP->showTree();
             const std::vector<std::string> &vClassName = pPP->getClassNames();
             for (uint i = 0; i < vClassName.size(); ++i){
-                stdprintf("class [%s]\n", vClassName[i]);
+                xha_printf("class [%s]\n", vClassName[i]);
                 
                 iResult = pPP->selectClass(vClassName[i]);
                 
@@ -105,19 +105,19 @@ int main(int iArgC, char *apArgV[]) {
                 stringmap::const_iterator it;
                 for (it = cAttr.begin(); it != cAttr.end(); ++it) {
                     
-                    stdprintf("  %s -> %s\n", it->first, it->second);
+                    xha_printf("  %s -> %s\n", it->first, it->second);
                 }
                 
                 std::string sActionName("Hybrids");
                 const stringmap *pHybPar = pPP->getParams(sActionName);
                 if (pHybPar != NULL) {
-                    stdprintf("  Action[%s]\n", sActionName);
+                    xha_printf("  Action[%s]\n", sActionName);
                     for (it = pHybPar->begin(); it != pHybPar->end(); ++it) {
                         
-                        stdprintf("    %s -> %s\n", it->first, it->second);
+                        xha_printf("    %s -> %s\n", it->first, it->second);
                     }
                 } else {
-                    stdprintf("No params for [%s]\n",sActionName);
+                    xha_printf("No params for [%s]\n",sActionName);
                 }
                 
                 int iGenomeSize;
@@ -143,36 +143,36 @@ int main(int iArgC, char *apArgV[]) {
 
             stringmap::const_iterator  ita;
             for (ita = pa->begin(); ita != pa->end(); ++ita) {
-                stdprintf("  %s => %s\n", ita->first, ita->second);
+                xha_printf("  %s => %s\n", ita->first, ita->second);
             }
             */
             /*            
             const classes &mc  = pQXR->getClasses();
             classes::const_iterator itc;
             for (itc = mc.begin(); itc != mc.end(); ++itc) {
-                stdprintf("------ class\n");
-                stdprintf("class '%s'\n", itc->first);
+                xha_printf("------ class\n");
+                xha_printf("class '%s'\n", itc->first);
                 const stringmap &cattr = itc->second.cattr;
                 stringmap::const_iterator  ita;
                 for (ita = cattr.begin(); ita != cattr.end(); ++ita) {
-                    stdprintf("  %s: %s\n", ita->first, ita->second);
+                    xha_printf("  %s: %s\n", ita->first, ita->second);
                 }
-                stdprintf("------ modules\n");
+                xha_printf("------ modules\n");
                 const modules &mods = itc->second.mods;
                 modules::const_iterator itm;
                 for (itm = mods.begin(); itm != mods.end(); ++itm) {
-                    stdprintf("  module '%s'\n", itm->first);
+                    xha_printf("  module '%s'\n", itm->first);
                     stringmap::const_iterator  ita2;
                     for (ita2 = itm->second.begin(); ita2 != itm->second.end(); ++ita2) {
-                        stdprintf("    %s: %s\n", ita2->first, ita2->second);
+                        xha_printf("    %s: %s\n", ita2->first, ita2->second);
                     }
                     
                 }
-                stdprintf("------ priorities\n");
+                xha_printf("------ priorities\n");
                 const stringmap &pattr = itc->second.prios;
                 stringmap::const_iterator  ita3;
                 for (ita3 = pattr.begin(); ita3 != pattr.end(); ++ita3) {
-                    stdprintf("  %s: %s\n", ita3->first, ita3->second);
+                    xha_printf("  %s: %s\n", ita3->first, ita3->second);
                 }
                 
             }

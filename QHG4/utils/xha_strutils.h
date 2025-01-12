@@ -1,16 +1,16 @@
 /*============================================================================
-| stdstrutils.h
+| xha_strutils.h
 | 
 |  Regular functions std::string-capable string utilities.
 |  
-|  Also see stdstrutilsT.h, stdstrutils.cpp
+|  Also see xha_strutilsT.h, xha_strutils.cpp
 |
 |  
 |  Author: Jody Weissmann
 \===========================================================================*/ 
 
-#ifndef __STDSTRUTILS_H__
-#define __STDSTRUTILS_H__
+#ifndef __XHA_STRUTILS_H__
+#define __XHA_STRUTILS_H__
 
 #include <string>
 #include <vector>
@@ -35,11 +35,11 @@ int replaceEnvVars(const std::string sIn, std::string & sOut);
 bool fileExists(const std::string sFile);
 bool dirExists(const std::string sDir);
 
-// somehow can't have these in stdstrutilsT.h
+// somehow can't have these in xha_strutilsT.h
 
 //----------------------------------------------------------------------------
 // recursiveFormat
-//   termination version (of stdstrutilsT::recursiveFormat)
+//   termination version (of xha_strutilsT::recursiveFormat)
 //
 std::string recursiveFormat(stringvec &vParts, stringvec &vFormats, uint i);
 

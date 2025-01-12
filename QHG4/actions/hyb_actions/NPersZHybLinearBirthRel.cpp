@@ -92,7 +92,7 @@ template<typename T>
 int NPersZHybLinearBirthRel<T>::preLoop() {
     int iResult = -1;
 
-    //    stdprintf("!!!intertest!!! NPersZHybLinearBirthRel<T>::preLoop\n");
+    //    xha_printf("!!!intertest!!! NPersZHybLinearBirthRel<T>::preLoop\n");
 
     m_fHybScale = 2*(1 - m_dHybMinProb);
     m_fHybShift = 1 - (1 - m_dHybMinProb)/2;
@@ -197,7 +197,7 @@ int NPersZHybLinearBirthRel<T>::execute(int iAgentIndex, float fT) {
                     //if (dR < paM->m_dBReal*fFullFert) {
                     /*
                     if (paM->m_fPhenHyb != paP->m_fPhenHyb) {
-                        stdprintf("!!!intertest!!! momH %f, dadH %f, fertM:%f fertP:%f, BReal:%f, R:%f\n", paM->m_fPhenHyb, paP->m_fPhenHyb , fFertM, fFertP, paM->m_dBReal, dR);
+                        xha_printf("!!!intertest!!! momH %f, dadH %f, fertM:%f fertP:%f, BReal:%f, R:%f\n", paM->m_fPhenHyb, paP->m_fPhenHyb , fFertM, fFertP, paM->m_dBReal, dR);
                     }
                     */
                     if (dR < paM->m_dBReal*fFertM*fFertP) {

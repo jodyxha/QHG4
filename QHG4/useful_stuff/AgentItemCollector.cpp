@@ -10,7 +10,7 @@
 #include "hdf5.h"
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "geomutils.h"
 #include "SPopulation.h"
 #include "QDFUtils.h"
@@ -99,21 +99,21 @@ int AgentItemCollector::init(const std::string sGeoQDF, const std::string sPopQD
         float f1 = omp_get_wtime();
         if (iResult == 0) {
             
-            stdfprintf(stderr, "Successfully read coords from [%s] (%fs)\n", sGeoQDF, f1 - f0);
+            xha_fprintf(stderr, "Successfully read coords from [%s] (%fs)\n", sGeoQDF, f1 - f0);
             iResult = loadAgentsCell(sPopQDF, sSpecies, sItemName);
             float f2 = omp_get_wtime();
             if (iResult == 0) {
                 separateValues();
 
-                stdfprintf(stderr, "Successfully read agent items from [%s] (%fs)\n", sPopQDF, f2 - f1);
+                xha_fprintf(stderr, "Successfully read agent items from [%s] (%fs)\n", sPopQDF, f2 - f1);
             } else {
-                stdfprintf(stderr, "Couldn't get agent items\n");
+                xha_fprintf(stderr, "Couldn't get agent items\n");
             }
         } else {
             // error message already displayed in checkItemType
         }
     } else {
-        stdfprintf(stderr, "Couldn't load coords\n");
+        xha_fprintf(stderr, "Couldn't load coords\n");
     }
 
     return iResult;
@@ -137,20 +137,20 @@ int AgentItemCollector::checkItemType(const std::string sPopQDF, const std::stri
                 if (its2->second == its->second) {
                     iResult = 0;
                 } else {
-                    stdfprintf(stderr, "Wrong type: item [%s] has type [%s]\n", sItemName, c_mInvTypeTranslation[its->second]);
+                    xha_fprintf(stderr, "Wrong type: item [%s] has type [%s]\n", sItemName, c_mInvTypeTranslation[its->second]);
                 }
             } else {
-                stdfprintf(stderr, "Unknown or unsupported type: [%s]\n", sDType);
+                xha_fprintf(stderr, "Unknown or unsupported type: [%s]\n", sDType);
             }
         } else {
-            stdfprintf(stderr, "unknown item name [%s]\n", sItemName);
-            stdfprintf(stderr, "the current dataset contains these items:\n");
+            xha_fprintf(stderr, "unknown item name [%s]\n", sItemName);
+            xha_fprintf(stderr, "the current dataset contains these items:\n");
             for (its = m_mItemNames.begin(); its != m_mItemNames.end(); ++its) {
-                stdfprintf(stderr, "  %s (%s)\n", its->first, c_mInvTypeTranslation[its->second]);
+                xha_fprintf(stderr, "  %s (%s)\n", its->first, c_mInvTypeTranslation[its->second]);
             }
         }
     } else {
-        stdfprintf(stderr, "Couldn't collect item names\n");
+        xha_fprintf(stderr, "Couldn't collect item names\n");
     }
         
     return iResult;
@@ -173,19 +173,19 @@ int AgentItemCollector::getRootAttributes(hid_t hFile) {
                     iResult = 0;
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "Couldn't convert attribute [%s] (%s) to number\n", ROOT_TIME_NAME, sValue);
+                    xha_fprintf(stderr, "Couldn't convert attribute [%s] (%s) to number\n", ROOT_TIME_NAME, sValue);
                 }
             } else {
                 iResult = -1;
-                stdfprintf(stderr, "Couldn't get attribute [%s]\n", ROOT_TIME_NAME);
+                xha_fprintf(stderr, "Couldn't get attribute [%s]\n", ROOT_TIME_NAME);
             }
         } else {
             iResult = -1;
-            stdfprintf(stderr, "Couldn't convert attribute [%s] (%s) to number\n", ROOT_STEP_NAME, sValue);
+            xha_fprintf(stderr, "Couldn't convert attribute [%s] (%s) to number\n", ROOT_STEP_NAME, sValue);
         }
     } else {
         iResult = -1;
-        stdfprintf(stderr, "Couldn't get attribute [%s]\n", ROOT_STEP_NAME);
+        xha_fprintf(stderr, "Couldn't get attribute [%s]\n", ROOT_STEP_NAME);
     }
     return iResult;
 }
@@ -201,7 +201,7 @@ int AgentItemCollector::getItemNames(const std::string sPopQDF, const std::strin
     if (hFile != H5P_DEFAULT) {
         iResult = getRootAttributes(hFile);
         if (iResult == 0) {
-            std::string sGroupName = stdsprintf("%s/%s", POPGROUP_NAME, sSpecies);
+            std::string sGroupName = xha_sprintf("%s/%s", POPGROUP_NAME, sSpecies);
         hid_t hGroup = qdf_openGroup(hFile, sGroupName);
         if (hGroup != H5P_DEFAULT) {
             hid_t hDSet  = qdf_openDataSet(hGroup, AGENT_DATASET_NAME);
@@ -229,24 +229,24 @@ int AgentItemCollector::getItemNames(const std::string sPopQDF, const std::strin
                     
                     H5Tclose(hType);
                 } else {
-                    stdfprintf(stderr, "Couldn't open get data type for data set [%s]\n", AGENT_DATASET_NAME);
+                    xha_fprintf(stderr, "Couldn't open get data type for data set [%s]\n", AGENT_DATASET_NAME);
                 }
                 qdf_closeDataSet(hDSet);
             } else {
-                stdfprintf(stderr, "Couldn't open data set [%s]\n", AGENT_DATASET_NAME);
+                xha_fprintf(stderr, "Couldn't open data set [%s]\n", AGENT_DATASET_NAME);
             }
             qdf_closeGroup(hGroup);
         } else {
-            stdfprintf(stderr, "Couldn't open group [%s]\n", sGroupName);
+            xha_fprintf(stderr, "Couldn't open group [%s]\n", sGroupName);
         }
 
         } else {
-            stdfprintf(stderr, "Couldn't get root attributesof [%s]\n", sPopQDF);
+            xha_fprintf(stderr, "Couldn't get root attributesof [%s]\n", sPopQDF);
         }
         qdf_closeFile(hFile);
 
     } else {
-        stdfprintf(stderr, "Couldn't open [%s] for reading\n", sPopQDF);
+        xha_fprintf(stderr, "Couldn't open [%s] for reading\n", sPopQDF);
     }
     return iResult;
 
@@ -277,13 +277,13 @@ int AgentItemCollector::fillCoordMap(const std::string sQDFGeoGrid) {
                 //                fprintf(stderr, "Read %d CellIDs\n", iCount);
                 iResult = 0;
             } else {
-                stdfprintf(stderr, "Read bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)\n", sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, iNumCells);
+                xha_fprintf(stderr, "Read bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)\n", sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, iNumCells);
                 iResult = -1;
             }
             pQA->closeArray();
         } else {
             iResult = -1;
-            stdfprintf(stderr, "Couldn't open QDF array for [%s:%s/%s]\n", sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME);
+            xha_fprintf(stderr, "Couldn't open QDF array for [%s:%s/%s]\n", sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME);
         }
 
         // get the cell Longitudes
@@ -295,15 +295,15 @@ int AgentItemCollector::fillCoordMap(const std::string sQDFGeoGrid) {
                     pdLon = new double[iNumCells];
                     uint iCount = pQA->getFirstSlab(pdLon, iNumCells);
                     if (iCount == iNumCells) {
-                        stdfprintf(stderr, "Read %d Longitudes\n", iCount);
+                        xha_fprintf(stderr, "Read %d Longitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, iNumCells);
+                        xha_fprintf(stderr, "Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, iNumCells);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "Number of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE);
+                    xha_fprintf(stderr, "Number of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE);
                 }
                 pQA->closeArray();
             }
@@ -318,15 +318,15 @@ int AgentItemCollector::fillCoordMap(const std::string sQDFGeoGrid) {
                     pdLat = new double[iNumCells];
                     uint iCount = pQA->getFirstSlab(pdLat, iNumCells);
                     if (iCount == iNumCells) {
-                        stdfprintf(stderr, "Read %d Latitudes\n", iCount);
+                        xha_fprintf(stderr, "Read %d Latitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "Couldn't read latitudes from [%s:%s/%s]: %d instead of %d\n", sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL,iNumCells);
+                        xha_fprintf(stderr, "Couldn't read latitudes from [%s:%s/%s]: %d instead of %d\n", sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL,iNumCells);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "Number of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE);
+                    xha_fprintf(stderr, "Number of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE);
                 }
 
                 pQA->closeArray();
@@ -335,7 +335,7 @@ int AgentItemCollector::fillCoordMap(const std::string sQDFGeoGrid) {
     
         delete pQA;
     } else {
-        stdfprintf(stderr, "Couldn't create QDFArray\n");
+        xha_fprintf(stderr, "Couldn't create QDFArray\n");
     }
      
     // put everything into a map CellID => (lon, lat)
@@ -393,7 +393,7 @@ hid_t AgentItemCollector::createCompoundDataType(const std::string sItemName) {
         
         H5Tinsert(hAgentDataType, sItemName.c_str(),   it->second.m_iOffset,              it->second.m_hType);
     } else {
-        stdfprintf(stderr, "[createCompoundDataType] unknown data type: [%s]\n", m_sDataType);
+        xha_fprintf(stderr, "[createCompoundDataType] unknown data type: [%s]\n", m_sDataType);
     }
     return hAgentDataType;
 }
@@ -416,7 +416,7 @@ uchar *AgentItemCollector::createItemArray() {
     } else     if (DTYPE_DOUBLE == m_sDataType) { 
         pArray = new uchar[m_iNumAgents*sizeof(aginfo_double)];
     } else  {
-        stdfprintf(stderr, "[createItemArray] unknown data type: [%s]\n", m_sDataType);
+        xha_fprintf(stderr, "[createItemArray] unknown data type: [%s]\n", m_sDataType);
     }
     return pArray;
 }
@@ -429,7 +429,7 @@ uchar *AgentItemCollector::createItemArray() {
 int AgentItemCollector::loadAgentsCell(const std::string sPop, const std::string sPopName, const std::string sItemName) {
     hid_t hFilePop     = qdf_openFile(sPop);
     hid_t hPopulation  = qdf_openGroup(hFilePop, POPGROUP_NAME);
-    stdfprintf(stderr, "[loadAgentsCell] pop %s,popname %s\n", sPop, sPopName);
+    xha_fprintf(stderr, "[loadAgentsCell] pop %s,popname %s\n", sPop, sPopName);
     // at this point m_iNumCells should be known (loadNPP() loadAltIce() already called)
 
     int iResult = 0;
@@ -449,9 +449,9 @@ int AgentItemCollector::loadAgentsCell(const std::string sPop, const std::string
         hid_t hMemSpace = H5Screate_simple (1, &dims, NULL); 
         herr_t status = H5Dread(hDataSet, hAgentDataType, hMemSpace, hDataSpace, H5P_DEFAULT, m_pInfos);
         if (status >= 0) {
-            stdfprintf(stderr, "pop %s: %llu\n", sPopName, dims);
+            xha_fprintf(stderr, "pop %s: %llu\n", sPopName, dims);
         } else {
-            stdfprintf(stderr, "bad status for pop %s\n", sPopName);
+            xha_fprintf(stderr, "bad status for pop %s\n", sPopName);
             
             delete[] m_pInfos;
             m_pInfos = NULL;
@@ -519,7 +519,7 @@ void AgentItemCollector::separateValues() {
             */
         }
     } else {
-        stdfprintf(stderr, "[separateValues] unknown datatype [%s]\n", m_sDataType);fflush(stderr);
+        xha_fprintf(stderr, "[separateValues] unknown datatype [%s]\n", m_sDataType);fflush(stderr);
     }
     /*
     fprintf(stderr, "valarrcheck (%p)\n", m_dValArr);fflush(stderr);
@@ -558,7 +558,7 @@ int AgentItemCollector::getInfoFor(int i, gridtype *pulCellID, double *pdVal) {
         //        *pdVal     = (double)pai[i].m_tItem;
 
     } else  {
-        stdfprintf(stderr, "[getInfoFor] unknown data type: [%s]\n", m_sDataType);
+        xha_fprintf(stderr, "[getInfoFor] unknown data type: [%s]\n", m_sDataType);
     }
                      
     //*pulCellID = ((aginfo_int*)m_pInfos)[i].m_ulCellID;

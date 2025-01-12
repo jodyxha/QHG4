@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "types.h"
 #include "crypto.h"
 #include "CryptoDigest.h"
@@ -27,12 +27,12 @@ int WELLUtils::stringToSeed(const std::string sSequence, std::vector<uint32_t> &
             if (strToHex(vParts[i], &iX)) {
                 vulState.push_back(iX & 0xffffffff);
             } else {
-                stdprintf("[WELLUtils::stringToSeed] Invalid hexnumber given in seed sequence [%s]\n", vParts[i]);
+                xha_printf("[WELLUtils::stringToSeed] Invalid hexnumber given in seed sequence [%s]\n", vParts[i]);
                 iResult = -1;
             }
         }
     } else {
-        stdprintf("[WELLUtils::stringToSeed] need %d elements in sequence\n", STATE_SIZE);
+        xha_printf("[WELLUtils::stringToSeed] need %d elements in sequence\n", STATE_SIZE);
         iResult = -1;
     }
 
@@ -71,7 +71,7 @@ int WELLUtils::phraseToSeed(const std::string sPhrase, std::vector<uint32_t> &vu
         iResult = 0;
         
     } else {
-        stdprintf("Phrase for seed must not be empty\n");
+        xha_printf("Phrase for seed must not be empty\n");
         iResult = -1;
     }
     
@@ -113,7 +113,7 @@ WELL512 *WELLUtils::createWELL(const std::string sPhrase) {
             pWELL = new WELL512(aState);
         }
     } else {
-        stdprintf("Phrase for seed must not be empty\n");
+        xha_printf("Phrase for seed must not be empty\n");
     }
     
     return pWELL;
@@ -131,7 +131,7 @@ WELL512 **WELLUtils::buildWELLs(int iNum, uint iSeed) {
     for  (int iT = 0; iT < iNum; iT++) {
         int c = 0;
         for (uint j = 0; j < STATE_SIZE/4; j++) {
-            std::string sPhrase = stdsprintf("seed for %d[%d]:%u", iT, j, iSeed);
+            std::string sPhrase = xha_sprintf("seed for %d[%d]:%u", iT, j, iSeed);
             unsigned int iLen = 0;
             unsigned char *pDigest = CryptoDigest::md5sum_string(sPhrase, &iLen); 
         
@@ -164,12 +164,12 @@ void WELLUtils::destroyWELLs(WELL512 **pWELLs, int iNum) {
 //    show cur index and state
 //
 void WELLUtils::showState(WELL512 *pWELL) {
-    stdprintf("[%08x] ", pWELL->getIndex());
+    xha_printf("[%08x] ", pWELL->getIndex());
     const uint32_t *p = pWELL->getState();
     for (uint j = 0; j < STATE_SIZE;j++) {
-        stdprintf("%08x ", p[j]);
+        xha_printf("%08x ", p[j]);
     }
-    stdprintf("\n");
+    xha_printf("\n");
 }
 
 
@@ -181,7 +181,7 @@ void WELLUtils::showStates(WELL512 **apWELL, int iNum, bool bFull) {
     
     std::string sStates = "";
     for (int i = 0; i < iNum; i++) {
-        sStates +=  stdsprintf("[%08x] ", apWELL[i]->getIndex());
+        sStates +=  xha_sprintf("[%08x] ", apWELL[i]->getIndex());
         char sTemp[256];
 
         apWELL[i]->state2String(sTemp);
@@ -195,14 +195,14 @@ void WELLUtils::showStates(WELL512 **apWELL, int iNum, bool bFull) {
     
     unsigned char *pDigest = CryptoDigest::md5sum_string(sStates, &iLen); 
     for (unsigned int i = 0; i < iLen; i++) {
-        std::string s = stdsprintf("%02x", pDigest[i]);
+        std::string s = xha_sprintf("%02x", pDigest[i]);
         smd5 += s;
     }
 
  
-    stdprintf("WELL hash %s\n", smd5);
+    xha_printf("WELL hash %s\n", smd5);
     if (bFull) {
-        stdprintf("%s", sStates);
+        xha_printf("%s", sStates);
     }
 }
 
@@ -213,10 +213,10 @@ void WELLUtils::showStates(WELL512 **apWELL, int iNum, bool bFull) {
 //
 std::string WELLUtils::strState(WELL512 *pWELL) {
     std::string sTemp = "";
-    sTemp += stdsprintf("[%08x]g[%f] ", pWELL->getIndex(), pWELL->getPrevNormal());
+    sTemp += xha_sprintf("[%08x]g[%f] ", pWELL->getIndex(), pWELL->getPrevNormal());
     const uint32_t *p = pWELL->getState();
     for (uint j = 0; j < STATE_SIZE;j++) {
-        sTemp += stdsprintf("%08x ", p[j]);
+        sTemp += xha_sprintf("%08x ", p[j]);
     }
     return std::string(sTemp);
 }
@@ -232,7 +232,7 @@ std::string WELLUtils::strStateHash(WELL512 *pWELL) {
     unsigned int iLen = 0;
     unsigned char *pDigest = CryptoDigest::md5sum_string(sState, &iLen);
     for (unsigned int i = 0; i < iLen; i++) {
-        std::string s = stdsprintf("%02x", pDigest[i]);
+        std::string s = xha_sprintf("%02x", pDigest[i]);
         smd5 += s;
     }
     free(pDigest);

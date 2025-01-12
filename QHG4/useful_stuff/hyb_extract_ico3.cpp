@@ -14,7 +14,7 @@
 #include <map>
 #include <algorithm>
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "LineReader.h"
 #include "ParamReader.h"
 #include "QDFUtils.h"
@@ -33,21 +33,21 @@ const char DEF_SPC[] = "sapiens";
 //  usage
 //
 void usage(const char *pApp) {
-    stdfprintf(stderr, "%s - collect agent-id, cell-id and item value from a population's AgentDataSet\n", pApp);
-    stdfprintf(stderr, "Creates an HDF file containing the list, as well as a\n"); 
-    stdfprintf(stderr, "CSV file containing number, min-val, max-val and median for each node.\n");
-    stdfprintf(stderr, "usage:\n");
-    stdfprintf(stderr, "  %s  -p '<pop-dir-pattern>:<species>'  -n <item-name>:<item-type> -o <out-body-csv>]\n", pApp);
-    stdfprintf(stderr, "where\n");
-    stdfprintf(stderr, "  pop-dir-pattern  a pattern for directories containing qdf (only one '*' allowed)\n");
-    stdfprintf(stderr, "  species          the species name for which to do the analysis (if omitted, 'sapiens' is used\n");
-    stdfprintf(stderr, "  item-name        the name of the agents hybrdidization value\n");
-    stdfprintf(stderr, "  item-type        the data type of the item ('byte', 'int', 'long', 'float', 'double')\n");
-    stdfprintf(stderr, "Example:\n");
-    stdfprintf(stderr, "  %s -p '/data/batchA_00*:sapiens' -n PheneticHyb:float -o testing\n", pApp);
-    stdfprintf(stderr, "Will create output files testing.hdf and testing.csv.\n");
-    stdfprintf(stderr, "Assumes the existence of files ooa_pop-<species>_SG_00[01]000.qdf in /data/batchA_00*\n");
-    stdfprintf(stderr, "\n");
+    xha_fprintf(stderr, "%s - collect agent-id, cell-id and item value from a population's AgentDataSet\n", pApp);
+    xha_fprintf(stderr, "Creates an HDF file containing the list, as well as a\n"); 
+    xha_fprintf(stderr, "CSV file containing number, min-val, max-val and median for each node.\n");
+    xha_fprintf(stderr, "usage:\n");
+    xha_fprintf(stderr, "  %s  -p '<pop-dir-pattern>:<species>'  -n <item-name>:<item-type> -o <out-body-csv>]\n", pApp);
+    xha_fprintf(stderr, "where\n");
+    xha_fprintf(stderr, "  pop-dir-pattern  a pattern for directories containing qdf (only one '*' allowed)\n");
+    xha_fprintf(stderr, "  species          the species name for which to do the analysis (if omitted, 'sapiens' is used\n");
+    xha_fprintf(stderr, "  item-name        the name of the agents hybrdidization value\n");
+    xha_fprintf(stderr, "  item-type        the data type of the item ('byte', 'int', 'long', 'float', 'double')\n");
+    xha_fprintf(stderr, "Example:\n");
+    xha_fprintf(stderr, "  %s -p '/data/batchA_00*:sapiens' -n PheneticHyb:float -o testing\n", pApp);
+    xha_fprintf(stderr, "Will create output files testing.hdf and testing.csv.\n");
+    xha_fprintf(stderr, "Assumes the existence of files ooa_pop-<species>_SG_00[01]000.qdf in /data/batchA_00*\n");
+    xha_fprintf(stderr, "\n");
 }
 
 //----------------------------------------------------------------------------
@@ -71,11 +71,11 @@ int getDirName(const std::string sPat, std::string sMatch, std::string &sName) {
                 sName =  vMatchParts[i];
                 iResult = 0;
             } else {
-                stdfprintf(stderr, "Part mismatch   [%s] != [%s]\n", vPatParts[i], vMatchParts[i]);
+                xha_fprintf(stderr, "Part mismatch   [%s] != [%s]\n", vPatParts[i], vMatchParts[i]);
             }
         }
     } else {
-        stdfprintf(stderr, "number of parts don't match: %zd != %zd\n",vPatParts.size(), vMatchParts.size());
+        xha_fprintf(stderr, "number of parts don't match: %zd != %zd\n",vPatParts.size(), vMatchParts.size());
     }
 
     return iResult;
@@ -116,7 +116,7 @@ int main(int iArgC, char *apArgV[]) {
                         *pSpc++ = '\0';
                         pSpecies = pSpc;
                     } else {
-                        stdfprintf(stderr, "No Species given - %s is used\n", DEF_SPC);
+                        xha_fprintf(stderr, "No Species given - %s is used\n", DEF_SPC);
                         pSpecies = DEF_SPC;
                     }
 
@@ -128,7 +128,7 @@ int main(int iArgC, char *apArgV[]) {
                     if (pDataType != NULL) {
                         *pDataType++ = '\0';
                     } else {
-                        stdfprintf(stderr, "expected ':' followed by datatype\n");
+                        xha_fprintf(stderr, "expected ':' followed by datatype\n");
                         iResult = -1;
                     }
                 }
@@ -137,7 +137,7 @@ int main(int iArgC, char *apArgV[]) {
                 iResult = glob(sPopQDFPat, 0, NULL, &gt);
                 if (iResult == 0) {
 
-                    stdfprintf(stderr, "Matching dirs found: %zd\n", gt.gl_pathc);
+                    xha_fprintf(stderr, "Matching dirs found: %zd\n", gt.gl_pathc);
 
                     // create output names
                     char *sOutNameHDF = new char[strlen(sOutbody)+5]; // ".hdf"+NUL
@@ -158,13 +158,13 @@ int main(int iArgC, char *apArgV[]) {
                             struct stat statbuf;
                             int iResult = stat(sPopFile, &statbuf);
                             if (iResult != 0) {
-                                stdfprintf(stderr, "pop %s doesn't exist out\n", sPopFile);
+                                xha_fprintf(stderr, "pop %s doesn't exist out\n", sPopFile);
 
                                 sprintf(sTail, DEF_QDF_PAT, 0);
                                 sprintf(sPopFile, "%s/%s",gt.gl_pathv[i], sTail);
                                 iResult = stat(sPopFile, &statbuf);
                                 if (iResult == 0)  {
-                                    stdfprintf(stderr, "pop %s does exist -> died out\n", sPopFile);
+                                    xha_fprintf(stderr, "pop %s does exist -> died out\n", sPopFile);
                                     bDiedOut = true;
                                 }
                                 iResult = 0;
@@ -173,23 +173,23 @@ int main(int iArgC, char *apArgV[]) {
                             std::string sName = "";
                             iResult = getDirName(sPopQDFPat, gt.gl_pathv[i], sName);
                             if (iResult == 0) {
-                                stdfprintf(stderr, "Found match [%s]\n", sName);
+                                xha_fprintf(stderr, "Found match [%s]\n", sName);
                             } else {
                                 iResult = -1;
-                                stdfprintf(stderr, "Couldn't get dir name\n");
+                                xha_fprintf(stderr, "Couldn't get dir name\n");
                             }
 
 
                             if (iResult == 0) {
                                 if (bDiedOut) {
-                                    stdfprintf(stderr, "have a die-out\n");
+                                    xha_fprintf(stderr, "have a die-out\n");
                                     pHHW->writeData(sName, NULL, 0);
                                 } else {
-                                    stdfprintf(stderr, "have a normal\n");
+                                    xha_fprintf(stderr, "have a normal\n");
                                     if (sGeoQDF == NULL) {
                                         sGeoQDF = sPopFile;
                                     }
-                                    stdfprintf(stderr, "calling: AgentItemCollector::createInstance(%s, %s, %s, %s, %s);\n", sPopFile, sGeoQDF, pSpecies, sItemName, pDataType);
+                                    xha_fprintf(stderr, "calling: AgentItemCollector::createInstance(%s, %s, %s, %s, %s);\n", sPopFile, sGeoQDF, pSpecies, sItemName, pDataType);
                                     AgentItemCollector *pAIC = AgentItemCollector::createInstance(sPopFile, sGeoQDF, pSpecies, sItemName, pDataType);
                                     if (pAIC != NULL) {
                                             
@@ -199,15 +199,15 @@ int main(int iArgC, char *apArgV[]) {
                                     
                                         iResult = pHHW->writeData(sName, pData, iNumAgs);
                                         if (iResult == 0) {
-                                            stdfprintf(stderr, "+++ success for [%s] +++\n", gt.gl_pathv[i]);
+                                            xha_fprintf(stderr, "+++ success for [%s] +++\n", gt.gl_pathv[i]);
                                         } else {
                                             iResult = -1;
-                                            stdfprintf(stderr, "couldn't write data to HDF file\n");
+                                            xha_fprintf(stderr, "couldn't write data to HDF file\n");
                                         }
                                         delete pAIC;
                                     } else {
                                         iResult = -1;
-                                        stdfprintf(stderr, "Couldn't create AgentItemCollector\n");
+                                        xha_fprintf(stderr, "Couldn't create AgentItemCollector\n");
                                     }
                                 }
                             }
@@ -215,23 +215,23 @@ int main(int iArgC, char *apArgV[]) {
                         delete pHHW;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "couldn't create HDF file [%s]\n", sOutNameHDF);
+                        xha_fprintf(stderr, "couldn't create HDF file [%s]\n", sOutNameHDF);
                     }
                     delete[] sOutNameHDF;
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "couldn't glob patternn");
+                    xha_fprintf(stderr, "couldn't glob patternn");
                 }
                 globfree(&gt);
             } else {
                 usage(apArgV[0]);
             }
         } else {
-            stdfprintf(stderr, "Couldn't set ParamReader options\n");
+            xha_fprintf(stderr, "Couldn't set ParamReader options\n");
         }
         delete pPR;
     } else {
-        stdfprintf(stderr, "Couldn't create ParamReader\n");
+        xha_fprintf(stderr, "Couldn't create ParamReader\n");
     }
 
     return iResult;

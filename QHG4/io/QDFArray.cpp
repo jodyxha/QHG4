@@ -7,7 +7,7 @@
 #include <hdf5.h>
 #include <string>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
 #include "QDFArray.h"
@@ -123,7 +123,7 @@ int QDFArray::init(const std::string sQDFFile) {
         m_bCloseHFile = true;
         iResult = init(hFile);
     } else {
-        stdprintf("QDFArray couldn't open [%s]\n", sQDFFile);
+        xha_printf("QDFArray couldn't open [%s]\n", sQDFFile);
         m_hFile = H5P_DEFAULT;
     }
     return iResult;
@@ -142,10 +142,10 @@ int QDFArray::init(hid_t hFile) {
         if (strToNum(sValue, &m_iStep)) {
             iResult = 0;
         } else{
-            stdprintf("Time step is not a float [%s]\n", sValue);
+            xha_printf("Time step is not a float [%s]\n", sValue);
         }
     } else {
-        stdprintf("No time step found\n");
+        xha_printf("No time step found\n");
         iResult = 0;
     }
     return iResult;
@@ -200,7 +200,7 @@ int QDFArray::openArray(const std::string sPathToDataset) {
         vGroups.pop_back();
         iResult = openArray(vGroups, sDataSet);
     } else {
-        stdprintf("Empty path provided\n");
+        xha_printf("Empty path provided\n");
     }
     
     return iResult;
@@ -225,7 +225,7 @@ int QDFArray::openArray(stringvec &vGroups, const std::string sDataSet) {
             //@@printf("OK\n");fflush(stdout);
         } else {
             iResult = -1;
-            stdprintf("failed\n");fflush(stdout);
+            xha_printf("failed\n");fflush(stdout);
         }
     }
     
@@ -243,15 +243,15 @@ int QDFArray::openArray(stringvec &vGroups, const std::string sDataSet) {
                     iResult = 0;
                     
                 } else {
-                    stdprintf("Not a one-dimensinal data set [%s]\n", sDataSet);
+                    xha_printf("Not a one-dimensinal data set [%s]\n", sDataSet);
                     iResult = -1;
                 }
             } else {
-                stdprintf("Couldn't get sata space for data set [%s]\n", sDataSet);
+                xha_printf("Couldn't get sata space for data set [%s]\n", sDataSet);
                 iResult = -1;
             }
         } else {
-            stdprintf("Couldn't open dataset [%s] in group [%s]\n", vGroups.back(), sDataSet);
+            xha_printf("Couldn't open dataset [%s] in group [%s]\n", vGroups.back(), sDataSet);
             iResult = -1;
         }
     }
@@ -406,7 +406,7 @@ int QDFArray::setDataType(const std::string sFieldName, const hid_t hBaseType, c
             }
             m_bDeleteDataType = true;
         } else {
-            stdprintf("The field [%s]  does not exist in this Dataset\n", sFieldName);
+            xha_printf("The field [%s]  does not exist in this Dataset\n", sFieldName);
         }
     } else {
         m_hDataType = hBaseType;

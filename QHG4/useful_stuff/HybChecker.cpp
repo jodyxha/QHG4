@@ -5,7 +5,7 @@
 
 #include <vector>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "HybChecker.h"
 
 //----------------------------------------------------------------------------
@@ -111,18 +111,18 @@ int HybChecker::analyze() {
 //
 void HybChecker::showSimple() {
     //    printf("loop: %d\n", iC); 
-    stdprintf("number of agents: %d\n", m_iNumAgents);
-    stdprintf("number of zeros:  %d\n", m_iZeros);
-    stdprintf("number of ones:   %d\n", m_iOnes);
-    stdprintf("min non zero: %e\n", m_fMinNonZero);
-    stdprintf("max non one:  %e\n",  1-m_fMaxNonOne);
+    xha_printf("number of agents: %d\n", m_iNumAgents);
+    xha_printf("number of zeros:  %d\n", m_iZeros);
+    xha_printf("number of ones:   %d\n", m_iOnes);
+    xha_printf("min non zero: %e\n", m_fMinNonZero);
+    xha_printf("max non one:  %e\n",  1-m_fMaxNonOne);
     stringvec vHeaders;
     stringvec vValues;
     m_pBF->getHeaders(vHeaders);
     m_pBF->getValues(vValues);
     for (int i = 0; i < vHeaders.size(); i++) {
         int j = i;
-        stdprintf("[%02d] %s   %s\n", j-1, vHeaders[i], vValues[i]);
+        xha_printf("[%02d] %s   %s\n", j-1, vHeaders[i], vValues[i]);
     }
 }  
 
@@ -133,14 +133,14 @@ void HybChecker::showSimple() {
 // showCSVHeader
 //
 void HybChecker::showCSVHeader() {
-    stdprintf("#Agents;#Zeros;#Ones;Min non Zero;1-(Max non One)");
+    xha_printf("#Agents;#Zeros;#Ones;Min non Zero;1-(Max non One)");
     stringvec vHeaders;
     m_pBF->getHeaders(vHeaders);
 
     for (int i = 0; i < vHeaders.size(); i++) {
-        stdprintf(";\"%s\"", vHeaders[i]);
+        xha_printf(";\"%s\"", vHeaders[i]);
     }
-    stdprintf("\n");
+    xha_printf("\n");
 
 }
 
@@ -149,12 +149,12 @@ void HybChecker::showCSVHeader() {
 // showCSVLine
 //
 void HybChecker::showCSVLine() {
-    stdprintf("%d;%d;%d;%e;%e", m_iNumAgents, m_iZeros, m_iOnes, m_fMinNonZero, 1-m_fMaxNonOne);
+    xha_printf("%d;%d;%d;%e;%e", m_iNumAgents, m_iZeros, m_iOnes, m_fMinNonZero, 1-m_fMaxNonOne);
     stringvec vValues;
     m_pBF->getValues(vValues);
     for (int i = 0; i < vValues.size(); i++) {
-        stdprintf(";%s", vValues[i]);
+        xha_printf(";%s", vValues[i]);
     }
-    stdprintf("\n");
+    xha_printf("\n");
 }
 

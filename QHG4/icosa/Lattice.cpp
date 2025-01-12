@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "LineReader.h"
 
 #include "IcoLoc.h"
@@ -316,14 +316,14 @@ int Lattice::save(const std::string sFile) {
             fclose(fOut);
             iResult = 0;
         } else {
-            stdprintf("Couldn't open [%s]\n", sFile);
+            xha_printf("Couldn't open [%s]\n", sFile);
         }
     } else {
-        stdprintf("No Lattice defined\n");
+        xha_printf("No Lattice defined\n");
     }
 
     if (iResult == 0) {
-        stdprintf("+++ successfully saved surface [%s]\n", sFile);
+        xha_printf("+++ successfully saved surface [%s]\n", sFile);
     }
     return iResult;
 }
@@ -362,8 +362,8 @@ int Lattice::load(const std::string sFile) {
             if (iResult == 0) {
                 if (iNumLinks > 0) {
 
-                    stdprintf("PT: %s\n", pPT->toString(true));
-                    stdprintf("PG: %s\n", pPG->toString());
+                    xha_printf("PT: %s\n", pPT->toString(true));
+                    xha_printf("PG: %s\n", pPG->toString());
 
                     if (m_bDeleteGP && (m_pGP != NULL)) {
                         delete m_pGP;
@@ -372,7 +372,7 @@ int Lattice::load(const std::string sFile) {
                     Projector *pProj = GeoInfo::instance()->createProjector(pPT);
                     m_pGP = new GridProjection(pPG, pProj, true, true);
                     m_bDeleteGP = true;
-                    stdprintf("GP: G %dx%d R %fx%f O%f+%f\n",
+                    xha_printf("GP: G %dx%d R %fx%f O%f+%f\n",
                            m_pGP->getProjGrid()->m_iGridW,
                            m_pGP->getProjGrid()->m_iGridH,
                            m_pGP->getProjGrid()->m_dRealW,
@@ -384,19 +384,19 @@ int Lattice::load(const std::string sFile) {
                     printf("creating %d-lattice\n", iNumLinks);
                     iResult = create(iNumLinks);
                 } else {
-                    stdprintf("Bad value for num links [%s]\n", pLine);
+                    xha_printf("Bad value for num links [%s]\n", pLine);
                 }
 
             } else {
-                stdprintf("Bad format for ProjType or projGrid [%s]\n", pLine);
+                xha_printf("Bad format for ProjType or projGrid [%s]\n", pLine);
             }
         } else {
-            stdprintf("Bad magic number [%s]\n", pLine);
+            xha_printf("Bad magic number [%s]\n", pLine);
         }
         delete pPT;
         delete pLR;
     } else {
-        stdprintf("Couldn't open [%s]\n", sFile);
+        xha_printf("Couldn't open [%s]\n", sFile);
     }
 
     return iResult;

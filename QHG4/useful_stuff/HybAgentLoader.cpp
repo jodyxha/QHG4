@@ -4,7 +4,7 @@
 #include <omp.h>
 
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "HybAgentLoader.h"
 
@@ -63,7 +63,7 @@ int HybAgentLoader::init(const std::string sPop) {
         if (sPopName.empty()) {
             iResult = loadAgentsCell(sPop, sPopName);
         } else {
-            stdfprintf(stderr, "Couldn't open [%s] as QDF file\n", sPop);
+            xha_fprintf(stderr, "Couldn't open [%s] as QDF file\n", sPop);
             iResult = -1;
         }
     }
@@ -110,9 +110,9 @@ int HybAgentLoader::loadAgentsCell(const std::string sPop, const std::string sPo
         hid_t hMemSpace = H5Screate_simple (1, &dims, NULL); 
         herr_t status = H5Dread(hDataSet, hAgentDataType, hMemSpace, hDataSpace, H5P_DEFAULT, m_pInfos);
         if (status >= 0) {
-            stdfprintf(stderr, "pop %s: %llu\n", *it, dims);
+            xha_fprintf(stderr, "pop %s: %llu\n", *it, dims);
         } else {
-            stdfprintf(stderr, "bad status for pop %s\n", *it);
+            xha_fprintf(stderr, "bad status for pop %s\n", *it);
 
             delete[] m_pInfos;
 	    m_pInfos = NULL;

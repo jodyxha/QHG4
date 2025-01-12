@@ -9,7 +9,7 @@
 
 #include "LineReader.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "types.h"
 #include "EventConsts.h"
 #include "SCellGrid.h"
@@ -94,20 +94,20 @@ int AutoInterpolator::init(const std::string sEnvEventFile, double dStartTime) {
 int AutoInterpolator::readFileList(const std::string sEnvEventFile, double dStartTime) {
     int iResult = 0;
     char sFullLine[1024];
-    stdprintf("[AutoInterpolator::readFileList]Looking at event file [%s]\n", sEnvEventFile);
+    xha_printf("[AutoInterpolator::readFileList]Looking at event file [%s]\n", sEnvEventFile);
     LineReader *pLR = LineReader_std::createInstance(sEnvEventFile, "rt");
     if (pLR != NULL) {
         char *pLine = pLR->getNextLine();
         while ((iResult == 0) && (pLine != NULL)) {
             strcpy(sFullLine, pLine);
-            //stdprintf("Looking at line [%s]\n", pLine);
+            //xha_printf("Looking at line [%s]\n", pLine);
             char *pType = strtok(pLine, "|");
-            //stdprintf("Have type [%s]\n", pType);
+            //xha_printf("Have type [%s]\n", pType);
 
             if ((pType != NULL) && (strcmp(pType, "env") == 0)) {
                 char *pGroup = strtok(NULL, ":");
                 if (pGroup != NULL) {
-                    //stdprintf("Have groups [%s]\n", pGroup);
+                    //xha_printf("Have groups [%s]\n", pGroup);
                     std::set<std::string> vGroups;
                     char *p1 = pGroup;
                     char *p2 = strchr(p1, '+'); 
@@ -119,10 +119,10 @@ int AutoInterpolator::readFileList(const std::string sEnvEventFile, double dStar
                     }
                     char *pFile = strtok(NULL, "@");
                     if (pFile != NULL) {
-                        //stdprintf("Have File [%s]\n", pFile);
+                        //xha_printf("Have File [%s]\n", pFile);
                         char *pTime =  strtok(NULL, "@");
                         if (pTime != NULL) {
-                            //stdprintf("Have TimeExpr [%s]\n", pTime);
+                            //xha_printf("Have TimeExpr [%s]\n", pTime);
                             pTime = strchr(pTime, '[');
                             if (pTime != NULL) {
                                 pTime++;
@@ -136,31 +136,31 @@ int AutoInterpolator::readFileList(const std::string sEnvEventFile, double dStar
                                         m_mFileList[iStep].sFile = pFile;
                                     } else {
                                         iResult = -1;
-                                        stdprintf("Line\n  %s\nNot a number [%s]\n", sFullLine, pTime);
+                                        xha_printf("Line\n  %s\nNot a number [%s]\n", sFullLine, pTime);
                                     }
                                 } else {
                                     iResult = -1;
-                                    stdprintf("Line\n  %s\nExpected closing ']' in time expression\n", sFullLine);
+                                    xha_printf("Line\n  %s\nExpected closing ']' in time expression\n", sFullLine);
                                 }
                             } else {
                                 iResult = -1;
-                                stdprintf("Line\n  %s\nExpected opening '[' in time expression\n", sFullLine);
+                                xha_printf("Line\n  %s\nExpected opening '[' in time expression\n", sFullLine);
                             }
                         } else {
                             iResult = 0;
-                            stdprintf("Line\n  %s\nExpected time expression after '@'\n", sFullLine);
+                            xha_printf("Line\n  %s\nExpected time expression after '@'\n", sFullLine);
                         }
                     } else {
                         iResult = -1;
-                        stdprintf("Line\n  %s\nExpected filename after ':'\n", sFullLine);
+                        xha_printf("Line\n  %s\nExpected filename after ':'\n", sFullLine);
                     }
                 } else {
                     iResult = -1;
-                    stdprintf("Line\n  %s\nExpected groups after '|'\n", sFullLine);
+                    xha_printf("Line\n  %s\nExpected groups after '|'\n", sFullLine);
                 }
             } else {
                 iResult = -1;
-                stdprintf("Line\n  %s\nExpected line to begin with \"env\"\n", sFullLine);
+                xha_printf("Line\n  %s\nExpected line to begin with \"env\"\n", sFullLine);
             }
 
             pLine = pLR->getNextLine();
@@ -168,9 +168,9 @@ int AutoInterpolator::readFileList(const std::string sEnvEventFile, double dStar
         delete pLR;
     } else {
         iResult = -1;
-        stdprintf("Couldn't open [%s]\n", sEnvEventFile);
+        xha_printf("Couldn't open [%s]\n", sEnvEventFile);
     }
-    stdprintf("[AutoInterpolator::readFileList] have %zd files\n", m_mFileList.size());
+    xha_printf("[AutoInterpolator::readFileList] have %zd files\n", m_mFileList.size());
     return iResult;	
 }
 
@@ -209,7 +209,7 @@ int AutoInterpolator::prepareTargets() {
                 m_mTargets[sFullName] = length_array(m_pCG->m_iNumCells, m_pCG->m_pGeography->m_adAltitude);
                 iResult = 0;
             } else {
-                stdprintf("Array [%s] in group [%s] not supported\n", sArray, sGroup);
+                xha_printf("Array [%s] in group [%s] not supported\n", sArray, sGroup);
             }
         } else if ((sGroup == VEGGROUP_NAME) || (sGroup == "veg")) {
             if (sArray == VEG_DS_NPP)  {
@@ -221,11 +221,11 @@ int AutoInterpolator::prepareTargets() {
                 m_mTargets[sFullName] = length_array(m_pCG->m_iNumCells, m_pCG->m_pVegetation->m_adBaseANPP);
                 iResult = 0;
             } else {
-                stdprintf("Array [%s] in group [%s] not supported\n", sArray, sGroup);
+                xha_printf("Array [%s] in group [%s] not supported\n", sArray, sGroup);
             }
         } else {
             // maybe add Climate/Rain, Climate/Temp
-            stdprintf("No arrays in group [%s] are supported\n", sGroup);
+            xha_printf("No arrays in group [%s] are supported\n", sGroup);
         }
     }
     m_vEvents.insert(m_vEvents.begin(), sTempEvents.begin(), sTempEvents.end());
@@ -245,7 +245,7 @@ int AutoInterpolator::checkArraySizes(hid_t hFile) {
         const std::string &sGroup    = m_vTargets[i].sGroup;//.second.first;
         const std::string &sArray    = m_vTargets[i].sArray;//.second.second;
 
-        //stdprintf("[AutoInterpolator::checkFiles] opening group [%s]\n", pGroup);fflush(stdout);
+        //xha_printf("[AutoInterpolator::checkFiles] opening group [%s]\n", pGroup);fflush(stdout);
         hid_t hGroup = qdf_openGroup(hFile, sGroup);
         if (hGroup != H5P_DEFAULT) {
             if (qdf_link_exists(hGroup, sArray)) {
@@ -259,19 +259,19 @@ int AutoInterpolator::checkArraySizes(hid_t hFile) {
                 if (status >= 0) {
                     if (m_mArrSizes.find(sFullName) != m_mArrSizes.end()) {
                         if (m_mArrSizes[sFullName] == dims) {
-                            //stdprintf("[AutoInterpolator::checkFiles] completed check of [%s] (following)\n", sFullName);
+                            //xha_printf("[AutoInterpolator::checkFiles] completed check of [%s] (following)\n", sFullName);
                             iResult = 0;
                         } else {
-                            stdprintf("array size mismatch %u != %llu\n", m_mArrSizes[sFullName], dims);
+                            xha_printf("array size mismatch %u != %llu\n", m_mArrSizes[sFullName], dims);
                             iResult = -1;
                         }
                     } else {
                         if (m_pCG->m_iNumCells == dims) {
                             m_mArrSizes[sFullName] = dims;
-                            //stdprintf("[AutoInterpolator::checkFiles] completed check of [%s] (first)\n", sFullName);
+                            //xha_printf("[AutoInterpolator::checkFiles] completed check of [%s] (first)\n", sFullName);
                             iResult = 0;
                         } else {
-                            stdprintf("array size %llu does not match number of cells %d\n", dims, m_pCG->m_iNumCells);
+                            xha_printf("array size %llu does not match number of cells %d\n", dims, m_pCG->m_iNumCells);
                             iResult = -1;
                         }
                     }
@@ -282,11 +282,11 @@ int AutoInterpolator::checkArraySizes(hid_t hFile) {
 
 
             } else {
-                stdprintf("Didn't find array [%s] in group [%s]\n", sArray, sGroup);
+                xha_printf("Didn't find array [%s] in group [%s]\n", sArray, sGroup);
             }
             qdf_closeGroup(hGroup);
         } else {
-            stdprintf("Couldn't open group [%s]\n", sGroup);
+            xha_printf("Couldn't open group [%s]\n", sGroup);
         }
     }
     return iResult;
@@ -303,7 +303,7 @@ int AutoInterpolator::checkArraySizes(hid_t hFile) {
 int AutoInterpolator::checkFiles() {
     int iResult = 0;
     struct stat statbuf;
-    stdprintf("[AutoInterpolator::checkFiles] starting file check\n");
+    xha_printf("[AutoInterpolator::checkFiles] starting file check\n");
     m_mTargets.clear();
     
     // we use a set to avoid multiple entries
@@ -324,11 +324,11 @@ int AutoInterpolator::checkFiles() {
                 
                 qdf_closeFile(hFile);
             } else {
-                stdprintf("[%s] is not a qdf file\n", sFile);
+                xha_printf("[%s] is not a qdf file\n", sFile);
                 iResult = -1;
             }
         } else {
-            stdprintf("[%s] does not exist\n", sFile);
+            xha_printf("[%s] does not exist\n", sFile);
             iResult = -1;
         }
     }
@@ -383,10 +383,10 @@ int AutoInterpolator::loadArray(hid_t hFile, int iWhich, target_info &sTarget) {
         if (iResult == 0) {
             m_mInput[iWhich][sFullName] = length_array(dims, pData);
         } else {
-            stdprintf("Couldn't read array [%s/%s]\n", sGroupName, sArrayName);
+            xha_printf("Couldn't read array [%s/%s]\n", sGroupName, sArrayName);
         }
     } else {
-        stdprintf("Couldn't get array size for [%s/%s]\n", sGroupName, sArrayName);
+        xha_printf("Couldn't get array size for [%s/%s]\n", sGroupName, sArrayName);
     }
     qdf_closeDataSpace(hDataSpace);
     qdf_closeDataSet(hDataSet);
@@ -408,7 +408,7 @@ int AutoInterpolator::loadArrayForTime(int iTime, int iWhich, target_info &sTarg
         iResult = loadArray(hFile, iWhich, sTarget);
         qdf_closeFile(hFile);
     } else {
-        stdprintf("Time [%d] not found in list\n", iTime);
+        xha_printf("Time [%d] not found in list\n", iTime);
     }
     return iResult;
 }
@@ -422,7 +422,7 @@ int AutoInterpolator::loadArrayForTime(int iTime, int iWhich, target_info &sTarg
 int AutoInterpolator::loadArrayFromGrid(target_info &sTarget) {
     int iResult = 0;
 
-    stdprintf("[AutoInterpolator::loadArrayFromGrid] loading data from initial grid\n");
+    xha_printf("[AutoInterpolator::loadArrayFromGrid] loading data from initial grid\n");
     const std::string &sFullName   = sTarget.sFullName;//.first;
     const std::string &sGroupName  = sTarget.sGroup;//.second.first;
     const std::string &sArrayName  = sTarget.sArray;//.second.second;
@@ -433,7 +433,7 @@ int AutoInterpolator::loadArrayFromGrid(target_info &sTarget) {
             memcpy(pData, m_pCG->m_pGeography->m_adAltitude, iNumCells*sizeof(double));
             m_mInput[m_iCur][sFullName] = length_array(iNumCells, pData);
         } else {
-            stdprintf("[AutoInterpolator::startInterpolations]unknown array: [%s]\n", sArrayName);
+            xha_printf("[AutoInterpolator::startInterpolations]unknown array: [%s]\n", sArrayName);
             iResult = -1;
         }
     } else if (sGroupName == VEGGROUP_NAME) {
@@ -442,11 +442,11 @@ int AutoInterpolator::loadArrayFromGrid(target_info &sTarget) {
             memcpy(pData, m_pCG->m_pVegetation->m_adTotalANPP, m_pCG->m_iNumCells*sizeof(double));
             m_mInput[m_iCur][sFullName] = length_array(iNumCells, pData);
         } else {
-            stdprintf("[AutoInterpolator::startInterpolations]unknown array: [%s]\n", sArrayName);
+            xha_printf("[AutoInterpolator::startInterpolations]unknown array: [%s]\n", sArrayName);
             iResult = -1;
         }
     } else {
-        stdprintf("[AutoInterpolator::startInterpolations]unknown group: [%s]\n", sGroupName);
+        xha_printf("[AutoInterpolator::startInterpolations]unknown group: [%s]\n", sGroupName);
         iResult = -1;
     }
 
@@ -459,7 +459,7 @@ int AutoInterpolator::loadArrayFromGrid(target_info &sTarget) {
 //   increases the values in m_mTargets by the corresponding m_mDiff
 //
 int AutoInterpolator::interpolate(int iSteps) {
-    stdprintf("EnvInterpolator::interpolate\n");
+    xha_printf("EnvInterpolator::interpolate\n");
     if (iSteps == 1) {
         for (target_info sc : m_vTargets) {
             double *pSource = m_mDiff[sc.sFullName].second;
@@ -506,7 +506,7 @@ int AutoInterpolator::checkNewInterpolation(int iCurStep) {
 //
 int AutoInterpolator::startInterpolations(int iFirstStep) {
     int iResult = 0;
-    stdprintf("AutoInterpolator::startInterpolations]\n");
+    xha_printf("AutoInterpolator::startInterpolations]\n");
     m_iCur = 0;
     if (iFirstStep <=  m_mFileList.begin()->first) {
         
@@ -531,18 +531,18 @@ int AutoInterpolator::startInterpolations(int iFirstStep) {
 
         if (itC != m_mFileList.end()) {
 
-            stdprintf("[AutoInterpolator::startInterpolations] found file with t=%d\n", itC->first); fflush(stdout);
+            xha_printf("[AutoInterpolator::startInterpolations] found file with t=%d\n", itC->first); fflush(stdout);
             m_itCur =  itC;
             m_iCurStep = m_itCur->first;
-            stdprintf("starting with : [%s] (%d)\n", m_itCur->second.sFile, m_iCurStep); fflush(stdout);
+            xha_printf("starting with : [%s] (%d)\n", m_itCur->second.sFile, m_iCurStep); fflush(stdout);
 
             for (uint i = 0; (iResult == 0) && (i < m_vTargets.size()); i++) {
-                stdprintf("loading array [%s]\n", m_vTargets[i].sFullName); fflush(stdout);
+                xha_printf("loading array [%s]\n", m_vTargets[i].sFullName); fflush(stdout);
                 iResult = loadArrayForTime(m_iCurStep, m_iCur, m_vTargets[i]);
             }
 
         } else {
-            stdprintf("[AutoInterpolator::startInterpolations] found nothing\n"); fflush(stdout);
+            xha_printf("[AutoInterpolator::startInterpolations] found nothing\n"); fflush(stdout);
             iResult = -1;
         }
     }
@@ -555,11 +555,11 @@ int AutoInterpolator::startInterpolations(int iFirstStep) {
 //
 int AutoInterpolator::calcNextDiff() {
     int iResult = 0;
-    stdprintf("[AutoInterpolator::calcNextDiff] cur is %d\n", m_itCur->first); 
+    xha_printf("[AutoInterpolator::calcNextDiff] cur is %d\n", m_itCur->first); 
     m_itCur++;
     if (m_itCur != m_mFileList.end()) {
         int iNextStep = m_itCur->first;
-        stdprintf("[AutoInterpolator::calcNextDiff] %d -> %d\n", m_iCurStep, iNextStep); 
+        xha_printf("[AutoInterpolator::calcNextDiff] %d -> %d\n", m_iCurStep, iNextStep); 
         for (uint i = 0; (iResult == 0) && (i < m_vTargets.size()); i++) {
             iResult = loadArrayForTime(iNextStep, 1-m_iCur, m_vTargets[i]);
             std::string &sFullName = m_vTargets[i].sFullName;//.first;
@@ -579,7 +579,7 @@ int AutoInterpolator::calcNextDiff() {
         m_iCur = 1-m_iCur;
 
     } else {
-        stdprintf("calcNextDiff: All zero\n");
+        xha_printf("calcNextDiff: All zero\n");
         //set all differences to 0
         for (uint i = 0; (iResult == 0) && (i < m_vTargets.size()); i++) {
             const length_array &la = m_mDiff[m_vTargets[i].sFullName];
@@ -614,7 +614,7 @@ void AutoInterpolator::displayArrays() {
     named_arrays::const_iterator it;
     for (int j = 0; j < 2; j++) {
         for (it = m_mInput[j].begin(); it != m_mInput[j].end(); ++it) {
-            stdprintf("%s[%d][%s](%u):\n", (j==m_iCur)?"*":" ", j, it->first, it->second.first );
+            xha_printf("%s[%d][%s](%u):\n", (j==m_iCur)?"*":" ", j, it->first, it->second.first );
             // length  it->second.first
             for (uint i = 0; i < 50; i++) {
                 printf(" %f", it->second.second[i]);
@@ -624,12 +624,12 @@ void AutoInterpolator::displayArrays() {
     }
 
     for (it = m_mDiff.begin(); it != m_mDiff.end(); ++it) {
-        stdprintf(" Diff [%s](%u):\n", it->first, it->second.first );
+        xha_printf(" Diff [%s](%u):\n", it->first, it->second.first );
         // length  it->second.first
         for (uint i = 0; i < 20; i++) {
-            stdprintf(" %f", it->second.second[i]);
+            xha_printf(" %f", it->second.second[i]);
         }
-        stdprintf("\n");
+        xha_printf("\n");
     }
 }
 
@@ -639,11 +639,11 @@ void AutoInterpolator::displayArrays() {
 //
 void AutoInterpolator::displayFiles() {
     for (auto tf : m_mFileList) {
-        stdprintf("[%d] : {", tf.first);
+        xha_printf("[%d] : {", tf.first);
         for (auto vf : tf.second.vGroups) {
-            stdprintf(" %s", vf);
+            xha_printf(" %s", vf);
         }
-        stdprintf(" } [%s]\n", tf.second.sFile);
+        xha_printf(" } [%s]\n", tf.second.sFile);
     }
 
 }
@@ -674,7 +674,7 @@ int AutoInterpolator::loadtest() {
 //
 int AutoInterpolator::calcDiffs(int iTime1, int iTime2) {
     int iResult = -1;
-    stdprintf("[AutoInterpolator::calcDiffs] calculating diffs for %d -> %d\n", iTime1, iTime2);
+    xha_printf("[AutoInterpolator::calcDiffs] calculating diffs for %d -> %d\n", iTime1, iTime2);
     for (auto tt : m_vTargets) {
        
         const std::string &sFullName =  tt.sFullName;
@@ -701,11 +701,11 @@ int AutoInterpolator::calcDiffs(int iTime1, int iTime2) {
                 m_mDiff[sFullName]=length_array(iLen, pDiff);
 
             } else {
-                stdprintf("didn't find file with timestamp %d\n", iTime2);
+                xha_printf("didn't find file with timestamp %d\n", iTime2);
             }
             
         } else {
-            stdprintf("didn't find file with timestamp %d\n", iTime1);
+            xha_printf("didn't find file with timestamp %d\n", iTime1);
         }
     }
     return iResult;

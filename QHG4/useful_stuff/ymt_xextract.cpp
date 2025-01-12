@@ -13,7 +13,7 @@
 #include <map>
 #include <algorithm>
 #include "strutils.h"
-#include "stdstrutils.h"
+#include "xha_strutils.h"
 #include "LineReader.h"
 #include "ParamReader.h"
 #include "QDFUtils.h"
@@ -66,26 +66,26 @@ void createFieldInfo(field_data_vec &vInfos) {
 //  usage
 //
 void usage(const char *pApp) {
-    stdfprintf(stderr, "%s - collect agent-id, cell-id and item value from a population's AgentDataSet\n", pApp);
-    stdfprintf(stderr, "Creates an HDF file containing the list, as well as a\n"); 
-    stdfprintf(stderr, "CSV file containing number, min-val, max-val and median for each node.\n");
-    stdfprintf(stderr, "usage:\n");
-    stdfprintf(stderr, "  %s  -p '<pop-dir-pattern>:<species>'  -g <geo-qdf>\n", pApp);
-    stdfprintf(stderr, "      -l '<location-file> -o <out-body>] [-h] [-v]\n");
-    stdfprintf(stderr, "where\n");
-    stdfprintf(stderr, "  geo-qdf          a QDF with Geography and Grid\n");
-    stdfprintf(stderr, "  pop-dir-pattern  a pattern for directories containing qdf (only one '*' allowed)\n");
-    stdfprintf(stderr, "  species          the species name for which to do the analysis (if omitted, 'sapiens' is used\n");
-    stdfprintf(stderr, "  item-name        the name of the agents hybrdidization value\n");
-    stdfprintf(stderr, "  item-type        the data type of the item ('byte', 'int', 'long', 'float', 'double')\n");
-    stdfprintf(stderr, "  location-file    a text wile containing sampling information. Consists of liens of the form\n");
-    stdfprintf(stderr, "                     <name> <lon> <lat> <radius> <num>\n");
-    stdfprintf(stderr, "  -h               prepend CSV style headerline to output\n");
-    stdfprintf(stderr, "Example:\n");
-    stdfprintf(stderr, "  %s -p '/data/batchA_00*:sapiens' -n PheneticHyb:float -o testing\n", pApp);
-    stdfprintf(stderr, "Will create output files testing.hdf and testing.csv.\n");
-    stdfprintf(stderr, "Assumes the existence of files ooa_pop-<species>_SG_00[01]000.qdf in /data/batchA_00*\n");
-    stdfprintf(stderr, "\n");
+    xha_fprintf(stderr, "%s - collect agent-id, cell-id and item value from a population's AgentDataSet\n", pApp);
+    xha_fprintf(stderr, "Creates an HDF file containing the list, as well as a\n"); 
+    xha_fprintf(stderr, "CSV file containing number, min-val, max-val and median for each node.\n");
+    xha_fprintf(stderr, "usage:\n");
+    xha_fprintf(stderr, "  %s  -p '<pop-dir-pattern>:<species>'  -g <geo-qdf>\n", pApp);
+    xha_fprintf(stderr, "      -l '<location-file> -o <out-body>] [-h] [-v]\n");
+    xha_fprintf(stderr, "where\n");
+    xha_fprintf(stderr, "  geo-qdf          a QDF with Geography and Grid\n");
+    xha_fprintf(stderr, "  pop-dir-pattern  a pattern for directories containing qdf (only one '*' allowed)\n");
+    xha_fprintf(stderr, "  species          the species name for which to do the analysis (if omitted, 'sapiens' is used\n");
+    xha_fprintf(stderr, "  item-name        the name of the agents hybrdidization value\n");
+    xha_fprintf(stderr, "  item-type        the data type of the item ('byte', 'int', 'long', 'float', 'double')\n");
+    xha_fprintf(stderr, "  location-file    a text wile containing sampling information. Consists of liens of the form\n");
+    xha_fprintf(stderr, "                     <name> <lon> <lat> <radius> <num>\n");
+    xha_fprintf(stderr, "  -h               prepend CSV style headerline to output\n");
+    xha_fprintf(stderr, "Example:\n");
+    xha_fprintf(stderr, "  %s -p '/data/batchA_00*:sapiens' -n PheneticHyb:float -o testing\n", pApp);
+    xha_fprintf(stderr, "Will create output files testing.hdf and testing.csv.\n");
+    xha_fprintf(stderr, "Assumes the existence of files ooa_pop-<species>_SG_00[01]000.qdf in /data/batchA_00*\n");
+    xha_fprintf(stderr, "\n");
 }
 
 //----------------------------------------------------------------------------
@@ -104,15 +104,15 @@ int calcLandWater(const char *pPopQDF, loc_cells &mSelected, loc_landwater &mLan
             pdAlt = new double[iNumCells];
             uint iCount = pQA->getFirstSlab(pdAlt, iNumCells);
             if (iCount == iNumCells) {
-                stdfprintf(stderr, "[calcLandWater] Read %d Altitudes\n", iCount);
+                xha_fprintf(stderr, "[calcLandWater] Read %d Altitudes\n", iCount);
                 iResult = 0;
             } else {
                 iResult = -1;
-                stdfprintf(stderr, "[calcLandWater] Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", pPopQDF, GEOGROUP_NAME, GEO_DS_ALTITUDE, iCount, iNumCells);
+                xha_fprintf(stderr, "[calcLandWater] Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", pPopQDF, GEOGROUP_NAME, GEO_DS_ALTITUDE, iCount, iNumCells);
             }
         } else {
             iResult = -1;
-            stdfprintf(stderr, "[calcLandWater] Couldn't open data set [%s]\n", GEO_DS_ALTITUDE);
+            xha_fprintf(stderr, "[calcLandWater] Couldn't open data set [%s]\n", GEO_DS_ALTITUDE);
         }
         pQA->closeArray();
     
@@ -140,7 +140,7 @@ int calcLandWater(const char *pPopQDF, loc_cells &mSelected, loc_landwater &mLan
         delete pQA;;
     } else {
         iResult = -1;
-        stdfprintf(stderr, "[calcLandWater] Couldn't create QDFArray\n");
+        xha_fprintf(stderr, "[calcLandWater] Couldn't create QDFArray\n");
   
     }
     return iResult;
@@ -180,7 +180,7 @@ int getDirName(const char *pPat, char *pMatch, char *pName) {
                 iResult = 0;
                 bEqual = false;
             } else {
-                stdfprintf(stderr, "[getDirName] Part mismatch   [%s] != [%s]\n", vPatParts[i].c_str(), vMatchParts[i].c_str());
+                xha_fprintf(stderr, "[getDirName] Part mismatch   [%s] != [%s]\n", vPatParts[i].c_str(), vMatchParts[i].c_str());
                 bEqual = false;
             }
         }
@@ -189,7 +189,7 @@ int getDirName(const char *pPat, char *pMatch, char *pName) {
             iResult = 0;
         }
     } else {
-        stdfprintf(stderr, "[getDirName] number of parts don't match: %zd != %zd\n",vPatParts.size(), vMatchParts.size());
+        xha_fprintf(stderr, "[getDirName] number of parts don't match: %zd != %zd\n",vPatParts.size(), vMatchParts.size());
     }
 
     delete[] sPat;
@@ -227,14 +227,14 @@ int main(int iArgC, char *apArgV[]) {
             if (iResult >= 0) {
 
                 if (iResult == 0) {
-                    stdfprintf(stderr, "popqdf: [%s]\n", sPopQDF);
+                    xha_fprintf(stderr, "popqdf: [%s]\n", sPopQDF);
                     // separate species from pattern
                     char *pSpc = strchr(sPopQDF, ':');
                     if (pSpc != NULL) {
                         *pSpc++ = '\0';
                         pSpecies = pSpc;
                     } else {
-                        stdfprintf(stderr, "No Species given - %s is used\n", DEF_SPC);
+                        xha_fprintf(stderr, "No Species given - %s is used\n", DEF_SPC);
                         pSpecies = DEF_SPC;
                     }
 
@@ -262,14 +262,14 @@ int main(int iArgC, char *apArgV[]) {
                         mSelected = pCS->getSelected();
                         vNames = pCS->getNames();
                         
-                        stdfprintf(stderr, "CellSampler found %zd regions\n", mSelected.size());
+                        xha_fprintf(stderr, "CellSampler found %zd regions\n", mSelected.size());
                         if (bVerbose) {
                             pCS->showSelected(stderr, 10);
                         }
                         delete pCS;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "Couldn't create CellSampler\n");
+                        xha_fprintf(stderr, "Couldn't create CellSampler\n");
                     }
 
                     field_data_vec vInfos;
@@ -290,15 +290,15 @@ int main(int iArgC, char *apArgV[]) {
                             splitString(sPopQDF, vParts, "/");
                             const char *pSimName = vParts[vParts.size()-2].c_str();
 
-                            stdfprintf(stderr, "sPopDir [%s], pSimName [%s]\n", sPopQDF, pSimName);
+                            xha_fprintf(stderr, "sPopDir [%s], pSimName [%s]\n", sPopQDF, pSimName);
                             //                                locvalvec mLocHybs;
                             loc_landwater mLandWater;
                             if (bDiedOut) {
-                                stdfprintf(stderr, "doing diedout outputs\n"); fflush(stderr);
+                                xha_fprintf(stderr, "doing diedout outputs\n"); fflush(stderr);
                                 pXHW->writeDataRegionized(pSimName, -1, -1, NULL, 0, mSelected, mLandWater);
                                 //iResult = addCSVLine(fOutCSV, pSimName, -1, 0, mLocHybs);
                             } else {
-                                stdfprintf(stderr, "doing normal outputs\n"); fflush(stderr);
+                                xha_fprintf(stderr, "doing normal outputs\n"); fflush(stderr);
                                 if (sGeoQDF == NULL) {
                                     sGeoQDF = sPopQDF;
                                 }
@@ -313,25 +313,25 @@ int main(int iArgC, char *apArgV[]) {
                                     float  fStartTime  = pAXC->getStartTime();
 
                                     iResult = calcLandWater(sPopQDF, mSelected, mLandWater);
-                                    stdfprintf(stderr, "AgentXItemCollector found %u values\n", iNumAgs);
+                                    xha_fprintf(stderr, "AgentXItemCollector found %u values\n", iNumAgs);
 
                                     printf("calling XHDFWriter\n");
                                     iResult = pXHW->writeDataRegionized(pSimName, iCurStep, fStartTime, pData, iNumAgs, mSelected, mLandWater);
                                     if (iResult == 0) {
 
                                         if (iResult == 0) {
-                                            stdfprintf(stderr, "+++ success for [%s] +++\n", sPopQDF);
+                                            xha_fprintf(stderr, "+++ success for [%s] +++\n", sPopQDF);
                                         } else {
-                                            stdfprintf(stderr, "couldn't add csv line\n");
+                                            xha_fprintf(stderr, "couldn't add csv line\n");
                                         }
                                     } else {
                                         iResult = -1;
-                                        stdfprintf(stderr, "couldn't write data to HDF file\n");
+                                        xha_fprintf(stderr, "couldn't write data to HDF file\n");
                                     }
                                     delete pAXC;
                                 } else {
                                     iResult = -1;
-                                    stdfprintf(stderr, "Couldn't create AgentItemCollector\n");
+                                    xha_fprintf(stderr, "Couldn't create AgentItemCollector\n");
                                 }
                             }
                         }
@@ -339,7 +339,7 @@ int main(int iArgC, char *apArgV[]) {
                         delete pXHW;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "couldn't create HDF file [%s]\n", sOutNameHDF);
+                        xha_fprintf(stderr, "couldn't create HDF file [%s]\n", sOutNameHDF);
                     }
                     delete[] sOutNameHDF;
                 } else {
@@ -348,11 +348,11 @@ int main(int iArgC, char *apArgV[]) {
                 usage(apArgV[0]);
             }
         } else {
-            stdfprintf(stderr, "Couldn't set ParamReader options\n");
+            xha_fprintf(stderr, "Couldn't set ParamReader options\n");
         }
         delete pPR;
     } else {
-        stdfprintf(stderr, "Couldn't create ParamReader\n");
+        xha_fprintf(stderr, "Couldn't create ParamReader\n");
     }
 
     return iResult;

@@ -4,7 +4,7 @@
 #include "hdf5.h"
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "QDFUtils.h"
 #include "PieWriter.h"
@@ -70,17 +70,17 @@ int PieWriter::init(maphistos &mHistos) {
     m_mHistos = mHistos;
     // number of pies
     m_iNumPies = (uint) m_mHistos.size();
-    if (m_bVerbose) stdprintf("num pies: %d\n", m_iNumPies);
+    if (m_bVerbose) xha_printf("num pies: %d\n", m_iNumPies);
     
     if (iResult == 0) {
         /*
         // number of values
         m_iNumVals = (uint) iNumVals;
-        stdprintf("num vals: %d\n", m_iNumVals);
+        xha_printf("num vals: %d\n", m_iNumVals);
         */
         // create default value names ("item_XXX")
         int iNumDigits = 1+(int)(log(m_iNumVals)/log(10));
-        if (m_bVerbose) stdprintf("numvals %d, numdigits %d\n", m_iNumVals, iNumDigits);
+        if (m_bVerbose) xha_printf("numvals %d, numdigits %d\n", m_iNumVals, iNumDigits);
         m_sValNames="";
         for (uint i = 0; i < m_iNumVals; i++) {
             std::string s0 = std::to_string(i);
@@ -116,7 +116,7 @@ int PieWriter::setValueNames(const stringvec &svValueNames) {
         m_sValNames = sFinal;
         iResult = 0;
     } else {
-        stdprintf("Exactly %u value names are required, not %zd\n", m_iNumVals, svValueNames.size());
+        xha_printf("Exactly %u value names are required, not %zd\n", m_iNumVals, svValueNames.size());
     }
 
     return iResult;
@@ -137,7 +137,7 @@ int PieWriter::prepareData(std::map<int, pointnorm> mPointsNorms) {
         std::map<int, pointnorm>::const_iterator it2 = mPointsNorms.find(it->first);
         if (it2 == mPointsNorms.end()) {
             iResult = -1;
-            stdprintf("ID [%d] is missing from provided pointnorm map\n", it->first);
+            xha_printf("ID [%d] is missing from provided pointnorm map\n", it->first);
         }
     }
 
@@ -228,7 +228,7 @@ int PieWriter::prepareDataReal() {
 
         delete[] pH;
     } else {
-        stdprintf("One of the pPrepareData(...) methods must be called berfore prepareDataReal()\n");
+        xha_printf("One of the pPrepareData(...) methods must be called berfore prepareDataReal()\n");
         iResult = -1;
     }
     return iResult;
@@ -245,7 +245,7 @@ int PieWriter::writeToQDF(const std::string sQDFFile) {
 
     hid_t hFile = qdf_openFile(sQDFFile.c_str(), "r+");
     if (hFile != H5P_DEFAULT) {
-        //stdprintf("opened file\n");
+        //xha_printf("opened file\n");
         if (qdf_link_exists(hFile, PIEGROUP_NAME)) {
             // a pie group already exists, so we can use it
                 
@@ -255,10 +255,10 @@ int PieWriter::writeToQDF(const std::string sQDFFile) {
 
         hid_t hPieGroup = qdf_openGroup(hFile, PIEGROUP_NAME, true);
         if (hPieGroup != H5P_DEFAULT) {
-            //stdprintf("opened pie group\n");
+            //xha_printf("opened pie group\n");
 
             if (!qdf_link_exists(hPieGroup, m_sPieName)) {
-                // stdprintf("opened sub group [%s]\n", m_sPieName);
+                // xha_printf("opened sub group [%s]\n", m_sPieName);
                 hid_t hPieItem = qdf_createGroup(hPieGroup, m_sPieName);
                 if (hPieItem != H5P_DEFAULT) {
                     // now we add some attributes
@@ -268,28 +268,28 @@ int PieWriter::writeToQDF(const std::string sQDFFile) {
                     qdf_insertAttribute(hPieItem,  PIE_ATTR_NUM_DIMS,  1, &m_iNumDims);
                     qdf_insertSAttribute(hPieItem, PIE_ATTR_VAL_NAMES,     m_sValNames);
 
-                    if (m_bVerbose) stdprintf("written attributes\n");
+                    if (m_bVerbose) xha_printf("written attributes\n");
                     // now let's add the data
 
-                    if (m_bVerbose) stdprintf("writing array of %d elements\n", m_iNumPies*(6+m_iNumVals));
+                    if (m_bVerbose) xha_printf("writing array of %d elements\n", m_iNumPies*(6+m_iNumVals));
                     qdf_writeArray(hPieItem, PIE_DATASET_NAME, m_iNumPies*(6+m_iNumVals), m_pAllData);
 
                     qdf_closeGroup(hPieItem);
                     iResult = 0;
                 } else {
-                    stdprintf("Couldn't open subgroup [%s]\n", m_sPieName);
+                    xha_printf("Couldn't open subgroup [%s]\n", m_sPieName);
                 }
                 
             } else {
-                stdprintf("Pie subgroup [%s] already exists\n", m_sPieName);
+                xha_printf("Pie subgroup [%s] already exists\n", m_sPieName);
             }
 
         } else {
-            stdprintf("Couldn't open group [%s]\n", PIEGROUP_NAME);
+            xha_printf("Couldn't open group [%s]\n", PIEGROUP_NAME);
         }
         qdf_closeFile(hFile);
     } else {
-        stdprintf("The file [%s] does not exist or is not a QDF file\n");
+        xha_printf("The file [%s] does not exist or is not a QDF file\n");
     }
     return iResult;
 }

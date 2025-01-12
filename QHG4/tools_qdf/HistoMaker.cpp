@@ -1,8 +1,8 @@
 #include <cstring>
 #include <cmath>
 
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "Sampling.h"
 #include "HistoMaker.h"
 
@@ -121,31 +121,31 @@ int HistoMaker::createSingleHisto(uint iIndex, const std::vector<double> &vVals)
 void HistoMaker::showHistos(maphistos &mH) {
     maphistos::const_iterator it;
     for (it = mH.begin(); it != mH.end(); ++it) {
-        stdprintf("(%d): ", it->first);
+        xha_printf("(%d): ", it->first);
 	for (int k = 0; k < m_iNumBins; ++k) {
-             stdprintf(" %d", it->second[k]);
+             xha_printf(" %d", it->second[k]);
 	}
-	stdprintf("\n");
+	xha_printf("\n");
     }
     if (m_bStrict) {
-	stdprintf("Omitted %d values out of range\n", m_iNumOutsideRange);
-        stdprintf("Below: %zd (down to ", m_vBelow.size());
+	xha_printf("Omitted %d values out of range\n", m_iNumOutsideRange);
+        xha_printf("Below: %zd (down to ", m_vBelow.size());
         double dMin = m_dMin;
         for (uint i = 0; i < m_vBelow.size(); i++) {
             if (m_vBelow[i] < dMin) {
                 dMin = m_vBelow[i];
             }
         }
-        stdprintf("%f)\n", dMin);
+        xha_printf("%f)\n", dMin);
     }
 
-    stdprintf("Above: %zd (up to ", m_vAbove.size());
+    xha_printf("Above: %zd (up to ", m_vAbove.size());
     double dMax = m_dMax;
     for (uint i = 0; i < m_vAbove.size(); i++) {
         if (m_vAbove[i] < dMax) {
             dMax = m_vAbove[i];
         }
     }
-    stdprintf("%f)\n", dMax);
+    xha_printf("%f)\n", dMax);
 }
 

@@ -779,7 +779,7 @@ int qdf_extractSAttribute2(hid_t hLoc, const std::string sName, std::string &sVa
         qdf_closeAttribute(hAttribute);
         delete[] pString;
     } else {
-        //stdprintf("Attribute [%s] does not exist\n", sName);
+        //xha_printf("Attribute [%s] does not exist\n", sName);
     }
     return iResult;
 }

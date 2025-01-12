@@ -3,7 +3,7 @@
 
 #include <omp.h>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "WELL512.h"
 #include "ArrayShare.h"
 
@@ -93,10 +93,10 @@ int PreyDistributor::registerPredator(const std::string sPredName) {
     int iResult = -1;
 
 
-    std::string s1 = stdsprintf(ATTR_PD_TEMPLATE_PREY, sPredName);
+    std::string s1 = xha_sprintf(ATTR_PD_TEMPLATE_PREY, sPredName);
     preyratio *pPredPrey = (preyratio*) ArrayShare::getInstance()->getArray(s1);
     if (pPredPrey != NULL) {
-        stdprintf("[PreyDistributor::registerPredator] adding preyratio array [%s]\n", s1);
+        xha_printf("[PreyDistributor::registerPredator] adding preyratio array [%s]\n", s1);
 
         int iNum = ArrayShare::getInstance()->getSize(s1);
         for (int i = 0; i < iNum; ++i) {
@@ -104,7 +104,7 @@ int PreyDistributor::registerPredator(const std::string sPredName) {
         }
         iResult = 0;
     } else {
-        stdprintf("[PreyDistributor::registerPredator] couldn't get preyratio array [%s]\n", s1);
+        xha_printf("[PreyDistributor::registerPredator] couldn't get preyratio array [%s]\n", s1);
     }
     
     // make sure there is an entry for this predator
@@ -139,16 +139,16 @@ int PreyDistributor::getFrequencies() {
             int iCum = 0;
             relationvec::const_iterator it2;
             for (it2 = it->second.begin(); (iResult == 0) && (it2 != it->second.end()); ++it2) {
-                std::string s = stdsprintf(ATTR_PD_TEMPLATE_INDEXES, it2->first);
+                std::string s = xha_sprintf(ATTR_PD_TEMPLATE_INDEXES, it2->first);
                 if (iCell == 0) {
-                    stdprintf("[PreyDistributor::getFrequencies] xxxShare looking at pred array [%s] for prey [%s]\n", s, it->first);
+                    xha_printf("[PreyDistributor::getFrequencies] xxxShare looking at pred array [%s] for prey [%s]\n", s, it->first);
                 }
                 intlist *pArr = (intlist *)ArrayShare::getInstance()->getArray(s); 
                 if (pArr != NULL) {
                     iCum += pArr[iCell].size(); 
                     m_avNum[iCell][it->first].push_back(iCum);
                 } else {
-                    stdprintf("[PreyDistributor::getFrequencies] required array [%s] not found\n", s);
+                    xha_printf("[PreyDistributor::getFrequencies] required array [%s] not found\n", s);
                     iResult = -1;
                 } 
             }
@@ -160,7 +160,7 @@ int PreyDistributor::getFrequencies() {
         } else {
             std::map<std::string, intlist>::const_iterator it2;
             for (it2 = m_avNum[iCell].begin(); it2 != m_avNum[iCell].end(); ++it2) {
-                stdprintf("  C%03d[%s]: %zd: ", iCell, it2->first, it2->second.size());
+                xha_printf("  C%03d[%s]: %zd: ", iCell, it2->first, it2->second.size());
                 for (uint i = 0; i < it2->second.size(); i++) {
                     printf(" %d", it2->second[i]);
                 }
@@ -198,7 +198,7 @@ int PreyDistributor::calcAssignments() {
         }
         delete[] itf->second;
         
-        std::string s = stdsprintf(ATTR_PD_TEMPLATE_ASSMAP, itf->first);
+        std::string s = xha_sprintf(ATTR_PD_TEMPLATE_ASSMAP, itf->first);
         ArrayShare::getInstance()->removeArray(s);
 
     }
@@ -225,11 +225,11 @@ int PreyDistributor::calcAssignments() {
     
     for (it = m_mRelations.begin(); (iResult == 0) && (it != m_mRelations.end()); ++it) {
         // get array of prey indexes for current type
-        std::string s = stdsprintf( ATTR_PD_TEMPLATE_INDEXES, it->first);
+        std::string s = xha_sprintf( ATTR_PD_TEMPLATE_INDEXES, it->first);
         int iNumPrey = ArrayShare::getInstance()->getSize(s); 
         if (iNumPrey > 0) {
             intlist *pPreyIdx = (intlist *) ArrayShare::getInstance()->getArray(s);
-            stdprintf("[PreyDistributor::calcAssignments] xxxShare Getting indexes for prey [%s]: %p\n", s, pPreyIdx);
+            xha_printf("[PreyDistributor::calcAssignments] xxxShare Getting indexes for prey [%s]: %p\n", s, pPreyIdx);
 
 #pragma omp parallel for
             for (int iCell = 0; iCell < m_iNumCells; iCell++) {
@@ -267,10 +267,10 @@ int PreyDistributor::calcAssignments() {
                         
                         if (fPreyRatio >= 0) {
                             double dR0 = m_apWELL[iThread]->wrandd();
-                            //@@@                            stdprintf("[%s]id %d c %d r:%f/%f\n", it->first, pPreyIdx[iCell][iPreyIndex], iCell, dR0, fPreyRatio);
+                            //@@@                            xha_printf("[%s]id %d c %d r:%f/%f\n", it->first, pPreyIdx[iCell][iPreyIndex], iCell, dR0, fPreyRatio);
                             
                             if (dR0 < fPreyRatio) {
-                                std::string sPredName = stdsprintf(ATTR_PD_TEMPLATE_INDEXES, it->second[k].first);
+                                std::string sPredName = xha_sprintf(ATTR_PD_TEMPLATE_INDEXES, it->second[k].first);
                                 intlist *pPredIdx = (intlist*)ArrayShare::getInstance()->getArray(sPredName);
                                 
                                 if (pPredIdx != NULL) {
@@ -288,7 +288,7 @@ int PreyDistributor::calcAssignments() {
                                             if (itg == m_Ass.end()) {
 
                                                 m_Ass[it->second[k].first] = new assignmentmap[m_iNumCells];
-                                                //                                                stdprintf("created for pred[%s]: %p (T:%f)\n", it->second[k].first, m_Ass[it->second[k].first], m_fLastTime);
+                                                //                                                xha_printf("created for pred[%s]: %p (T:%f)\n", it->second[k].first, m_Ass[it->second[k].first], m_fLastTime);
 
                                             }
                                             omp_unset_lock(&lock0);
@@ -298,34 +298,34 @@ int PreyDistributor::calcAssignments() {
                                         int iPredID = pPredIdx[iCell][iPredIndex];
                                         // do the assignment
                                         m_Ass[it->second[k].first][iCell][it->first].insert(intpair(iPredID, iPreyID));
-                                        //                                        stdprintf("added (%d,%d) to ass[%s][%d][%s]\n", iPredID, iPreyID, it->second[k].first, iCell, it->first);
+                                        //                                        xha_printf("added (%d,%d) to ass[%s][%d][%s]\n", iPredID, iPreyID, it->second[k].first, iCell, it->first);
                                     } else {
                                         // shouldn't happen
-                                        stdprintf("o-oh: no agents of [%s] in cell %d\n", it->second[k].first, iCell);
+                                        xha_printf("o-oh: no agents of [%s] in cell %d\n", it->second[k].first, iCell);
                                         iResult = -1;
                                     }
                                 } else {
                                     // shouldn't happen
-                                    stdprintf("o-oh: array [%s] not found\n", sPredName);
+                                    xha_printf("o-oh: array [%s] not found\n", sPredName);
                                     iResult = -1;
                                 }
                             } else {
-                                //stdprintf("Failed hunt of [%s] on [%s] in cell %d\n", it->second[k].first, it->first, iCell); 
+                                //xha_printf("Failed hunt of [%s] on [%s] in cell %d\n", it->second[k].first, it->first, iCell); 
                                 //@@ not really necessary
                                 // for statistics: number of failed hunts
                                 // m_amUnmatchedBadHunting[iThread][it->first].insert(iPreyID);
                             }
                         } else {
                             // shouldn't happen
-                            stdprintf("o-oh: ratio for pred [%s] prey [%s] not found\n", it->second[k].first,it->first);
+                            xha_printf("o-oh: ratio for pred [%s] prey [%s] not found\n", it->second[k].first,it->first);
                             iResult = -1;
                         }
                     }
                 } else {
                     /* debug: report unmatched
-                    stdprintf("Cell %d: unmatched [%s]: ", iCell, it->first);
+                    xha_printf("Cell %d: unmatched [%s]: ", iCell, it->first);
                     for (uint i = 0; i < v.size(); ++i) {
-                        stdprintf(" %d", v[i]);
+                        xha_printf(" %d", v[i]);
                     }
                     printf("\n");
                     */
@@ -336,7 +336,7 @@ int PreyDistributor::calcAssignments() {
                 
             }
         } else {
-            stdprintf("No prey indexes [%s]\n", s);
+            xha_printf("No prey indexes [%s]\n", s);
             iResult = -1;
         }
     }
@@ -379,18 +379,18 @@ int PreyDistributor::buildAssignments(const std::string sPredName, float fTime) 
                 // share arrays for each predator
                 std::map<std::string, assignmentmap* > ::const_iterator itf;
                 for (itf = m_Ass.begin(); itf != m_Ass.end(); ++itf) {
-                    std::string s = stdsprintf(ATTR_PD_TEMPLATE_ASSMAP, itf->first);
+                    std::string s = xha_sprintf(ATTR_PD_TEMPLATE_ASSMAP, itf->first);
                     /*
                     assignmentmap* pAss = (assignmentmap *)ArrayShare::getInstance()->getArray(s);
                     if (pAss != NULL) {
-                        stdprintf("c deleted for pred[%s]: %p\n", itf->first, pAss);
+                        xha_printf("c deleted for pred[%s]: %p\n", itf->first, pAss);
                         for (int i  = 0; i < m_iNumCells; i++) {
                             pAss[i].clear();
                         }
                         delete[] pAss;
                     }
                     */
-                    stdprintf("[PreyDistributor::buildAssignments] xxShare sharing array for [%s]:%p\n", s, itf->second);
+                    xha_printf("[PreyDistributor::buildAssignments] xxShare sharing array for [%s]:%p\n", s, itf->second);
                     ArrayShare::getInstance()->removeArray(s);
                     ArrayShare::getInstance()->shareArray(s, m_iNumCells, itf->second);
                 }
@@ -408,12 +408,12 @@ int PreyDistributor::buildAssignments(const std::string sPredName, float fTime) 
 void PreyDistributor::showRelations() {
    std::map<std::string, relationvec>::const_iterator it;
    for (it = m_mRelations.begin(); it != m_mRelations.end(); it++) {
-       stdprintf("  %s : ", it->first);
+       xha_printf("  %s : ", it->first);
        relationvec::const_iterator it2;
        for (it2 = it->second.begin(); it2 != it->second.end(); ++it2) {
-       	   stdprintf(" %s:%.02f", it2->first, it2->second);
+       	   xha_printf(" %s:%.02f", it2->first, it2->second);
        }
-       stdprintf("\n");
+       xha_printf("\n");
    }
 }
 
@@ -424,14 +424,14 @@ void PreyDistributor::showRelations() {
 void PreyDistributor::showFrequencies() {
 
     for (int iCell = 0; iCell < m_iNumCells; iCell++) {
-        stdprintf("C%02d:\n", iCell);
+        xha_printf("C%02d:\n", iCell);
         std::map<std::string, intlist>::const_iterator it;
 	for (it = m_avNum[iCell].begin(); it != m_avNum[iCell].end(); ++it) {
-	    stdprintf("  [%s]: ", it->first);
+	    xha_printf("  [%s]: ", it->first);
 	    for (uint j = 0; j < m_avNum[iCell][it->first].size(); j++) {
-	        stdprintf(" %d", m_avNum[iCell][it->first][j]);
+	        xha_printf(" %d", m_avNum[iCell][it->first][j]);
 	    }
-	    stdprintf("\n");
+	    xha_printf("\n");
 	}
     }
 }
@@ -444,20 +444,20 @@ void PreyDistributor::showAssignments() {
 
     std::map<std::string, assignmentmap* > ::const_iterator itf;
     for (itf = m_Ass.begin(); itf != m_Ass.end(); ++itf) {
-        stdprintf("assignment [%s]\n", itf->first);
+        xha_printf("assignment [%s]\n", itf->first);
         for (int iCell = 0; iCell < m_iNumCells; iCell++) {
-	    stdprintf("  C%02d\n", iCell);
+	    xha_printf("  C%02d\n", iCell);
             assignmentmap::const_iterator ita;
             for (ita = itf->second[iCell].begin(); ita != itf->second[iCell].end(); ++ita) {
-                stdprintf("     [%s]: ", ita->first);
+                xha_printf("     [%s]: ", ita->first);
                 std::set<intpair>::const_iterator itp;
                 for (itp = ita->second.begin(); itp != ita->second.end(); ++itp) {
-                    stdprintf(" (%d,%d)", itp->first, itp->second);
+                    xha_printf(" (%d,%d)", itp->first, itp->second);
                 }
                 ///		for (uint j = 0; j < ita->second.size(); j++) {
                     ///                    printf(" (%d,%d)", ita->second[j].first, ita->second[j].second);
                     ///		}
-		stdprintf("\n");
+		xha_printf("\n");
 	    }
 	}
     }
@@ -468,21 +468,21 @@ void PreyDistributor::showAssignments() {
 //
 void PreyDistributor::showAgentAssignments(int iCellID, const std::string sPredName, int iAgentIndex) {
     assignmentmap mAss = m_Ass[sPredName][iCellID];
-    stdprintf("Assignments to id %d of species [%s] (cell %d)\n", iAgentIndex, sPredName, iCellID); 
+    xha_printf("Assignments to id %d of species [%s] (cell %d)\n", iAgentIndex, sPredName, iCellID); 
     assignmentmap::const_iterator ita;
     for (ita = mAss.begin(); ita != mAss.end(); ++ita) {
-        stdprintf("     [%s]: ", ita->first);
+        xha_printf("     [%s]: ", ita->first);
         std::set<intpair>::const_iterator itp;
         for (itp = ita->second.begin(); itp != ita->second.end(); ++itp) {
             if  (itp->first == iAgentIndex) {
-                stdprintf(" %d", itp->second);
+                xha_printf(" %d", itp->second);
             }
             //        for (uint j = 0; j < ita->second.size(); j++) {
             //            if  (ita->second[j].first == iAgentIndex) {
             //                printf(" %d", ita->second[j].second);
             //            }
         }
-        stdprintf("\n");
+        xha_printf("\n");
     }
 }
 
@@ -515,7 +515,7 @@ void PreyDistributor::showUnmatched() {
         printf("Bad Hunting\n");
         std::map<std::string, intset>::const_iterator it0;
         for (it0 = m_amUnmatchedBadHunting[0].begin(); it0 != m_amUnmatchedBadHunting[0].end(); ++it0) {
-            stdprintf("  [%s]\n", it0->first);
+            xha_printf("  [%s]\n", it0->first);
             intset::const_iterator it1;
             for (it1 = it0->second.begin(); it1 != it0->second.end(); ++it1) {
                 printf(" %d", *it1);
@@ -528,7 +528,7 @@ void PreyDistributor::showUnmatched() {
         printf("No Hunting\n");
         std::map<std::string, intset>::const_iterator it0;
         for (it0 = m_amUnmatchedNoHunting[0].begin(); it0 != m_amUnmatchedNoHunting[0].end(); ++it0) {
-            stdprintf("  [%s]\n", it0->first);
+            xha_printf("  [%s]\n", it0->first);
             intset::const_iterator it1;
             for (it1 = it0->second.begin(); it1 != it0->second.end(); ++it1) {
                 printf(" %d", *it1);

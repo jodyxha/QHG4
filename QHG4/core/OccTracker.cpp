@@ -7,7 +7,7 @@
 #include "types.h"
 #include "qhg_consts.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "PopBase.h"
 #include "PopLooper.h"
 #include "SCellGrid.h"
@@ -82,7 +82,7 @@ int OccTracker::init(PopLooper *pPL) {
             m_vPops.push_back(it->second);
             m_vPopNames.push_back(it->second->getSpeciesName());
         } else {
-            stdprintf("Too many populations: ignoring [%s]\n", it->second->getSpeciesName());
+            xha_printf("Too many populations: ignoring [%s]\n", it->second->getSpeciesName());
         }
     }
 

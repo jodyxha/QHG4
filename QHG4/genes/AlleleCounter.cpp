@@ -7,7 +7,7 @@
 #include <omp.h>
 
 #include "types.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "colors.h"
 
 #include "GeneUtils.h"
@@ -126,20 +126,20 @@ int AlleleCounter::init(const std::string sQDFPopFile, const std::string sSpecie
             
             
             // m_iGenomeSize is known, so we can prepare the arrays
-            stdprintf("Found attributes: GeneomeSize(%d), bitspernuc (%d), numnucs (%d), numblocks (%d), nucsinblock (%d), urate (%f)\n",
+            xha_printf("Found attributes: GeneomeSize(%d), bitspernuc (%d), numnucs (%d), numblocks (%d), nucsinblock (%d), urate (%f)\n",
                       m_iGenomeSize, m_iBitsPerNuc, m_iNumNucs, m_iNumBlocks, m_iNucsInBlock,dMutRate);
             prepareArrays();
             
             
         } else {
-            stdfprintf(stderr, "Couldn't extract Attribute [%s] for genome size\n", POP_ATTR_GENOME_SIZE);
+            xha_fprintf(stderr, "Couldn't extract Attribute [%s] for genome size\n", POP_ATTR_GENOME_SIZE);
         }
 
     } else {
         if (sSpeciesName.empty()) {
-            stdfprintf(stderr, "Couldn't find any population in [%s]\n", sQDFPopFile);
+            xha_fprintf(stderr, "Couldn't find any population in [%s]\n", sQDFPopFile);
         } else {
-            stdfprintf(stderr, "Couldn't get population [%s] from [%s]\n", sSpeciesName, sQDFPopFile);
+            xha_fprintf(stderr, "Couldn't get population [%s] from [%s]\n", sSpeciesName, sQDFPopFile);
         }
     }
 
@@ -165,7 +165,7 @@ int AlleleCounter::prepareArrays() {
 
         iResult = 0;
     } else {
-        stdfprintf(stderr, "GenomeSize has invalid value: %d (should be positive)\n", m_iGenomeSize);
+        xha_fprintf(stderr, "GenomeSize has invalid value: %d (should be positive)\n", m_iGenomeSize);
     }        
 
     return iResult;
@@ -203,7 +203,7 @@ int AlleleCounter::selectIndexes(int iSelectionType) {
                     if (iResult == 0) {
                         int iCount = pQA->getFirstSlab(pGenders, m_iNumGenomes, "Gender");
                         if (iCount != m_iNumGenomes) {
-                            stdfprintf(stderr, "%sGot %d genders instead of %d%s\n", colors::RED, iCount, m_iNumGenomes, colors::OFF);
+                            xha_fprintf(stderr, "%sGot %d genders instead of %d%s\n", colors::RED, iCount, m_iNumGenomes, colors::OFF);
                             iResult = -1;
                         }
                     }
@@ -222,7 +222,7 @@ int AlleleCounter::selectIndexes(int iSelectionType) {
                     }
                     break;
                 default:
-                    stdprintf("Unknown selection type [%d]\n", iSelectionType);
+                    xha_printf("Unknown selection type [%d]\n", iSelectionType);
                     iResult = -1;
                 }
             }
@@ -296,7 +296,7 @@ int AlleleCounter::countAlleles(int iSelectionType) {
 int AlleleCounter::loadGenomes(int iNumPerBuf) {
     int iResult = 0;
 
-    stdprintf("getSelectedGenes (dense)\n");
+    xha_printf("getSelectedGenes (dense)\n");
 
 
     // read buffer
@@ -304,7 +304,7 @@ int AlleleCounter::loadGenomes(int iNumPerBuf) {
     long *aBuf = new long[iReadBufSize];
    
     // open the DataSet and data space
-    if (m_bVerbose) { stdprintf("Opening data set [%s] in species\n", POP_DS_GENOME); fflush(stdout);}
+    if (m_bVerbose) { xha_printf("Opening data set [%s] in species\n", POP_DS_GENOME); fflush(stdout);}
     hid_t hDataSet = H5Dopen2(m_hSpecies, POP_DS_GENOME.c_str(), H5P_DEFAULT);
     hid_t hDataSpace = H5Dget_space(hDataSet);
 
@@ -322,7 +322,7 @@ int AlleleCounter::loadGenomes(int iNumPerBuf) {
     std::vector<int>::const_iterator itIdxId = m_vSelectedIndexes.begin();
     
 
-    if (m_bVerbose) stdprintf("Trying to extract %zd genomes\n", m_vSelectedIndexes.size());
+    if (m_bVerbose) xha_printf("Trying to extract %zd genomes\n", m_vSelectedIndexes.size());
     // loop until all elements have been read
     while ((iResult == 0) && (dims > 0) && (itIdxId != m_vSelectedIndexes.end())) {
         // can we get a full load of the buffer?
@@ -360,7 +360,7 @@ int AlleleCounter::loadGenomes(int iNumPerBuf) {
             iOffset       += iCount;
             
         } else {
-	    stdfprintf(stderr, "Error during slab reading\n");
+	    xha_fprintf(stderr, "Error during slab reading\n");
 	    iResult = -1;
         }
     }

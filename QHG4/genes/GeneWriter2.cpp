@@ -6,7 +6,7 @@
 
 #include "types.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "colors.h"
 #include "GeneUtils.h"
 #include "BitGeneUtils.h"
@@ -46,30 +46,30 @@ int GeneWriter2::writeSequence(const std::string sFormat, SequenceProvider<ulong
 
         
         if (sFormat == FORMAT_PLINK) {
-            if (s_bVerbose) stdprintf("Writing plink output (genome size %d) to [%s]\n", 
+            if (s_bVerbose) xha_printf("Writing plink output (genome size %d) to [%s]\n", 
                    pGP->getSequenceSize(), sOutputFile);
             iResult = writeGenesPlink(pGP, sOutputFile, mLocData, pSample);
 
         } else if (sFormat == FORMAT_BIN) {
-            if (s_bVerbose) stdprintf("Writing binary output (genome size %d) to [%s]\n", 
+            if (s_bVerbose) xha_printf("Writing binary output (genome size %d) to [%s]\n", 
                    pGP->getSequenceSize(), sOutputFile);
             iResult = writeGenesBin(pGP, sOutputFile, mLocData, pSample, bFull, bBitNucs);
 
         } else if (sFormat == FORMAT_NUM) {
-            if (s_bVerbose) stdprintf("Writing numeric ascii output (with location info; genome size %d) to [%s]\n", 
+            if (s_bVerbose) xha_printf("Writing numeric ascii output (with location info; genome size %d) to [%s]\n", 
                    pGP->getSequenceSize(), sOutputFile);
             iResult = writeGenesNum(pGP, sOutputFile, pSample, bFull, bBitNucs); // here "Full" means "add ID"
             
         } else if (sFormat == FORMAT_ASC) {
-            if (s_bVerbose) stdprintf("Writing asc output  (genomes only, 1 individual per line; genome size %d) to [%s]\n", 
+            if (s_bVerbose) xha_printf("Writing asc output  (genomes only, 1 individual per line; genome size %d) to [%s]\n", 
                    pGP->getSequenceSize(), sOutputFile);
             iResult = writeGenesAsc(pGP, sOutputFile, mLocData, pSample, bHeaders, bFull, bBitNucs);
         } else {
-            stdfprintf(stderr, "%sUnknown format [%s]\n", colors::RED, sFormat);
+            xha_fprintf(stderr, "%sUnknown format [%s]\n", colors::RED, sFormat);
             iResult = -1;
         }
     } else {
-        stdfprintf(stderr, "%sNo file name given\n", colors::RED);
+        xha_fprintf(stderr, "%sNo file name given\n", colors::RED);
         iResult = -1;
     }
     return iResult;
@@ -106,13 +106,13 @@ int GeneWriter2::writeGenesPlink(SequenceProvider<ulong> *pGP, const std::string
                     GeneUtils::writePlinkHeader(fOut, it_ltd->first.substr(0, pos).c_str(), iC, pAD->iID, pAD->iDadID, pAD->iMomID, 2-pAD->iGender);
                     /*
                     // we have F=0, M=1, plink has M=1, F=2; plink_gender = 2 - QHG_Gender
-                    stdfprintf(fOut, "%s_%03d % 10ld % 10ld % 10ld %d 1 ", it->first.substr(0, pos).c_str(), i, iID, mAgentData[iID]->iDadID, mAgentData[iID]->iMomID, 2-mAgentData[iID]->iGender);
+                    xha_fprintf(fOut, "%s_%03d % 10ld % 10ld % 10ld %d 1 ", it->first.substr(0, pos).c_str(), i, iID, mAgentData[iID]->iDadID, mAgentData[iID]->iMomID, 2-mAgentData[iID]->iGender);
                     */
                     
                     GeneUtils::writePlinkNucleotides(fOut, p1, iGenomeSize);
                     iC++;
                 } else {
-                    stdfprintf(stderr, "%sno genome - Bad ID? [%ld]\n", colors::RED, pAD->iID);
+                    xha_fprintf(stderr, "%sno genome - Bad ID? [%ld]\n", colors::RED, pAD->iID);
                     iResult = -1;
                 }
                 
@@ -138,15 +138,15 @@ int GeneWriter2::writeGenesPlink(SequenceProvider<ulong> *pGP, const std::string
         fOut = fopen(sOutMap.c_str(), "wt");
         if (fOut != NULL) {
             for (int i = 0; i < iGenomeSize; i++) {
-                stdfprintf(fOut, "1 abc-%04d 0 %04d\n", i, i);
+                xha_fprintf(fOut, "1 abc-%04d 0 %04d\n", i, i);
             }
             fclose(fOut);
         } else {
-            stdfprintf(stderr, "%sCouldn't open [%s] for writing\n", colors::RED, sOutMap);
+            xha_fprintf(stderr, "%sCouldn't open [%s] for writing\n", colors::RED, sOutMap);
             iResult = -1;
         }
     } else {
-        stdfprintf(stderr, "%sCouldn't open [%s] for writing\n", colors::RED, sOutputFile);
+        xha_fprintf(stderr, "%sCouldn't open [%s] for writing\n", colors::RED, sOutputFile);
         iResult = -1;
     }
     
@@ -304,31 +304,31 @@ int GeneWriter2::writeGenesBin(SequenceProvider<ulong> *pGP, const std::string s
                             
                             iWritten = fwrite(pLine, iLen, 1, fOut);
                             if (iWritten != 1) {
-                                stdfprintf(stderr, "%sCouldn't write genome data to [%s]\n", colors::RED, sOutputFile);
+                                xha_fprintf(stderr, "%sCouldn't write genome data to [%s]\n", colors::RED, sOutputFile);
                                 iResult = -1;
                             }
                         } else {
-                            stdfprintf(stderr, "%sBad ID (no genome): %ld\n", colors::RED, iID);
+                            xha_fprintf(stderr, "%sBad ID (no genome): %ld\n", colors::RED, iID);
                             iResult = -1;
                         }
                     }
                 
                 } else {
-                    stdfprintf(stderr, "%sCouldn't write genome header to [%s]\n", colors::RED, sOutputFile);
+                    xha_fprintf(stderr, "%sCouldn't write genome header to [%s]\n", colors::RED, sOutputFile);
                     iResult = -1;
                 }
             }
             delete[] pSpecial;
             delete[] pLine;
         } else {
-            stdfprintf(stderr, "%sCouldn't write file header to [%s]\n", colors::RED, sOutputFile);
+            xha_fprintf(stderr, "%sCouldn't write file header to [%s]\n", colors::RED, sOutputFile);
             iResult = -1;
         }
         
         fclose(fOut);
 
     } else {
-        stdfprintf(stderr,"%sCouldn't open [%s] for writing\n", colors::RED, sOutputFile);
+        xha_fprintf(stderr,"%sCouldn't open [%s] for writing\n", colors::RED, sOutputFile);
         iResult = -1;
     }
 
@@ -381,7 +381,7 @@ int GeneWriter2::writeGenesAsc(SequenceProvider<ulong> *pGP, const std::string s
             if (bFull) {
                 iGOffset += 3*(9+1);
             }
-            stdfprintf(fOut, "# GENES %s G-OFFSET %d\n", bFull?"full":"red",  iGOffset);
+            xha_fprintf(fOut, "# GENES %s G-OFFSET %d\n", bFull?"full":"red",  iGOffset);
         }
         iResult = 0;
         int iGenomeSize = pGP->getSequenceSize();
@@ -409,10 +409,10 @@ int GeneWriter2::writeGenesAsc(SequenceProvider<ulong> *pGP, const std::string s
                     
                 const locitem &li = mLocDefs.at(it_ltd->first);
                 // location header
-                // stdfprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first.c_str(), li.dLon*180/Q_PI, li.dLat*180/Q_PI, li.dDist, it_td->first);
+                // xha_fprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first.c_str(), li.dLon*180/Q_PI, li.dLat*180/Q_PI, li.dDist, it_td->first);
 		// location files have coordinates in degrees
                 if (bHeaders) {
-                    stdfprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first.c_str(), li.dLon, li.dLat, li.dDist, it_td->first);
+                    xha_fprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first.c_str(), li.dLon, li.dLat, li.dDist, it_td->first);
                 }
 
                 // sort the IDs
@@ -428,13 +428,13 @@ int GeneWriter2::writeGenesAsc(SequenceProvider<ulong> *pGP, const std::string s
                         if (bHeaders) {
                             if (bFull) {
                                 // changes here must be reflected in the G-Offset-value
-                                stdfprintf(fOut, "%12ld %9ld %9ld %9d %9d % 9.4f % 8.4f  ", 
+                                xha_fprintf(fOut, "%12ld %9ld %9ld %9d %9d % 9.4f % 8.4f  ", 
                                         iID, 
                                         pAD->iMomID, pAD->iDadID, pAD->iGender,
                                         pAD->iCellID, pAD->dLon/* *180/Q_PI*/, pAD->dLat/* *180/Q_PI*/);
                             } else {
                                 // changes here must be reflected in the G-Offset-value
-                                stdfprintf(fOut, "%12ld %9d % 9.4f % 8.4f  ", 
+                                xha_fprintf(fOut, "%12ld %9d % 9.4f % 8.4f  ", 
                                         iID, 
                                         pAD->iCellID, pAD->dLon/**180/Q_PI*/, pAD->dLat/* *180/Q_PI*/);
                             }
@@ -445,14 +445,14 @@ int GeneWriter2::writeGenesAsc(SequenceProvider<ulong> *pGP, const std::string s
                             char s[iNucsInBlock+1];
                             (*blockToNucStr)(*p, s);
                             if (iB == iNumBlocks) {
-                                stdfprintf(fOut, " ");
+                                xha_fprintf(fOut, " ");
                             }
-                            stdfprintf(fOut, "%s", s);
+                            xha_fprintf(fOut, "%s", s);
                             p++;
                         }
-                        stdfprintf(fOut, "\n");
+                        xha_fprintf(fOut, "\n");
                     } else {
-                        stdfprintf(stderr,"%sBad ID (no genome): %ld\n", colors::RED, v2[i]->iID);
+                        xha_fprintf(stderr,"%sBad ID (no genome): %ld\n", colors::RED, v2[i]->iID);
                         iResult = -1;
                     }
                 }
@@ -460,7 +460,7 @@ int GeneWriter2::writeGenesAsc(SequenceProvider<ulong> *pGP, const std::string s
         }                        
         fclose(fOut);
     } else {
-        stdfprintf(stderr, "%sCouldn't open [%s] for writing\n", colors::RED, sOutputFile);
+        xha_fprintf(stderr, "%sCouldn't open [%s] for writing\n", colors::RED, sOutputFile);
         iResult = -1;
     }
 
@@ -518,7 +518,7 @@ int GeneWriter2::writeGenesNum(SequenceProvider<ulong> *pGP, const std::string s
                     const ulong *p = pGP->getSequence(iID);
                     if (p != NULL) {
                         if(bAddID) {
-                            stdfprintf(fOut, "%12ld ", iID);
+                            xha_fprintf(fOut, "%12ld ", iID);
                         }
                         int iNucCount = iGenomeSize;
                         // ... and agent genome
@@ -530,15 +530,15 @@ int GeneWriter2::writeGenesNum(SequenceProvider<ulong> *pGP, const std::string s
                                 s[2*iNucCount] = '\0';
                             }  
                             if (iB == iNumBlocks) {
-                                stdfprintf(fOut, " ");
+                                xha_fprintf(fOut, " ");
                                 iNucCount = iGenomeSize;
                             }
-                            stdfprintf(fOut, "%s", s);
+                            xha_fprintf(fOut, "%s", s);
                             p++;
                         }
-                        stdfprintf(fOut, "\n");
+                        xha_fprintf(fOut, "\n");
                     } else {
-                        stdfprintf(stderr, "%sBad ID (no genome): %ld\n", colors::RED, v2[i]->iID);
+                        xha_fprintf(stderr, "%sBad ID (no genome): %ld\n", colors::RED, v2[i]->iID);
                         iResult = -1;
                     }
                 }
@@ -546,7 +546,7 @@ int GeneWriter2::writeGenesNum(SequenceProvider<ulong> *pGP, const std::string s
         }                        
         fclose(fOut);
     } else {
-        stdfprintf(stderr, "%sCouldn't open [%s] for writing\n", colors::RED, sOutputFile);
+        xha_fprintf(stderr, "%sCouldn't open [%s] for writing\n", colors::RED, sOutputFile);
         iResult = -1;
     }
 

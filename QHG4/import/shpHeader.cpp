@@ -1,7 +1,7 @@
 #include <cstdio>
 
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "shpUtils.h"
 #include "shpHeader.h"
 
@@ -58,14 +58,14 @@ int shpHeader::read() {
                 p = shpUtils::getNum(p, &m_dMMax);
                 iResult = 0;
             } else {
-                stdprintf("File length in header [%d] smaller than header size [%d]\n", m_iFileLen, SHP_HEADER_SIZE);
+                xha_printf("File length in header [%d] smaller than header size [%d]\n", m_iFileLen, SHP_HEADER_SIZE);
             }
         } else {
-            stdprintf("Bad Magic: [%08x] instead of [%08x]\n", iMagic, SHP_MAGIC);
+            xha_printf("Bad Magic: [%08x] instead of [%08x]\n", iMagic, SHP_MAGIC);
         }
         
     } else {
-        stdprintf("Only read [%d] instead of [%d] bytes\n", iRead, SHP_HEADER_SIZE);
+        xha_printf("Only read [%d] instead of [%d] bytes\n", iRead, SHP_HEADER_SIZE);
     }
     return iResult;
 }
@@ -74,13 +74,13 @@ int shpHeader::read() {
 // display
 //
 void shpHeader::display(const std::string sCaption) {
-    stdprintf("%s\n", sCaption);
-    stdprintf("  version:     %d\n", m_iVersion);
-    stdprintf("  file length: %d (real %d)\n", m_iFileLenWords, m_iFileLen);
-    stdprintf("  shape type:  %d [%s]\n", m_iShapeType, shpUtils::getShapeName(m_iShapeType));
-    stdprintf("  x range:    [%f, %f]\n", m_dXMin, m_dXMax);
-    stdprintf("  y range:    [%f, %f]\n", m_dYMin, m_dYMax);
-    stdprintf("  z range:    [%f, %f]\n", m_dZMin, m_dZMax);
-    stdprintf("  m range:    [%f, %f]\n", m_dMMin, m_dMMax);
+    xha_printf("%s\n", sCaption);
+    xha_printf("  version:     %d\n", m_iVersion);
+    xha_printf("  file length: %d (real %d)\n", m_iFileLenWords, m_iFileLen);
+    xha_printf("  shape type:  %d [%s]\n", m_iShapeType, shpUtils::getShapeName(m_iShapeType));
+    xha_printf("  x range:    [%f, %f]\n", m_dXMin, m_dXMax);
+    xha_printf("  y range:    [%f, %f]\n", m_dYMin, m_dYMax);
+    xha_printf("  z range:    [%f, %f]\n", m_dZMin, m_dZMax);
+    xha_printf("  m range:    [%f, %f]\n", m_dMMin, m_dMMax);
 
 }

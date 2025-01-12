@@ -23,14 +23,14 @@ SubSpaceIndexParser *SubSpaceIndexParser::create_instance(uintvec vSizes, bool b
 //
 int SubSpaceIndexParser::parseReduction(std::string sCurDesc, uint iCurDim,  uintvec &vCurIndexes) {
     int iResult = 0;
-    if (m_bVerbose) {stdprintf("dim %d, found '%s' for %d: range(%d)\n", iCurDim, sCurDesc, iCurDim, m_vSizes[iCurDim]);}
+    if (m_bVerbose) {xha_printf("dim %d, found '%s' for %d: range(%d)\n", iCurDim, sCurDesc, iCurDim, m_vSizes[iCurDim]);}
                 
     // for * and reductions we keep all indexes
     for (uint k = 0; k < m_vSizes[iCurDim]; ++k) {
         vCurIndexes.push_back(k);
     }
 
-    if (m_bVerbose) {stdprintf("vX (%zd): %bv\n", vCurIndexes.size(), vCurIndexes);}
+    if (m_bVerbose) {xha_printf("vX (%zd): %bv\n", vCurIndexes.size(), vCurIndexes);}
    
     if (sCurDesc[0] == '#') {
         m_mReductionDims[iCurDim] = RED_TYPE_SUM;
@@ -43,7 +43,7 @@ int SubSpaceIndexParser::parseReduction(std::string sCurDesc, uint iCurDim,  uin
         if (sCurDesc[1] == '.') {
             m_mSqueezeDims[iCurDim] = 1;
         } else {
-            stdprintf("Only a '!' may follow a reduction operator, not [%c]\n", sCurDesc[1]);
+            xha_printf("Only a '!' may follow a reduction operator, not [%c]\n", sCurDesc[1]);
             iResult = -1;
         }
     }
@@ -82,10 +82,10 @@ int SubSpaceIndexParser::parseNumeric(std::string sCurDesc, uint iCurDim,  uintv
         if (iNumSubSums == 1) {
             uint k = 0;
             if (validIndex(vsSubSums[0], iCurDim, &k)) {
-                stdfprintf(stderr, "inserting value [%u]\n", k);
+                xha_fprintf(stderr, "inserting value [%u]\n", k);
                 sRanges.insert(k);
             } else {
-                stdfprintf(stderr, "slice indexes [%d] should be a number not exceeding the extents [%d]\n", k, m_vSizes[iCurDim]);
+                xha_fprintf(stderr, "slice indexes [%d] should be a number not exceeding the extents [%d]\n", k, m_vSizes[iCurDim]);
                 iResult = -1;
             }
         
@@ -96,24 +96,24 @@ int SubSpaceIndexParser::parseNumeric(std::string sCurDesc, uint iCurDim,  uintv
                 if (validIndex(vsSubSums[1], iCurDim, &k1)) {
                     if (k0 <= k1) {
                         for (uint k = k0; k <= k1; k++) {
-                            // stdfprintf(stderr, "inserting value [%u]\n", k);
+                            // xha_fprintf(stderr, "inserting value [%u]\n", k);
                             sRanges.insert(k);
                         }
                     } else {
-                        stdprintf("Lower range should be less or equal to upper range [%d:%u]\n", k0, k1);
+                        xha_printf("Lower range should be less or equal to upper range [%d:%u]\n", k0, k1);
                         iResult = -1;
                     }
                 } else {
-                    stdfprintf(stderr, "upper range [%d] should be a number not exceeding the extents [%d\n", k1, m_vSizes[iCurDim]);
+                    xha_fprintf(stderr, "upper range [%d] should be a number not exceeding the extents [%d\n", k1, m_vSizes[iCurDim]);
                     iResult = -1;
                 }
             } else {
-                stdfprintf(stderr, "lower range [%d] should be a number not exceeding the extents [%d]\n", k0, m_vSizes[iCurDim]);
+                xha_fprintf(stderr, "lower range [%d] should be a number not exceeding the extents [%d]\n", k0, m_vSizes[iCurDim]);
                 iResult = -1;
             }
             
         } else {
-            stdfprintf(stderr, "invalid index configuration [%s]\n", vsSummands[j]);
+            xha_fprintf(stderr, "invalid index configuration [%s]\n", vsSummands[j]);
             iResult = -1;
         }
     } // for j
@@ -152,7 +152,7 @@ int SubSpaceIndexParser::parseSliceDesc(std::string sSliceDesc, bool bSqueezeAll
         
         // each part has the form "<int>[+<int>]" or "#" or "*" or "%"
         for (uint i = 0; (iResult == 0) && (i < m_iNumDims); i++) {
-            // stdfprintf(stderr, "looking at part [%s]\n", vsDescriptors[i]);
+            // xha_fprintf(stderr, "looking at part [%s]\n", vsDescriptors[i]);
             stringvec vsCurIndexes;
             uintvec   vCurIndexes;
             if ((vsDescriptors[i][0] == '*') || 
@@ -163,7 +163,7 @@ int SubSpaceIndexParser::parseSliceDesc(std::string sSliceDesc, bool bSqueezeAll
                 
             } else {
 
-                if (m_bVerbose) {stdprintf("vsDescriptors (%zd): %bv\n", vsDescriptors.size(), vsDescriptors);}
+                if (m_bVerbose) {xha_printf("vsDescriptors (%zd): %bv\n", vsDescriptors.size(), vsDescriptors);}
                
                 iResult = parseNumeric(vsDescriptors[i], i, vCurIndexes);
                
@@ -185,7 +185,7 @@ int SubSpaceIndexParser::parseSliceDesc(std::string sSliceDesc, bool bSqueezeAll
        
         
     } else {
-        stdfprintf(stderr, "there should be %u index combinations but only found %u in [%s]\n", m_iNumDims, iDims2, sSliceDesc); 
+        xha_fprintf(stderr, "there should be %u index combinations but only found %u in [%s]\n", m_iNumDims, iDims2, sSliceDesc); 
     }
     return iResult;
 }

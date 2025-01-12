@@ -2,7 +2,7 @@
 #include <cstring>
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "Surface.h"
 #include "EQsahedron.h"
 #include "GridGroupReader.h"
@@ -81,15 +81,15 @@ int SurfaceGrid::createCellGrid(const std::string sQDF) {
         // get the timestamp of the initial qdf file (grid)
         iResult = qdf_extractSAttribute(hFile,  ROOT_STEP_NAME, sTime);
         if (iResult != 0) {
-            stdprintf("[createCellGrid] Couldn't read time attribute from grid file [%s]\n", sQDF);
+            xha_printf("[createCellGrid] Couldn't read time attribute from grid file [%s]\n", sQDF);
             iResult = 0;
         } else {
             int iCurStep;
             if (strToNum(sTime, &iCurStep)) {
                 iResult = 0;
-                //                stdprintf("Have timestamp %f\n", fStartTime);
+                //                xha_printf("Have timestamp %f\n", fStartTime);
             } else {
-                stdprintf("[createCellGrid] Timestamp not valid [%s]\n", sTime);
+                xha_printf("[createCellGrid] Timestamp not valid [%s]\n", sTime);
                 iResult = -1;
             }
         }
@@ -102,23 +102,23 @@ int SurfaceGrid::createCellGrid(const std::string sQDF) {
                 iResult = pGR->readData(m_pCG);
 
                 if (iResult == 0) {
-                    //                    stdprintf("[setGrid] Grid read successfully: %p\n", m_pCG);
+                    //                    xha_printf("[setGrid] Grid read successfully: %p\n", m_pCG);
                 }
             } else {
-                stdprintf("[createCellGrid] GridReader couldn't read  celldata\n");
+                xha_printf("[createCellGrid] GridReader couldn't read  celldata\n");
             }
             if (iResult != 0) {
                 delete m_pCG;
                 m_pCG = NULL;
             }
         } else {
-            stdprintf("[createCellGrid] GridReader couldn't read attributes\n");
+            xha_printf("[createCellGrid] GridReader couldn't read attributes\n");
         }
     
         delete pGR;
         
     } else {
-        stdprintf("[createCellGrid] Couldn't create GridReader\n");
+        xha_printf("[createCellGrid] Couldn't create GridReader\n");
     }
 
 
@@ -153,18 +153,18 @@ int SurfaceGrid::createSurface() {
                             //printf("[createSurface] Have EQsahedron\n");
                         }
                     } else {
-                        stdprintf("[createSurface] subdivs must be positive [%s]\n", pSubDivs);
+                        xha_printf("[createSurface] subdivs must be positive [%s]\n", pSubDivs);
                     }
                 } else {
-                    stdprintf("[createSurface] subdivs is not a number [%s]\n", pSubDivs);
+                    xha_printf("[createSurface] subdivs is not a number [%s]\n", pSubDivs);
                 }
 
             } else {
-                stdprintf("[createSurface] unknown surface type [%s] - we only do EQsahedron\n", sSurfType);
+                xha_printf("[createSurface] unknown surface type [%s] - we only do EQsahedron\n", sSurfType);
             }
             
         } else {
-            stdprintf("[createSurface] can't create surface without CellGrid data\n");
+            xha_printf("[createSurface] can't create surface without CellGrid data\n");
         }
     }
     return iResult;

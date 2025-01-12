@@ -6,7 +6,7 @@
 #include <omp.h>
 
 #include "qhg_consts.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "geomutils.h"
 #include "QDFUtils.h"
 #include "QDFArray.h"
@@ -51,7 +51,7 @@ int CellSampler::init(const char *pGeoQDF, const char *pLocFile, double dDistanc
     iResult = fillCoordMap(pGeoQDF);
     //    float f1 = omp_get_wtime();
     if (iResult == 0) {
-        stdfprintf(stderr, "[CellSampler::init] have coords\n");
+        xha_fprintf(stderr, "[CellSampler::init] have coords\n");
         locspec locSpec(pLocFile);
         m_vNames.clear();
         
@@ -61,14 +61,14 @@ int CellSampler::init(const char *pGeoQDF, const char *pLocFile, double dDistanc
             if (iResult == 0) {
                 
             } else {
-                stdfprintf(stderr, "[CellSampler::init] Couldn't select cellsfill loc data\n");
+                xha_fprintf(stderr, "[CellSampler::init] Couldn't select cellsfill loc data\n");
             }
         } else {
-            stdfprintf(stderr, "[CellSampler::init] Couldn't fill loc data\n");
+            xha_fprintf(stderr, "[CellSampler::init] Couldn't fill loc data\n");
         }
 
     } else {
-        stdfprintf(stderr, "[CellSampler::init] Couldn't load coords\n");
+        xha_fprintf(stderr, "[CellSampler::init] Couldn't load coords\n");
     }
 
     return iResult;
@@ -97,16 +97,16 @@ int CellSampler::fillCoordMap(const char *pQDFGeoGrid) {
             pCellIDs = new int[iNumCells];
             uint iCount = pQA->getFirstSlab(pCellIDs, iNumCells, GRID_DS_CELL_ID);
             if (iCount == iNumCells) {
-                //                stdfprintf(stderr, "Read %d CellIDs\n", iCount);
+                //                xha_fprintf(stderr, "Read %d CellIDs\n", iCount);
                 iResult = 0;
             } else {
-                stdfprintf(stderr, "[CellSampler::fillCoordMap] Read bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)\n", pQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, iNumCells);
+                xha_fprintf(stderr, "[CellSampler::fillCoordMap] Read bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)\n", pQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, iNumCells);
                 iResult = -1;
             }
             pQA->closeArray();
         } else {
             iResult = -1;
-            stdfprintf(stderr, "[CellSampler::fillCoordMap] Couldn't open QDF array for [%s:%s/%s]\n", pQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME);
+            xha_fprintf(stderr, "[CellSampler::fillCoordMap] Couldn't open QDF array for [%s:%s/%s]\n", pQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME);
         }
 
         // get the cell Longitudes
@@ -118,15 +118,15 @@ int CellSampler::fillCoordMap(const char *pQDFGeoGrid) {
                     pdLon = new double[iNumCells];
                     uint iCount = pQA->getFirstSlab(pdLon, iNumCells);
                     if (iCount == iNumCells) {
-                        stdfprintf(stderr, "[CellSampler::fillCoordMap] Read %d Longitudes\n", iCount);
+                        xha_fprintf(stderr, "[CellSampler::fillCoordMap] Read %d Longitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "[CellSampler::fillCoordMap] Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", pQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, iNumCells);
+                        xha_fprintf(stderr, "[CellSampler::fillCoordMap] Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", pQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, iNumCells);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "[CellSampler::fillCoordMap] Number of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, pQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE);
+                    xha_fprintf(stderr, "[CellSampler::fillCoordMap] Number of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, pQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE);
                 }
                 pQA->closeArray();
             }
@@ -134,7 +134,7 @@ int CellSampler::fillCoordMap(const char *pQDFGeoGrid) {
 
         // get the cell Latitudes
         if (iResult == 0) {
-            std::string sPath = stdsprintf("%s/%s", GEOGROUP_NAME, GEO_DS_LATITUDE);
+            std::string sPath = xha_sprintf("%s/%s", GEOGROUP_NAME, GEO_DS_LATITUDE);
             iResult = pQA->openArray(sPath);
             if (iResult == 0) {
                 uint iNumCellsL = pQA->getSize();
@@ -142,15 +142,15 @@ int CellSampler::fillCoordMap(const char *pQDFGeoGrid) {
                     pdLat = new double[iNumCells];
                     uint iCount = pQA->getFirstSlab(pdLat, iNumCells);
                     if (iCount == iNumCells) {
-                        stdfprintf(stderr, "[CellSampler::fillCoordMap] Read %d Latitudes\n", iCount);
+                        xha_fprintf(stderr, "[CellSampler::fillCoordMap] Read %d Latitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "[CellSampler::fillCoordMap] Couldn't read latitudes from [%s:%s/%s]: %d instead of %d\n", pQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL, iNumCells);
+                        xha_fprintf(stderr, "[CellSampler::fillCoordMap] Couldn't read latitudes from [%s:%s/%s]: %d instead of %d\n", pQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL, iNumCells);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "[CellSampler::fillCoordMap] Number of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, pQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE);
+                    xha_fprintf(stderr, "[CellSampler::fillCoordMap] Number of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, pQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE);
                 }
 
                 pQA->closeArray();
@@ -159,7 +159,7 @@ int CellSampler::fillCoordMap(const char *pQDFGeoGrid) {
     
         delete pQA;
     } else {
-        stdfprintf(stderr, "[CellSampler::fillCoordMap] Couldn't create QDFArray\n");
+        xha_fprintf(stderr, "[CellSampler::fillCoordMap] Couldn't create QDFArray\n");
     }
      
     // put everything into a map CellID => (lon, lat)
@@ -190,7 +190,7 @@ int CellSampler::fillCoordMap(const char *pQDFGeoGrid) {
 int CellSampler::selectCells(loc_cells &mvCandidates) {
     int iResult = 0;
 
-    stdfprintf(stderr, "[CellSampler::selectCells] CellSampler selecting cells\n");
+    xha_fprintf(stderr, "[CellSampler::selectCells] CellSampler selecting cells\n");
     // each agent should only belong to one region
     loc_data::const_iterator it;
     loc_cells *amvCandidatesPar = new loc_cells[omp_get_max_threads()];
@@ -230,19 +230,19 @@ int CellSampler::selectCells(loc_cells &mvCandidates) {
 void CellSampler::showSelected(FILE *fOut, uint iLim) {
     loc_cells::const_iterator it2;
     for (it2 = m_mvSelected.begin(); it2 != m_mvSelected.end(); ++it2) {
-        stdfprintf(fOut, "%s:\n  ", it2->first.c_str());
+        xha_fprintf(fOut, "%s:\n  ", it2->first.c_str());
         const std::vector<int> &v = it2->second;
         uint iHi = v.size();
         if ((iLim <  iHi)) {
             iHi = iLim;
         }
         for (uint j = 0; j < iHi; ++j) {
-            stdfprintf(fOut, "%d  ", v[j]);
+            xha_fprintf(fOut, "%d  ", v[j]);
         }
         if (iLim <  v.size()) { 
-           stdfprintf(fOut, "...");
+           xha_fprintf(fOut, "...");
         }
-        stdfprintf(fOut, "\n");
+        xha_fprintf(fOut, "\n");
     }
 }
 

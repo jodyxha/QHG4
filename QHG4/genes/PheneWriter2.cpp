@@ -7,7 +7,7 @@
 #include "types.h"
 #include "colors.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "SequenceProvider.h"
 #include "PheneWriter2.h"
 
@@ -47,22 +47,22 @@ int PheneWriter2::writeSequence(const std::string sFormat,
 
         
         if (sFormat == FORMAT_BIN) {
-            if (s_bVerbose) stdprintf("Writing binary output (genome size %d) to [%s]\n", 
+            if (s_bVerbose) xha_printf("Writing binary output (genome size %d) to [%s]\n", 
                    pGP->getSequenceSize(), sOutputFile);
             iResult = writePhenesBin(pGP, sOutputFile, mLocData, pSample, bFull, iPloidy);
 
         } else if (sFormat == FORMAT_ASC) {
-            if (s_bVerbose) stdprintf("Writing ascii output (phenome data only; genome size %d) to [%s]\n", 
+            if (s_bVerbose) xha_printf("Writing ascii output (phenome data only; genome size %d) to [%s]\n", 
                    pGP->getSequenceSize(), sOutputFile);
             iResult = writePhenesAsc(pGP, sOutputFile, mLocData, pSample, bFull, bHeaders, iPloidy);  
             
 
         } else {
-            stdfprintf(stderr, "%sUnknown format [%s]%s\n", colors::RED, sFormat, colors::OFF);
+            xha_fprintf(stderr, "%sUnknown format [%s]%s\n", colors::RED, sFormat, colors::OFF);
             iResult = -1;
         }
     } else {
-        stdfprintf(stderr, "%sNo file name given%s\n", colors::RED, colors::OFF);
+        xha_fprintf(stderr, "%sNo file name given%s\n", colors::RED, colors::OFF);
         iResult = -1;
     }
     return iResult;
@@ -215,32 +215,32 @@ int PheneWriter2::writePhenesBin(SequenceProvider<float> *pGP, const std::string
                             iWritten = fwrite(pLine, iLen, 1, fOut);
 
                             if (iWritten != 1) {
-                                stdfprintf(stderr, "%sCouldn't write genome data to [%s]%s\n", colors::RED, sOutputFile, colors::OFF);
+                                xha_fprintf(stderr, "%sCouldn't write genome data to [%s]%s\n", colors::RED, sOutputFile, colors::OFF);
                                 iResult = -1;
                             }
 
                         } else {
-                            stdfprintf(stderr, "%sBad ID (no genome): %ld%s\n", colors::RED, iID, colors::OFF);
+                            xha_fprintf(stderr, "%sBad ID (no genome): %ld%s\n", colors::RED, iID, colors::OFF);
                             iResult = -1;
                         }
                     }
                 
                 } else {
-                    stdfprintf(stderr, "%sCouldn't write genome header to [%s]%s\n", colors::RED, sOutputFile, colors::OFF);
+                    xha_fprintf(stderr, "%sCouldn't write genome header to [%s]%s\n", colors::RED, sOutputFile, colors::OFF);
                     iResult = -1;
                 }
             }
             delete[] pSpecial;
             delete[] pLine;
         } else {
-            stdfprintf(stderr, "%sCouldn't write file header to [%s]%s\n", colors::RED, sOutputFile, colors::OFF);
+            xha_fprintf(stderr, "%sCouldn't write file header to [%s]%s\n", colors::RED, sOutputFile, colors::OFF);
             iResult = -1;
         }
         
         fclose(fOut);
 
     } else {
-        stdfprintf(stderr, "%sCouldn't open [%s] for writing%s\n", colors::RED, sOutputFile, colors::OFF);
+        xha_fprintf(stderr, "%sCouldn't open [%s] for writing%s\n", colors::RED, sOutputFile, colors::OFF);
         iResult = -1;
     }
 
@@ -293,7 +293,7 @@ int PheneWriter2::writePhenesAsc(SequenceProvider<float> *pGP, const std::string
             if (bFull) {
                 iGOffset += 3*(9+1);
             }
-            stdfprintf(fOut, "# GENES %s G-OFFSET %d\n", bFull?"full":"red",  iGOffset);
+            xha_fprintf(fOut, "# GENES %s G-OFFSET %d\n", bFull?"full":"red",  iGOffset);
         }
 
         iResult = 0;
@@ -314,7 +314,7 @@ int PheneWriter2::writePhenesAsc(SequenceProvider<float> *pGP, const std::string
                 // fprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first.c_str(), li.dLon*180/Q_PI, li.dLat*180/Q_PI, li.dDist, it_td->first);
 		// location files have coordinates in degrees
                 if (bHeaders) {
-                    stdfprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first, li.dLon, li.dLat, li.dDist, it_td->first);
+                    xha_fprintf(fOut, "# GROUP %s (%f,%f) d %f T %f\n", it_ltd->first, li.dLon, li.dLat, li.dDist, it_td->first);
                 }
 
                 // sort the IDs
@@ -330,13 +330,13 @@ int PheneWriter2::writePhenesAsc(SequenceProvider<float> *pGP, const std::string
                         if (bHeaders) {
                             if (bFull) {
                                 // changes here must be reflected in the G-Offset-value
-                                stdfprintf(fOut, "%12ld %9ld %9ld %9d %9d % 9.4f % 8.4f  ", 
+                                xha_fprintf(fOut, "%12ld %9ld %9ld %9d %9d % 9.4f % 8.4f  ", 
                                         iID, 
                                         pAD->iMomID, pAD->iDadID, pAD->iGender,
                                         pAD->iCellID, pAD->dLon/* *180/Q_PI*/, pAD->dLat/* *180/Q_PI*/);
                             } else {
                                 // changes here must be reflected in the G-Offset-value
-                                stdfprintf(fOut, "%12ld %9d % 9.4f % 8.4f  ", 
+                                xha_fprintf(fOut, "%12ld %9d % 9.4f % 8.4f  ", 
                                         iID, 
                                         pAD->iCellID, pAD->dLon/**180/Q_PI*/, pAD->dLat/* *180/Q_PI*/);
                             }
@@ -344,17 +344,17 @@ int PheneWriter2::writePhenesAsc(SequenceProvider<float> *pGP, const std::string
                         // ... and agent genome
                         for (int iB = 0; iB < iNumBlocks; iB++) {
                             if (iB == iNumBlocks) {
-                                stdfprintf(fOut, " ");
+                                xha_fprintf(fOut, " ");
                             }
                             if (std::isnan(*p) or std::isinf(*p)) {
-                                stdprintf ("ID %ld: element %d is %s\n", iID, iB, std::isnan(*p)?"nan":"inf");
+                                xha_printf ("ID %ld: element %d is %s\n", iID, iB, std::isnan(*p)?"nan":"inf");
                             }
-                            stdfprintf(fOut, "%+.6e ", *p);
+                            xha_fprintf(fOut, "%+.6e ", *p);
                             p++;
                         }
-                        stdfprintf(fOut, "\n");
+                        xha_fprintf(fOut, "\n");
                     } else {
-                        stdfprintf(stderr, "%sBad ID (no phenome): %ld%s\n", colors::RED, v2[i]->iID, colors::OFF);
+                        xha_fprintf(stderr, "%sBad ID (no phenome): %ld%s\n", colors::RED, v2[i]->iID, colors::OFF);
                         iResult = -1;
                     }
                 }
@@ -362,7 +362,7 @@ int PheneWriter2::writePhenesAsc(SequenceProvider<float> *pGP, const std::string
         }                        
         fclose(fOut);
     } else {
-        stdfprintf(stderr, "%sCouldn't open [%s] for writing%s\n", colors::RED, sOutputFile, colors::OFF);
+        xha_fprintf(stderr, "%sCouldn't open [%s] for writing%s\n", colors::RED, sOutputFile, colors::OFF);
         iResult = -1;
     }
 

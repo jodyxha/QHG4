@@ -173,18 +173,18 @@ int SimLoader::setHelpTopic(const std::string sHelpTopic) {
 // helpParams
 //
 void SimLoader::helpParams() {
-    stdprintf("  -h,                        show help\n");            
-    stdprintf("  --help=<topic>             show help for topic (use name of option or \"all\")\n");            
-    stdprintf("  --grid=<grid-file>         set grid file\n");     
-    stdprintf("  --geo=<geo-file>           set geography file\n");       
-    stdprintf("  --climate=<climate-file>   set climate file\n");    
-    stdprintf("  --veg=<veg-file>           set vegetation file\n");    
-    stdprintf("  --nav=<nav-file>           set navigation file\n");    
-    stdprintf("  --pops=<pop-list>          set population files\n");       
-    stdprintf("  --output-name=<name>       set output file na,e\n");
-    stdprintf("  --data-dirs=<dirnames>     data directories (default: \"./\")\n");    
-    stdprintf("  --info-string              information to be written to root group of output files\n");
-    stdprintf("  --select=<desc>            string describing which groups t write\n");
+    xha_printf("  -h,                        show help\n");            
+    xha_printf("  --help=<topic>             show help for topic (use name of option or \"all\")\n");            
+    xha_printf("  --grid=<grid-file>         set grid file\n");     
+    xha_printf("  --geo=<geo-file>           set geography file\n");       
+    xha_printf("  --climate=<climate-file>   set climate file\n");    
+    xha_printf("  --veg=<veg-file>           set vegetation file\n");    
+    xha_printf("  --nav=<nav-file>           set navigation file\n");    
+    xha_printf("  --pops=<pop-list>          set population files\n");       
+    xha_printf("  --output-name=<name>       set output file na,e\n");
+    xha_printf("  --data-dirs=<dirnames>     data directories (default: \"./\")\n");    
+    xha_printf("  --info-string              information to be written to root group of output files\n");
+    xha_printf("  --select=<desc>            string describing which groups t write\n");
 
 
 }
@@ -255,7 +255,7 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
         iResult = m_pPR->getParams(iArgC, apArgV);
         if (*sHelpTopic != '\0') {
              setHelpTopic(sHelpTopic);
-             stdprintf("HelpTopic [%s]\n", m_sHelpTopic);
+             xha_printf("HelpTopic [%s]\n", m_sHelpTopic);
              iResult = 2;
         } else  if (bHelp) {
             setHelp(bHelp);
@@ -264,7 +264,7 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
             if (iResult >= 0) {
                 if (iResult > 0) {
                     LOG_WARNING("ParamReader Warning:\n%s", m_pPR->getErrorMessage(iResult).c_str());
-                    stdprintf("ParamReader Warning:\n%s", m_pPR->getErrorMessage(iResult).c_str());
+                    xha_printf("ParamReader Warning:\n%s", m_pPR->getErrorMessage(iResult).c_str());
 
                     iResult = 0;
                 }
@@ -300,7 +300,7 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setDataDirs");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setDataDir %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setDataDir %d\n", iResult);
                 
                 if (*sGridFile != '\0') {
                     iRes2   = setGrid(sGridFile);
@@ -309,7 +309,7 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setGrid");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setGrid %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setGrid %d\n", iResult);
 
                 if (*sGeoFile != '\0') {
                     iRes2   = setGeo(sGeoFile);
@@ -318,7 +318,7 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setGeo");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setGeo %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setGeo %d\n", iResult);
 
                 if (*sClimateFile != '\0') {
                     iRes2   = setClimate(sClimateFile);
@@ -327,7 +327,7 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setClimate");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setClimate %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setClimate %d\n", iResult);
 
                 if (*sVegFile != '\0') {
                     iRes2   = setVeg(sVegFile);
@@ -337,7 +337,7 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
                     }
                     iResult = (iRes2 < iResult)?iRes2:iResult;
                 }
-                if (bIntermediateResult) stdprintf("After setVeg %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setVeg %d\n", iResult);
 
                 if (*sNavFile != '\0') {
                     iRes2   = setNav(sNavFile);
@@ -347,7 +347,7 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
                     }
                     iResult = (iRes2 < iResult)?iRes2:iResult;
                 }
-                if (bIntermediateResult) stdprintf("After setNav %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setNav %d\n", iResult);
 
                 if (*sPops != '\0') {
                     iRes2   = setPopList(sPops);
@@ -356,7 +356,7 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setPopList");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setPopList %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setPopList %d\n", iResult);
 
 
 
@@ -367,15 +367,15 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setOutputDir");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After seOutputQDF %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After seOutputQDF %d\n", iResult);
 
 
                 if (iResult != 0) {
-                    stdprintf("[SimLoader::readOptions] Errors in the following method%s:\n", (vsErrorInfo.size()!=1)?"s":"");
+                    xha_printf("[SimLoader::readOptions] Errors in the following method%s:\n", (vsErrorInfo.size()!=1)?"s":"");
                     LOG_ERROR("[SimLoader::readOptions] Errors in the following method%s:\n", (vsErrorInfo.size()!=1)?"s":"");
                     for (uint i = 0; i < vsErrorInfo.size(); i++) {
                         LOG_ERROR("  %s\n", vsErrorInfo[i].c_str());
-                        stdprintf("  %s\n", vsErrorInfo[i].c_str());
+                        xha_printf("  %s\n", vsErrorInfo[i].c_str());
                     }
                 }
             } else  {
@@ -385,7 +385,7 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
                     LOG_ERROR("[SimLoader::readOptions] Error setting option [%s] to [%s]\n", m_pPR->getBadArg().c_str(), m_pPR->getBadVal().c_str());
                 } else {
                     iResult = -2;
-                    std::string sTempErr = stdsprintf("[SimLoader::readOptions] Missing mandatory params. Required:\n");
+                    std::string sTempErr = xha_sprintf("[SimLoader::readOptions] Missing mandatory params. Required:\n");
                     LOG_ERROR("[SimLoader::readOptions] Missing mandatory params. Required:\n");
                     
                     stringvec vMand;
@@ -410,20 +410,20 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
         
 
         /*
-        stdprintf("Random seed:\n");
+        xha_printf("Random seed:\n");
         LOG_STATUS("Random seed:\n");
         
         for (uint i = 0; i < STATE_SIZE/4; i++) {
             std::string sState = "";
             for (uint j = 0; j < 4; j++) {
-                sState += stdsprintf(" %08x", m_aulState[4*i+j]);
+                sState += xha_sprintf(" %08x", m_aulState[4*i+j]);
             }
             LOG_STATUS("    %s\n", sState);
-            stdprintf("    %s\n", sState);
+            xha_printf("    %s\n", sState);
         }
-        stdprintf("\n");
+        xha_printf("\n");
         */
-        stdprintf("Layer Size: %d\n", m_iLayerSize);
+        xha_printf("Layer Size: %d\n", m_iLayerSize);
         LOG_STATUS("Layer Size: %d\n", m_iLayerSize);
         
     } else if ((iResult != 2) && (iResult != 3)) {
@@ -445,28 +445,28 @@ int SimLoader::readOptions(int iArgC, char *apArgV[]) {
 //  write output
 //
 void SimLoader::showInputs() {
-    stdprintf("--------Inputs--------\n"); 
+    xha_printf("--------Inputs--------\n"); 
     if (m_pCG != NULL) {
-        stdprintf("Grid %d cells\n", m_pCG->m_iNumCells);
+        xha_printf("Grid %d cells\n", m_pCG->m_iNumCells);
     }
     if (m_pGeo != NULL) {
-        stdprintf("Geography\n");
+        xha_printf("Geography\n");
     }
     if (m_pCli != NULL) {
-        stdprintf("Climate\n");
+        xha_printf("Climate\n");
     }
     if (m_pVeg != NULL) {
-        stdprintf("Vegetation\n");
+        xha_printf("Vegetation\n");
     }
     if (m_pPopLooper != NULL) {
-        stdprintf("Populations: %zd\n   ", m_pPopLooper->getNumPops());
+        xha_printf("Populations: %zd\n   ", m_pPopLooper->getNumPops());
         popmap::const_iterator it_pop;
         for (it_pop = m_pPopLooper->begin(); it_pop != m_pPopLooper->end(); ++it_pop) {
-            stdprintf("%s  ", it_pop->second->getSpeciesName());
+            xha_printf("%s  ", it_pop->second->getSpeciesName());
         }
-        stdprintf("\n");
+        xha_printf("\n");
     }
-    stdprintf("----------------------\n"); 
+    xha_printf("----------------------\n"); 
 }
 
 
@@ -485,12 +485,12 @@ bool SimLoader::exists(const std::string sFile, std::string &sExists) {
     struct stat statbuf;
     
     int iResult = stat(sFile.c_str(), &statbuf);
-    //    stdprintf("Errore1: [%s]\n", strerror(iResult));
+    //    xha_printf("Errore1: [%s]\n", strerror(iResult));
     if (iResult != 0)  {
         if (!m_vDataDirs.empty()) {
             sExists= "";
             for (uint i = 0; sExists.empty() && (i < m_vDataDirs.size()); i++) {
-                std::string sTest = stdsprintf("%s%s", m_vDataDirs[i], sFile);
+                std::string sTest = xha_sprintf("%s%s", m_vDataDirs[i], sFile);
                 iResult = stat(sTest.c_str(), &statbuf);
                 if (iResult == 0) {
                     sExists = sTest;
@@ -504,11 +504,11 @@ bool SimLoader::exists(const std::string sFile, std::string &sExists) {
         sExists = sFile;
     }
     if (iResult == 0) {
-        //        stdprintf("[exists] [%s] -> [%s]\n", sFile, sExists);
+        //        xha_printf("[exists] [%s] -> [%s]\n", sFile, sExists);
         //        LOG_STATUS("[exists] [%s] -> [%s]\n", sFile, sExists);
     } else {
         sExists = "";
-        stdprintf("[exists] [%s] not found\n", sFile);
+        xha_printf("[exists] [%s] not found\n", sFile);
         LOG_STATUS("[exists] [%s] not found\n", sFile);
     }
     
@@ -535,7 +535,7 @@ int SimLoader::setGrid(const std::string sFile) {
             if (m_hFile > 0) {
                 iResult = setGrid(m_hFile);
             } else {
-                stdprintf("use old way\n");
+                xha_printf("use old way\n");
                 // do it the "old" way
                 m_pLRGrid = LineReader_std::createInstance(sExistingFile, "rt");
                 if (m_pLRGrid != NULL) {
@@ -550,11 +550,11 @@ int SimLoader::setGrid(const std::string sFile) {
             }
         } else {
             // err doesn't exist
-            stdprintf("doesn't exist [%s]\n", sFile);
+            xha_printf("doesn't exist [%s]\n", sFile);
             LOG_ERROR("Gridfile [%s] doesn't exist\n", sFile);
         }
     } else {
-        stdprintf("Can't have second gridfile [%s]\n", sFile);
+        xha_printf("Can't have second gridfile [%s]\n", sFile);
         LOG_ERROR("Can't have second gridfile [%s]\n", sFile);
     }
     return iResult;
@@ -579,7 +579,7 @@ int SimLoader::setGrid(hid_t hFile, bool bUpdate /* = false */) {
         GridAttributes gridatt;
         std::string sTime =  qdf_extractSAttribute(hFile,  ROOT_STEP_NAME);
         if (sTime.empty() != 0) {
-            stdprintf("Couldn't read time attribute from grid file\n");
+            xha_printf("Couldn't read time attribute from grid file\n");
             LOG_STATUS("Couldn't read time attribute from grid file\n");
             iResult = 0;
 	}
@@ -587,11 +587,11 @@ int SimLoader::setGrid(hid_t hFile, bool bUpdate /* = false */) {
 
         if (bUpdate) {
             if (m_pCG == NULL) {
-                stdprintf("[setGrid] updating non-existent grid!!!\n");
+                xha_printf("[setGrid] updating non-existent grid!!!\n");
                 iResult = -1;
             }
             if ((uint)gridatt.m_iNumCells != m_pCG->m_iNumCells) {
-                stdprintf("[setGrid] updating grid failed: different cell number!!!\n");
+                xha_printf("[setGrid] updating grid failed: different cell number!!!\n");
                 iResult = -1;
             }
         }
@@ -601,7 +601,7 @@ int SimLoader::setGrid(hid_t hFile, bool bUpdate /* = false */) {
                 m_pCG = new SCellGrid(0, gridatt.m_iNumCells, gridatt.smData);
                 m_pCG->m_aCells = new SCell[gridatt.m_iNumCells];
             } else {
-                stdprintf("[setGrid] updating grid...\n");
+                xha_printf("[setGrid] updating grid...\n");
             }
             iResult = pGR->readData(m_pCG);
             if (iResult == 0) {
@@ -610,7 +610,7 @@ int SimLoader::setGrid(hid_t hFile, bool bUpdate /* = false */) {
                     m_pPopLooper = new PopLooper(iNumCells);
                 }
                 */
-                stdprintf("[setGrid] Grid read successfully: %p\n", m_pCG);
+                xha_printf("[setGrid] Grid read successfully: %p\n", m_pCG);
                 LOG_STATUS("[setGrid] Grid read successfully: %p\n", m_pCG);
                 int iRes = setGeo(hFile, false, bUpdate);
                 if (iRes == 0) {
@@ -621,15 +621,15 @@ int SimLoader::setGrid(hid_t hFile, bool bUpdate /* = false */) {
 
                             // ok                            
                         } else {
-                            stdprintf("[setGrid] No Vegetation found in QDF\n");
+                            xha_printf("[setGrid] No Vegetation found in QDF\n");
                             LOG_STATUS("[setGrid] No Vegetation found in QDF\n");
                         }
                     } else {
-                        stdprintf("[setGrid] No Climate found in QDF\n");
+                        xha_printf("[setGrid] No Climate found in QDF\n");
                         LOG_STATUS("[setGrid] No Climate found in QDF\n");
                     }
                 } else {
-                    stdprintf("[setGrid] No Geography found in QDF\n");
+                    xha_printf("[setGrid] No Geography found in QDF\n");
                     LOG_STATUS("[setGrid] No Geography found in QDF\n");
                 }
 
@@ -638,7 +638,7 @@ int SimLoader::setGrid(hid_t hFile, bool bUpdate /* = false */) {
                     if (iRes == 0) {
                         // ok
                     } else {
-                        stdprintf("[setGrid] No Populations found in QDF\n");
+                        xha_printf("[setGrid] No Populations found in QDF\n");
                         LOG_STATUS("[setGrid] No Populations found in QDF\n");
                     }
                 }
@@ -647,22 +647,22 @@ int SimLoader::setGrid(hid_t hFile, bool bUpdate /* = false */) {
                 if (iRes == 0) {
                     // ok
                 } else {
-                    stdprintf("[setGrid] No Navigation found in QDF\n");
+                    xha_printf("[setGrid] No Navigation found in QDF\n");
                     LOG_STATUS("[setGrid] No Navigation found in QDF\n");
                 }
                 
  
             } else {
-                stdprintf("[setGrid] GridReader couldn't read data\n");
+                xha_printf("[setGrid] GridReader couldn't read data\n");
                 LOG_ERROR("[setGrid] GridReader couldn't read data\n");
             }
         } else {
-            stdprintf("[setGrid] GridReader couldn't read attributes\n");
+            xha_printf("[setGrid] GridReader couldn't read attributes\n");
             LOG_ERROR("[setGrid] GridReader couldn't read attributes\n");
         }
         delete pGR;
     } else {
-        stdprintf("[setGrid] Couldn't create GridReader\n");
+        xha_printf("[setGrid] Couldn't create GridReader\n");
         LOG_ERROR("[setGrid] Couldn't create GridReader\n");
     }
     return iResult;
@@ -734,31 +734,31 @@ int SimLoader::setGeo(hid_t hFile, bool bRequired, bool bUpdate /* = false */) {
                          if (!bUpdate) {
                              m_pCG->setGeography(m_pGeo);
                          }
-                         stdprintf("[setGeo] GeoReader readData succeeded - Geo: %p, CG: %p!\n", m_pGeo, m_pCG);
+                         xha_printf("[setGeo] GeoReader readData succeeded - Geo: %p, CG: %p!\n", m_pGeo, m_pCG);
                          LOG_STATUS("[setGeo] GeoReader readData succeeded : %p!\n", m_pGeo);
                      } else {
-                         stdprintf("[setGeo] Couldn't read data\n");
+                         xha_printf("[setGeo] Couldn't read data\n");
                          LOG_ERROR("[setGeo] Couldn't read data\n");
                      }
                  } else {
                      iResult = -2;
-                     stdprintf("[setGeo] Cell number mismatch: CG(%d) Geo(%d)\n", m_pCG->m_iNumCells, geoatt.m_iNumCells);
+                     xha_printf("[setGeo] Cell number mismatch: CG(%d) Geo(%d)\n", m_pCG->m_iNumCells, geoatt.m_iNumCells);
                      LOG_ERROR("[setGeo] Cell number mismatch: CG(%d) Geo(%d)\n", m_pCG->m_iNumCells, geoatt.m_iNumCells);
                  }
              } else {
                  iResult = -3;
-                 stdprintf("[setGeo] Connectivity mismatch: CG(%d) Geo(%d)\n", m_pCG->m_iConnectivity, geoatt.m_iMaxNeighbors);
+                 xha_printf("[setGeo] Connectivity mismatch: CG(%d) Geo(%d)\n", m_pCG->m_iConnectivity, geoatt.m_iMaxNeighbors);
                  LOG_ERROR("[setGeo] Connectivity mismatch: CG(%d) Geo(%d)\n", m_pCG->m_iConnectivity, geoatt.m_iMaxNeighbors);
              }
              
          } else {
-             stdprintf("[setGeo] Couldn't read attributes\n");
+             xha_printf("[setGeo] Couldn't read attributes\n");
              LOG_ERROR("[setGeo] Couldn't read attributes\n");
          }
          
          delete pGR;
      } else {
-         stdprintf("[setGeo] Couldn't create GeoGroupReader: did not find group [%s]\n", GEOGROUP_NAME);
+         xha_printf("[setGeo] Couldn't create GeoGroupReader: did not find group [%s]\n", GEOGROUP_NAME);
          if (bRequired) {
              LOG_ERROR("[setGeo] Couldn't create GeoGroupReader: did not find group [%s]\n", GEOGROUP_NAME);
          }
@@ -832,29 +832,29 @@ int SimLoader::setClimate(hid_t hFile, bool bRequired, bool bUpdate /* = false *
                     if (!bUpdate) {
                         m_pCG->setClimate(m_pCli);
                     }
-                    stdprintf("[setClimate] ClimateReader readData succeeded : %p!\n", m_pCli);
+                    xha_printf("[setClimate] ClimateReader readData succeeded : %p!\n", m_pCli);
                     LOG_STATUS("[setClimate] ClimateReader readData succeeded : %p!\n", m_pCli);
                 } else {
-                    stdprintf("[setClimate] Couldn't read climate data\n");
+                    xha_printf("[setClimate] Couldn't read climate data\n");
                     LOG_ERROR("[setClimate] Couldn't read climate data\n");
                     delete m_pCli;
                 }
                
             } else {
                 iResult = -2;
-                stdprintf("[setClimate] Cell number mismatch: CG(%d) Cli(%d)\n", m_pCG->m_iNumCells, climatt.m_iNumCells);
+                xha_printf("[setClimate] Cell number mismatch: CG(%d) Cli(%d)\n", m_pCG->m_iNumCells, climatt.m_iNumCells);
                 LOG_ERROR("[setClimate] Cell number mismatch: CG(%d) Cli(%d)\n", m_pCG->m_iNumCells, climatt.m_iNumCells);
             }
             
         } else {
-            stdprintf("[setClimate] Couldn't read attributes\n");
+            xha_printf("[setClimate] Couldn't read attributes\n");
             LOG_ERROR("[setClimate] Couldn't read attributes\n");
         }
         
         
         delete pCR;
     } else {
-        stdprintf("[setClimate] Couldn't create ClimateGroupReader: did not find group [%s]\n", CLIGROUP_NAME);
+        xha_printf("[setClimate] Couldn't create ClimateGroupReader: did not find group [%s]\n", CLIGROUP_NAME);
         if (bRequired) {
             LOG_ERROR("[setClimate] Couldn't create ClimateGroupReader: did not find group [%s]\n", CLIGROUP_NAME);
         }
@@ -911,7 +911,7 @@ int SimLoader::setVeg(hid_t hFile, bool bRequired, bool bUpdate /* = false */) {
         VegAttributes vegatt;
         iResult = pVR->readAttributes(&vegatt);
         if (iResult == 0) {
-            //@@            stdprintf("[setVeg] VegReader attributes read (numspc: %d, numcells:%d)\n", vegatt.m_iNumVegSpc, vegatt.m_iNumCells);
+            //@@            xha_printf("[setVeg] VegReader attributes read (numspc: %d, numcells:%d)\n", vegatt.m_iNumVegSpc, vegatt.m_iNumCells);
             //@@            LOG_STATUS("[setVeg] VegReader attributes read (numspc: %d, numcells:%d)\n", iNumVegSpc, iNumCells);
 
             if (vegatt.m_iNumCells == m_pCG->m_iNumCells) {
@@ -925,19 +925,19 @@ int SimLoader::setVeg(hid_t hFile, bool bRequired, bool bUpdate /* = false */) {
                     if (!bUpdate) {
                         m_pCG->setVegetation(m_pVeg);
                     }
-                    stdprintf("[setVeg] VegReader readData succeeded!\n");
+                    xha_printf("[setVeg] VegReader readData succeeded!\n");
                     LOG_STATUS("[setVeg] VegReader readData succeeded!\n");
                 } else {
-                    stdprintf("[setVeg] Couldn't read data\n");
+                    xha_printf("[setVeg] Couldn't read data\n");
                     LOG_ERROR("[setVeg] Couldn't read data\n");
                 }
             } else {
                 iResult = -2;
-                stdprintf("[setVeg] Cell number mismatch: CG(%d) Veg(%d)\n", m_pCG->m_iNumCells, vegatt.m_iNumCells);
+                xha_printf("[setVeg] Cell number mismatch: CG(%d) Veg(%d)\n", m_pCG->m_iNumCells, vegatt.m_iNumCells);
                 LOG_ERROR("[setVeg] Cell number mismatch: CG(%d) Veg(%d)\n", m_pCG->m_iNumCells, vegatt.m_iNumCells);
             }
         } else {
-            stdprintf("[setVeg] Couldn't read attributes\n");
+            xha_printf("[setVeg] Couldn't read attributes\n");
             LOG_ERROR("[setVeg] Couldn't read attributes\n");
         }
 
@@ -945,7 +945,7 @@ int SimLoader::setVeg(hid_t hFile, bool bRequired, bool bUpdate /* = false */) {
         delete pVR;
     } else {
         if (bRequired) {
-            stdprintf("[setVeg] Couldn't create VegGroupReader: did not find group [%s]\n", VEGGROUP_NAME);
+            xha_printf("[setVeg] Couldn't create VegGroupReader: did not find group [%s]\n", VEGGROUP_NAME);
             LOG_ERROR("[setVeg] Couldn't create VegGroupReader: did not find group [%s]\n", VEGGROUP_NAME);
         }
      }
@@ -1014,7 +1014,7 @@ int SimLoader::setNav(hid_t hFile, bool bUpdate) {
         NavAttributes navatt;
         iResult = pNR->readAttributes(&navatt);
         if (iResult == 0) {
-            //@@            stdprintf("[setNav] NavReader attributes read (numports: %d, numdests:%d, numdists:%d, sampledist:%f)\n", navatt.m_iNumPorts, navatt.m_iNumDests, navatt.m_iNumDists, navatt.m_dSampleDist);
+            //@@            xha_printf("[setNav] NavReader attributes read (numports: %d, numdests:%d, numdists:%d, sampledist:%f)\n", navatt.m_iNumPorts, navatt.m_iNumDests, navatt.m_iNumDists, navatt.m_dSampleDist);
             //@@            LOG_STATUS("[setVeg] VegReader attributes read (numspc: %d, numcells:%d)\n", iNumVegSpc, iNumCells);
             
             if (!bUpdate) {
@@ -1026,33 +1026,33 @@ int SimLoader::setNav(hid_t hFile, bool bUpdate) {
             
             iResult = pNR->readData(m_pNav);
             if (iResult == 0) {
-                stdprintf("[setNav] NavGroupReader readData succeeded!\n");
+                xha_printf("[setNav] NavGroupReader readData succeeded!\n");
                 LOG_STATUS("[setNav] NavGroupReader readData succeeded!\n");
                 iResult = pNR->readBridges(m_pNav);
                 if (iResult == 0) {
-                    stdprintf("[setNav] NavGroupReader readBridges succeeded!\n");
+                    xha_printf("[setNav] NavGroupReader readBridges succeeded!\n");
                     LOG_STATUS("[setNav] NavGroupReader readBridges succeeded!\n");
                     if (!bUpdate) {
                         m_pCG->setNavigation(m_pNav);
                     }
                 } else {
-                    stdprintf("[setNav] Couldn't read bridges\n");
+                    xha_printf("[setNav] Couldn't read bridges\n");
                     LOG_ERROR("[setNav] Couldn't read bridges\n");
                 }
             } else {
-                stdprintf("[setNav] Couldn't read data\n");
+                xha_printf("[setNav] Couldn't read data\n");
                 LOG_ERROR("[setNav] Couldn't read data\n");
             }
             
         } else {
-            stdprintf("[setNav] Couldn't read attributes\n");
+            xha_printf("[setNav] Couldn't read attributes\n");
             LOG_ERROR("[setNav] Couldn't read attributes\n");
         }
         
         
         delete pNR;
     } else {
-        stdprintf("[setNav] Couldn't create NavGroupReader: did not find group [%s]\n", NAVGROUP_NAME);
+        xha_printf("[setNav] Couldn't create NavGroupReader: did not find group [%s]\n", NAVGROUP_NAME);
         LOG_WARNING("[setNav] Couldn't create NavGroupReader: did not find group [%s]\n", NAVGROUP_NAME);
     }
     
@@ -1103,7 +1103,7 @@ int SimLoader::setPops(const std::string sFile) {
         std::string sClsFile;
         std::string sDataFile;
         if (exists(vParts[0], sClsFile) && exists(vParts[1], sDataFile)) {
-	    stdprintf("[setPops] trying [%s] as XML\n", sClsFile);
+	    xha_printf("[setPops] trying [%s] as XML\n", sClsFile);
             iResult = setPopsFromXMLFile(sClsFile, sDataFile);
         } else {
             if (sClsFile.empty()) {
@@ -1151,27 +1151,27 @@ int SimLoader::setPops(hid_t hFile, const std::string sPopName, bool bRequired) 
                         PopBase *pPop = m_pPopFac->createPopulationByName(pil[i].m_sClassName);
                         if (pPop != NULL) {
                             pPop->setAgentDataType();
-                            stdprintf("[setPops] have pop [%s]\n", pil[i].m_sClassName);
+                            xha_printf("[setPops] have pop [%s]\n", pil[i].m_sClassName);
                             LOG_STATUS("[setPops] have pop [%s]\n", pil[i].m_sClassName);
                             
                             iResult = pPR->read(pPop, pil[i].m_sSpeciesName, m_pCG->m_iNumCells, false); // false: don't resume
                             if (iResult == 0) {
                                 
-                                stdprintf("[setPops] have read pop\n");
+                                xha_printf("[setPops] have read pop\n");
                                 LOG_STATUS("[setPops] have read pop\n");
                                 iResult = m_pPopLooper->addPop(pPop);
                                 if (iResult == 0) {
-                                    stdprintf("[setPops] successfully added Population: %s: %ld agents\n", pPop->getSpeciesName(), pPop->getNumAgentsTotal());
+                                    xha_printf("[setPops] successfully added Population: %s: %ld agents\n", pPop->getSpeciesName(), pPop->getNumAgentsTotal());
                                     LOG_STATUS("[setPops] successfully added Population: %s: %ld agents\n", pPop->getSpeciesName(), pPop->getNumAgentsTotal());
                                     if (m_aiSeeds[0] > 0) {
-                                        stdprintf("Randomizing(1) with %u\n", m_aiSeeds[0]);
+                                        xha_printf("Randomizing(1) with %u\n", m_aiSeeds[0]);
                                         pPop->randomize(m_aiSeeds[0]);
                                     } else {
-                                        stdprintf("No seeds???\n");
+                                        xha_printf("No seeds???\n");
                                     }
                                     
                                 } else {
-                                    stdprintf("[setPops] Couldn't add population [%s]\n",  pil[i].m_sSpeciesName);
+                                    xha_printf("[setPops] Couldn't add population [%s]\n",  pil[i].m_sSpeciesName);
                                     LOG_ERROR("[setPops] Couldn't add population [%s]\n",  pil[i].m_sSpeciesName);
                                     
                                 }
@@ -1190,13 +1190,13 @@ int SimLoader::setPops(hid_t hFile, const std::string sPopName, bool bRequired) 
                                 
                             }
                         } else {
-                            stdprintf("[setPops] Couldn't create Population %s %s\n", 
+                            xha_printf("[setPops] Couldn't create Population %s %s\n", 
                                    pil[i].m_sSpeciesName, pil[i].m_sClassName);
                             LOG_ERROR("[setPops] Couldn't create Population %s %s\n", 
                                       pil[i].m_sSpeciesName, pil[i].m_sClassName);
                         }
                     } else {
-                        stdprintf("[setPops] No population name given\n");
+                        xha_printf("[setPops] No population name given\n");
                         LOG_ERROR("[setPops] No population name given\n");
                     }
                 }
@@ -1207,12 +1207,12 @@ int SimLoader::setPops(hid_t hFile, const std::string sPopName, bool bRequired) 
 
             delete pPR;
         } else {
-            stdprintf("[setPops] no PopulationFactory (this should not happen!)\n");
+            xha_printf("[setPops] no PopulationFactory (this should not happen!)\n");
             LOG_ERROR("[setPops] no PopulationFactory (this should not happen!)\n");
         }
     } else {
         if (bRequired) { 
-            stdprintf("[setPops] Couldn't create PopReader:(\n");
+            xha_printf("[setPops] Couldn't create PopReader:(\n");
             LOG_ERROR("[setPops] Couldn't create PopReader\n");
         }
     }
@@ -1239,26 +1239,26 @@ int SimLoader::setPopsFromPopFile(const std::string sClsFile, const std::string 
         if (m_pPopFac != NULL) {
             PopBase *pPop = m_pPopFac->readPopulation(sClsFile);
             if (pPop != NULL) {
-                stdprintf("doing species [%s]\n", pPop->getSpeciesName());
+                xha_printf("doing species [%s]\n", pPop->getSpeciesName());
                 // read agent data
                 iResult = readAgentData(pPop, sDataFile);
                 if (iResult == 0) {
                     m_pPopLooper->addPop(pPop);
                     LOG_STATUS("[setPopsFromPopFile] successfully added Population: %s\n", pPop->getSpeciesName());
                     if (m_aiSeeds[0] > 0) {
-                        stdprintf("Randomizing(1) with %u\n", m_aiSeeds[0]);
+                        xha_printf("Randomizing(1) with %u\n", m_aiSeeds[0]);
                         pPop->randomize(m_aiSeeds[0]);
                     } else {
-                        stdprintf("No seeds???\n");        
+                        xha_printf("No seeds???\n");        
                     }
                 }
             } else {
-                stdprintf("[setPopsFromPopFile] Couldn't create data from [%s]\n", pClsFile);
+                xha_printf("[setPopsFromPopFile] Couldn't create data from [%s]\n", pClsFile);
                 LOG_ERROR("[setPopsFromPopFile] Couldn't create data from [%s]\n", pClsFile);
             }
 
         } else {
-            stdprintf("[setPopsFromPopFile] no PopulationFactory (this should not happen!)\n");
+            xha_printf("[setPopsFromPopFile] no PopulationFactory (this should not happen!)\n");
             LOG_ERROR("[setPopsFromPopFile] no PopulationFactory (this should not happen!)\n");
         }
 
@@ -1288,7 +1288,7 @@ int SimLoader::setPopsFromXMLFile(const std::string sXMLFile, const std::string 
             iResult = 0;
             ParamProvider2 *pPP = ParamProvider2::createInstance(sXMLFile);
             if (pPP != NULL) {
-                //@@ stdprintf("ParamProvider:::::::::::\n");
+                //@@ xha_printf("ParamProvider:::::::::::\n");
                 //@@ pPP->showTree();
                 const stringvec &vClassNames = pPP->getClassNames();
                 for (uint i = 0; (iResult == 0) && (i < vClassNames.size()); ++i){
@@ -1297,21 +1297,21 @@ int SimLoader::setPopsFromXMLFile(const std::string sXMLFile, const std::string 
                     if (pPop != NULL) {
                         pPop->setAgentDataType();
 
-                        stdprintf("doing species [%s]\n", pPop->getSpeciesName());
+                        xha_printf("doing species [%s]\n", pPop->getSpeciesName());
                         // read agent data
                         iResult = readAgentData(pPop, sDataFile);
                         if (iResult == 0) {
                             m_pPopLooper->addPop(pPop);
                             LOG_STATUS("[setPopsFromXMLFile] successfully added Population: %s\n", pPop->getSpeciesName());
                             if (m_aiSeeds[0] > 0) {
-                                stdprintf("Randomizing(1) with %u\n", m_aiSeeds[0]);
+                                xha_printf("Randomizing(1) with %u\n", m_aiSeeds[0]);
                                 pPop->randomize(m_aiSeeds[0]);
                             } else {
-                            stdprintf("No seeds???\n");        
+                            xha_printf("No seeds???\n");        
                             }
                         }
                     } else {
-                        stdprintf("[setPopsFromXMLFile] Couldn't create data from [%s]\n", sXMLFile);
+                        xha_printf("[setPopsFromXMLFile] Couldn't create data from [%s]\n", sXMLFile);
                         LOG_ERROR("[setPopsFromXMLFile] Couldn't create data from [%s]\n", sXMLFile);
                     }
                     
@@ -1321,7 +1321,7 @@ int SimLoader::setPopsFromXMLFile(const std::string sXMLFile, const std::string 
                 iResult = -1;
             }
         } else {
-            stdprintf("[setPopsFromXMLFile] no PopulationFactory (this should not happen!)\n");
+            xha_printf("[setPopsFromXMLFile] no PopulationFactory (this should not happen!)\n");
             LOG_ERROR("[setPopsFroXMLFile] no PopulationFactory (this should not happen!)\n");
         }
 
@@ -1476,17 +1476,17 @@ int SimLoader::readAgentData(PopBase *pPop, const std::string sAgentDataFile) {
                         if (strToNum(vParts[1], &dLat)) {
                             iResult = 0;
                         } else {
-                            stdprintf("Not a valid number [%s]\n", vParts[1]);
+                            xha_printf("Not a valid number [%s]\n", vParts[1]);
                             LOG_ERROR("Not a valid number [%s]\n", vParts[1]);
                             iResult = -1;
                             }
                     } else {
-                        stdprintf("Not a valid number [%s]\n", vParts[0]);
+                        xha_printf("Not a valid number [%s]\n", vParts[0]);
                         LOG_ERROR("Not a valid number [%s]\n", vParts[0]);
                         iResult = -1;
                     }
                 } else {
-                    stdprintf("Expected two double (lon, lat) [%s]\n", pLine);
+                    xha_printf("Expected two double (lon, lat) [%s]\n", pLine);
                     LOG_ERROR("Expected two double (lon, lat) [%s]\n", pLine);
                     iResult = -1;
                 }
@@ -1496,7 +1496,7 @@ int SimLoader::readAgentData(PopBase *pPop, const std::string sAgentDataFile) {
                 //                if (iNum == 2) {
                     gridtype lNode = m_pSurface->findNode(dLon, dLat);
                     if (lNode >= 0) {
-                        //                        stdprintf("%f %f -> %d\n", dLon, dLat, lNode);
+                        //                        xha_printf("%f %f -> %d\n", dLon, dLat, lNode);
                         int iIndex = m_pCG->m_mIDIndexes[lNode];
                         iResult = pPop->addAgent(iIndex, pLine, false); //don't update counts
                         /*
@@ -1508,18 +1508,18 @@ int SimLoader::readAgentData(PopBase *pPop, const std::string sAgentDataFile) {
                             int iIndex = m_pCG->m_mIDIndexes[lNode];
                             iResult = pPop->addAgent(iIndex, pData, false); //don't update counts
                         } else {
-                            stdprintf("[readAgentData] No colon ':' in line:[%s]\n", pLine);
+                            xha_printf("[readAgentData] No colon ':' in line:[%s]\n", pLine);
                             LOG_ERROR("[readAgentData] No colon ':' in line:[%s]\n", pLine);
                             iResult = -1;
                         }
                         */
                     } else {
-                        stdprintf("[readAgentData] coordinates (%f, %f) could not be mapped to a node\n", dLon ,dLat);
+                        xha_printf("[readAgentData] coordinates (%f, %f) could not be mapped to a node\n", dLon ,dLat);
                         LOG_WARNING("[readAgentData] coordinates (%f, %f) could not be mapped to a node\n", dLon ,dLat);
                     }
                 } else {
                     iResult = -1;
-                    stdprintf("[readAgentData] Couldn't extract Lon, Lat from [%s]\n", pLine);
+                    xha_printf("[readAgentData] Couldn't extract Lon, Lat from [%s]\n", pLine);
                     LOG_ERROR("[readAgentData] Couldn't extract Lon, Lat from [%s]\n", pLine);
                 }
             } else {
@@ -1532,7 +1532,7 @@ int SimLoader::readAgentData(PopBase *pPop, const std::string sAgentDataFile) {
         }
         delete pLR;
     } else {
-        stdprintf("[readAgentDataCouldn't open [%s] for reading\n", sAgentDataFile);
+        xha_printf("[readAgentDataCouldn't open [%s] for reading\n", sAgentDataFile);
         LOG_ERROR("[readAgentData] Couldn't open [%s] for reading\n", sAgentDataFile);
     }
     return iResult;
@@ -1587,7 +1587,7 @@ int SimLoader::write() {
         } else {
             iWhat = WR_NONE;
             iResult = -1;
-            stdprintf("Unknown output type [%s] (%s)\n", sCur, m_sDesc);
+            xha_printf("Unknown output type [%s] (%s)\n", sCur, m_sDesc);
             LOG_ERROR("Unknown output type [%s] (%s)\n", sCur, m_sDesc);
         }
         
@@ -1633,8 +1633,8 @@ int SimLoader::write() {
                         
                     sPops += sSub;
                     sPops += sD;
-                    stdprintf("current sPops is [%s])\n", sPops);
-                    stdprintf("pushing back (%s, %d)\n", sSub, iWS);
+                    xha_printf("current sPops is [%s])\n", sPops);
+                    xha_printf("pushing back (%s, %d)\n", sSub, iWS);
 
                     vSubs.push_back(std::pair<std::string, popwrite_flags>(sSub, iWS));
                 }
@@ -1648,9 +1648,9 @@ int SimLoader::write() {
     } 
 
     if (iResult == 0) {
-        stdprintf("[Simulator::handleWriteEvent] vSubs has %zd elements\n", vSubs.size());
+        xha_printf("[Simulator::handleWriteEvent] vSubs has %zd elements\n", vSubs.size());
         for (uint i = 0; i < vSubs.size(); i++) {
-            stdprintf("[Simulator::handleWriteEvent]  %s -> %d\n", vSubs[i].first.c_str(), vSubs[i].second);
+            xha_printf("[Simulator::handleWriteEvent]  %s -> %d\n", vSubs[i].first.c_str(), vSubs[i].second);
         }
  
         iResult = writeState(iWhat);
@@ -1683,11 +1683,11 @@ int SimLoader::writeState(int iWhat) {
     iResult = m_pSW->write(m_sOutputQDF, iCurStep, 0, "converted", iWhat, vSubs, DUMP_MODE_NONE);
 
     double dEndW = omp_get_wtime();
-    stdprintf("[%d] Writing of [%s] took %fs\n", iCurStep, m_sOutputQDF, dEndW - dStartW);
+    xha_printf("[%d] Writing of [%s] took %fs\n", iCurStep, m_sOutputQDF, dEndW - dStartW);
     LOG_WARNING("[%d] Writing of [%s] took %fs\n", iCurStep, m_sOutputQDF, dEndW - dStartW);
     
     if (iResult != 0) {
-        stdprintf("StatusWriter [%s]\n", m_pSW->getError().c_str());
+        xha_printf("StatusWriter [%s]\n", m_pSW->getError().c_str());
         if (iResult < 0) {
             LOG_ERROR("StatusWriter [%s]\n", m_pSW->getError().c_str());
         } else {
@@ -1714,14 +1714,14 @@ void printHeaderLine(uint iL, const char *pTopic) {
     std::string sDash{iL, '-'};
     std::string sDashi;
     if (*pTopic != '\0') {
-        std::string sTemp1 = stdsprintf(" Help for topic: %s ",  pTopic);
+        std::string sTemp1 = xha_sprintf(" Help for topic: %s ",  pTopic);
         size_t i1 = sTemp1.size();
-        std::string sTemp2 = stdsprintf(" Help for topic: %s%s%s%s ",  colors::BOLDBLUE, pTopic, colors::OFF, colors::BOLD);
+        std::string sTemp2 = xha_sprintf(" Help for topic: %s%s%s%s ",  colors::BOLDBLUE, pTopic, colors::OFF, colors::BOLD);
         size_t i2 = sTemp2.size();
         size_t iPos = (iL-i1)/2;
         sDash.replace(iPos, i2, sTemp2, i2);
     }
-    stdprintf("\n%s%s%s%s\n\n", colors::BOLD, sDash, sDashi, colors::OFF);
+    xha_printf("\n%s%s%s%s\n\n", colors::BOLD, sDash, sDashi, colors::OFF);
 }
 
 
@@ -1736,74 +1736,74 @@ void SimLoader::showTopicHelp(const std::string sTopic) {
     //-- topic "help"
     if (bAll || (sTopic == "help")) {
         printHeaderLine(iL, "help");
-        stdprintf("  %s--help=<topic>%s    show detailed help for specified topic\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    Use 'all' to see info for all options.\n");
+        xha_printf("  %s--help=<topic>%s    show detailed help for specified topic\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    Use 'all' to see info for all options.\n");
         bFound = true;
     }
 
     //-- topic "log-file"
     if (bAll || (sTopic == "log-file")) {
         printHeaderLine(iL, "log-file");
-        stdprintf("  %s--log-file=<filename>%s    set name of logfile (default: \"%s\")\n", colors::BOLDBLUE, colors::OFF, DEF_LOG_FILE);
+        xha_printf("  %s--log-file=<filename>%s    set name of logfile (default: \"%s\")\n", colors::BOLDBLUE, colors::OFF, DEF_LOG_FILE);
         bFound = true;
     }
 
     //-- topic "grid"
     if (bAll || (sTopic == "grid")) {
         printHeaderLine(iL, "grid");
-        stdprintf("  %s--grid=<grid-file>%s    set grid file (required option)\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    grid-file is a QDF file which may also contain geography, climate, \n");
-        stdprintf("    and vegetation data.\n");
-        stdprintf("    In this case the corresponding geo, cilmate, or veg options can be omitted.\n");
+        xha_printf("  %s--grid=<grid-file>%s    set grid file (required option)\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    grid-file is a QDF file which may also contain geography, climate, \n");
+        xha_printf("    and vegetation data.\n");
+        xha_printf("    In this case the corresponding geo, cilmate, or veg options can be omitted.\n");
         bFound = true;
     }
 
     //-- topic "geo"
     if (bAll || (sTopic == "geo")) {
         printHeaderLine(iL, "geo");
-        stdprintf("  %s--geo=<geo-file>%s    set geography file\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    geo-file is a QDF-file containing geography data.\n");
-        stdprintf("    It must contain data for the same number of cells as the grid file\n");
+        xha_printf("  %s--geo=<geo-file>%s    set geography file\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    geo-file is a QDF-file containing geography data.\n");
+        xha_printf("    It must contain data for the same number of cells as the grid file\n");
         bFound = true;
     } 
 
     //-- topic "climate"
     if (bAll || (sTopic == "climate")) {
         printHeaderLine(iL, "climate");
-        stdprintf("  %s--climate=<climate-file>%s    set climate file\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    climate-file is a QDF-file containing climate data.\n");
-        stdprintf("    It must contain data for the same number of cells as the grid file\n");
+        xha_printf("  %s--climate=<climate-file>%s    set climate file\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    climate-file is a QDF-file containing climate data.\n");
+        xha_printf("    It must contain data for the same number of cells as the grid file\n");
         bFound = true;
     } 
 
     //-- topic "veg"
     if (bAll || (sTopic == "veg")) {
         printHeaderLine(iL, "veg");
-        stdprintf("  %s--veg=<veg-file>%s    set vegetation file\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    veg-file is a QDF-file containing vegetation data.\n");
-        stdprintf("    It must contain data for the same number of cells as the grid file\n");
+        xha_printf("  %s--veg=<veg-file>%s    set vegetation file\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    veg-file is a QDF-file containing vegetation data.\n");
+        xha_printf("    It must contain data for the same number of cells as the grid file\n");
         bFound = true;
     } 
 
     //-- topic "pops"
     if (bAll || (sTopic  == "pops")) {
         printHeaderLine(iL, "pops");
-        stdprintf("  %s--pops=<pop-list>%s    set populations data\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    pop-list is a comma-separated list of QDF-files, each containing population data.\n");
-        stdprintf("    It must contain data for the same number of cells as the grid file\n");
-        stdprintf("    Alternatively you may use\n");
-        stdprintf("      --pops=<cls-file>:<data-file>\n");
-        stdprintf("    where cls-file is a class definition file,\n");
-        stdprintf("    and data-file is a file containing agent data.\n");
+        xha_printf("  %s--pops=<pop-list>%s    set populations data\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    pop-list is a comma-separated list of QDF-files, each containing population data.\n");
+        xha_printf("    It must contain data for the same number of cells as the grid file\n");
+        xha_printf("    Alternatively you may use\n");
+        xha_printf("      --pops=<cls-file>:<data-file>\n");
+        xha_printf("    where cls-file is a class definition file,\n");
+        xha_printf("    and data-file is a file containing agent data.\n");
         bFound = true;
     } 
 
     //-- topic "data-dirs"
     if (bAll || (sTopic == "data-dirs")) {
         printHeaderLine(iL, "data-dirs");
-        stdprintf("  %s--data-dirs=<dir-names>%s    search-directories for input files (default: \"./\")\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    dir-names is a comma-separated list of directories.\n");
-        stdprintf("    The order of the directores in the list defines the search order.\n");
+        xha_printf("  %s--data-dirs=<dir-names>%s    search-directories for input files (default: \"./\")\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    dir-names is a comma-separated list of directories.\n");
+        xha_printf("    The order of the directores in the list defines the search order.\n");
         bFound = true;
     } 
 
@@ -1811,16 +1811,16 @@ void SimLoader::showTopicHelp(const std::string sTopic) {
     //-- topic "info-string"
     if (bAll || (sTopic == "info-string")) {
         printHeaderLine(iL, "info-string");
-        stdprintf("  %s--info-string%s    <infostring>\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    Add  <infostring> as the value of the attribute \"info\" of the root group of every output qdf\n");
+        xha_printf("  %s--info-string%s    <infostring>\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    Add  <infostring> as the value of the attribute \"info\" of the root group of every output qdf\n");
         bFound = true;
     }
 
     //-- unknown topic
     if (!bFound) {
         printHeaderLine(iL, "");
-        stdprintf("  %s%s%s: %sUnknown topic%s\n", colors::BOLDBLUE, sTopic, colors::OFF, colors::RED, colors::OFF);
-        stdprintf("    select an option from this list\n");
+        xha_printf("  %s%s%s: %sUnknown topic%s\n", colors::BOLDBLUE, sTopic, colors::OFF, colors::RED, colors::OFF);
+        xha_printf("    select an option from this list\n");
         helpParams();
     }
 

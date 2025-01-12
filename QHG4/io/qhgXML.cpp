@@ -3,7 +3,7 @@
 
 #include "types.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "LineReader.h"
 #include "qhgXML.h"
 
@@ -202,10 +202,10 @@ int qhgXMLNode::getNextSym () {
         m_pCur++;
 
     } else {
-        stdprintf("Unknown symbol [%s]\n", m_pCur);
+        xha_printf("Unknown symbol [%s]\n", m_pCur);
         m_iErr = -1;
     }
-    //    stdprintf("end of getnextsym: sym %s [%s]\n", pSymNames[iSym], m_pCur);
+    //    xha_printf("end of getnextsym: sym %s [%s]\n", pSymNames[iSym], m_pCur);
     return iSym;
 }
 
@@ -252,7 +252,7 @@ char *qhgXMLNode::readString () {
     }
     m_sCurString[m_pCur-p0] = '\0';
     if (bInString) {
-        stdprintf("string not closed with quote [%s][%s]\n", p0, m_pCur);
+        xha_printf("string not closed with quote [%s][%s]\n", p0, m_pCur);
         m_iErr = -1;
 
     }
@@ -280,7 +280,7 @@ char *qhgXMLNode::readWord () {
        strncpy(m_sCurWord, p0, m_pCur - p0);
        m_sCurWord[m_pCur-p0] = '\0';
     } else {
-        stdprintf("word must start with letter or '_'\n");
+        xha_printf("word must start with letter or '_'\n");
         m_iErr = -1;
     }
     return m_pCur;
@@ -309,16 +309,16 @@ int qhgXMLNode::parseTag(char *pLine)  {
             iSym = getNextSym();
             if (iSym == SYM_CLOSE_BRA) {
                 m_bClosed = true;
-                if (s_bVerbose) stdprintf("Closing %s on level %d\n", m_sName, m_iLevel); 
+                if (s_bVerbose) xha_printf("Closing %s on level %d\n", m_sName, m_iLevel); 
                 m_iType = TYPE_END_TAG;
                 m_iErr = 0;
-                if (s_bVerbose) stdprintf("Have close tag [%s]\n", m_sName);
+                if (s_bVerbose) xha_printf("Have close tag [%s]\n", m_sName);
             } else {
                 m_iErr = -1;
-                stdprintf("Expected '>'\n");
+                xha_printf("Expected '>'\n");
             }
         } else  {
-            stdprintf("'</' should be followed by tag name\n");
+            xha_printf("'</' should be followed by tag name\n");
             m_iErr = -1;
         }
 
@@ -329,7 +329,7 @@ int qhgXMLNode::parseTag(char *pLine)  {
         //        iSym = getNextSym();
         if (iSym == SYM_WORD) {
             m_sName = getCurWord();
-            if (s_bVerbose) stdprintf("Have tag name [%s]\n", m_sName);
+            if (s_bVerbose) xha_printf("Have tag name [%s]\n", m_sName);
             iSym = getNextSym();
             m_iErr = 0;
 
@@ -345,16 +345,16 @@ int qhgXMLNode::parseTag(char *pLine)  {
                         std::string sAttrValue = pAV;
                         m_mAttrs[sAttrName] = sAttrValue;
                         //m_iErr = 0;
-                        if (s_bVerbose) stdprintf("Have attr name [%s] => [%s]\n", sAttrName, sAttrValue);
+                        if (s_bVerbose) xha_printf("Have attr name [%s] => [%s]\n", sAttrName, sAttrValue);
                     } else {
-                        stdprintf("attribute values for [%s:%s] must be quoted\n", m_sName, sAttrName);
+                        xha_printf("attribute values for [%s:%s] must be quoted\n", m_sName, sAttrName);
                         m_iErr = -1;
                     }
                 } else {
-                    stdprintf("expected '=' in attribute\n");
+                    xha_printf("expected '=' in attribute\n");
                     m_iErr = -1;
                 }
-                if (s_bVerbose) stdprintf("end of attr loop: sym %s [%s]\n", asSymNames[iSym], m_pCur);
+                if (s_bVerbose) xha_printf("end of attr loop: sym %s [%s]\n", asSymNames[iSym], m_pCur);
             }
             // after attributes either a '>" or  "/>"
             if ((m_iErr == 0) && (iSym == SYM_CLOSE_BRA)) {
@@ -364,24 +364,24 @@ int qhgXMLNode::parseTag(char *pLine)  {
             } else if ((m_iErr == 0) && (iSym == SYM_CLOSE_SLASH_BRA)) {
                 m_iType = TYPE_EMPTY_TAG;
                 m_bClosed = true;
-                if (s_bVerbose) stdprintf("closing %s on level %d\n", m_sName, m_iLevel);
+                if (s_bVerbose) xha_printf("closing %s on level %d\n", m_sName, m_iLevel);
 
             } else {
                 m_iErr = -1;
-                stdprintf("expected '>' or '/>' after last attribute\n");
+                xha_printf("expected '>' or '/>' after last attribute\n");
             }
         } else {
             m_iErr = -1;
-            stdprintf("expected word after '>'\n");
+            xha_printf("expected word after '>'\n");
         }
                
     } else {
         m_iType = TYPE_NO_TAG;
         m_iErr = -1;
-        stdprintf("Tag must start with '<' or '</' [%s]\n", pLine);
+        xha_printf("Tag must start with '<' or '</' [%s]\n", pLine);
     } 
 
-    if (s_bVerbose) stdprintf("---------\n");
+    if (s_bVerbose) xha_printf("---------\n");
     return m_iErr;
 }
 
@@ -389,20 +389,20 @@ int qhgXMLNode::parseTag(char *pLine)  {
 // parseNode
 //
 int qhgXMLNode::parseNode(char *pLine)  {
-    if (s_bVerbose) stdprintf("entered parseNode level %d (closed %s)\n", m_iLevel, m_bClosed?"yes":"no");
+    if (s_bVerbose) xha_printf("entered parseNode level %d (closed %s)\n", m_iLevel, m_bClosed?"yes":"no");
     
     m_iErr = parseTag(pLine);
 
     if (s_bVerbose) {
-        stdprintf("After parse tag on level %d (iErr %d)\n", m_iLevel, m_iErr);
-        stdprintf("   name %s\n", m_sName);
-        stdprintf("   attrs:");
+        xha_printf("After parse tag on level %d (iErr %d)\n", m_iLevel, m_iErr);
+        xha_printf("   name %s\n", m_sName);
+        xha_printf("   attrs:");
         stringmap::const_iterator it;
         for (it = m_mAttrs.begin(); it != m_mAttrs.end(); ++it) {
-            stdprintf("  %s:%s", it->first, it->second);
+            xha_printf("  %s:%s", it->first, it->second);
         }
-        stdprintf("\n");
-        stdprintf("  closed: %s\n", m_bClosed?"yes":"no");
+        xha_printf("\n");
+        xha_printf("  closed: %s\n", m_bClosed?"yes":"no");
     }
 
 
@@ -410,7 +410,7 @@ int qhgXMLNode::parseNode(char *pLine)  {
     while ((m_iErr == 0)  &&  (!m_pLR->isEoF()) && (!m_bClosed)) {
         pLine = m_pLR->getNextLine();
         if (pLine != NULL) {
-            if (s_bVerbose) stdprintf("First line in parseNode level %d: [%s] (eof %s, closed %s)\n", m_iLevel, pLine, m_pLR->isEoF()?"yes":"no", m_bClosed?"yes":"no");
+            if (s_bVerbose) xha_printf("First line in parseNode level %d: [%s] (eof %s, closed %s)\n", m_iLevel, pLine, m_pLR->isEoF()?"yes":"no", m_bClosed?"yes":"no");
     
             m_bClosed = false;
             qhgXMLNode *pNew = createInstance(pLine, m_pLR, m_iLevel+1);
@@ -420,9 +420,9 @@ int qhgXMLNode::parseNode(char *pLine)  {
                 if (iCurType == TYPE_END_TAG) {
                     if (pNew->getName() == m_sName) {
                         m_bClosed = true;
-                        if (s_bVerbose) stdprintf("closing %s on level %d\n", m_sName, m_iLevel);
+                        if (s_bVerbose) xha_printf("closing %s on level %d\n", m_sName, m_iLevel);
                     } else {
-                        stdprintf("end tag without corresponding start tag [%s]\n", m_sName);
+                        xha_printf("end tag without corresponding start tag [%s]\n", m_sName);
                         m_iErr = -1;
                     }
                     // we don't need a node from the end tag
@@ -437,28 +437,28 @@ int qhgXMLNode::parseNode(char *pLine)  {
                         while (pLast->getNext() != NULL) {
                             pLast = pLast->getNext();
                         }
-                        if (s_bVerbose) stdprintf("making [%s %s] the sibling of [%s %s]\n", pNew->getName(), pNew->getAttrs()["name"],  pLast->getName(), pLast->getAttrs()["name"]);
+                        if (s_bVerbose) xha_printf("making [%s %s] the sibling of [%s %s]\n", pNew->getName(), pNew->getAttrs()["name"],  pLast->getName(), pLast->getAttrs()["name"]);
                         pLast->m_pNext = pNew;
                     } else {
-                        if (s_bVerbose) stdprintf("making [%s %s] the only child of [%s %s]\n", pNew->getName(), pNew->getAttrs()["name"], m_sName, m_mAttrs["name"]);
+                        if (s_bVerbose) xha_printf("making [%s %s] the only child of [%s %s]\n", pNew->getName(), pNew->getAttrs()["name"], m_sName, m_mAttrs["name"]);
                         m_pChild = pNew;
                     }
                     
                 } else {
-                    stdprintf("unknown tag type [%s]\n", pNew->getName());
+                    xha_printf("unknown tag type [%s]\n", pNew->getName());
                     m_iErr = -1;
                 }
             } else {
-                stdprintf("couldn't create node for [%s]\n", pLine);
+                xha_printf("couldn't create node for [%s]\n", pLine);
                 m_iErr = -1;
             }
         }
         
     } 
     if (!m_bClosed) {
-        stdprintf("The tag [%s] has no corresponding end tag\n", m_sName);
+        xha_printf("The tag [%s] has no corresponding end tag\n", m_sName);
     }
-    if (s_bVerbose) stdprintf("left parseNode level %d (closed %s) (iErr %d)\n", m_iLevel, m_bClosed?"yes":"no", m_iErr);
+    if (s_bVerbose) xha_printf("left parseNode level %d (closed %s) (iErr %d)\n", m_iLevel, m_bClosed?"yes":"no", m_iErr);
     return m_iErr;
 }
 
@@ -470,14 +470,14 @@ int qhgXMLNode::parseNode(char *pLine)  {
 int qhgXMLNode::init(char *pLine)  {
     //    int iResult = processTag(pLine);
     int iResult = parseTag(pLine);
-    if (s_bVerbose) stdprintf("[%s] has %zd attributes (res %d)\n", m_sName, m_mAttrs.size(), iResult);
+    if (s_bVerbose) xha_printf("[%s] has %zd attributes (res %d)\n", m_sName, m_mAttrs.size(), iResult);
     
     if (m_pLR != NULL) {
-        if (s_bVerbose) stdprintf("res:%d, eof:%s closed %s\n", iResult, m_pLR->isEoF()?"yes":"no", m_bClosed?"yes":"no");
+        if (s_bVerbose) xha_printf("res:%d, eof:%s closed %s\n", iResult, m_pLR->isEoF()?"yes":"no", m_bClosed?"yes":"no");
         while ((iResult >= 0) &&  (!m_pLR->isEoF()) && (!m_bClosed)) {
             pLine = m_pLR->getNextLine();
             if (pLine != NULL) {
-                if (s_bVerbose) stdprintf("new line [%s]\n", pLine);
+                if (s_bVerbose) xha_printf("new line [%s]\n", pLine);
                 qhgXMLNode *pNew = createInstance(pLine, m_pLR, m_iLevel+1);
                 if (pNew != NULL) {
                     //if (strstr(pNew->getName(), m_pName) == pNew->getName()) {
@@ -490,10 +490,10 @@ int qhgXMLNode::init(char *pLine)  {
                             while (pLast->getNext() != NULL) {
                                 pLast = pLast->getNext();
                             }
-                            if (s_bVerbose) stdprintf("making [%s %s] the sibling of [%s %s]\n", pNew->getName(), pNew->getAttrs()["name"],  pLast->getName(), pLast->getAttrs()["name"]);
+                            if (s_bVerbose) xha_printf("making [%s %s] the sibling of [%s %s]\n", pNew->getName(), pNew->getAttrs()["name"],  pLast->getName(), pLast->getAttrs()["name"]);
                             pLast->m_pNext = pNew;
                         } else {
-                            if (s_bVerbose) stdprintf("making [%s %s] the only child of [%s %s]\n", pNew->getName(), pNew->getAttrs()["name"], m_sName, m_mAttrs["name"]);
+                            if (s_bVerbose) xha_printf("making [%s %s] the only child of [%s %s]\n", pNew->getName(), pNew->getAttrs()["name"], m_sName, m_mAttrs["name"]);
                             m_pChild = pNew;
                         }
                     }
@@ -562,7 +562,7 @@ int qhgXMLTree::init(const std::string sFile) {
                         m_pRoot->setChild(pNew);
                     }
                 } else {
-                    stdprintf("Couldn't create Node for [%s]\n", pLine);
+                    xha_printf("Couldn't create Node for [%s]\n", pLine);
                     iResult = -1;
                     // failed to create Node
                 }
@@ -571,7 +571,7 @@ int qhgXMLTree::init(const std::string sFile) {
 
         delete pLR;
     } else {
-        stdprintf("Couldn't open [%s] for reading\n", sFile);
+        xha_printf("Couldn't open [%s] for reading\n", sFile);
     }
     return iResult;
 }

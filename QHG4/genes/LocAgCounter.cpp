@@ -6,7 +6,7 @@
 #include <omp.h>
 #include "types.h"
 #include "qhg_consts.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "colors.h"
 #include "geomutils.h"
 #include "WELL512.h"
@@ -95,7 +95,7 @@ int LocAgCounter::init(const std::string sQDFGrid, const std::string sQDFTime, c
     }
     std::string sQDFTimeReal = sQDFTime.substr(0, iPos);
     
-    stdprintf("Popfile [%s], Population [%s]\n", sQDFTime, sPopName);
+    xha_printf("Popfile [%s], Population [%s]\n", sQDFTime, sPopName);
 
     iResult = fillCoordMap(sQDFGrid);
     if (iResult == 0) {
@@ -126,7 +126,7 @@ int LocAgCounter::init(const std::string sQDFGrid, const std::string sQDFTime, c
 int LocAgCounter::getCandidatesNew() {
     int iResult = 0;
 
-    stdprintf("new version 1: loc-parag\n");
+    xha_printf("new version 1: loc-parag\n");
     // each agent should only belong to one region
     loc_data::const_iterator it;
     loccounts *amvCandidatesPar = new loccounts[omp_get_max_threads()];
@@ -196,14 +196,14 @@ int LocAgCounter::readArrays(const std::string sQDFTime, const std::string sPopN
             if (iResult == 0) {
                 int iCount = pQA->getFirstSlab(m_pIDs, m_iNumAgents, "AgentID");
                 if (iCount != m_iNumAgents) {
-                    stdfprintf(stderr, "%sGot %d agent IDs instead of %d%s\n", colors::RED, iCount, m_iNumAgents, colors::OFF);
+                    xha_fprintf(stderr, "%sGot %d agent IDs instead of %d%s\n", colors::RED, iCount, m_iNumAgents, colors::OFF);
                     iResult = -1;
                 }
             }
             if (iResult == 0) {
                 int iCount = pQA->getFirstSlab(m_pCellIDs, m_iNumAgents, "CellID");
                 if (iCount != m_iNumAgents) {
-                    stdfprintf(stderr, "%sGot %d cell IDs instead of %d%s\n", colors::RED, iCount, m_iNumAgents, colors::OFF);
+                    xha_fprintf(stderr, "%sGot %d cell IDs instead of %d%s\n", colors::RED, iCount, m_iNumAgents, colors::OFF);
                     iResult = -1;
                 }
             }
@@ -212,14 +212,14 @@ int LocAgCounter::readArrays(const std::string sQDFTime, const std::string sPopN
                 printf("  read agent data: %d items\n", m_iNumAgents);
             }
         } else {
-            stdfprintf(stderr, "%sCouldn't open dataset [%s/%s%s]%s\n", colors::RED, POPGROUP_NAME, sPopName, AGENT_DATASET_NAME, colors::OFF);
+            xha_fprintf(stderr, "%sCouldn't open dataset [%s/%s%s]%s\n", colors::RED, POPGROUP_NAME, sPopName, AGENT_DATASET_NAME, colors::OFF);
         }
         pQA->closeArray();
 
         delete pQA;
     } else {
         iResult = -1;
-        stdfprintf(stderr, "%sCouldn't open file [%s]%s\n", colors::RED, sQDFTime, colors::OFF);
+        xha_fprintf(stderr, "%sCouldn't open file [%s]%s\n", colors::RED, sQDFTime, colors::OFF);
     }
     return iResult;
 }
@@ -246,13 +246,13 @@ int LocAgCounter::fillCoordMap(const std::string sQDFGeoGrid) {
                 //                printf("Read %d CellIDs\n", iCount);
                 iResult = 0;
             } else {
-                stdfprintf(stderr, "%sRead bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)%s\n", colors::RED, sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, iNumCells, colors::OFF);
+                xha_fprintf(stderr, "%sRead bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)%s\n", colors::RED, sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, iNumCells, colors::OFF);
                 iResult = -1;
             }
             pQA->closeArray();
         } else {
             iResult = -1;
-            stdfprintf(stderr, "%sCouldn't open QDF array for [%s:%s/%s]%s\n", colors::RED, sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME, colors::OFF);
+            xha_fprintf(stderr, "%sCouldn't open QDF array for [%s:%s/%s]%s\n", colors::RED, sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME, colors::OFF);
         }
 
         if (iResult == 0) {
@@ -263,22 +263,22 @@ int LocAgCounter::fillCoordMap(const std::string sQDFGeoGrid) {
                     pdLon = new double[iNumCells];
                     uint iCount = pQA->getFirstSlab(pdLon, iNumCells);
                     if (iCount == iNumCells) {
-                        stdprintf("Read %d Longitudes\n", iCount);
+                        xha_printf("Read %d Longitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "%sRead bad number of read longitudes from [%s:%s/%s]: %d instead of %d%s\n", colors::RED, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, iNumCells, colors::OFF);
+                        xha_fprintf(stderr, "%sRead bad number of read longitudes from [%s:%s/%s]: %d instead of %d%s\n", colors::RED, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, iNumCells, colors::OFF);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "%sNumber of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]%s\n", colors::RED, iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, colors::OFF);
+                    xha_fprintf(stderr, "%sNumber of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]%s\n", colors::RED, iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, colors::OFF);
                 }
                 pQA->closeArray();
             }
         }
 
         if (iResult == 0) {
-            std::string sPath = stdsprintf("%s/%s", GEOGROUP_NAME, GEO_DS_LATITUDE);
+            std::string sPath = xha_sprintf("%s/%s", GEOGROUP_NAME, GEO_DS_LATITUDE);
             iResult = pQA->openArray(sPath);
             if (iResult == 0) {
                 uint iNumCellsL = pQA->getSize();
@@ -286,15 +286,15 @@ int LocAgCounter::fillCoordMap(const std::string sQDFGeoGrid) {
                     pdLat = new double[iNumCells];
                     uint iCount = pQA->getFirstSlab(pdLat, iNumCells);
                     if (iCount == iNumCells) {
-                        stdprintf("Read %d Latitudes\n", iCount);
+                        xha_printf("Read %d Latitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "%sCouldn't read latitudes from [%s:%s/%s]: %d instead of %d%s\n", colors::RED, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL,iNumCells, colors::OFF);
+                        xha_fprintf(stderr, "%sCouldn't read latitudes from [%s:%s/%s]: %d instead of %d%s\n", colors::RED, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL,iNumCells, colors::OFF);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "%sNumber of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]%s\n", colors::RED, iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, colors::OFF);
+                    xha_fprintf(stderr, "%sNumber of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]%s\n", colors::RED, iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, colors::OFF);
                 }
 
                 pQA->closeArray();
@@ -303,7 +303,7 @@ int LocAgCounter::fillCoordMap(const std::string sQDFGeoGrid) {
     
         delete pQA;
     } else {
-        stdfprintf(stderr, "%sCouldn't create QDFArray%s\n", colors::RED, colors::OFF);
+        xha_fprintf(stderr, "%sCouldn't create QDFArray%s\n", colors::RED, colors::OFF);
     }
      
     if (iResult == 0) {
@@ -356,7 +356,7 @@ void LocAgCounter::show(bool bNice, bool bSort) {
                 sName.append(iMaxL - sName.length(), ' ');
             }
             locitem &lItem = m_mLocData[*itn];
-            stdprintf("%s  (%+7.2f,%+6.2f;%6.1f):\tNum %d\n", 
+            xha_printf("%s  (%+7.2f,%+6.2f;%6.1f):\tNum %d\n", 
                    sName, 
                    lItem.dLon, 
                    lItem.dLat, 
@@ -371,7 +371,7 @@ void LocAgCounter::show(bool bNice, bool bSort) {
         stringvec::const_iterator itn;
         for (itn = m_vNames.begin(); itn != m_vNames.end(); ++itn) {
             locitem &lItem = m_mLocData[*itn];
-            stdprintf("%s\t%6.2f\t%5.2f\t%6.1f\t%d\n", 
+            xha_printf("%s\t%6.2f\t%5.2f\t%6.1f\t%d\n", 
                    *itn, 
                    lItem.dLon, 
                    lItem.dLat, 

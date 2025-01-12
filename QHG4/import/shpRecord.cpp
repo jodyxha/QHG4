@@ -4,8 +4,8 @@
 #include <vector>
 #include <map>
 
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "shpUtils.h"
 #include "shpRecord.h"
 
@@ -62,7 +62,7 @@ int shpRecord::readHeader() {
         if (feof(m_fIn)) {
             iResult = 1;
         } else {
-            stdprintf("Only read [%d] bytes instead of [%d] from header\n", iRead, REC_HEADER_SIZE);
+            xha_printf("Only read [%d] bytes instead of [%d] from header\n", iRead, REC_HEADER_SIZE);
         }
     }
     return iResult;
@@ -73,10 +73,10 @@ int shpRecord::readHeader() {
 // display
 //
 void shpRecord::display(const char*pCaption) {
-    stdprintf("%s\n", pCaption);
-    stdprintf("Record #%d:\n", m_iRecNumber);
-    stdprintf("  size: %d bytes\n", m_iRecLen);
-    stdprintf("  shape:%d [%s]\n", m_iShape, shpUtils::getShapeName(m_iShape)); 
+    xha_printf("%s\n", pCaption);
+    xha_printf("Record #%d:\n", m_iRecNumber);
+    xha_printf("  size: %d bytes\n", m_iRecLen);
+    xha_printf("  shape:%d [%s]\n", m_iShape, shpUtils::getShapeName(m_iShape)); 
     /*
     if (m_pShape != NULL) {
         m_pShape->display("");
@@ -149,11 +149,11 @@ int shpRecord::readShape(vecdoubledouble &vCoords) {
             // [optional M range, M array]
             break;
         default:
-            stdprintf("Unknown type [%d]\n", m_iShape); 
+            xha_printf("Unknown type [%d]\n", m_iShape); 
             iResult = -1;
         }
         if (iResult == 2) {
-            stdprintf("shape [%s] not yet supported\n", shpUtils::getShapeName(m_iShape));
+            xha_printf("shape [%s] not yet supported\n", shpUtils::getShapeName(m_iShape));
         }
 
         
@@ -211,12 +211,12 @@ int shpRecord::readPolyLine(vecdoubledouble &vCoords) {
             }
         }
         /*
-          stdprintf("Total theor: %zd (actually: %d\n", 4*sizeof(double) + 2*sizeof(int) + iNumParts*sizeof(int)+iNumPoints*2*sizeof(double), iBufSize);
-          stdprintf("left: %ld\n", p-pBuf);
+          xha_printf("Total theor: %zd (actually: %d\n", 4*sizeof(double) + 2*sizeof(int) + iNumParts*sizeof(int)+iNumPoints*2*sizeof(double), iBufSize);
+          xha_printf("left: %ld\n", p-pBuf);
         */
         iResult = 0;
     } else {
-        stdprintf("Couldn't read shape data\n");
+        xha_printf("Couldn't read shape data\n");
     }
     delete[] pBuf;
     return iResult;

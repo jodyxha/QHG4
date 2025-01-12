@@ -6,7 +6,7 @@
 #include "hdf5.h"
 #include "QDFUtils.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "Agent2DataExtractor.h"
 
@@ -40,10 +40,10 @@ Agent2DataExtractor::~Agent2DataExtractor() {
 void Agent2DataExtractor::listDataType() { 
    
     int iNum = H5Tget_nmembers(m_hDSType);
-    stdprintf("dataset has %d members\n", iNum);
+    xha_printf("dataset has %d members\n", iNum);
     for (int i = 0; i < iNum; i++) {
         hid_t hMembType =   H5Tget_member_type(m_hDSType, i);
-        stdprintf("  %s (%lx)\n",  H5Tget_member_name(m_hDSType, i),  H5Tget_size(hMembType));
+        xha_printf("  %s (%lx)\n",  H5Tget_member_name(m_hDSType, i),  H5Tget_size(hMembType));
         
     }
     
@@ -72,14 +72,14 @@ int Agent2DataExtractor::init(const std::string sFileName, std::string sDataSetP
     m_sFileName = sFileName;
     m_hFile = qdf_openFile(m_sFileName, "r");
     if (m_hFile != H5P_DEFAULT) {
-        if (m_bVerbose) stdprintf("opened HDF file [%s]\n", m_sFileName);
+        if (m_bVerbose) xha_printf("opened HDF file [%s]\n", m_sFileName);
 
         m_hDataSet = qdf_openDataSet(m_hFile, sDataSetPath, true);
         if (m_hDataSet != H5P_DEFAULT) {
-            if (m_bVerbose) stdprintf("opened ds [%s]\n", sDataSetPath);
+            if (m_bVerbose) xha_printf("opened ds [%s]\n", sDataSetPath);
             m_hDSType = H5Dget_type(m_hDataSet);
             H5T_class_t hc = H5Tget_class(m_hDSType);
-            if (m_bVerbose) stdprintf("DS has class (%d) %s  \n", hc, asClasses[hc+1]); 
+            if (m_bVerbose) xha_printf("DS has class (%d) %s  \n", hc, asClasses[hc+1]); 
             if (hc == H5T_COMPOUND) {
                 m_sDataSetPath = sDataSetPath;
                 m_hDataSpace = H5Dget_space(m_hDataSet);
@@ -88,23 +88,23 @@ int Agent2DataExtractor::init(const std::string sFileName, std::string sDataSetP
                     if (iNumDims == 1) {
                         
                         iNumDims = H5Sget_simple_extent_dims(m_hDataSpace, &m_iNumItems, NULL);
-                        if (m_bVerbose) stdprintf("we have a 1-dimensioal array with %lld elments\n", m_iNumItems);
+                        if (m_bVerbose) xha_printf("we have a 1-dimensioal array with %lld elments\n", m_iNumItems);
                         iResult = 0;
 
                     } else {
-                        stdprintf("Data space has bad number of dimensions: %d\n", iNumDims);
+                        xha_printf("Data space has bad number of dimensions: %d\n", iNumDims);
                     }
                 } else {
-                    stdprintf("Couldn't get data space for dataset [%s]\n", sDataSetPath);
+                    xha_printf("Couldn't get data space for dataset [%s]\n", sDataSetPath);
                 }
              }  else {
-                stdprintf("Datatype of [%s] is not 'COMPOUND'\n", sDataSetPath);
+                xha_printf("Datatype of [%s] is not 'COMPOUND'\n", sDataSetPath);
             }
          } else {
-            stdprintf("Couldn't open dataset [%s]\n", sDataSetPath);
+            xha_printf("Couldn't open dataset [%s]\n", sDataSetPath);
         }
     } else {
-        stdprintf("Couldn't open [%s] as HDF file\n", m_sFileName);
+        xha_printf("Couldn't open [%s] as HDF file\n", m_sFileName);
     }
 
     return iResult;
@@ -123,111 +123,111 @@ struct_manager *Agent2DataExtractor::buildStructArray1(std::string sFieldName1, 
         hsize_t iStructSize = 0;
         hsize_t iItem1Offset   = 0;
         
-        /*stdprintf("Item [%s] of DS has index %d\n", sFieldName1, iIndex);*/
+        /*xha_printf("Item [%s] of DS has index %d\n", sFieldName1, iIndex);*/
         H5T_class_t hc2 = H5Tget_member_class(m_hDSType, iIndex); 
         if ((hc2 == H5T_FLOAT) || (hc2 == H5T_INTEGER)) {
-            //stdprintf("item [%s} is numeric (%d)\n", sFieldName1, hc2);
+            //xha_printf("item [%s} is numeric (%d)\n", sFieldName1, hc2);
             hid_t htype = H5Tget_member_type(m_hDSType, iIndex);
             
             if (H5Tequal(htype, H5T_NATIVE_FLOAT)) {
-                if (m_bVerbose) stdprintf("FLOAT\n");
+                if (m_bVerbose) xha_printf("FLOAT\n");
                 val_manager1<float> *pVM = new val_manager1<float>();
                 pVM->m_pVals = new val_struct1<float>[iNumItems];
                 pSM = pVM;
                 iStructSize = sizeof(val_struct1<float>);
                 iItem1Offset =  HOFFSET(val_struct1<float>,  m_tVal);
             } else if (H5Tequal(htype, H5T_NATIVE_DOUBLE)) {
-                if (m_bVerbose) stdprintf("DOUBLE\n");
+                if (m_bVerbose) xha_printf("DOUBLE\n");
                 val_manager1<double> *pVM  = new val_manager1<double>();
                 pVM->m_pVals = new val_struct1<double>[iNumItems];
                 pSM = pVM;
                 iStructSize = sizeof(val_struct1<double>);
                 iItem1Offset =  HOFFSET(val_struct1<double>,  m_tVal);
             } else if (H5Tequal(htype, H5T_NATIVE_LDOUBLE)) {
-                if (m_bVerbose) stdprintf("LDOUBLE\n");
+                if (m_bVerbose) xha_printf("LDOUBLE\n");
                 val_manager1<long double> *pVM  = new val_manager1<long double>();
                 pVM->m_pVals = new val_struct1<long double>[iNumItems];
                 pSM = pVM;
                 iStructSize = sizeof(val_struct1<long double>);
                 iItem1Offset =  HOFFSET(val_struct1<long double>,  m_tVal);
             } else if (H5Tequal(htype, H5T_NATIVE_CHAR)) {
-                if (m_bVerbose) stdprintf("CHAR\n");
+                if (m_bVerbose) xha_printf("CHAR\n");
                 val_manager1<char> *pVM  = new val_manager1<char>();
                 pVM->m_pVals = new val_struct1<char>[iNumItems];
                 pSM = pVM;
                 iStructSize = sizeof(val_struct1<char>);
                 iItem1Offset =  HOFFSET(val_struct1<char>,  m_tVal);
             } else if (H5Tequal(htype, H5T_NATIVE_UCHAR)) {
-                if (m_bVerbose) stdprintf("UCHAR\n");
+                if (m_bVerbose) xha_printf("UCHAR\n");
                 val_manager1<uchar> *pVM  = new val_manager1<uchar>();
                 pVM->m_pVals = new val_struct1<uchar>[iNumItems];
                 pSM = pVM;
                 iStructSize = sizeof(val_struct1<uchar>);
                 iItem1Offset =  HOFFSET(val_struct1<uchar>,  m_tVal);
             } else if (H5Tequal(htype, H5T_NATIVE_SHORT)) {
-                if (m_bVerbose) stdprintf("SHORT\n");
+                if (m_bVerbose) xha_printf("SHORT\n");
                 val_manager1<short int> *pVM  = new val_manager1<short int>();
                 pVM->m_pVals = new val_struct1<short int>[iNumItems];
                 pSM = pVM;
                 iStructSize = sizeof(val_struct1<short int>);
                 iItem1Offset =  HOFFSET(val_struct1<short int>,  m_tVal);
             } else if (H5Tequal(htype, H5T_NATIVE_USHORT)) {
-                if (m_bVerbose) stdprintf("USHORT\n");
+                if (m_bVerbose) xha_printf("USHORT\n");
                 val_manager1<unsigned short int> *pVM  = new val_manager1<unsigned short int>();
                 pVM->m_pVals = new val_struct1<unsigned short int>[iNumItems];
                 pSM = pVM;
                 iStructSize = sizeof(val_struct1<unsigned short int>);
                 iItem1Offset =  HOFFSET(val_struct1<unsigned short int>,  m_tVal);
             } else if (H5Tequal(htype, H5T_NATIVE_INT32)) {
-                if (m_bVerbose) stdprintf("INT32\n");
+                if (m_bVerbose) xha_printf("INT32\n");
                 val_manager1<int> *pVM  = new val_manager1<int>();
                 pVM->m_pVals = new val_struct1<int>[iNumItems];
                 pSM = pVM;
                 iStructSize = sizeof(val_struct1<int>);
                 iItem1Offset =  HOFFSET(val_struct1<int>,  m_tVal);
             } else if (H5Tequal(htype, H5T_NATIVE_UINT32)) {
-                if (m_bVerbose) stdprintf("UINT32\n");
+                if (m_bVerbose) xha_printf("UINT32\n");
                 val_manager1<uint> *pVM  = new val_manager1<uint>();
                 pVM->m_pVals = new val_struct1<uint>[iNumItems];
                 pSM = pVM;
                 iStructSize = sizeof(val_struct1<uint>);
                 iItem1Offset =  HOFFSET(val_struct1<uint>,  m_tVal);
             } else if (H5Tequal(htype, H5T_NATIVE_LONG)) {
-                if (m_bVerbose) stdprintf("LONG\n");
+                if (m_bVerbose) xha_printf("LONG\n");
                 val_manager1<long int> *pVM  = new val_manager1<long int>();
                 pVM->m_pVals = new val_struct1<long int>[iNumItems];
                 pSM = pVM;
                 iStructSize = sizeof(val_struct1<long int>);
                 iItem1Offset =  HOFFSET(val_struct1<long int>,  m_tVal);
             } else if (H5Tequal(htype, H5T_NATIVE_ULONG)) {
-                if (m_bVerbose) stdprintf("ULONG\n");
+                if (m_bVerbose) xha_printf("ULONG\n");
                 val_manager1<unsigned long int> *pVM  = new val_manager1<unsigned long int>();
                 pVM->m_pVals = new val_struct1<unsigned long int>[iNumItems];
                 pSM = pVM;
                 iStructSize = sizeof(val_struct1<unsigned long int>);
                 iItem1Offset =  HOFFSET(val_struct1<unsigned long int>,  m_tVal);
             } else if (H5Tequal(htype, H5T_NATIVE_LLONG)) {
-                if (m_bVerbose) stdprintf("LLONG\n");
+                if (m_bVerbose) xha_printf("LLONG\n");
                 val_manager1<long long int> *pVM  = new val_manager1<long long int>();
                 pVM->m_pVals = new val_struct1<long long int>[iNumItems];
                 pSM = pVM;
                 iStructSize = sizeof(val_struct1<long long int>);
                 iItem1Offset =  HOFFSET(val_struct1<long long int>,  m_tVal);
             } else {
-                stdprintf("Unsupported type");
+                xha_printf("Unsupported type");
             }
             if (pSM != NULL) {
-                if (m_bVerbose) stdprintf("size: %lld, [%s] offset %lld\n", iStructSize, sFieldName1, iItem1Offset);
+                if (m_bVerbose) xha_printf("size: %lld, [%s] offset %lld\n", iStructSize, sFieldName1, iItem1Offset);
                 m_vFullInfo.m_iStructSize = iStructSize;
                 m_vFullInfo.m_vInfos.push_back({sFieldName1, iItem1Offset});
 
             }
             
         } else {
-            stdprintf("Data element is not numericaln");
+            xha_printf("Data element is not numericaln");
         }
     } else {
-        stdprintf("DS does not have an item named [%s]\n", sFieldName1);
+        xha_printf("DS does not have an item named [%s]\n", sFieldName1);
     }
     return pSM;
 }
@@ -247,14 +247,14 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
         hsize_t iItem1Offset   = 0;
         hsize_t iItem2Offset   = 0;
         
-        /*stdprintf("Item [%s] of DS has index %d\n", sFieldName1, iIndex2);*/
+        /*xha_printf("Item [%s] of DS has index %d\n", sFieldName1, iIndex2);*/
         H5T_class_t hc2 = H5Tget_member_class(m_hDSType, iIndex2); 
         if ((hc2 == H5T_FLOAT) || (hc2 == H5T_INTEGER)) {
-            //stdprintf("item [%s} is numeric (%d)\n", sFieldName1, hc2);
+            //xha_printf("item [%s} is numeric (%d)\n", sFieldName1, hc2);
             hid_t htype = H5Tget_member_type(m_hDSType, iIndex2);
             
             if (H5Tequal(htype, H5T_NATIVE_FLOAT)) {
-                if (m_bVerbose) stdprintf("FLOAT\n");
+                if (m_bVerbose) xha_printf("FLOAT\n");
                 val_manager2<T, float> *pVM = new val_manager2<T, float>();
                 using tCur = val_struct2<T, float>;
                 pVM->m_pVals = new tCur[iNumItems];
@@ -265,7 +265,7 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
 
 
             } else if (H5Tequal(htype, H5T_NATIVE_DOUBLE)) {
-                if (m_bVerbose) stdprintf("DOUBLE\n");
+                if (m_bVerbose) xha_printf("DOUBLE\n");
                 val_manager2<T, double> *pVM  = new val_manager2<T, double>();
                 using tCur = val_struct2<T, double>;
                 pVM->m_pVals = new tCur[iNumItems];
@@ -275,7 +275,7 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
                 iItem2Offset =  HOFFSET(tCur,  m_uVal);
 
             } else if (H5Tequal(htype, H5T_NATIVE_LDOUBLE)) {
-                if (m_bVerbose) stdprintf("LDOUBLE\n");
+                if (m_bVerbose) xha_printf("LDOUBLE\n");
                 val_manager2<T, long double> *pVM  = new val_manager2<T, long double>();
                 using tCur = val_struct2<T, long double>;
                 pVM->m_pVals = new tCur[iNumItems];
@@ -285,7 +285,7 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
                 iItem2Offset =  HOFFSET(tCur,  m_uVal);
 
             } else if (H5Tequal(htype, H5T_NATIVE_CHAR)) {
-                if (m_bVerbose) stdprintf("CHAR\n");
+                if (m_bVerbose) xha_printf("CHAR\n");
                 val_manager2<T, char> *pVM  = new val_manager2<T, char>();
                 using tCur = val_struct2<T, char>;
                 pVM->m_pVals = new tCur[iNumItems];
@@ -295,7 +295,7 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
                 iItem2Offset =  HOFFSET(tCur,  m_uVal);
 
             } else if (H5Tequal(htype, H5T_NATIVE_UCHAR)) {
-                if (m_bVerbose) stdprintf("UCHAR\n");
+                if (m_bVerbose) xha_printf("UCHAR\n");
                 val_manager2<T, uchar> *pVM  = new val_manager2<T, uchar>();
                 using tCur = val_struct2<T, uchar>;
                 pVM->m_pVals = new tCur[iNumItems];
@@ -305,7 +305,7 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
                 iItem2Offset =  HOFFSET(tCur,  m_uVal);
 
             } else if (H5Tequal(htype, H5T_NATIVE_SHORT)) {
-                if (m_bVerbose) stdprintf("SHORT\n");
+                if (m_bVerbose) xha_printf("SHORT\n");
                 val_manager2<T, short int> *pVM  = new val_manager2<T, short int>();
                 using tCur = val_struct2<T, short int>;
                 pVM->m_pVals = new tCur[iNumItems];
@@ -315,7 +315,7 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
                 iItem2Offset =  HOFFSET(tCur,  m_uVal);
 
             } else if (H5Tequal(htype, H5T_NATIVE_USHORT)) {
-                if (m_bVerbose) stdprintf("USHORT\n");
+                if (m_bVerbose) xha_printf("USHORT\n");
                 val_manager2<T, unsigned short int> *pVM  = new val_manager2<T, unsigned short int>();
                 using tCur = val_struct2<T, unsigned short int>;
                 pVM->m_pVals = new tCur[iNumItems];
@@ -325,7 +325,7 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
                 iItem2Offset =  HOFFSET(tCur,  m_uVal);
 
             } else if (H5Tequal(htype, H5T_NATIVE_INT32)) {
-                if (m_bVerbose) stdprintf("INT32\n");
+                if (m_bVerbose) xha_printf("INT32\n");
                 val_manager2<T, int> *pVM  = new val_manager2<T, int>();
                 using tCur = val_struct2<T, int>;
                 pVM->m_pVals = new tCur[iNumItems];
@@ -335,7 +335,7 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
                 iItem2Offset =  HOFFSET(tCur,  m_uVal);
 
             } else if (H5Tequal(htype, H5T_NATIVE_UINT32)) {
-                if (m_bVerbose) stdprintf("UINT32\n");
+                if (m_bVerbose) xha_printf("UINT32\n");
                 val_manager2<T, uint> *pVM  = new val_manager2<T, uint>();
                 using tCur = val_struct2<T, uint>;
                 pVM->m_pVals = new tCur[iNumItems];
@@ -345,7 +345,7 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
                 iItem2Offset =  HOFFSET(tCur,  m_uVal);
 
             } else if (H5Tequal(htype, H5T_NATIVE_LONG)) {
-                if (m_bVerbose) stdprintf("LONG\n");
+                if (m_bVerbose) xha_printf("LONG\n");
                 val_manager2<T, long int> *pVM  = new val_manager2<T, long int>();
                 using tCur = val_struct2<T, long int>;
                 pVM->m_pVals = new tCur[iNumItems];
@@ -355,7 +355,7 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
                 iItem2Offset =  HOFFSET(tCur,  m_uVal);
 
             } else if (H5Tequal(htype, H5T_NATIVE_ULONG)) {
-                if (m_bVerbose) stdprintf("ULONG\n");
+                if (m_bVerbose) xha_printf("ULONG\n");
                 val_manager2<T, unsigned long int> *pVM  = new val_manager2<T, unsigned long int>();
                 using tCur = val_struct2<T, unsigned long int>;
                 pVM->m_pVals = new tCur[iNumItems];
@@ -365,7 +365,7 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
                 iItem2Offset =  HOFFSET(tCur,  m_uVal);
 
             } else if (H5Tequal(htype, H5T_NATIVE_LLONG)) {
-                if (m_bVerbose) stdprintf("LLONG\n");
+                if (m_bVerbose) xha_printf("LLONG\n");
                 val_manager2<T, long long int> *pVM  = new val_manager2<T, long long int>();
                 using tCur = val_struct2<T, long long int>;
                 pVM->m_pVals = new tCur[iNumItems];
@@ -375,10 +375,10 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
                 iItem2Offset =  HOFFSET(tCur,  m_uVal);
 
             } else {
-                stdprintf("Unsupported type");
+                xha_printf("Unsupported type");
             }
             if (pSM != NULL) {
-                if (m_bVerbose) stdprintf("size: %lld, [%s] offset %lld, [%s] offset %lld\n", iStructSize, sFieldName1, iItem1Offset, sFieldName2, iItem2Offset);
+                if (m_bVerbose) xha_printf("size: %lld, [%s] offset %lld, [%s] offset %lld\n", iStructSize, sFieldName1, iItem1Offset, sFieldName2, iItem2Offset);
                 m_vFullInfo.m_iStructSize = iStructSize;
                 m_vFullInfo.m_vInfos.push_back({ sFieldName1, iItem1Offset});
                 m_vFullInfo.m_vInfos.push_back({ sFieldName2, iItem2Offset});
@@ -386,10 +386,10 @@ struct_manager *Agent2DataExtractor::setSecondField2(std::string sFieldName1, st
             }
             
         } else {
-            stdprintf("Data element is not numericaln");
+            xha_printf("Data element is not numericaln");
         }
     } else {
-        stdprintf("DS does not have an item named [%s]\n", sFieldName2);
+        xha_printf("DS does not have an item named [%s]\n", sFieldName2);
     }
     return pSM;
 }
@@ -405,61 +405,61 @@ struct_manager *Agent2DataExtractor::buildStructArray2(std::string sFieldName1, 
     int iIndex1  = H5Tget_member_index(m_hDSType, sFieldName1.c_str());
     if (iIndex1 >= 0) {
         
-        /*stdprintf("Item [%s] of DS has index %d\n", sFieldName1, iIndex1);*/
+        /*xha_printf("Item [%s] of DS has index %d\n", sFieldName1, iIndex1);*/
         H5T_class_t hc2 = H5Tget_member_class(m_hDSType, iIndex1); 
         if ((hc2 == H5T_FLOAT) || (hc2 == H5T_INTEGER)) {
-            /*stdprintf("item [%s} is numeric (%d)\n", sFieldName1, hc2);*/
+            /*xha_printf("item [%s} is numeric (%d)\n", sFieldName1, hc2);*/
             hid_t htype = H5Tget_member_type(m_hDSType, iIndex1);
             
             if (H5Tequal(htype, H5T_NATIVE_FLOAT)) {
-                if (m_bVerbose) stdprintf("FLOAT\n");
+                if (m_bVerbose) xha_printf("FLOAT\n");
                
                 pSM = setSecondField2<float>(sFieldName1, sFieldName2, iNumItems);
                 
             } else if (H5Tequal(htype, H5T_NATIVE_DOUBLE)) {
-                if (m_bVerbose) stdprintf("DOUBLE\n");
+                if (m_bVerbose) xha_printf("DOUBLE\n");
    
                 pSM = setSecondField2<double>(sFieldName1, sFieldName2, iNumItems);
               
             } else if (H5Tequal(htype, H5T_NATIVE_LDOUBLE)) {
-                if (m_bVerbose) stdprintf("LDOUBLE\n");
+                if (m_bVerbose) xha_printf("LDOUBLE\n");
                 pSM = setSecondField2<long double>(sFieldName1, sFieldName2, iNumItems);
             } else if (H5Tequal(htype, H5T_NATIVE_CHAR)) {
-                if (m_bVerbose) stdprintf("CHAR\n");
+                if (m_bVerbose) xha_printf("CHAR\n");
                 pSM = setSecondField2<char>(sFieldName1, sFieldName2, iNumItems);
             } else if (H5Tequal(htype, H5T_NATIVE_UCHAR)) {
-                if (m_bVerbose) stdprintf("UCHAR\n");
+                if (m_bVerbose) xha_printf("UCHAR\n");
                 pSM = setSecondField2<uchar>(sFieldName1, sFieldName2, iNumItems);
             } else if (H5Tequal(htype, H5T_NATIVE_SHORT)) {
-                if (m_bVerbose) stdprintf("SHORT\n");
+                if (m_bVerbose) xha_printf("SHORT\n");
                 pSM = setSecondField2<short int>(sFieldName1, sFieldName2, iNumItems);
             } else if (H5Tequal(htype, H5T_NATIVE_USHORT)) {
-                if (m_bVerbose) stdprintf("USHORT\n");
+                if (m_bVerbose) xha_printf("USHORT\n");
                 pSM = setSecondField2<unsigned short int>(sFieldName1, sFieldName2, iNumItems);
             } else if (H5Tequal(htype, H5T_NATIVE_INT32)) {
-                if (m_bVerbose) stdprintf("INT32\n");
+                if (m_bVerbose) xha_printf("INT32\n");
                 pSM = setSecondField2<int>(sFieldName1, sFieldName2, iNumItems);
             } else if (H5Tequal(htype, H5T_NATIVE_UINT32)) {
-                if (m_bVerbose) stdprintf("UINT32\n");
+                if (m_bVerbose) xha_printf("UINT32\n");
                 pSM = setSecondField2<uint>(sFieldName1, sFieldName2, iNumItems);
             } else if (H5Tequal(htype, H5T_NATIVE_LONG)) {
-                if (m_bVerbose) stdprintf("LONG\n");
+                if (m_bVerbose) xha_printf("LONG\n");
                 pSM = setSecondField2<long>(sFieldName1, sFieldName2, iNumItems);
             } else if (H5Tequal(htype, H5T_NATIVE_ULONG)) {
-                if (m_bVerbose) stdprintf("ULONG\n");
+                if (m_bVerbose) xha_printf("ULONG\n");
                 pSM = setSecondField2<unsigned long>(sFieldName1, sFieldName2, iNumItems);
             } else if (H5Tequal(htype, H5T_NATIVE_LLONG)) {
-                if (m_bVerbose) stdprintf("LLONG\n");
+                if (m_bVerbose) xha_printf("LLONG\n");
                 pSM = setSecondField2<long long>(sFieldName1, sFieldName2, iNumItems);
             } else {
-                stdprintf("Unsupported type\n");
+                xha_printf("Unsupported type\n");
             }
            
         } else {
-            stdprintf("Data element is not numeric\n");
+            xha_printf("Data element is not numeric\n");
         }
     } else {
-        stdprintf("DS does not have an item named [%s]\n", sFieldName1);
+        xha_printf("DS does not have an item named [%s]\n", sFieldName1);
     }
     return pSM;
 }
@@ -475,7 +475,7 @@ struct_manager *Agent2DataExtractor::extractVarV(stringvec &vFieldNames) {
 
     int iNum = removeDoubleNames(vFieldNames, vUniqueFieldNames);
     if (iNum > 0) {
-       if (m_bVerbose)  stdprintf("Removed %d multiples\n", iNum);
+       if (m_bVerbose)  xha_printf("Removed %d multiples\n", iNum);
     }
 
     m_vFullInfo.m_vInfos.clear();
@@ -488,7 +488,7 @@ struct_manager *Agent2DataExtractor::extractVarV(stringvec &vFieldNames) {
         pSM = buildStructArray2(vUniqueFieldNames[0], vUniqueFieldNames[1], m_iNumItems);
         break;
     default:
-        stdprintf("More than 3 vars not yet supported(%zd)\n", vUniqueFieldNames.size());
+        xha_printf("More than 3 vars not yet supported(%zd)\n", vUniqueFieldNames.size());
     }
 
     if (pSM != NULL) {
@@ -502,20 +502,20 @@ struct_manager *Agent2DataExtractor::extractVarV(stringvec &vFieldNames) {
             hid_t hMemSpace = H5Screate_simple (1, &dims, NULL); 
             herr_t status = H5Dread(m_hDataSet, hAgentDataType, hMemSpace, m_hDataSpace, H5P_DEFAULT, pSM->getArray());
             if (status >= 0) {
-                if (m_bVerbose) stdprintf("Read %lld items\n", m_iNumItems);
+                if (m_bVerbose) xha_printf("Read %lld items\n", m_iNumItems);
                 
             } else {
-                stdprintf("bad status for read\n");
+                xha_printf("bad status for read\n");
             }
             qdf_closeDataSpace(hMemSpace);
     
  
             H5Tclose(hAgentDataType);
         } else {
-            stdprintf("Couldn't build agent data type\n");
+            xha_printf("Couldn't build agent data type\n");
         }
      } else {
-        stdprintf("Couldn't build struct array\n");
+        xha_printf("Couldn't build struct array\n");
     }
     
     return pSM ;
@@ -559,7 +559,7 @@ hid_t Agent2DataExtractor::createCompoundDataTypeV() {
        int iIndex  = H5Tget_member_index(m_hDSType, m_vFullInfo.m_vInfos[i].m_sName.c_str());
        hid_t hMembType =   H5Tget_member_type(m_hDSType, iIndex);
        
-       //stdprintf("adding entry  [%s] with offset %lld\n", m_vFullInfo.m_vInfos[i].m_sName, m_vFullInfo.m_vInfos[i].m_iItemOffset); fflush(stdout);
+       //xha_printf("adding entry  [%s] with offset %lld\n", m_vFullInfo.m_vInfos[i].m_sName, m_vFullInfo.m_vInfos[i].m_iItemOffset); fflush(stdout);
        H5Tinsert(hAgentDataType, m_vFullInfo.m_vInfos[i].m_sName.c_str(), m_vFullInfo.m_vInfos[i].m_iItemOffset,  hMembType);
    }
     return hAgentDataType;

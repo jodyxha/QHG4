@@ -4,8 +4,8 @@
 
 #include "qhg_consts.h"
 #include "strutils.h"
-//#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+//#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "MessLoggerT.h"
 #include "GeoInfo.h"
 
@@ -53,14 +53,14 @@ double static relativeError(double d1, double d2) {
 // ProjType::ToString
 //
 std::string ProjType::toString(bool bDegrees) const {
-    std::string sPrType = stdsprintf("%d [%s] %f %f %zd",
+    std::string sPrType = xha_sprintf("%d [%s] %f %f %zd",
                                      m_iProjType,
                                      GeoInfo::getName(m_iProjType),
                                      m_dLambda0*(bDegrees?180/Q_PI:1),
                                      m_dPhi0*(bDegrees?180/Q_PI:1),
                                      m_vdAdd.size());
     for (uint i =0; i < m_vdAdd.size(); ++i) {
-        sPrType += stdsprintf(" %f", m_vdAdd[i]);
+        sPrType += xha_sprintf(" %f", m_vdAdd[i]);
     }
     return sPrType;
 }
@@ -242,10 +242,10 @@ ProjType *ProjType::createPT(const std::string sPTData, bool bDegrees) {
                     }   
                     if (strToNum(vParts[3], &iNumAdd)) {
                         
-                        stdprintf("Type:    %s -> %f\n", vParts[0], iPType);
-                        stdprintf("Lambda:  %s -> %f\n", vParts[1], dLambda0);
-                        stdprintf("Phi:     %s -> %f\n", vParts[2], dPhi0);
-                        stdprintf("INumAdd: %s -> %d\n", vParts[3], iNumAdd);
+                        xha_printf("Type:    %s -> %f\n", vParts[0], iPType);
+                        xha_printf("Lambda:  %s -> %f\n", vParts[1], dLambda0);
+                        xha_printf("Phi:     %s -> %f\n", vParts[2], dPhi0);
+                        xha_printf("INumAdd: %s -> %d\n", vParts[3], iNumAdd);
 
                         if (iNumAdd > 0) {
                             if (iNum == (iNumAdd + 4)) {

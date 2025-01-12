@@ -14,7 +14,7 @@
 #include <cstring>
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "GeneUtils.h"
 #include "WELL512.h"
 
@@ -480,18 +480,18 @@ void GeneUtils::showGenome(ulong *pGenome, int iGenomeSize, int iWhat) {
 
     if ((iWhat & SHOW_GENES_NUM) != 0) {
         for (uint k = 0; k < NUMPARENTS; k++) {
-           stdprintf("    ");
+           xha_printf("    ");
             for (int j = 0; j < iNumBlocks; j++) {
-               stdprintf("%016lx ", pGenome[k*iNumBlocks+j]);
+               xha_printf("%016lx ", pGenome[k*iNumBlocks+j]);
             }
-           stdprintf("\n");
+           xha_printf("\n");
         }
     }
 
     if ((iWhat & SHOW_GENES_NUC) != 0) {
         int iNumBits = BITSINNUC*iGenomeSize;
         for (uint k = 0; k < NUMPARENTS; k++) {
-           stdprintf("   |");
+           xha_printf("   |");
             int iC = 0;
             for (int j = 0; j < iNumBlocks; j++) {
                 ulong ltemp = pGenome[k*iNumBlocks+j];
@@ -507,9 +507,9 @@ void GeneUtils::showGenome(ulong *pGenome, int iGenomeSize, int iWhat) {
                     i++;
                     iC++;
                 }
-               stdprintf("%s|", s);
+               xha_printf("%s|", s);
             }
-           stdprintf("\n");
+           xha_printf("\n");
         }
     }
 
@@ -648,7 +648,7 @@ ulong *GeneUtils::translateGenome(int iGenomeSize, const char *pLine) {
             }
             pGenome[iC] += iVal<<iPos;
             iPos += 2;;
-            //           stdprintf("add %c -> %lu : %016lx\n", c, iVal, pGenome[iC]);
+            //           xha_printf("add %c -> %lu : %016lx\n", c, iVal, pGenome[iC]);
             iNuc++;
             if ((iPos == 64) || (iNuc == iGenomeSize)){
                 iC++;
@@ -662,7 +662,7 @@ ulong *GeneUtils::translateGenome(int iGenomeSize, const char *pLine) {
         }
     }
     if  ((iResult == 0) && (iC = NUMPARENTS*iNumBlocks)) {
-        //      stdprintf("read %d nucleotides into %d longs\n", iNuc, iGenomeSize);
+        //      xha_printf("read %d nucleotides into %d longs\n", iNuc, iGenomeSize);
     } else {
         delete[] pGenome;
         pGenome = NULL;
@@ -775,13 +775,13 @@ ulong *GeneUtils::readGenome(int iGenomeSize, char *pLine) {
         if (*pEnd == '\0') {
             pGenome[iIndex++] = ul;
         } else {
-           stdprintf("Bad number in genome:[%s]\n", p);
+           xha_printf("Bad number in genome:[%s]\n", p);
         }
         p = strtok(NULL, " \t,;|");
     }
 
     if ((iResult == 0) && (iIndex == NUMPARENTS*iNumBlocks)) {
-        //       stdprintf("Read %d lons\n", iIndex);
+        //       xha_printf("Read %d lons\n", iIndex);
     } else {
         delete[] pGenome;
         pGenome = NULL;
@@ -897,7 +897,7 @@ int GeneUtils::writePlinkMapFile(const std::string sOut, int iGenomeSize) {
         iResult = 0;
         fclose(fOut);
     } else {
-        stdprintf("Couldn't open [%s] for writing\n", sOut);
+        xha_printf("Couldn't open [%s] for writing\n", sOut);
         iResult = -1;
     }
     return iResult;

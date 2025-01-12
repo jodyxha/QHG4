@@ -114,7 +114,7 @@ const double *AgentEnv<T>::getArr(int iAgentIndex) {
 template<typename T>
 int AgentEnv<T>::init() {
     int iResult = -1;
-    stdprintf("init called\n");
+    xha_printf("init called\n");
     
     if (this->m_pCG != NULL) {
 
@@ -123,7 +123,7 @@ int AgentEnv<T>::init() {
     
 
         // initialize the buffer ...
-        stdprintf("initializing m_aEnvVals with (%d, %d)\n", m_pAgentController->getLayerSize(), m_iLocArrSize);
+        xha_printf("initializing m_aEnvVals with (%d, %d)\n", m_pAgentController->getLayerSize(), m_iLocArrSize);
         m_aEnvVals.init(m_pAgentController->getLayerSize(), m_iLocArrSize);
         
         // ... and add it to the AgentController
@@ -131,11 +131,11 @@ int AgentEnv<T>::init() {
         if (iResult == 0) {
             // everything OK
         } else {
-            stdprintf("Couldn't add buffer EnvVals to controller\n");
+            xha_printf("Couldn't add buffer EnvVals to controller\n");
         }
     } else {
         if (this->m_pCG == NULL) {
-            stdprintf("[AgentEnv] No cell grid!\n");
+            xha_printf("[AgentEnv] No cell grid!\n");
         }
     }
 
@@ -156,7 +156,7 @@ int AgentEnv<T>::recalculateGlobalCapacities() {
     if (m_bNeedUpdate) {
         
 
-        stdprintf("AgentEnv::recalculateGlobalCapacities\n");
+        xha_printf("AgentEnv::recalculateGlobalCapacities\n");
         int iNumCells = this->m_pCG->m_iNumCells; 
         // fill m_adCapacities with npp miami-values for current climate
 

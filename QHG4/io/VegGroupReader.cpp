@@ -2,7 +2,7 @@
 #include <cstring>
 #include <hdf5.h>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "Vegetation.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
@@ -74,8 +74,8 @@ int VegGroupReader::readArray(Vegetation *pVG, const std::string sArrayName) {
     } else {
         iResult = -1;
         if (m_pAttributes != NULL) {
-            stdprintf("Number of cells does not correspond:\n");
-            stdprintf("  VegGroupReader::m_iNumCells: %d; Geography::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pVG->m_iNumCells);
+            xha_printf("Number of cells does not correspond:\n");
+            xha_printf("  VegGroupReader::m_iNumCells: %d; Geography::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pVG->m_iNumCells);
         }
     }
     if (iResult == 0) {
@@ -84,7 +84,7 @@ int VegGroupReader::readArray(Vegetation *pVG, const std::string sArrayName) {
         } else if (sArrayName == VEG_DS_NPP) {
             iResult = qdf_readArray(m_hGroup, VEG_DS_NPP, pVG->m_iNumCells, pVG->m_adTotalANPP);
         } else {
-            stdprintf("Unknown array [%s]\n", sArrayName);
+            xha_printf("Unknown array [%s]\n", sArrayName);
             iResult = -1;
         }
     }
@@ -105,8 +105,8 @@ int VegGroupReader::readData(Vegetation *pVG) {
     } else {
         iResult = -1;
         if (m_pAttributes != NULL) {
-            stdprintf("Number of cells or max neighbors do not correspond:\n");
-            stdprintf("  VegGroupReader::m_iNumCells: %d; Vegetation::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pVG->m_iNumCells);
+            xha_printf("Number of cells or max neighbors do not correspond:\n");
+            xha_printf("  VegGroupReader::m_iNumCells: %d; Vegetation::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pVG->m_iNumCells);
         }
     }
 

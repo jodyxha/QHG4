@@ -2,7 +2,7 @@
 #include <cstring>
 #include <hdf5.h>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "Navigation2.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
@@ -52,7 +52,7 @@ int NavWriter2::write(hid_t hFile) {
             iResult = writeNavAttributes(hNavGroup);
             
             if (iResult == 0) {
-                //            stdprintf("Written NavAttributes\n");
+                //            xha_printf("Written NavAttributes\n");
 
             
                 std::vector<waterway> vFlatWaterways;
@@ -90,9 +90,9 @@ int NavWriter2::write(hid_t hFile) {
                 }
             
                 if (iResult == 0) {
-                    //                stdprintf("[NavWriter] arrays written\n");
+                    //                xha_printf("[NavWriter] arrays written\n");
                 } else {
-                    stdprintf("[NavWriter] error writing arrays\n");
+                    xha_printf("[NavWriter] error writing arrays\n");
                 }
             
                 delete[] piStarts;
@@ -113,24 +113,24 @@ int NavWriter2::write(hid_t hFile) {
                     
                     iResult = qdf_writeArray(hNavGroup, NAV2_DS_BRIDGES, 2*iNumBridges, pBridges);
                     if (iResult == 0) {
-                        //                stdprintf("[NavWriter] bridges written\n");
+                        //                xha_printf("[NavWriter] bridges written\n");
                     } else {
-                        stdprintf("[NavWriter] error writing bridges\n");
+                        xha_printf("[NavWriter] error writing bridges\n");
                     }
                     delete[] pBridges;
                     
                 }
             } else {
-                stdprintf("[NavWriter] Couldn't write attributes\n");
+                xha_printf("[NavWriter] Couldn't write attributes\n");
             }
             qdf_closeGroup(hNavGroup);
         } else {
             iResult = -1;
-            stdprintf("[NavWriter] Couldn't open group [%s]\n", NAV2GROUP_NAME);
+            xha_printf("[NavWriter] Couldn't open group [%s]\n", NAV2GROUP_NAME);
             // couldn't open group
         }
     } else {
-        stdprintf("[NavWriter] No Navigation found in CG\n");
+        xha_printf("[NavWriter] No Navigation found in CG\n");
     }
     return iResult;
 }

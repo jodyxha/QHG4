@@ -5,8 +5,8 @@
 #include <ctime>
 
 #include "WELL512.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 //#include "LWELL512.h"
 
 
@@ -61,23 +61,23 @@ int main2(int iArgC, char *apArgV[]) {
             for (int i = 0; i < iLoops; i++) {
                 /*
                   for (int j = 0; j < iN; j++) {
-                  stdprintf("%08x ", apW[j]->wrand());
+                  xha_printf("%08x ", apW[j]->wrand());
                   }
-                  stdprintf("\n");
+                  xha_printf("\n");
                   for (int j = 0; j < iN; j++) {
-                  stdprintf("%f ", apW[j]->wrandd());
+                  xha_printf("%f ", apW[j]->wrandd());
                   }
-                  stdprintf("\n");
+                  xha_printf("\n");
                 */
                 for (int j = 0; j < iN; j++) {
                     int ii =  (int)(apW[j]->wrandr(0, 100));
                     aiBins[ii]++;
-                    //                   stdprintf("%d ", ii);
+                    //                   xha_printf("%d ", ii);
                     //                    ii =  (int)(apLW[j]->wrandr(0, 100));
                     //                    aiLBins[ii]++;
-                    //                   stdprintf("%d ", ii);
+                    //                   xha_printf("%d ", ii);
                 }
-                //               stdprintf("\n");
+                //               xha_printf("\n");
             }
 
             FILE *fOut = fopen("binwell.dat", "wt");
@@ -88,7 +88,7 @@ int main2(int iArgC, char *apArgV[]) {
                 dSum += aiBins[i];
                 dSum2 += aiBins[i]*aiBins[i];
             }
-            stdprintf("WELL: avg %f, dev %f\n", dSum/100, dSum2/100-dSum*dSum/10000);
+            xha_printf("WELL: avg %f, dev %f\n", dSum/100, dSum2/100-dSum*dSum/10000);
             fclose(fOut);
             /*
               double dlSum=0;
@@ -100,7 +100,7 @@ int main2(int iArgC, char *apArgV[]) {
               dlSum2 += aiLBins[i]*aiLBins[i];
               }
               fclose(fOut);
-              stdprintf("WELL: avg %f, dev %f\n", dlSum/100, dlSum2/100-dlSum*dlSum/10000);
+              xha_printf("WELL: avg %f, dev %f\n", dlSum/100, dlSum2/100-dlSum*dlSum/10000);
             */
 
             for (int j = 0; j < iN; j++) {
@@ -110,10 +110,10 @@ int main2(int iArgC, char *apArgV[]) {
             iResult = 0;
 
         } else {
-            stdprintf("num-generators (%d) and loop (%d) must be positive\n", iN, iLoops);
+            xha_printf("num-generators (%d) and loop (%d) must be positive\n", iN, iLoops);
         }
     } else {
-        stdprintf("%s <num-generators> <loop>\n",apArgV[0]);
+        xha_printf("%s <num-generators> <loop>\n",apArgV[0]);
     }
     return iResult;
 }
@@ -124,7 +124,7 @@ int main3(int iArgC, char *apArgV[]) {
     for (long i = 0; i < atol(apArgV[1]); i++) {
         uint x = pW->wrandr(0,20);
         if (x == 20) {
-            stdprintf("Hit %d\n",x);
+            xha_printf("Hit %d\n",x);
         }
        
     }
@@ -139,14 +139,14 @@ int main4(int iArgC, char *apArgV[]) {
 
         int iN = omp_get_max_threads();
         WELL512 **apWELL = new WELL512*[iN];
-        stdprintf("creating %d WELLs\n", iN); 
+        xha_printf("creating %d WELLs\n", iN); 
 #pragma omp parallel
         {
             int iT = omp_get_thread_num();
             apWELL[iT] = new WELL512(s_aInit);
         }
         
-        stdprintf("creating %d random numbers\n", iBufSize); 
+        xha_printf("creating %d random numbers\n", iBufSize); 
         uint a[iBufSize];
 #pragma omp parallel for 
         for (int i =0; i < iBufSize; i++) {
@@ -161,12 +161,12 @@ int main4(int iArgC, char *apArgV[]) {
             }
         }
         
-        stdprintf("writing numbers\n"); 
+        xha_printf("writing numbers\n"); 
         FILE *f = fopen(apArgV[2], "wb");
         fwrite(a, sizeof(uint), iBufSize, f);
         fclose(f);
 
-        stdprintf("deleting WELLs\n"); 
+        xha_printf("deleting WELLs\n"); 
         
 #pragma omp parallel
         {
@@ -176,7 +176,7 @@ int main4(int iArgC, char *apArgV[]) {
         
         delete[] apWELL;
     } else {
-        stdprintf("%s <arrsize> <outputfile>\n", apArgV[0]);
+        xha_printf("%s <arrsize> <outputfile>\n", apArgV[0]);
     } 
     return 0;
 }
@@ -201,9 +201,9 @@ int main1(int iArgC, char *apArgV[]) {
             bins[k-iMin]++;
         }
         double t01  = omp_get_wtime();
-        stdprintf("wrandi used %f secs\n", t01-t00);
+        xha_printf("wrandi used %f secs\n", t01-t00);
         for (int i = 0; i < iNumBins; i++) {
-            stdprintf("bin %d (%d): %ld\n", i, i+iMin, bins[i]);
+            xha_printf("bin %d (%d): %ld\n", i, i+iMin, bins[i]);
         }
 
         memset(bins, 0,  iNumBins*sizeof(long));
@@ -215,9 +215,9 @@ int main1(int iArgC, char *apArgV[]) {
             bins[k-iMin]++;
         }
         double t11  = omp_get_wtime();
-        stdprintf("wrandd+transf used %f secs\n", t11-t10);
+        xha_printf("wrandd+transf used %f secs\n", t11-t10);
         for (int i = 0; i < iNumBins; i++) {
-            stdprintf("bin %d (%d): %ld\n", i, i+iMin, bins[i]);
+            xha_printf("bin %d (%d): %ld\n", i, i+iMin, bins[i]);
         }
 
         memset(bins, 0,  iNumBins*sizeof(long));
@@ -229,16 +229,16 @@ int main1(int iArgC, char *apArgV[]) {
             bins[k-iMin]++;
         }
         double t21  = omp_get_wtime();
-        stdprintf("wrandr+transf used %f secs\n", t21-t20);
+        xha_printf("wrandr+transf used %f secs\n", t21-t20);
 
         for (int i = 0; i < iNumBins; i++) {
-            stdprintf("bin %d (%d): %ld\n", i, i+iMin, bins[i]);
+            xha_printf("bin %d (%d): %ld\n", i, i+iMin, bins[i]);
         }
 
         delete[] bins;
         delete pWELL;
     } else {
-        stdprintf("%s <min> <max> <step> <iters>\n", apArgV[0]);
+        xha_printf("%s <min> <max> <step> <iters>\n", apArgV[0]);
     } 
     return 0;
 }
@@ -273,9 +273,9 @@ int main(int iArgC, char *apArgV[]) {
         }
         dSum3 /= iNum;
         dSum3 = sqrt(dSum3);
-        stdprintf("N=%ld: mean %.12lf; sigm %.12lf, sigm alt %.12lf\n", iNum, dAvg, dSig, dSum3);
-        stdprintf(" d_mean: %e, d_sigm %e\n", dAvg, dSigma - dSig);
-        stdprintf("average number of rands pre gaussian: %f (theoretical: 4/PI=%f)\n", (1.0*pWELL->getCount())/iNum, 4/PI);
+        xha_printf("N=%ld: mean %.12lf; sigm %.12lf, sigm alt %.12lf\n", iNum, dAvg, dSig, dSum3);
+        xha_printf(" d_mean: %e, d_sigm %e\n", dAvg, dSigma - dSig);
+        xha_printf("average number of rands pre gaussian: %f (theoretical: 4/PI=%f)\n", (1.0*pWELL->getCount())/iNum, 4/PI);
         delete pWELL;
         delete[] adTest;
     }

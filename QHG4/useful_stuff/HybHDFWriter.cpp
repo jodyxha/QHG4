@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <hdf5.h>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
 #include "SPopulation.h"
@@ -61,12 +61,12 @@ int HybHDFWriter::init(const std::string sFileName, uint iNumRegions) {
 
     bool bNew = false;
     
-    stdfprintf(stderr, "[HybHDFWriter::init] using [%s]\n", sFileName); fflush(stderr);
+    xha_fprintf(stderr, "[HybHDFWriter::init] using [%s]\n", sFileName); fflush(stderr);
     if (fileExists(sFileName)) {
-        stdfprintf(stderr, "[HybHDFWriter::init] opening [%s] with H5F_ACC_RDWR\n", sFileName); fflush(stderr);
+        xha_fprintf(stderr, "[HybHDFWriter::init] opening [%s] with H5F_ACC_RDWR\n", sFileName); fflush(stderr);
         m_hFile = H5Fopen(sFileName.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
     } else {
-        stdfprintf(stderr, "[HybHDFWriter::init] [%s] does not exist, create with H5F_ACC_TRUNC\n", sFileName); fflush(stderr);
+        xha_fprintf(stderr, "[HybHDFWriter::init] [%s] does not exist, create with H5F_ACC_TRUNC\n", sFileName); fflush(stderr);
         m_hFile = H5Fcreate(sFileName.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
         bNew = true;
         
@@ -82,13 +82,13 @@ int HybHDFWriter::init(const std::string sFileName, uint iNumRegions) {
                     iResult = 0;
                 }
             } else {
-                stdfprintf(stderr, "[HybHDFWriter::init] Couldn't create datatype");
+                xha_fprintf(stderr, "[HybHDFWriter::init] Couldn't create datatype");
             }
         } else {
-            stdfprintf(stderr, "[HybHDFWriter::init] Couldn't create root group");
+            xha_fprintf(stderr, "[HybHDFWriter::init] Couldn't create root group");
         }
     } else {
-        stdfprintf(stderr, "[HybHDFWriter::init] Couldn't create HDF file [%s]", sFileName);
+        xha_fprintf(stderr, "[HybHDFWriter::init] Couldn't create HDF file [%s]", sFileName);
     }
     return iResult;
 }
@@ -129,10 +129,10 @@ int HybHDFWriter::writeData(const std::string sSimName, uchar *pData, int iNumVa
     if (status >= 0) {
         iResult = 0;
         if (m_bVerbose) {
-             stdfprintf(stderr, "[HybHDFWriter::writeData] Successfully written %d records\n", iNumVals);
+             xha_fprintf(stderr, "[HybHDFWriter::writeData] Successfully written %d records\n", iNumVals);
         }
     } else {
-        stdfprintf(stderr, "[HybHDFWriter::writeData] Couldn't write data\n");
+        xha_fprintf(stderr, "[HybHDFWriter::writeData] Couldn't write data\n");
     }
 
     qdf_closeDataSet(hDataSet);
@@ -153,7 +153,7 @@ int HybHDFWriter::writeDataRegionized(const std::string sSimName, int iStep, flo
         iResult = qdf_insertAttribute(m_hRoot, ROOT_TIME_NAME, 1, &fStartTime);
     }
 
-    stdfprintf(stderr, "[HybHDFWriter::writeDataRegionize] adding group [%s]\n", sSimName); fflush(stderr);
+    xha_fprintf(stderr, "[HybHDFWriter::writeDataRegionize] adding group [%s]\n", sSimName); fflush(stderr);
     hid_t hSimGroup = qdf_opencreateGroup(m_hRoot, sSimName);
     
     char sStep[1024];
@@ -201,10 +201,10 @@ int HybHDFWriter::writeDataRegionized(const std::string sSimName, int iStep, flo
             if (status >= 0) {
                 iResult = 0;
                 if (m_bVerbose) {
-                    stdfprintf(stderr, "[HybHDFWriter::writeDataRegionize] Successfully written %zd records\n",  vSelected.size());
+                    xha_fprintf(stderr, "[HybHDFWriter::writeDataRegionize] Successfully written %zd records\n",  vSelected.size());
                 }
             } else {
-                stdfprintf(stderr, "[HybHDFWriter::writeDataRegionize] Couldn't write data\n");
+                xha_fprintf(stderr, "[HybHDFWriter::writeDataRegionize] Couldn't write data\n");
             }
 
             int iLandWater[2];

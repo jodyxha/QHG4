@@ -4,7 +4,7 @@
 
 #include <hdf5.h>
 #include "WELL512.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
 #include "WELLDumpRestore.h"
@@ -26,14 +26,14 @@ int dumpWELL(WELL512 **apWELL, int iNumWELL, const std::string sOwner, hid_t hSp
 
     // number of WELL states
     if (iResult == 0) {
-        sAttrName = stdsprintf("%s_%s", sOwner, WELL_ATTR_NUM_STATES);
+        sAttrName = xha_sprintf("%s_%s", sOwner, WELL_ATTR_NUM_STATES);
         iResult = qdf_insertAttribute(hSpeciesGroup, sAttrName, 1, &iNumWELL); 
     }
 
     // current indexes of the states
     uint32_t *auiIndexes = new uint32_t[iNumWELL];
     if (iResult == 0) {
-        sAttrName = stdsprintf("%s_%s", sOwner, WELL_ATTR_CUR_INDEX);
+        sAttrName = xha_sprintf("%s_%s", sOwner, WELL_ATTR_CUR_INDEX);
         for (int i = 0; i < iNumWELL; i++) {
             auiIndexes[i] = apWELL[i]->getIndex();
         }
@@ -44,7 +44,7 @@ int dumpWELL(WELL512 **apWELL, int iNumWELL, const std::string sOwner, hid_t hSp
     // current indexes of the states
     double *adLastNormals = new double[iNumWELL];
     if (iResult == 0) {
-        sAttrName = stdsprintf("%s_%s", sOwner, WELL_ATTR_LAST_NORMAL);
+        sAttrName = xha_sprintf("%s_%s", sOwner, WELL_ATTR_LAST_NORMAL);
         for (int i = 0; i < iNumWELL; i++) {
             adLastNormals[i] = apWELL[i]->getPrevNormal();
         }
@@ -55,7 +55,7 @@ int dumpWELL(WELL512 **apWELL, int iNumWELL, const std::string sOwner, hid_t hSp
     // current indexes of the states
     double *adSigmas = new double[iNumWELL];
     if (iResult == 0) {
-        sAttrName = stdsprintf("%s_%s", sOwner, WELL_ATTR_LAST_SIGMA);
+        sAttrName = xha_sprintf("%s_%s", sOwner, WELL_ATTR_LAST_SIGMA);
         for (int i = 0; i < iNumWELL; i++) {
             adSigmas[i] = apWELL[i]->getSigma();
         }
@@ -66,7 +66,7 @@ int dumpWELL(WELL512 **apWELL, int iNumWELL, const std::string sOwner, hid_t hSp
 
     // the WELL states
     if (iResult == 0) {
-        sAttrName = stdsprintf("%s_%s", sOwner, WELL_ATTR_FINAL_WELL);
+        sAttrName = xha_sprintf("%s_%s", sOwner, WELL_ATTR_FINAL_WELL);
             
         uint32_t *pSuperState = new uint32_t[iNumWELL*STATE_SIZE];
         uint32_t *pCur = pSuperState;
@@ -94,38 +94,38 @@ int restoreWELL(WELL512 **apWELL, int iNumWELL, const std::string sOwner, hid_t 
         
 
     // number of WELL states dumped
-    sAttrName = stdsprintf("%s_%s", sOwner, WELL_ATTR_NUM_STATES);
-    stdprintf("[restoreWELL] searching for attribute [%s]\n", sAttrName);fflush(stdout);
+    sAttrName = xha_sprintf("%s_%s", sOwner, WELL_ATTR_NUM_STATES);
+    xha_printf("[restoreWELL] searching for attribute [%s]\n", sAttrName);fflush(stdout);
     iResult = qdf_extractAttribute(hSpeciesGroup, sAttrName, 1, &iNumStates); 
     if (iNumStates == iNumWELL) {
         uint32_t *auiIndexes    = new uint32_t[iNumStates];
         double   *adLastNormals = new double[iNumStates];
         double   *adLastSigmas  = new double[iNumStates];
         if (iResult == 0) {
-            sAttrName = stdsprintf("%s_%s", sOwner, WELL_ATTR_CUR_INDEX);
-            stdprintf("[restoreWELL] searching for attribute [%s]\n", sAttrName);fflush(stdout);
+            sAttrName = xha_sprintf("%s_%s", sOwner, WELL_ATTR_CUR_INDEX);
+            xha_printf("[restoreWELL] searching for attribute [%s]\n", sAttrName);fflush(stdout);
             // current index values of the states
             iResult = qdf_extractAttribute(hSpeciesGroup, sAttrName, iNumStates, auiIndexes); 
         }            
 
         if (iResult == 0) {
-            sAttrName = stdsprintf("%s_%s", sOwner, WELL_ATTR_LAST_NORMAL);
-            stdprintf("[restoreWELL] searching for attribute [%s]\n", sAttrName);fflush(stdout);
+            sAttrName = xha_sprintf("%s_%s", sOwner, WELL_ATTR_LAST_NORMAL);
+            xha_printf("[restoreWELL] searching for attribute [%s]\n", sAttrName);fflush(stdout);
             // current index values of the states
             iResult = qdf_extractAttribute(hSpeciesGroup, sAttrName, iNumStates, adLastNormals); 
         }            
 
         if (iResult == 0) {
-            sAttrName = stdsprintf("%s_%s", sOwner, WELL_ATTR_LAST_SIGMA);
-            stdprintf("[restoreWELL] searching for attribute [%s]\n", sAttrName);fflush(stdout);
+            sAttrName = xha_sprintf("%s_%s", sOwner, WELL_ATTR_LAST_SIGMA);
+            xha_printf("[restoreWELL] searching for attribute [%s]\n", sAttrName);fflush(stdout);
             // current index values of the states
             iResult = qdf_extractAttribute(hSpeciesGroup, sAttrName, iNumStates, adLastSigmas); 
         }            
 
         if (iResult == 0) {
             // The WELL states themselves
-            sAttrName = stdsprintf("%s_%s", sOwner, WELL_ATTR_FINAL_WELL);
-            stdprintf("[restoreWELL] searching for attribute [%s]\n", sAttrName);fflush(stdout);
+            sAttrName = xha_sprintf("%s_%s", sOwner, WELL_ATTR_FINAL_WELL);
+            xha_printf("[restoreWELL] searching for attribute [%s]\n", sAttrName);fflush(stdout);
             
             uint32_t *pSuperState = new uint32_t[iNumStates*STATE_SIZE];
             uint32_t *pCur = pSuperState;
@@ -150,7 +150,7 @@ int restoreWELL(WELL512 **apWELL, int iNumWELL, const std::string sOwner, hid_t 
         }
 
     } else {
-        stdprintf("Number of dumped WELLs differs from expected number (%d != %d)\n", iNumStates, iNumWELL);
+        xha_printf("Number of dumped WELLs differs from expected number (%d != %d)\n", iNumStates, iNumWELL);
         iResult = -1;
     }
     return iResult;

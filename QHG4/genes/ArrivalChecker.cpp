@@ -8,7 +8,7 @@
 
 #include "types.h"
 #include "qhg_consts.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "colors.h"
 #include "geomutils.h"
 #include "LineReader.h"
@@ -127,7 +127,7 @@ int ArrivalChecker::init(const std::string sQDFGrid, const std::string sQDFStats
                 sQDFGridReal = vParts[0];
                 if (iNum1 == 2) {
                     sSpecies1 = vParts[1];
-                    stdfprintf(stderr, "found species [%s] with file [%s]\n", sSpecies1, sQDFGridReal);
+                    xha_fprintf(stderr, "found species [%s] with file [%s]\n", sSpecies1, sQDFGridReal);
                 }
             } else {
                 iResult = -1;
@@ -140,7 +140,7 @@ int ArrivalChecker::init(const std::string sQDFGrid, const std::string sQDFStats
                 sQDFStatsReal = vParts[0];
                 if (iNum2 == 2) {
                     sSpecies2 = vParts[1];
-                    stdfprintf(stderr, "found species [%s] with file [%s]\n", sSpecies2, sQDFStatsReal);
+                    xha_fprintf(stderr, "found species [%s] with file [%s]\n", sSpecies2, sQDFStatsReal);
                 }
             } else {
                 iResult = -1;
@@ -151,7 +151,7 @@ int ArrivalChecker::init(const std::string sQDFGrid, const std::string sQDFStats
             if (sSpecies1.empty()) {
                 if (sSpecies2.empty()) {
                     iResult = -1;
-                    stdfprintf(stderr, "[init] No species names provided\n");
+                    xha_fprintf(stderr, "[init] No species names provided\n");
                 } else {
                     sSpecies1 = sSpecies2;
                     iResult = 0;
@@ -159,7 +159,7 @@ int ArrivalChecker::init(const std::string sQDFGrid, const std::string sQDFStats
             } else {
                 if (!sSpecies2.empty()) {
                     if (sSpecies1 != sSpecies2) {
-                        stdfprintf(stderr, "[init] Two different species names provided: [%s], [%s]\n", sSpecies1, sSpecies2);
+                        xha_fprintf(stderr, "[init] Two different species names provided: [%s], [%s]\n", sSpecies1, sSpecies2);
                         iResult = -1;
                     } else {
                         iResult = 0;
@@ -169,7 +169,7 @@ int ArrivalChecker::init(const std::string sQDFGrid, const std::string sQDFStats
                 }
             }
         }
-        stdfprintf(stderr, "[init] using speciea [%s]\n", sSpecies1);
+        xha_fprintf(stderr, "[init] using speciea [%s]\n", sSpecies1);
         
         if (iResult == 0) {
             iResult = fillCoordMap(sQDFGridReal);
@@ -177,27 +177,27 @@ int ArrivalChecker::init(const std::string sQDFGrid, const std::string sQDFStats
 
         if (iResult == 0) {
             iResult = readStats(sQDFStatsReal, sSpecies1);
-            stdfprintf(stderr, "[init] readStats(%s,%s): res %d\n", sQDFStatsReal, sSpecies1, iResult);
+            xha_fprintf(stderr, "[init] readStats(%s,%s): res %d\n", sQDFStatsReal, sSpecies1, iResult);
             if (iResult == 0) {
                 locspec locSpec(sLocFile, dDistance, 0);
                 m_vNames.clear();
  
                 iResult = fillLocData(&locSpec, m_mLocData, &m_vNames);
-                stdfprintf(stderr, "[init] fillLocData(...): res %d\n", iResult);
+                xha_fprintf(stderr, "[init] fillLocData(...): res %d\n", iResult);
                 if (iResult == 0) { 
-                    stdfprintf(stderr, "[init] loading agents cell (%s,%s)\n", sQDFStatsReal, sSpecies1);
+                    xha_fprintf(stderr, "[init] loading agents cell (%s,%s)\n", sQDFStatsReal, sSpecies1);
                     iResult = loadAgentsCell(sQDFStatsReal, sSpecies1);
-                    stdfprintf(stderr, "[init] loadAgentsCell(%s,%s): reds %d\n", sQDFStatsReal, sSpecies1, iResult);
+                    xha_fprintf(stderr, "[init] loadAgentsCell(%s,%s): reds %d\n", sQDFStatsReal, sSpecies1, iResult);
                     if (iResult == 0) {
-                        stdfprintf(stderr, "[init] getting cell agent counts\n");
+                        xha_fprintf(stderr, "[init] getting cell agent counts\n");
                         iResult = getCellAgentCounts();
                         if (iResult == 0)  {
                             m_pmCandidates = new loccelldists[omp_get_max_threads()];
                         } else {
-                            stdfprintf(stderr, "[init] Couldn't create counts\n");
+                            xha_fprintf(stderr, "[init] Couldn't create counts\n");
                         }
                     } else {
-                        stdfprintf(stderr, "[init] Couldn't read agent data\n");
+                        xha_fprintf(stderr, "[init] Couldn't read agent data\n");
                     }
                 }
             }
@@ -289,7 +289,7 @@ void ArrivalChecker::showTable(bool bNice, bool bSort) {
             if (sName.length() < iMaxL) {
                 sName.append(iMaxL - sName.length(), ' ');
             }
-            stdfprintf(m_fOut, "%s  (%+7.2f,%+6.2f;%6.1f):\tT %7.1f D %7.1f d%6.1f N %d\n", 
+            xha_fprintf(m_fOut, "%s  (%+7.2f,%+6.2f;%6.1f):\tT %7.1f D %7.1f d%6.1f N %d\n", 
                        *itn, 
                        lItem.dLon, 
                        lItem.dLat, 
@@ -303,14 +303,14 @@ void ArrivalChecker::showTable(bool bNice, bool bSort) {
 
     } else {
 
-        stdfprintf(m_fOut, "#Location\tLon\tLat\tSampDist\tTravelTime\tTravelDist\tmindist\tnumagents\n");
+        xha_fprintf(m_fOut, "#Location\tLon\tLat\tSampDist\tTravelTime\tTravelDist\tmindist\tnumagents\n");
         stringvec::const_iterator itn;
         for (itn = m_vNames.begin(); itn != m_vNames.end(); ++itn) {
             locitem &lItem = m_mLocData[*itn];
             int    iCellMin   = m_mFinalCellDist[*itn]->m_iCellID;
             double dMin       = m_mFinalCellDist[*itn]->m_dDist;
 	    int    iNumAgents = m_mFinalCellDist[*itn]->m_iNumAgents;
-            stdfprintf(m_fOut, "%s\t%6.2f\t%5.2f\t%6.1f\t%7.1f\t%7.1f\t%6.1f\t%d\n", 
+            xha_fprintf(m_fOut, "%s\t%6.2f\t%5.2f\t%6.1f\t%7.1f\t%7.1f\t%6.1f\t%d\n", 
                    *itn, 
                    lItem.dLon, 
                    lItem.dLat, 
@@ -334,68 +334,68 @@ void ArrivalChecker::showCSV(bool bHead, int iWhat) {
     if (bHead) {
         for (itn = m_vNames.begin(); itn != m_vNames.end(); ++itn) {
             if  ((iWhat & ARR_NAME) != 0) {
-                stdfprintf(m_fOut, "%s%s_name", sSep, *itn);
+                xha_fprintf(m_fOut, "%s%s_name", sSep, *itn);
                 sSep = ";";
             }
             if  ((iWhat & ARR_LON) != 0) {
-                stdfprintf(m_fOut, "%s%s_lon", sSep, *itn);
+                xha_fprintf(m_fOut, "%s%s_lon", sSep, *itn);
                 sSep = ";";
             }
             if  ((iWhat & ARR_LAT) != 0) {
-                stdfprintf(m_fOut, "%s%s_lat", sSep, *itn);
+                xha_fprintf(m_fOut, "%s%s_lat", sSep, *itn);
                 sSep = ";";
             }
             if  ((iWhat & ARR_TIME) != 0) {
-                stdfprintf(m_fOut, "%s%s_arrival", sSep, *itn);
+                xha_fprintf(m_fOut, "%s%s_arrival", sSep, *itn);
                 sSep = ";";
             }
             if  ((iWhat & ARR_COUNT) != 0) {
-                stdfprintf(m_fOut, "%s%s_count", sSep, *itn);
+                xha_fprintf(m_fOut, "%s%s_count", sSep, *itn);
                 sSep = ";";
             }
         }
-        stdfprintf(m_fOut, "\n");
-        stdfprintf(stderr, "[showCSV] one line written\n");
+        xha_fprintf(m_fOut, "\n");
+        xha_fprintf(stderr, "[showCSV] one line written\n");
     }
     
     sSep = "";
     for (itn = m_vNames.begin(); itn != m_vNames.end(); ++itn) {
         locitem &lItem = m_mLocData[*itn];
         if ((iWhat & ARR_NAME) != 0) {
-            stdfprintf(m_fOut, "%s%s", sSep,  *itn);
+            xha_fprintf(m_fOut, "%s%s", sSep,  *itn);
             sSep = ";";
         }
         if ((iWhat & ARR_LON) != 0) {
-            stdfprintf(m_fOut, "%s%f", sSep,  lItem.dLon);
+            xha_fprintf(m_fOut, "%s%f", sSep,  lItem.dLon);
             sSep = ";";
         }
         if  ((iWhat & ARR_LAT) != 0) {
-            stdfprintf(m_fOut, "%s%f", sSep,  lItem.dLat);
+            xha_fprintf(m_fOut, "%s%f", sSep,  lItem.dLat);
             sSep = ";";
         }
         if (m_bEmptyOutput) {
             if  ((iWhat & ARR_TIME) != 0) {
-                stdfprintf(m_fOut, "%s-1", sSep);
+                xha_fprintf(m_fOut, "%s-1", sSep);
                 sSep = ";";
             }
             if  ((iWhat & ARR_COUNT) != 0) {
-                stdfprintf(m_fOut, "%s-1", sSep);
+                xha_fprintf(m_fOut, "%s-1", sSep);
                 sSep = ";";
             }
         } else {
             double dMin       = m_mFinalCellDist[*itn]->m_dDist;
             int    iCellMin   = m_mFinalCellDist[*itn]->m_iCellID;
             if  ((iWhat & ARR_TIME) != 0) {
-                stdfprintf(m_fOut, "%s%f", sSep,   (dMin < 0)?-1:m_pTravelTimes[iCellMin]);
+                xha_fprintf(m_fOut, "%s%f", sSep,   (dMin < 0)?-1:m_pTravelTimes[iCellMin]);
                 sSep = ";";
             }
             if  ((iWhat & ARR_COUNT) != 0) {
-                stdfprintf(m_fOut, "%s%d", sSep,  m_mFinalCellDist[*itn]->m_iNumAgents);
+                xha_fprintf(m_fOut, "%s%d", sSep,  m_mFinalCellDist[*itn]->m_iNumAgents);
                 sSep = ";";
             }
         }
     }
-    stdfprintf(m_fOut, "\n");
+    xha_fprintf(m_fOut, "\n");
     
 }
  
@@ -415,16 +415,16 @@ int ArrivalChecker::readStats(const std::string sQDFStats, const std::string sSp
             std::string sFirstPop = qdf_getFirstPopulation(sQDFStats);
             if (!sFirstPop.empty()) {
                 sCurSpecies = sFirstPop;
-                stdfprintf(stderr, "[readStats] no species given - using first species [%s]\n", sCurSpecies);
+                xha_fprintf(stderr, "[readStats] no species given - using first species [%s]\n", sCurSpecies);
             }
         } else {
             sCurSpecies = sSpecies;
-            stdfprintf(stderr, "[readStats] using species [%s]\n", sCurSpecies);
+            xha_fprintf(stderr, "[readStats] using species [%s]\n", sCurSpecies);
         }
 
         // get arrival times
         if (!sCurSpecies.empty()) {
-            sGroupSpec = stdsprintf("Populations/%s/MoveStats", sCurSpecies); 
+            sGroupSpec = xha_sprintf("Populations/%s/MoveStats", sCurSpecies); 
             iResult = pQA2->openArray(sGroupSpec, SPOP_DS_TIME);
         }
 
@@ -434,23 +434,23 @@ int ArrivalChecker::readStats(const std::string sQDFStats, const std::string sSp
             uint iCount = pQA2->getFirstSlab(m_pTravelTimes, m_iNumCells);
             if (iCount == m_iNumCells) {
                 //                printf("Read %d CellIDs\n", iCount);
-                stdfprintf(stderr,"[readStats] Read TravelTimes [%s; %s/%s]", sQDFStats, sGroupSpec, SPOP_DS_TIME);
+                xha_fprintf(stderr,"[readStats] Read TravelTimes [%s; %s/%s]", sQDFStats, sGroupSpec, SPOP_DS_TIME);
                 iResult = 0;
             } else {
-                stdfprintf(stderr, "%s[readStats] Read bad number of grid IDs from [%s:%s/%s]: %d (instead of %d)%s\n", 
+                xha_fprintf(stderr, "%s[readStats] Read bad number of grid IDs from [%s:%s/%s]: %d (instead of %d)%s\n", 
                            colors::RED, sQDFStats, sGroupSpec, SPOP_DS_TIME, iCount, m_iNumCells, colors::OFF);
                 iResult = -1;
             }
             pQA2->closeArray();
         } else {
             iResult = -1;
-            stdfprintf(stderr, "%s[readStats] Couldn't open QDF array for [%s:%s/%s]%s\n", 
+            xha_fprintf(stderr, "%s[readStats] Couldn't open QDF array for [%s:%s/%s]%s\n", 
                     colors::RED, sQDFStats, sGroupSpec, SPOP_DS_TIME, colors::OFF);
         }
 
         if (iResult == 0) {
             // get travelled distance
-            sGroupSpec = stdsprintf("Populations/%s/MoveStats", sCurSpecies); 
+            sGroupSpec = xha_sprintf("Populations/%s/MoveStats", sCurSpecies); 
             iResult = pQA2->openArray(sGroupSpec, SPOP_DS_DIST);
             
 
@@ -460,17 +460,17 @@ int ArrivalChecker::readStats(const std::string sQDFStats, const std::string sSp
                 uint iCount = pQA2->getFirstSlab(m_pTravelDists, m_iNumCells);
                 if (iCount == m_iNumCells) {
                     //                printf("Read %d CellIDs\n", iCount);
-                    stdfprintf(stderr,"[readStats] Read Distances [%s; %s/%s]", sQDFStats, sGroupSpec, SPOP_DS_DIST);
+                    xha_fprintf(stderr,"[readStats] Read Distances [%s; %s/%s]", sQDFStats, sGroupSpec, SPOP_DS_DIST);
                     iResult = 0;
                 } else {
-                    stdfprintf(stderr, "%s[readStats] Read bad number of grid IDs from [%s:%s/%s]: %d (instead of %d)%s\n", 
+                    xha_fprintf(stderr, "%s[readStats] Read bad number of grid IDs from [%s:%s/%s]: %d (instead of %d)%s\n", 
                             colors::RED, sQDFStats, sGroupSpec, SPOP_DS_DIST, iCount, m_iNumCells, colors::OFF);
                     iResult = -1;
                 }
                 pQA2->closeArray();
             } else {
                 iResult = -1;
-                stdfprintf(stderr, "%s[readStats] Couldn't open QDF array for [%s:%s/%s]%s\n", 
+                xha_fprintf(stderr, "%s[readStats] Couldn't open QDF array for [%s:%s/%s]%s\n", 
                         colors::RED, sQDFStats, sGroupSpec, SPOP_DS_DIST, colors::OFF);
             }
             
@@ -501,14 +501,14 @@ int ArrivalChecker::fillCoordMap(const std::string sQDFGeoGrid) {
                 //                printf("Read %d CellIDs\n", iCount);
                 iResult = 0;
             } else {
-                stdfprintf(stderr, "%s[fillCoordMap] Read bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)%s\n", 
+                xha_fprintf(stderr, "%s[fillCoordMap] Read bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)%s\n", 
                         colors::RED, sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME, GRID_DS_CELL_ID, iCount, m_iNumCells, colors::OFF);
                 iResult = -1;
             }
             pQA->closeArray();
         } else {
             iResult = -1;
-            stdfprintf(stderr, "%s[fillCoordMap] Couldn't open QDF array for [%s:%s/%s]%s\n", 
+            xha_fprintf(stderr, "%s[fillCoordMap] Couldn't open QDF array for [%s:%s/%s]%s\n", 
                     colors::RED, sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME, colors::OFF);
         }
 
@@ -524,12 +524,12 @@ int ArrivalChecker::fillCoordMap(const std::string sQDFGeoGrid) {
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "%s[fillCoordMap] Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d%s\n", 
+                        xha_fprintf(stderr, "%s[fillCoordMap] Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d%s\n", 
                                 colors::RED, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, m_iNumCells, colors::OFF);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "%s[fillCoordMap] Number of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]%s\n", 
+                    xha_fprintf(stderr, "%s[fillCoordMap] Number of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]%s\n", 
                             colors::RED, iNumCellsL, m_iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, colors::OFF);
                 }
                 pQA->closeArray();
@@ -548,12 +548,12 @@ int ArrivalChecker::fillCoordMap(const std::string sQDFGeoGrid) {
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "%s[fillCoordMap] Couldn't read latitudes from [%s:%s/%s]: %d instead of %d%s\n", 
+                        xha_fprintf(stderr, "%s[fillCoordMap] Couldn't read latitudes from [%s:%s/%s]: %d instead of %d%s\n", 
                                 colors::RED, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iNumCellsL,m_iNumCells, colors::OFF);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "%s[fillCoordMap] Number of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]%s\n", 
+                    xha_fprintf(stderr, "%s[fillCoordMap] Number of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]%s\n", 
                             colors::RED, iNumCellsL, m_iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, colors::OFF);
                 }
 
@@ -563,7 +563,7 @@ int ArrivalChecker::fillCoordMap(const std::string sQDFGeoGrid) {
     
         delete pQA;
     } else {
-        stdfprintf(stderr, "%s[fillCoordMap] Couldn't create QDFArray%s\n", colors::RED, colors::OFF);
+        xha_fprintf(stderr, "%s[fillCoordMap] Couldn't create QDFArray%s\n", colors::RED, colors::OFF);
     }
 
  
@@ -574,7 +574,7 @@ int ArrivalChecker::fillCoordMap(const std::string sQDFGeoGrid) {
             m_mCoords[m_pCellIDs[i]] = std::pair<double, double>(pdLon[i], pdLat[i]);
         }
  
-        stdfprintf(stderr, "[fillCoordMap]   read cell coordinates: %zd items\n", m_mCoords.size());
+        xha_fprintf(stderr, "[fillCoordMap]   read cell coordinates: %zd items\n", m_mCoords.size());
     }
 
     if (pdLon != NULL) {
@@ -660,7 +660,7 @@ int ArrivalChecker::calcCartesianDistances() {
 int ArrivalChecker::loadAgentsCell(const std::string sPop, const std::string sPopName) {
     hid_t hFilePop     = qdf_openFile(sPop);
     hid_t hPopulation  = qdf_openGroup(hFilePop, POPGROUP_NAME);
-    stdfprintf(stderr, "[loadAgentsCell] pop %s,popname %s\n", sPop, sPopName);
+    xha_fprintf(stderr, "[loadAgentsCell] pop %s,popname %s\n", sPop, sPopName);
     // at this point m_iNumCells should be known (loadNPP() loadAltIce() already called)
     m_pCounts = new int[m_iNumCells];
 
@@ -686,9 +686,9 @@ int ArrivalChecker::loadAgentsCell(const std::string sPop, const std::string sPo
         hid_t hMemSpace = H5Screate_simple (1, &dims, NULL); 
         herr_t status = H5Dread(hDataSet, hAgentDataType, hMemSpace, hDataSpace, H5P_DEFAULT, m_pInfos);
         if (status >= 0) {
-            stdfprintf(stderr, "[loadAgentsCell] pop %s: %llu\n", sPopName, dims);
+            xha_fprintf(stderr, "[loadAgentsCell] pop %s: %llu\n", sPopName, dims);
         } else {
-            stdfprintf(stderr, "[loadAgentsCell] bad status for pop %s\n", sPopName);
+            xha_fprintf(stderr, "[loadAgentsCell] bad status for pop %s\n", sPopName);
 
             delete[] m_pInfos;
 	    m_pInfos = NULL;

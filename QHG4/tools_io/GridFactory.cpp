@@ -10,8 +10,8 @@
 #include "types.h"
 #include "geomutils.h"
 #include "strutils.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "ExecuteCommand.h"
 #include "SCell.h"
 #include "Geography.h"
@@ -164,11 +164,11 @@ NodeIndex *createEQGrid(VertexLinkage *pVL) {
             intset vLinks = pVL->getLinksFor(iti->first);
             if (vLinks.size() > MAX_ICO_NEIGHBORS) {
                 intset::iterator st;
-                stdprintf("Vertex #%d (%f,%f) has %zd links\n", iti->first, pV->m_fX, pV->m_fY,vLinks.size());
+                xha_printf("Vertex #%d (%f,%f) has %zd links\n", iti->first, pV->m_fX, pV->m_fY,vLinks.size());
                 for (st = vLinks.begin(); st != vLinks.end(); ++st) {
-                    stdprintf("  %d", *st);
+                    xha_printf("  %d", *st);
                 }
-                stdprintf("\n");
+                xha_printf("\n");
             }
             
                     
@@ -211,10 +211,10 @@ int GridFactory::setDataDirs(const stringvec &vDataDirs) {
                 m_vDataDirs.push_back(sCur);
             } else {
                 iResult = -1;
-                stdfprintf(stderr, "[%s] does not exist as directory\n", sCur);
+                xha_fprintf(stderr, "[%s] does not exist as directory\n", sCur);
             }
         } else {
-            stdfprintf(stderr, "unknown env var [%s] in data dirs\n", sDir);
+            xha_fprintf(stderr, "unknown env var [%s] in data dirs\n", sDir);
         }
     }
     return iResult;
@@ -246,7 +246,7 @@ bool GridFactory::exists(const std::string sFile, std::string &sExists) {
             
             sExists = "";
             for (uint i = 0; (sExists.empty()) && (i < m_vDataDirs.size()); i++) {
-                std::string sTest = stdsprintf("%s%s", m_vDataDirs[i], sFile);
+                std::string sTest = xha_sprintf("%s%s", m_vDataDirs[i], sFile);
                 if (fileExists(sTest)) {
                     sExists = sTest;
                     bExists = true;
@@ -261,7 +261,7 @@ bool GridFactory::exists(const std::string sFile, std::string &sExists) {
     }
     if (!bExists) {
         sExists = "";
-        stdprintf("[GridFactory::exists] [%s] not found\n", sFile);
+        xha_printf("[GridFactory::exists] [%s] not found\n", sFile);
     }
     
     return bExists;
@@ -283,10 +283,10 @@ int GridFactory::splitCommand(std::string sLine) {
             m_mSplitCommands[vParts[0]] = stringvec(vParts.begin()+1, vParts.end());
             iResult = 0;
         } else {
-            stdfprintf(stderr, "Unknown key [%s]\n", vParts[0]);
+            xha_fprintf(stderr, "Unknown key [%s]\n", vParts[0]);
         }
     } else {
-        stdfprintf(stderr, "empty command ?\n");
+        xha_fprintf(stderr, "empty command ?\n");
     }
 
     return iResult;
@@ -330,7 +330,7 @@ int GridFactory::collectLines() {
     for (uint i = 0; i < s_vKeys.size(); i++)  {
         commandmap::const_iterator it = m_mSplitCommands.find(s_vKeys[i]);
         printf("%10s ", s_vKeys[i].c_str());
-        stdprintf("[%s]\n", (it != m_mSplitCommands.end())?(join(it->second, " ")):"---");
+        xha_printf("[%s]\n", (it != m_mSplitCommands.end())?(join(it->second, " ")):"---");
     }
 
     return iResult;
@@ -397,10 +397,10 @@ int GridFactory::handleDDirLine() {
 
     commandmap::const_iterator it = m_mSplitCommands.find(KEY_DDIR);
     if (it != m_mSplitCommands.end()) {
-        stdprintf("----- setting data dirs [%s]\n", join(it->second, ":"));
+        xha_printf("----- setting data dirs [%s]\n", join(it->second, ":"));
         iResult = setDataDirs(it->second);
     }         
-    if (iResult != 0) stdfprintf(stderr, "handleDDirLine: %d\n", iResult);
+    if (iResult != 0) xha_fprintf(stderr, "handleDDirLine: %d\n", iResult);
     return iResult;
 }
 
@@ -414,7 +414,7 @@ int GridFactory::handleGridLine() {
 
     commandmap::const_iterator it = m_mSplitCommands.find(KEY_GRID);
     if (it != m_mSplitCommands.end()) {
-        stdprintf("----- creating grid [%s]\n", join(it->second, "|"));
+        xha_printf("----- creating grid [%s]\n", join(it->second, "|"));
         if (it->second.size() > 1) {
             iResult = setGrid(it->second);
             if (iResult == 0) {
@@ -422,10 +422,10 @@ int GridFactory::handleGridLine() {
                 m_bInterpol = (m_pCG->m_iType==GRID_TYPE_ICO) || (m_pCG->m_iType==GRID_TYPE_IEQ);
             }
         } else {
-            stdfprintf(stderr, "expected arguments\n");
+            xha_fprintf(stderr, "expected arguments\n");
         }
     }
-    if (iResult != 0) stdfprintf(stderr, "handleGridLine: %d\n", iResult);
+    if (iResult != 0) xha_fprintf(stderr, "handleGridLine: %d\n", iResult);
     return iResult;
 }
 
@@ -438,46 +438,46 @@ int GridFactory::handleAltLine() {
     commandmap::const_iterator it = m_mSplitCommands.find(KEY_ALT);
     if (it != m_mSplitCommands.end()) {
         stringvec vParams = it->second;
-        stdprintf("----- handling ALT [%s]\n", join(vParams, ":"));
+        xha_printf("----- handling ALT [%s]\n", join(vParams, ":"));
         
         if (vParams[0].compare("NETCDF") == 0) {
-            stdprintf("----- have %d elements >=2: %d\n", vParams.size(), vParams.size()>=2);
+            xha_printf("----- have %d elements >=2: %d\n", vParams.size(), vParams.size()>=2);
             if  (vParams.size() > 1) {
-                std::string sTemplate = stdsprintf("%s %%s %%s %%d %s", APP_PYTHON, PLACEHOLDER);
+                std::string sTemplate = xha_sprintf("%s %%s %%s %%d %s", APP_PYTHON, PLACEHOLDER);
                 iResult = createNETCDFCommands(vParams, APP_ALT_INTERP, DEF_ALT_FILE, sTemplate);
                 if ((iResult == 0) && (vParams.size() > 2)) {
                     vParams[1] = DEF_SEA_FILE;
-                    sTemplate = stdsprintf("%s %%s %%s %d %d %%d %s", APP_PYTHON, DEF_SEA_TCOL, DEF_SEA_HCOL, PLACEHOLDER);
+                    sTemplate = xha_sprintf("%s %%s %%s %d %d %%d %s", APP_PYTHON, DEF_SEA_TCOL, DEF_SEA_HCOL, PLACEHOLDER);
                     iResult = createNETCDFCommands(vParams, APP_SEA_INTERP, DEF_SEA_FILE, sTemplate);
                 }
             } else {
                 iResult = -1;
-                stdfprintf(stderr, "Expected 2 parmeters [%s]\n", join(vParams, " "));
+                xha_fprintf(stderr, "Expected 2 parmeters [%s]\n", join(vParams, " "));
             }
                 
         } else if ((vParams[0].compare("FLAT") == 0)  && (vParams.size() > 1)) {
             double dAlt;
-            stdfprintf(stderr, "converting [%s] to uint\n", vParams[1]);
+            xha_fprintf(stderr, "converting [%s] to uint\n", vParams[1]);
             if (strToNum(vParams[1], &dAlt)) {
-                stdfprintf(stderr, "-> %f (for all %d cells\n", dAlt, m_iNumCells);
+                xha_fprintf(stderr, "-> %f (for all %d cells\n", dAlt, m_iNumCells);
                 for (unsigned int i = 0; i < m_iNumCells; i++) {
                     m_pGeo->m_adAltitude[i]    = dAlt;
                 }
                 iResult = 0;
             } else {
-                stdfprintf(stderr, "Expected float value in command [%s]\n", join(vParams, " "));
+                xha_fprintf(stderr, "Expected float value in command [%s]\n", join(vParams, " "));
             }
 
 
         } else {
-            stdfprintf(stderr, "Invalid ALT line [%s]\n",  join(vParams, " "));
+            xha_fprintf(stderr, "Invalid ALT line [%s]\n",  join(vParams, " "));
             iResult =-1;
         }
     } else {
         // nothing to do is ok
         iResult = 0;
     }
-    if (iResult != 0) stdfprintf(stderr, "handleAltLine: %d\n", iResult);
+    if (iResult != 0) xha_fprintf(stderr, "handleAltLine: %d\n", iResult);
 
     return iResult;
 }
@@ -492,15 +492,15 @@ int GridFactory::handleIceLine() {
     commandmap::const_iterator it = m_mSplitCommands.find(KEY_ICE);
     if (it != m_mSplitCommands.end()) {
         stringvec vParams = it->second;
-        stdprintf("----- handling ICE [%s]\n", join(vParams, ":"));
+        xha_printf("----- handling ICE [%s]\n", join(vParams, ":"));
 
         if (vParams[0].compare("NETCDF") == 0){
             if (vParams.size() > 2) {
-                std::string sTemplate = stdsprintf("%s %%s %%s %%d %s", APP_PYTHON, PLACEHOLDER);
+                std::string sTemplate = xha_sprintf("%s %%s %%s %%d %s", APP_PYTHON, PLACEHOLDER);
                 iResult = createNETCDFCommands(vParams, APP_ICE_INTERP, DEF_ICE_FILE, sTemplate);
 
             }   else {
-                stdfprintf(stderr, "Unknown format for \"NETCDF\" [%s]\n", join(vParams, " "));
+                xha_fprintf(stderr, "Unknown format for \"NETCDF\" [%s]\n", join(vParams, " "));
                 iResult = -1;
             }
             
@@ -513,19 +513,19 @@ int GridFactory::handleIceLine() {
                     }
                     iResult = 0;
                 } else {
-                    stdfprintf(stderr, "Ice value should be a number: [%s]\n", join(vParams, " "));
+                    xha_fprintf(stderr, "Ice value should be a number: [%s]\n", join(vParams, " "));
                     iResult = -1;
                     
                 }
             } else {
-                stdfprintf(stderr, "Expected value parameter for \"FLAT\":[%s]\n", join(vParams, " "));
+                xha_fprintf(stderr, "Expected value parameter for \"FLAT\":[%s]\n", join(vParams, " "));
                 iResult = -1;
             }
                 
 
 
         } else {
-            stdprintf("Invalid ICE line [%s]\n", join(vParams, " "));
+            xha_printf("Invalid ICE line [%s]\n", join(vParams, " "));
             iResult =-1;
         }
     } else {
@@ -533,7 +533,7 @@ int GridFactory::handleIceLine() {
         iResult = 0;
     } 
 
-    if (iResult != 0) stdfprintf(stderr, "handleIceLine: %d\n", iResult);
+    if (iResult != 0) xha_fprintf(stderr, "handleIceLine: %d\n", iResult);
     return iResult;
 }
 
@@ -547,17 +547,17 @@ int GridFactory::handleTempLine() {
     commandmap::const_iterator it = m_mSplitCommands.find(KEY_TEMP);
     if (it != m_mSplitCommands.end()) {
         stringvec vParams = it->second;
-        stdprintf("----- handling TEMP [%s]\n", join(vParams, ":"));
+        xha_printf("----- handling TEMP [%s]\n", join(vParams, ":"));
 
         if (vParams[0].compare("NETCDF") == 0){
             if (vParams.size() > 2) {
 
-                std::string sTemplate = stdsprintf("%s %%s %%s %s %s %%d %s", APP_PYTHON, DEF_CLI_PAT, "temp", PLACEHOLDER);
+                std::string sTemplate = xha_sprintf("%s %%s %%s %s %s %%d %s", APP_PYTHON, DEF_CLI_PAT, "temp", PLACEHOLDER);
                 iResult = createNETCDFCommands(vParams, APP_CLI_INTERP, DEF_CLI_DIR, sTemplate);
 
                     
             } else {
-                stdfprintf(stderr, "Unknown format for \"NETCDF\" [%s]\n", join(vParams, " "));
+                xha_fprintf(stderr, "Unknown format for \"NETCDF\" [%s]\n", join(vParams, " "));
                 iResult = -1;
             }
 
@@ -572,15 +572,15 @@ int GridFactory::handleTempLine() {
                     }
                     iResult = 0;
                 } else {
-                    stdfprintf(stderr, "Temp value should be a number: [%s]\n", join(vParams, " "));
+                    xha_fprintf(stderr, "Temp value should be a number: [%s]\n", join(vParams, " "));
                     iResult = -1;
                 }
             } else {
-                stdfprintf(stderr, "Expected value parameter for \"FLAT\"_ [%s]\n", join(vParams, " "));
+                xha_fprintf(stderr, "Expected value parameter for \"FLAT\"_ [%s]\n", join(vParams, " "));
                 iResult = -1;
             }
         } else {
-            stdfprintf(stderr, "Unknown command [%s]\n", join(vParams, " "));
+            xha_fprintf(stderr, "Unknown command [%s]\n", join(vParams, " "));
             iResult = -1;
         }
     } else {
@@ -588,7 +588,7 @@ int GridFactory::handleTempLine() {
         iResult = 0;
     }
 
-    if (iResult != 0) stdfprintf(stderr, "handleTempLine: %d\n", iResult);
+    if (iResult != 0) xha_fprintf(stderr, "handleTempLine: %d\n", iResult);
     return iResult;
 }
 
@@ -602,15 +602,15 @@ int GridFactory::handleRainLine() {
     commandmap::const_iterator it = m_mSplitCommands.find(KEY_RAIN);
     if (it != m_mSplitCommands.end()) {
         stringvec vParams = it->second;
-        stdprintf("----- handling RAIN [%s]\n", join(vParams, ":"));
+        xha_printf("----- handling RAIN [%s]\n", join(vParams, ":"));
 
         if (vParams[0].compare("NETCDF") == 0){
             if (vParams.size() > 2) {
-                std::string sTemplate = stdsprintf("%s %%s %%s %s %s %%d %s", APP_PYTHON, DEF_CLI_PAT, "rain", PLACEHOLDER);
+                std::string sTemplate = xha_sprintf("%s %%s %%s %s %s %%d %s", APP_PYTHON, DEF_CLI_PAT, "rain", PLACEHOLDER);
                 iResult = createNETCDFCommands(vParams, APP_CLI_INTERP, DEF_CLI_DIR, sTemplate);
 
             } else {
-                stdfprintf(stderr, "Unknown format for \"NETCDF\" [%s]\n", join(vParams, " "));
+                xha_fprintf(stderr, "Unknown format for \"NETCDF\" [%s]\n", join(vParams, " "));
                 iResult = -1;
             }
 
@@ -626,16 +626,16 @@ int GridFactory::handleRainLine() {
                     }
                     iResult = 0;
                 } else {
-                    stdfprintf(stderr, "Temp value should be a number: [%s]\n", join(vParams, " "));
+                    xha_fprintf(stderr, "Temp value should be a number: [%s]\n", join(vParams, " "));
                     iResult = -1;
                 }
             } else {
-                stdfprintf(stderr, "Expected value parameter for \"FLAT\"_ [%s]\n", join(vParams, " "));
+                xha_fprintf(stderr, "Expected value parameter for \"FLAT\"_ [%s]\n", join(vParams, " "));
                 iResult = -1;
             }
 
         } else {
-            stdfprintf(stderr, "Unknown command [%s]\n", join(vParams, " "));
+            xha_fprintf(stderr, "Unknown command [%s]\n", join(vParams, " "));
             iResult = -1;
         }
     } else {
@@ -643,7 +643,7 @@ int GridFactory::handleRainLine() {
         iResult = 0;
     }
 
-    if (iResult != 0) stdfprintf(stderr, "handleRainLine: %d\n", iResult);
+    if (iResult != 0) xha_fprintf(stderr, "handleRainLine: %d\n", iResult);
 
     return iResult;
 }
@@ -659,14 +659,14 @@ int GridFactory::handleNPPLine() {
     if (it != m_mSplitCommands.end()) {
         stringvec vParams = it->second;
 
-        stdprintf("----- handling KEY_NPP: [%s]\n", join(vParams, ":"));
+        xha_printf("----- handling KEY_NPP: [%s]\n", join(vParams, ":"));
         iResult = -1;
         if (vParams[0].compare("NETCDF") == 0) {
             if (vParams.size() > 2) {
-                std::string sTemplate = stdsprintf("%s %%s %%s %s %s %s %s %%d %s", APP_PYTHON, DEF_NPP_LON, DEF_NPP_LAT, DEF_NPP_TIME, DEF_NPP_NPP, PLACEHOLDER);
+                std::string sTemplate = xha_sprintf("%s %%s %%s %s %s %s %s %%d %s", APP_PYTHON, DEF_NPP_LON, DEF_NPP_LAT, DEF_NPP_TIME, DEF_NPP_NPP, PLACEHOLDER);
                 iResult = createNETCDFCommands(vParams, APP_NPP_INTERP, DEF_NPP_FILE, sTemplate);
             } else {
-                stdfprintf(stderr, "Unknown format for \"NETCDF\" [%s]\n", join(vParams, " "));
+                xha_fprintf(stderr, "Unknown format for \"NETCDF\" [%s]\n", join(vParams, " "));
                 iResult = -1;
             }
  
@@ -680,18 +680,18 @@ int GridFactory::handleNPPLine() {
                 }
                 iResult = 0;
             } else {
-                stdfprintf(stderr, "Expected value parameter for \"FLAT\"\n");
+                xha_fprintf(stderr, "Expected value parameter for \"FLAT\"\n");
                 iResult = -1;
             }
         } else {
-            stdfprintf(stderr, "Unknown command [%s]\n", join(vParams, " "));
+            xha_fprintf(stderr, "Unknown command [%s]\n", join(vParams, " "));
             iResult = -1;
         }
     } else {
         // nothing to do is ok
         iResult = 0;
     }
-    if (iResult != 0) stdfprintf(stderr, "handleNPPLine: %d\n", iResult);
+    if (iResult != 0) xha_fprintf(stderr, "handleNPPLine: %d\n", iResult);
 
     return iResult;
 }
@@ -752,16 +752,16 @@ int GridFactory::setGridIco(const stringvec &vParams) {
                     iResult = 0;
                     if (vArg[0].compare("std") == 0)  {
                         bEqual = false;
-                        stdprintf("Without tegmark\n");
+                        xha_printf("Without tegmark\n");
                     } else if (vArg[0].compare("eq") == 0)  {
                         bEqual = true;
-                        stdprintf("With tegmark\n");
+                        xha_printf("With tegmark\n");
                     } else {
-                        stdprintf("expected  \"<type>:<subdivs>\"\n");
+                        xha_printf("expected  \"<type>:<subdivs>\"\n");
                         iResult = -1;
                     }
                 } else {
-                    stdprintf("expected  number for \"<subdivs>\", not [%s]\n", vArg[1]);
+                    xha_printf("expected  number for \"<subdivs>\", not [%s]\n", vArg[1]);
                     iResult = -1;
                 }
             }
@@ -771,7 +771,7 @@ int GridFactory::setGridIco(const stringvec &vParams) {
                     m_dRadius = dRadius;
                 }
             } else if (vParams.size() > 3) {
-                stdprintf("too many arguments\n");
+                xha_printf("too many arguments\n");
                 iResult = -1;
             } 
             
@@ -782,7 +782,7 @@ int GridFactory::setGridIco(const stringvec &vParams) {
          
        
     } else {
-        stdprintf("need parameters\n");
+        xha_printf("need parameters\n");
         iResult = -1;
     }
 
@@ -802,7 +802,7 @@ int GridFactory::setGridIco(const stringvec &vParams) {
         if (iResult == 0) {
             stringmap smSurfaceData;
             smSurfaceData[SURF_TYPE] = SURF_EQSAHEDRON;
-            smSurfaceData[SURF_IEQ_SUBDIVS] = stdsprintf("%d", iSubDivs);
+            smSurfaceData[SURF_IEQ_SUBDIVS] = xha_sprintf("%d", iSubDivs);
             m_pCG = new SCellGrid(0, m_iNumCells, smSurfaceData);
             iResult = createCells(pNI);
             
@@ -866,13 +866,13 @@ int GridFactory::setGridFlat(const stringvec &vParams) {
             if (strToNum(vParts[0], &iW) && strToNum(vParts[1], &iH)) {
                 m_iNumCells = iW*iH;
                 iResult = 0;
-                stdfprintf(stderr, "got iW %d, iH %d -> %d\n", iW, iH, m_iNumCells);
+                xha_fprintf(stderr, "got iW %d, iH %d -> %d\n", iW, iH, m_iNumCells);
 
             } else {
-                stdfprintf(stderr, "invalid number in  size: [%s]\n", vParams[2]);
+                xha_fprintf(stderr, "invalid number in  size: [%s]\n", vParams[2]);
             }
         } else {
-            stdfprintf(stderr, "invalid size: [%s]\n", vParams[2]);
+            xha_fprintf(stderr, "invalid size: [%s]\n", vParams[2]);
         }
 
         // find type 
@@ -880,14 +880,14 @@ int GridFactory::setGridFlat(const stringvec &vParams) {
             if (vParams[0].compare("HEX") == 0) {
                 bHex = true;
                 if (((iPeriodicity & PERIODIC_Y) != 0)&&((iH%2) == 1)) {
-                    stdfprintf(stderr,"[GridFactory::readDef] WARNING: You need an even of rows for a regularY-periodic HEX grid\n");
-                    stdfprintf(stderr,"[GridFactory::readDef] Using an odd number of rows results in a grid with torsion!\n");
+                    xha_fprintf(stderr,"[GridFactory::readDef] WARNING: You need an even of rows for a regularY-periodic HEX grid\n");
+                    xha_fprintf(stderr,"[GridFactory::readDef] Using an odd number of rows results in a grid with torsion!\n");
                     
                 }
             } else if (vParams[0].compare("RECT") == 0) {
                 bHex = false;
             } else {
-                stdfprintf(stderr,"[GridFactory::readDef] unknown grid type  [%s]\n", vParams[1]);
+                xha_fprintf(stderr,"[GridFactory::readDef] unknown grid type  [%s]\n", vParams[1]);
                 iResult = -1;
             }
         }
@@ -898,16 +898,16 @@ int GridFactory::setGridFlat(const stringvec &vParams) {
             stringmap smSurfaceData;
 
             smSurfaceData[SURF_TYPE] = "LTC";
-            smSurfaceData[SURF_LTC_W] = stdsprintf("%d", iW);
-            smSurfaceData[SURF_LTC_H] = stdsprintf("%d", iH);
-            smSurfaceData[SURF_LTC_LINKS] = stdsprintf("%d", bHex?HEX_NEIGHBORS:RECT_NEIGHBORS);
+            smSurfaceData[SURF_LTC_W] = xha_sprintf("%d", iW);
+            smSurfaceData[SURF_LTC_H] = xha_sprintf("%d", iH);
+            smSurfaceData[SURF_LTC_LINKS] = xha_sprintf("%d", bHex?HEX_NEIGHBORS:RECT_NEIGHBORS);
             smSurfaceData[SURF_LTC_PERIODIC] = sPeriodicityNames[iPeriodicity];
 
-            smSurfaceData[SURF_LTC_PROJ_TYPE] = stdsprintf("%d [Linear] %f %f %d", PR_LINEAR, 0.0, 0.0, 0);
+            smSurfaceData[SURF_LTC_PROJ_TYPE] = xha_sprintf("%d [Linear] %f %f %d", PR_LINEAR, 0.0, 0.0, 0);
 
             double dW = (bHex) ? (iW - 0.5) : (iW - 1);
             double dH = (bHex) ? (iH - 1) * 0.8660254 : (iH - 1);
-            smSurfaceData[SURF_LTC_PROJ_GRID] = stdsprintf("%d %d %lf %lf %lf %lf %lf", iW-1, iH-1, dW, dH, 0.0, 0.0, 1.0);
+            smSurfaceData[SURF_LTC_PROJ_GRID] = xha_sprintf("%d %d %lf %lf %lf %lf %lf", iW-1, iH-1, dW, dH, 0.0, 0.0, 1.0);
 
             m_pCG = new SCellGrid(0, m_iNumCells, smSurfaceData);
             // initialize the cells depending for flat grids
@@ -925,7 +925,7 @@ int GridFactory::setGridFlat(const stringvec &vParams) {
             
         }
     } else {
-        stdfprintf(stderr, "Invalid flat grid definition [%s]\n", join(vParams, " "));
+        xha_fprintf(stderr, "Invalid flat grid definition [%s]\n", join(vParams, " "));
     }
     return iResult;
 }
@@ -1273,24 +1273,24 @@ int GridFactory::createNETCDFCommands(stringvec &vParams, const std::string sApp
                 std::string sCommand;
                 std::string sRealCommand;
                 if (exists(sApp, sRealCommand)) {
-                    sCommand = stdsprintf(sCommandTemplate, sRealCommand, sRealFile, iTime);
+                    sCommand = xha_sprintf(sCommandTemplate, sRealCommand, sRealFile, iTime);
                     m_vShellCommands.push_back(sCommand);
                     iResult = 0;
                 } else {
-                    stdfprintf(stderr, "Couldnt find path for [alt_interpolator]\n");
+                    xha_fprintf(stderr, "Couldnt find path for [alt_interpolator]\n");
                     iResult = -1;
                 }
             } else {
                 iResult = -1;
-                stdfprintf(stderr, "File [%s] does not exist\n", sRealFile);
+                xha_fprintf(stderr, "File [%s] does not exist\n", sRealFile);
             }
         } else {
             iResult = -1;
-            stdfprintf(stderr, "Expected integer time in command [%s]\n", join(vParams, " "));
+            xha_fprintf(stderr, "Expected integer time in command [%s]\n", join(vParams, " "));
         }
     } else {
         iResult = -1;
-        stdfprintf(stderr, "Expected 3 parameters [%s]\n", join(vParams, " "));
+        xha_fprintf(stderr, "Expected 3 parameters [%s]\n", join(vParams, " "));
     }        
     return iResult;
 }
@@ -1311,12 +1311,12 @@ int GridFactory::applyShellCommands(const char *pQDFFile) {
             size_t start_pos = sComm.find(PLACEHOLDER);
             if(start_pos != std::string::npos) {
                 sComm.replace(start_pos, PLACEHOLDER.length(), pQDFFile);
-                stdprintf("Command %02u: [%s]\n", i, sComm);
+                xha_printf("Command %02u: [%s]\n", i, sComm);
                 stringvec vOutputLines;
                 iResult =  executeCommand(sComm, vOutputLines);
                 if (iResult != 0) {
                     for (unsigned int i = 0; i < vOutputLines.size(); i++) {
-                        stdprintf("%s\n", vOutputLines[i]);
+                        xha_printf("%s\n", vOutputLines[i]);
                     }
                 }
             }
@@ -1375,17 +1375,17 @@ int GridFactory::initializeGeography(NodeIndex *pNI) {
     // have their coordinates modified
     // printf("Testing type of IGN surface:[%s]\n", m_pCG->m_smSurfaceData[SURF_TYPE].c_str());
     if (m_pCG->m_smSurfaceData[SURF_TYPE].compare(SURF_LATTICE) == 0) {
-        stdprintf("  --> is lattice\n");
+        xha_printf("  --> is lattice\n");
         iResult = -1;
         const std::string &sPT = m_pCG->m_smSurfaceData[SURF_LTC_PROJ_TYPE];
         stringvec vParts;
         uint iNum = splitString(sPT, vParts, " ");
-        stdprintf("PROJ type  --> [%s]\n", sPT);
+        xha_printf("PROJ type  --> [%s]\n", sPT);
         
         int iPT = 0;
         if ((iNum > 0) && (strToNum(vParts[0], &iPT))) { 
             if (iPT == PR_LINEAR) {
-                stdprintf("have LINEAR\n");
+                xha_printf("have LINEAR\n");
                 bDeg2Rad = false;
             }
         }
@@ -1417,12 +1417,12 @@ int GridFactory::initializeGeography(NodeIndex *pNI) {
                 m_pGeo->m_abCoastal[i] = false;
 
             } else {
-                stdfprintf(stderr,"[GridFactory::setGeography] node of index %d not found\n",iIndex);
+                xha_fprintf(stderr,"[GridFactory::setGeography] node of index %d not found\n",iIndex);
                 iResult = -1;
             }
         }
     } else {
-        stdfprintf(stderr,"[GridFactory::setGeography] couldn't read projection details\n");
+        xha_fprintf(stderr,"[GridFactory::setGeography] couldn't read projection details\n");
     }
     
     return iResult;
@@ -1478,7 +1478,7 @@ int GridFactory::createCells(NodeIndex *pNI) { // THIS IS FOR ICOSAHEDRON GRID
         iC++;
     }
     if (iC != m_iNumCells) {
-        stdfprintf(stderr, "[GridFactory::createCells] numcells: %d, actually set %dn", m_iNumCells, iC);
+        xha_fprintf(stderr, "[GridFactory::createCells] numcells: %d, actually set %dn", m_iNumCells, iC);
     }
     LOG_STATUS("[GridFactory::createCells] linking cells\n");
 

@@ -8,24 +8,24 @@
 #include "types.h"
 #include "ParamReader.h"
 #include "LineReader.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "CSVXMLChecker.h"
 
 //----------------------------------------------------------------------------
 // usage
 //
 void usage(const std::string sApp) {
-    stdprintf("%s - check xml files created from a csv file\n", sApp);
-    stdprintf("usage:\n");
-    stdprintf("  %s --csv=<csv-file> --xml=\"<xml-file-pat>\"\n", sApp);
-    stdprintf("               [--csv-ignore-keys=<ignore-list>]\n");
-    stdprintf("               [--xml-ignore-keys=<ignore-list>]\n");
-    stdprintf("where\n");
-    stdprintf("  csv-file       CSV file from which the XML fies were created\n");
-    stdprintf("  xml-file-pat   pattern for XML files created from CSV file\n");
-    stdprintf("  ignore-list    ':'-separated list of keys to ignore\n");
-    stdprintf("\n");
+    xha_printf("%s - check xml files created from a csv file\n", sApp);
+    xha_printf("usage:\n");
+    xha_printf("  %s --csv=<csv-file> --xml=\"<xml-file-pat>\"\n", sApp);
+    xha_printf("               [--csv-ignore-keys=<ignore-list>]\n");
+    xha_printf("               [--xml-ignore-keys=<ignore-list>]\n");
+    xha_printf("where\n");
+    xha_printf("  csv-file       CSV file from which the XML fies were created\n");
+    xha_printf("  xml-file-pat   pattern for XML files created from CSV file\n");
+    xha_printf("  ignore-list    ':'-separated list of keys to ignore\n");
+    xha_printf("\n");
 }
  
 
@@ -36,7 +36,7 @@ void usage(const std::string sApp) {
 void showsmcontents(const stringmap &smContents, std::string sIndent) {
     stringmap::const_iterator it;
     for (it = smContents.begin(); it != smContents.end(); ++it) {
-        stdprintf("%s%40s: %20s\n", sIndent, it->first, it->second);
+        xha_printf("%s%40s: %20s\n", sIndent, it->first, it->second);
     }
 }
 
@@ -55,7 +55,7 @@ void showvcontentsL(const stringvec &vKeys, const stringmap &smContents, stringv
         }
 
         if (bOK && (smContents.find(vKeys[i]) != smContents.end())) {     
-            stdprintf("%s%40s:%20s\n", sIndent, vKeys[i], smContents.at(vKeys[i]));
+            xha_printf("%s%40s:%20s\n", sIndent, vKeys[i], smContents.at(vKeys[i]));
         }
     }
 }
@@ -74,7 +74,7 @@ void showvcontentsR(const stringvec &vKeys, const stringmap &smContents, stringv
             }
         }
         if (bOK && (smContents.find(vKeys[i]) != smContents.end())) {
-            stdprintf("%s%40s:%40s\n", sIndent, vKeys[i], smContents.at(vKeys[i]));
+            xha_printf("%s%40s:%40s\n", sIndent, vKeys[i], smContents.at(vKeys[i]));
         }
     }
 }
@@ -86,7 +86,7 @@ void showvcontentsR(const stringvec &vKeys, const stringmap &smContents, stringv
 //
 void showvcontentsLR(const stringvec &vKeys, const stringmap &smContents1, const stringmap &smContents2, std::string sIndent) {
     for (uint i = 0; i < vKeys.size(); i++) {
-        stdprintf("%s%40s:%20s%20s\n", sIndent, vKeys[i], smContents1.at(vKeys[i]), smContents2.at(vKeys[i]));
+        xha_printf("%s%40s:%20s%20s\n", sIndent, vKeys[i], smContents1.at(vKeys[i]), smContents2.at(vKeys[i]));
     }
 }
 
@@ -95,10 +95,10 @@ void showvcontentsLR(const stringvec &vKeys, const stringmap &smContents1, const
 // showtablenames
 //
 void showtablenames(int iMatch, std::string sIndent) {
-    std::string sCSV = stdsprintf("CSV[%d]", iMatch);
-    stdprintf("%s%40s %20s%20s\n", sIndent, "Parameter Name", sCSV, "XML");
+    std::string sCSV = xha_sprintf("CSV[%d]", iMatch);
+    xha_printf("%s%40s %20s%20s\n", sIndent, "Parameter Name", sCSV, "XML");
     std::string sBreak(81, '-');
-    stdprintf("%s%s\n", sIndent, sBreak);
+    xha_printf("%s%s\n", sIndent, sBreak);
 }
 
 
@@ -173,23 +173,23 @@ int main(int iArgC, char *apArgV[]) {
                     "--xml-ignore-keys:s", &sXMLIgnoreKeys);
     iResult = pPR->getParams(iArgC, apArgV);
     if (iResult == 0) {
-        stdprintf("CSV file: %s\n", sCSVFile);
-        stdprintf("XML file: %s\n", sXMLFile);
+        xha_printf("CSV file: %s\n", sCSVFile);
+        xha_printf("XML file: %s\n", sXMLFile);
 
         stringvec vCSVIgnore;
         if (sCSVIgnoreKeys.empty()) {
             uint iNum = splitString(sCSVIgnoreKeys, vCSVIgnore, ":", false);
-            stdprintf("CSV ignore keys (%u): %bv \n", iNum, vCSVIgnore);
+            xha_printf("CSV ignore keys (%u): %bv \n", iNum, vCSVIgnore);
         } else {
-            stdprintf("CSV ignore keys (0)\n");
+            xha_printf("CSV ignore keys (0)\n");
         }
 
         stringvec vXMLIgnore;
         if (sXMLIgnoreKeys.empty()) {
             uint iNum = splitString(sXMLIgnoreKeys, vXMLIgnore, ":", false);
-            stdprintf("XML ignore keys (%u): %bv \n", iNum, vXMLIgnore);
+            xha_printf("XML ignore keys (%u): %bv \n", iNum, vXMLIgnore);
         } else {
-            stdprintf("XML ignore keys (0)\n");
+            xha_printf("XML ignore keys (0)\n");
         }
         
 
@@ -198,7 +198,7 @@ int main(int iArgC, char *apArgV[]) {
         if (pCXC != NULL) {
             const stringvec &vIgnoredCSV       = pCXC->getCSVIgnoredKeys();
             const stringmapvec &smvCSVContents = pCXC->getCSVContents();
-            stdfprintf(stderr, "Ignored %zd key%s from CSVFile [%s]\n", vIgnoredCSV.size(), (vIgnoredCSV.size()==1)?"":"s", sCSVFile);
+            xha_fprintf(stderr, "Ignored %zd key%s from CSVFile [%s]\n", vIgnoredCSV.size(), (vIgnoredCSV.size()==1)?"":"s", sCSVFile);
             //            showsmvcontents(smvCSVContents);
             //            showsmcontents(smvCSVContents[0],"");
 
@@ -213,17 +213,17 @@ int main(int iArgC, char *apArgV[]) {
                         const stringvec &vIgnoredXML   = pCXC->getXMLIgnoredKeys();
                          const stringmap &smXMLContents = pCXC->getXMLContents();
 
-                        stdfprintf(stderr,"Ignored %zd key%s from XMLFile [%s]\n", vIgnoredXML.size(), (vIgnoredXML.size()==1)?"":"s", sXMLFile);
+                        xha_fprintf(stderr,"Ignored %zd key%s from XMLFile [%s]\n", vIgnoredXML.size(), (vIgnoredXML.size()==1)?"":"s", sXMLFile);
 
                         const intvec &vMatches =  pCXC->getMatchIndexes();
                         if (vMatches.size() == 1) {
                             int i = vMatches[0];
-                            stdprintf("\nFound match at index %d (corresponds to line %d in the CSV file)\n", i, i+2);
+                            xha_printf("\nFound match at index %d (corresponds to line %d in the CSV file)\n", i, i+2);
                             if (pCXC->getCSVnotXML().size() > 0) {
-                                stdprintf("Warning: there are %zd keys in the CSV file which do not appear in the XML file (%zd ignored)\n", pCXC->getCSVnotXML().size(), vIgnoredCSV.size());
+                                xha_printf("Warning: there are %zd keys in the CSV file which do not appear in the XML file (%zd ignored)\n", pCXC->getCSVnotXML().size(), vIgnoredCSV.size());
                             }
                             if (pCXC->getXMLnotCSV().size() > 0) {
-                                stdprintf("Warning: there are %zd keys in the XML file which do not appear in the CSV file (%zd ignored)\n", pCXC->getXMLnotCSV().size(), vIgnoredXML.size());
+                                xha_printf("Warning: there are %zd keys in the XML file which do not appear in the CSV file (%zd ignored)\n", pCXC->getXMLnotCSV().size(), vIgnoredXML.size());
                             }
                             showtablenames(i, "");
                             showvcontentsL(pCXC->getCSVnotXML(),  smvCSVContents[i], vCSVIgnore,    "");
@@ -231,13 +231,13 @@ int main(int iArgC, char *apArgV[]) {
                             showvcontentsR(pCXC->getXMLnotCSV(),  smXMLContents,     vXMLIgnore,    "");
                                                     
                         } else {
-                            stdprintf("Have %d matches - there might be duplicate lines: %bv\n", vMatches.size(), vMatches);
+                            xha_printf("Have %d matches - there might be duplicate lines: %bv\n", vMatches.size(), vMatches);
                         }
                     } else {
-                        stdprintf("No match found\n");
+                        xha_printf("No match found\n");
                     }
                 } else {
-                    stdprintf("Matches for the provided XML files (%d):\n", vXMLFiles.size());
+                    xha_printf("Matches for the provided XML files (%d):\n", vXMLFiles.size());
                     for (uint i = 0; i < vXMLFiles.size(); i++) {
                         std::string sXMLFileReal{vXMLFiles[i]};
 
@@ -245,29 +245,29 @@ int main(int iArgC, char *apArgV[]) {
                         if (iResult == 0) {
                             const intvec &vMatches =  pCXC->getMatchIndexes();
                             if (vMatches.size() == 1) {
-                                stdprintf("%30s: match %8zd\n", sXMLFileReal, vMatches[0]);
+                                xha_printf("%30s: match %8zd\n", sXMLFileReal, vMatches[0]);
                             }
                         } else {
-                            stdprintf("%30s: no match\n", sXMLFileReal);
+                            xha_printf("%30s: no match\n", sXMLFileReal);
                         }
 
                     }
                 }
             } else {
-                stdprintf("Error during glob for [%s]\n", sXMLFile);
+                xha_printf("Error during glob for [%s]\n", sXMLFile);
             }
 
             delete pCXC;
         }
     } else {
-        stdprintf("Bad Parameters\n");
+        xha_printf("Bad Parameters\n");
         stringvec vUnknown;
         pPR->getUnknownParams(vUnknown);
-        stdprintf("  Unknwon params; %bv\n", vUnknown);
+        xha_printf("  Unknwon params; %bv\n", vUnknown);
 
         stringvec vMand;
         pPR->getMandatoryParams(vMand);
-        stdprintf("  Mandatory params; %bv\n", vMand);
+        xha_printf("  Mandatory params; %bv\n", vMand);
 
         usage(apArgV[0]);
     }

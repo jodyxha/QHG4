@@ -7,8 +7,8 @@
 
 #include <hdf5.h>
 
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "ParamReader.h"
 
 #include "QDFUtils.h"
@@ -45,37 +45,37 @@ const double dDefUseVal = 1.0;
 // usage
 //
 void usage(const std::string sApp) {
-   stdprintf("%s - converting polyline vector data to QDF\n", sApp);
-   stdprintf("Usage:\n");
-   stdprintf("  %s [-s <surf_file>]  -q <input_qdf>\n", sApp);
-   stdprintf("        -v <shp_file> -d <dbf_file> -f <field_name>[:<match_val>[:<use_val>]]\n");
-   stdprintf("        [-o <output_qdf>]\n");
-   stdprintf("where\n");
-   stdprintf("  surf_file    a surface description file (.ico, .ieq, ...). Can be omitted if input_qdf is a regular IEQ file.\n");
-   stdprintf("  qdf_file     qdf file corresponding to <surf_file>\n");
-   stdprintf("  shp_file     SHP file containig vector data\n");
-   stdprintf("  dbf_file     DBF file corresponding to <shp_file>\n");
-   stdprintf("  field_name   name of field in <dbf_file> to extract.\n");
-   stdprintf("               To see all possible field names, call with '-d <dbf_file> only\n");
-   stdprintf("  matchval     target value to select indexes\n");
-   stdprintf("  useval       value to use instead of matchval\n");
-   stdprintf("  output_qdf   name of output qdf to create.\n");
-   stdprintf("               if omitted and input_qdf is given, input_qdf will be modified\n");
-   stdprintf("\n");
-   stdprintf("<surf_file> and <ign_file> are needed to create a cell grid with geography\n");
-   stdprintf("all points contained in the poly lines are extracted and the values for <field_name>\n");
-   stdprintf("are used as entries in the QDF files \"Water\" array corresponding to the points' coordinates\n");
-   stdprintf("If <match_val> is specified, only polylines whose <field_name> value equals <match_val> are used,\n");
-   stdprintf("and the array is set to <use_val> (or 1.0) in the corresponding places\n");
-   stdprintf("\n");
-   stdprintf("Examples\n");
-   stdprintf("List the field names:\n");
-   stdprintf("  %s -d ~/rivers/ne_10m_rivers.dbf\n", sApp);
-   stdprintf("\n");
-   stdprintf("Convert (using CellGrid and Geo from qdf file):\n");
-   stdprintf("  %s -q GridSG_ieq_256.qdf -v ~/rivers/ne_10m_rivers.shp -d ~/rivers/ne_10m_rivers.dbf -f strokeweig -o rivers_1a_256.qdf\n",sApp);
-   stdprintf("\n");
-   stdprintf("\n");
+   xha_printf("%s - converting polyline vector data to QDF\n", sApp);
+   xha_printf("Usage:\n");
+   xha_printf("  %s [-s <surf_file>]  -q <input_qdf>\n", sApp);
+   xha_printf("        -v <shp_file> -d <dbf_file> -f <field_name>[:<match_val>[:<use_val>]]\n");
+   xha_printf("        [-o <output_qdf>]\n");
+   xha_printf("where\n");
+   xha_printf("  surf_file    a surface description file (.ico, .ieq, ...). Can be omitted if input_qdf is a regular IEQ file.\n");
+   xha_printf("  qdf_file     qdf file corresponding to <surf_file>\n");
+   xha_printf("  shp_file     SHP file containig vector data\n");
+   xha_printf("  dbf_file     DBF file corresponding to <shp_file>\n");
+   xha_printf("  field_name   name of field in <dbf_file> to extract.\n");
+   xha_printf("               To see all possible field names, call with '-d <dbf_file> only\n");
+   xha_printf("  matchval     target value to select indexes\n");
+   xha_printf("  useval       value to use instead of matchval\n");
+   xha_printf("  output_qdf   name of output qdf to create.\n");
+   xha_printf("               if omitted and input_qdf is given, input_qdf will be modified\n");
+   xha_printf("\n");
+   xha_printf("<surf_file> and <ign_file> are needed to create a cell grid with geography\n");
+   xha_printf("all points contained in the poly lines are extracted and the values for <field_name>\n");
+   xha_printf("are used as entries in the QDF files \"Water\" array corresponding to the points' coordinates\n");
+   xha_printf("If <match_val> is specified, only polylines whose <field_name> value equals <match_val> are used,\n");
+   xha_printf("and the array is set to <use_val> (or 1.0) in the corresponding places\n");
+   xha_printf("\n");
+   xha_printf("Examples\n");
+   xha_printf("List the field names:\n");
+   xha_printf("  %s -d ~/rivers/ne_10m_rivers.dbf\n", sApp);
+   xha_printf("\n");
+   xha_printf("Convert (using CellGrid and Geo from qdf file):\n");
+   xha_printf("  %s -q GridSG_ieq_256.qdf -v ~/rivers/ne_10m_rivers.shp -d ~/rivers/ne_10m_rivers.dbf -f strokeweig -o rivers_1a_256.qdf\n",sApp);
+   xha_printf("\n");
+   xha_printf("\n");
 }
 
 
@@ -100,21 +100,21 @@ int readShapeFile(const std::string sShapeFile, vecvecdoubledouble &vRecs) {
                     vRecs.push_back(vCoords);
                 } else {
                     if (iResult < 0) {
-                       stdprintf("Shape read error\n");
+                       xha_printf("Shape read error\n");
                     }
                 }
             }   
         } else {
-           stdprintf("Reading of shape file failed\n");
+           xha_printf("Reading of shape file failed\n");
         }
         delete pShapeHeader;
     } else {
-       stdprintf("Couldn't open shapefile [%s]\n", sShapeFile);
+       xha_printf("Couldn't open shapefile [%s]\n", sShapeFile);
     }
     if (iResult == 1) {
         iResult = 0;
     }
-    //   stdprintf("Finished shapefile, res: %d\n", iResult);
+    //   xha_printf("Finished shapefile, res: %d\n", iResult);
     return iResult;
 }
 
@@ -130,16 +130,16 @@ void listDBFFields(const std::string sDBFFile) {
         if (iResult == 0) {
             const nameoffsets &no = pDBFReader->getOffsets();
             nameoffsets::const_iterator it;
-            stdprintf("Names of numerical fields in [%s]\n", sDBFFile);
+            xha_printf("Names of numerical fields in [%s]\n", sDBFFile);
             for (it = no.begin(); it != no.end(); ++it) {
-                stdprintf(" %s\n", it->first.c_str());
+                xha_printf(" %s\n", it->first.c_str());
             }
         } else {
-           stdprintf("Reading of dbf file failed\n");
+           xha_printf("Reading of dbf file failed\n");
         }
         delete pDBFReader;
     } else {
-       stdprintf("Couldn't open dbf file [%s]\n", sDBFFile);
+       xha_printf("Couldn't open dbf file [%s]\n", sDBFFile);
     }
     
 }
@@ -158,12 +158,12 @@ int readDBFFile(const std::string sDBFFile, const std::string sFieldName, std::v
         if (iResult == 0) {
             
         } else {
-           stdprintf("Reading of dbf file failed\n");
+           xha_printf("Reading of dbf file failed\n");
             iResult = -1;
         }
         delete pDBFReader;
     } else {
-       stdprintf("Couldn't open dbf file [%s]\n", sDBFFile);
+       xha_printf("Couldn't open dbf file [%s]\n", sDBFFile);
     }
     
     return iResult;
@@ -185,9 +185,9 @@ int collectData(const std::string sShapeFile,
         iResult = readDBFFile(sDBFFile, sFieldName, vVals);
         if (iResult == 0) {
             if (vRecs.size() == vVals.size()) {
-               stdprintf("Have %zd records\n", vRecs.size());
+               xha_printf("Have %zd records\n", vRecs.size());
             } else {
-               stdprintf("size mismatch: shp [%zd], dbf [%zd]\n", vRecs.size(), vVals.size()); 
+               xha_printf("size mismatch: shp [%zd], dbf [%zd]\n", vRecs.size(), vVals.size()); 
             }
         }
     }
@@ -202,7 +202,7 @@ int insertRiverData(vecvecdoubledouble &vRecs, vecdouble &vVals, SCellGrid *pCG,
     int iResult = 0;
 
     Geography *pGeo = pCG->m_pGeography;
-    //   stdprintf("Looping over %zd recs\n", vRecs.size());
+    //   xha_printf("Looping over %zd recs\n", vRecs.size());
     for (uint i = 0; i < vRecs.size(); ++i) {
         vecdoubledouble &vdd = vRecs[i];
 
@@ -231,7 +231,7 @@ int insertRiverData(vecvecdoubledouble &vRecs, vecdouble &vVals, SCellGrid *pCG,
                     pGeo->m_adWater[iIndex] = vVals[i];
                 }
 
-                //stdprintf("Path %d, segment %d:(%f,%f)->%d:  %f(%f)\n", i, j, dLon*180/Q_PI, dLat*180/Q_PI, iIndex, dVal, vVals[i]);
+                //xha_printf("Path %d, segment %d:(%f,%f)->%d:  %f(%f)\n", i, j, dLon*180/Q_PI, dLat*180/Q_PI, iIndex, dVal, vVals[i]);
                 
             }
             
@@ -255,12 +255,12 @@ int initializeGeography(SCellGrid *pCG, IcoGridNodes *pIGN) {
     bool bDeg2Rad = true;
     // rectangular grids with linear "projection" should not 
     // have their coordinates modified
-    stdprintf("Testing type of IGN surface:[%s]\n", pCG->m_smSurfaceData[SURF_TYPE].c_str());
+    xha_printf("Testing type of IGN surface:[%s]\n", pCG->m_smSurfaceData[SURF_TYPE].c_str());
     if (pCG->m_smSurfaceData[SURF_TYPE] == SURF_LATTICE) {
-       stdprintf("  --> is lattice\n");
+       xha_printf("  --> is lattice\n");
         iResult = -1;
         std::string sPT = pCG->m_smSurfaceData[SURF_LTC_PROJ_TYPE];
-        stdprintf("PROJ type  --> [%s]\n", sPT);
+        xha_printf("PROJ type  --> [%s]\n", sPT);
 
         stringvec vParts;
         uint iNum = splitString(sPT, vParts, " ");
@@ -269,12 +269,12 @@ int initializeGeography(SCellGrid *pCG, IcoGridNodes *pIGN) {
             if (strToNum(vParts[0], &iPT)) {
                 iResult = 0;
                 if (iPT == PR_LINEAR) {
-                   stdprintf("have LINEAR\n");
+                   xha_printf("have LINEAR\n");
             
                     bDeg2Rad = false;
                 }
             } else {
-                stdprintf("bat projType [%s}n", vParts[0]);
+                xha_printf("bat projType [%s}n", vParts[0]);
             }
         }
         /*
@@ -282,11 +282,11 @@ int initializeGeography(SCellGrid *pCG, IcoGridNodes *pIGN) {
         if (p != NULL) {
             char *pEnd;
             int iPT = (int)strtol(p, &pEnd, 10);
-            stdprintf("First word [%s]\n", p);
+            xha_printf("First word [%s]\n", p);
             if (*pEnd == '\0') {
                 iResult = 0;
                 if (iPT == PR_LINEAR) {
-                   stdprintf("have LINEAR\n");
+                   xha_printf("have LINEAR\n");
             
                     bDeg2Rad = false;
                 }
@@ -322,12 +322,12 @@ int initializeGeography(SCellGrid *pCG, IcoGridNodes *pIGN) {
                 pGeo->m_abIce[iIndex] = false;
 
             } else {
-                stdfprintf(stderr,"[initializeGeography] node of index %d not found\n",iIndex);
+                xha_fprintf(stderr,"[initializeGeography] node of index %d not found\n",iIndex);
                 iResult = -1;
             }
         }
     } else {
-        stdfprintf(stderr,"[initializeGeography] couldn't read projection details\n");
+        xha_fprintf(stderr,"[initializeGeography] couldn't read projection details\n");
     }
     
     return iResult;
@@ -378,7 +378,7 @@ Surface *getSurface(const std::string sSurfFile, int *piNumCells) {
     iResult = pLat->load(sSurfFile);
     if (iResult == 0) {
         pSurf = pLat;
-       stdprintf("Have Lattice\n");
+       xha_printf("Have Lattice\n");
         *piNumCells = pLat->getLinkage()->getNumVertices();
     } else {
         EQsahedron *pEQ = EQsahedron::createEmpty();
@@ -387,7 +387,7 @@ Surface *getSurface(const std::string sSurfFile, int *piNumCells) {
             
             pEQ->relink();
             pSurf = pEQ;
-           stdprintf("Have EQsahedron\n");
+           xha_printf("Have EQsahedron\n");
             *piNumCells = pEQ->getLinkage()->getNumVertices();
         } else {
             Icosahedron *pIco = Icosahedron::create(1, POLY_TYPE_ICO);
@@ -396,7 +396,7 @@ Surface *getSurface(const std::string sSurfFile, int *piNumCells) {
             pIco->setPreSel(bPreSel);
             iResult = pIco->load(sSurfFile);
             if (iResult == 0) {
-               stdprintf("Have Icosahedron\n");
+               xha_printf("Have Icosahedron\n");
                 *piNumCells = pIco->getLinkage()->getNumVertices();
             } else {
                 pSurf = NULL;
@@ -433,7 +433,7 @@ SCellGrid *createCGFromIGN(const std::string sIGNFile, int *piNumCells) {
                                 
         
     } else {
-       stdprintf("Couldn't read from [%s]\n", sIGNFile);
+       xha_printf("Couldn't read from [%s]\n", sIGNFile);
     }
     delete pIGN;
     return pCG;
@@ -445,7 +445,7 @@ SCellGrid *createCGFromIGN(const std::string sIGNFile, int *piNumCells) {
 //   
 SCellGrid *createCGFromQDF(const std::string sInputQDF, int *piNumCells) {
     int iResult = -1;
-   stdprintf("Creating CG from QDF\n");
+   xha_printf("Creating CG from QDF\n");
     SCellGrid *pCG = NULL;
     hid_t hFile = qdf_openFile(sInputQDF, true);
     if (hFile > 0) {
@@ -469,35 +469,35 @@ SCellGrid *createCGFromQDF(const std::string sInputQDF, int *piNumCells) {
                             
                                 iResult = pGeoR->readData(pGeo);
                                 if (iResult == 0) {
-                                   stdprintf("CellGrid created!\n");
+                                   xha_printf("CellGrid created!\n");
                                     pCG->setGeography(pGeo);
                                 } else {
-                                   stdprintf("Couldn't read geo data from [%s]\n", sInputQDF);
+                                   xha_printf("Couldn't read geo data from [%s]\n", sInputQDF);
                                 }
                             } else {
-                               stdprintf("NumCells differs between grid (%d) and geo (%d)\n", *piNumCells, geoa.m_iNumCells);
+                               xha_printf("NumCells differs between grid (%d) and geo (%d)\n", *piNumCells, geoa.m_iNumCells);
                             }
                         } else {
-                           stdprintf("Couldn't read geo data from [%s]\n", sInputQDF);
+                           xha_printf("Couldn't read geo data from [%s]\n", sInputQDF);
                         }
                         delete pGeoR;
                     } else {
-                       stdprintf("Couldn't create GeoGroupReader for QDF file [%s]\n", sInputQDF);
+                       xha_printf("Couldn't create GeoGroupReader for QDF file [%s]\n", sInputQDF);
                     }
                 } else {
-                   stdprintf("Couldn't read geo attributes from [%s]\n", sInputQDF);
+                   xha_printf("Couldn't read geo attributes from [%s]\n", sInputQDF);
                 }
             } else {
-               stdprintf("Couldn't get number of cells from [%s]\n", sInputQDF);
+               xha_printf("Couldn't get number of cells from [%s]\n", sInputQDF);
             }
             delete pGR;
         } else {
-           stdprintf("Couldn't create GridGroupReader for QDF file [%s]\n", sInputQDF);
+           xha_printf("Couldn't create GridGroupReader for QDF file [%s]\n", sInputQDF);
         }
 
         qdf_closeFile(hFile);
     } else {
-       stdprintf("Couldn't open QDF file [%s]\n", sInputQDF);
+       xha_printf("Couldn't open QDF file [%s]\n", sInputQDF);
     }
     if (iResult != 0) {
         if (pCG->m_pGeography != NULL) {
@@ -530,32 +530,32 @@ Surface *createSurfaceFromQDF(const std::string sInputQDF, int *piNumCells) {
                             int iSubDivs = (int)(f1 - 1);
                             pSurf = EQsahedron::createInstance(iSubDivs, true);
                             if (pSurf != NULL) {
-                               stdprintf("surface created!\n");
+                               xha_printf("surface created!\n");
                             } else {
-                               stdprintf("Couldn't create surface\n");
+                               xha_printf("Couldn't create surface\n");
                             }
                         } else {
-                           stdprintf("bad cell number [%d]\n", *piNumCells);
+                           xha_printf("bad cell number [%d]\n", *piNumCells);
                         }
 
                     } else {
-                       stdprintf("Can't create surface for type [%s]\n", sType.c_str());
+                       xha_printf("Can't create surface for type [%s]\n", sType.c_str());
                     }
                 } else {
                     
-                   stdprintf("Couldn't extract attribute [%s] from grid group\n", GRID_ATTR_SURF_TYPE);
+                   xha_printf("Couldn't extract attribute [%s] from grid group\n", GRID_ATTR_SURF_TYPE);
                 }
             } else {
                 
-               stdprintf("Couldn't extract attribute [%s] from grid group\n", GRID_ATTR_NUM_CELLS);
+               xha_printf("Couldn't extract attribute [%s] from grid group\n", GRID_ATTR_NUM_CELLS);
             }
             qdf_closeGroup(hGrid);
         } else {
-           stdprintf("Couldn't open grid group in  [%s]\n", sInputQDF);
+           xha_printf("Couldn't open grid group in  [%s]\n", sInputQDF);
         }
         qdf_closeFile(hFile);
     } else {
-       stdprintf("Couldn't open [%s] asd QDF file\n", sInputQDF);
+       xha_printf("Couldn't open [%s] asd QDF file\n", sInputQDF);
     }
     return pSurf;
 }
@@ -641,18 +641,18 @@ int main(int iArgC, char *apArgV[]) {
                                         if (strToNum(vParts[2], &dUseVal)) {
                                             iResult = 0;
                                         } else {
-                                            stdprintf("Expected use_val to be a number [%s]\n", vParts[2]);
+                                            xha_printf("Expected use_val to be a number [%s]\n", vParts[2]);
                                             iResult = -1;
                                         }
                                     }
 
                                 } else {
-                                    stdprintf("Expected match_val to be a number [%s]\n", vParts[1]);
+                                    xha_printf("Expected match_val to be a number [%s]\n", vParts[1]);
                                     iResult = -1;
                                 }
                             }
                         } else {
-                            stdprintf("This should not happen here: field_name is emptyn");
+                            xha_printf("This should not happen here: field_name is emptyn");
                             iResult = -1;
                         }
                     }                                           
@@ -670,7 +670,7 @@ int main(int iArgC, char *apArgV[]) {
                                 if (strToNum(pUseValStr, &dUseVal)) {
                                     pUseVal =  &dUseVal;
                                 } else {
-                                   stdprintf("Bad use value: [%s]\n", pUseValStr);
+                                   xha_printf("Bad use value: [%s]\n", pUseValStr);
                                     iResult = -1;
                                 }
                             }
@@ -678,7 +678,7 @@ int main(int iArgC, char *apArgV[]) {
                                 pMatchVal =  &dMatchVal;
 
                             } else {
-                               stdprintf("Bad match value: [%s]\n", pMatchValStr);
+                               xha_printf("Bad match value: [%s]\n", pMatchValStr);
                                 iResult = -1;
                             }
                         }
@@ -689,12 +689,12 @@ int main(int iArgC, char *apArgV[]) {
                     if (iResult ==0) {
                         vecvecdoubledouble vRecs;
                         vecdouble vVals;
-                        stdprintf("collecting data\n");
+                        xha_printf("collecting data\n");
                         iResult = collectData(sSHPFile, sDBFFile, sFieldName, vRecs, vVals);
                         if (iResult == 0) {
                        
 
-                            stdprintf("inserting rivers\n");
+                            xha_printf("inserting rivers\n");
                             iResult = insertRiverData(vRecs, vVals, pCG, pSurf, dMatchVal, dUseVal); 
                                 
                             // dummy time value
@@ -706,9 +706,9 @@ int main(int iArgC, char *apArgV[]) {
                                     GeoWriter *pGeoW = new GeoWriter(pCG->m_pGeography);
                                     pGeoW->replace(hFile);
                                     qdf_closeFile(hFile);
-                                    stdprintf("Written to QDF file [%s]\n", sOutputQDF);
+                                    xha_printf("Written to QDF file [%s]\n", sOutputQDF);
                                 } else {
-                                    stdprintf("Couldn't open QDF file [%s]\n", sOutputQDF);
+                                    xha_printf("Couldn't open QDF file [%s]\n", sOutputQDF);
                                 }
                             } else {
                                 hid_t hFile = qdf_createFile(sOutputQDF, iStep, fTime, "VectorImport");
@@ -720,9 +720,9 @@ int main(int iArgC, char *apArgV[]) {
                                     GeoWriter *pGeoW = new GeoWriter(pCG->m_pGeography);
                                     pGeoW->write(hFile);
                                     qdf_closeFile(hFile);
-                                    stdprintf("Written to QDF file [%s]\n", sOutputQDF);
+                                    xha_printf("Written to QDF file [%s]\n", sOutputQDF);
                                 } else {
-                                    stdprintf("Couldn't create QDF file [%s]\n", sOutputQDF);
+                                    xha_printf("Couldn't create QDF file [%s]\n", sOutputQDF);
                                 }
                             }
                         }
@@ -731,9 +731,9 @@ int main(int iArgC, char *apArgV[]) {
                     delete pCG;
         
                 } else {
-                    stdprintf("A required input file is empty:\n");
-                    stdprintf("  sInputQDF [%s]\n", sInputQDF);
-                    stdprintf("  sSHPFile  [%s]\n", sSHPFile);
+                    xha_printf("A required input file is empty:\n");
+                    xha_printf("  sInputQDF [%s]\n", sInputQDF);
+                    xha_printf("  sSHPFile  [%s]\n", sSHPFile);
                     
                     usage(apArgV[0]);
                 }
@@ -743,11 +743,11 @@ int main(int iArgC, char *apArgV[]) {
 
 
         } else {
-            stdprintf("Couldn't set ParamReader options\n");
+            xha_printf("Couldn't set ParamReader options\n");
         }
         delete pPR;
     } else {
-        stdprintf("Couldn't create ParamReader\n");
+        xha_printf("Couldn't create ParamReader\n");
     }
     
     return iResult;

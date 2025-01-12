@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <hdf5.h>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
 #include "SPopulation.h"
@@ -68,13 +68,13 @@ int XHDFWriter<A>::init(const std::string sFileName, uint iNumRegions) {
     
     
     
-    stdfprintf(stderr, "[XHDFWriter::init] using [%s]\n", sFileName); fflush(stderr);
+    xha_fprintf(stderr, "[XHDFWriter::init] using [%s]\n", sFileName); fflush(stderr);
     if (fileExists(sFileName)) {
-        stdfprintf(stderr, "[XHDFWriter::init] opening [%s] with H5F_ACC_RDWR\n", sFileName); fflush(stderr);
+        xha_fprintf(stderr, "[XHDFWriter::init] opening [%s] with H5F_ACC_RDWR\n", sFileName); fflush(stderr);
         m_hFile = H5Fopen(sFileName.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
 
     } else {
-        stdfprintf(stderr, "[XHDFWriter::init] [%s] does not exist, create with H5F_ACC_TRUNC\n", sFileName); fflush(stderr);
+        xha_fprintf(stderr, "[XHDFWriter::init] [%s] does not exist, create with H5F_ACC_TRUNC\n", sFileName); fflush(stderr);
         m_hFile = H5Fcreate(sFileName.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
         bNew = true;
         
@@ -92,13 +92,13 @@ int XHDFWriter<A>::init(const std::string sFileName, uint iNumRegions) {
                     iResult = 0;
                 }
             } else {
-                stdfprintf(stderr, "[XHDFWriter::init] Couldn't create datatype");
+                xha_fprintf(stderr, "[XHDFWriter::init] Couldn't create datatype");
             }
         } else {
-            stdfprintf(stderr, "[XHDFWriter::init] Couldn't create root group");
+            xha_fprintf(stderr, "[XHDFWriter::init] Couldn't create root group");
         }
     } else {
-        stdfprintf(stderr, "[XHDFWriter::init] Couldn't create HDF file [%s]", sFileName);
+        xha_fprintf(stderr, "[XHDFWriter::init] Couldn't create HDF file [%s]", sFileName);
     }
     return iResult;
 }
@@ -142,10 +142,10 @@ int XHDFWriter<A>::writeData(const std::string sSimName, uchar *pData, int iNumV
     if (status >= 0) {
         iResult = 0;
         if (m_bVerbose) {
-             stdfprintf(stderr, "[XHDFWriter::writeData] Successfully written %d records\n", iNumVals);
+             xha_fprintf(stderr, "[XHDFWriter::writeData] Successfully written %d records\n", iNumVals);
         }
     } else {
-        stdfprintf(stderr, "[XHDFWriter::writeData] Couldn't write data\n");
+        xha_fprintf(stderr, "[XHDFWriter::writeData] Couldn't write data\n");
     }
 
     qdf_closeDataSet(hDataSet);
@@ -163,12 +163,12 @@ int XHDFWriter<A>::writeDataRegionized(const std::string sSimName, int iStep, fl
     int iResult = -1;
 
     /*      
-    stdfprintf(stderr, "XHDFWriter: some values of %u before writing\n", iNumAgs); 
+    xha_fprintf(stderr, "XHDFWriter: some values of %u before writing\n", iNumAgs); 
     for (uint i = 0; i < 5; i++) {
         A *pai = (A *)pData;
-        stdfprintf(stderr, "%d: agent id %u, cell id %d, hyb %f\n", i, pai[i].m_ulID, pai[i].m_ulCellID, pai[i].m_fHybridization);
+        xha_fprintf(stderr, "%d: agent id %u, cell id %d, hyb %f\n", i, pai[i].m_ulID, pai[i].m_ulCellID, pai[i].m_fHybridization);
         int j = iNumAgs-i-1;
-        stdfprintf(stderr, "%d: agent id %s, cell id %d, hyb %f\n", j, pai[j].m_ulID, pai[j].m_ulCellID, pai[j].m_fHybridization);
+        xha_fprintf(stderr, "%d: agent id %s, cell id %d, hyb %f\n", j, pai[j].m_ulID, pai[j].m_ulCellID, pai[j].m_fHybridization);
     }
     */  
    
@@ -176,7 +176,7 @@ int XHDFWriter<A>::writeDataRegionized(const std::string sSimName, int iStep, fl
         iResult = qdf_insertAttribute(m_hRoot, ROOT_TIME_NAME, 1, &fStartTime);
     }
 
-    stdfprintf(stderr, "[XHDFWriter::writeDataRegionize] adding group [%s]\n", sSimName); fflush(stderr);
+    xha_fprintf(stderr, "[XHDFWriter::writeDataRegionize] adding group [%s]\n", sSimName); fflush(stderr);
     hid_t hSimGroup = qdf_opencreateGroup(m_hRoot, sSimName);
     
     char sStep[1024];
@@ -224,10 +224,10 @@ int XHDFWriter<A>::writeDataRegionized(const std::string sSimName, int iStep, fl
             if (status >= 0) {
                 iResult = 0;
                 if (m_bVerbose) {
-                    stdfprintf(stderr, "[XHDFWriter::writeDataRegionize] Successfully written %zd records\n",  vSelected.size());
+                    xha_fprintf(stderr, "[XHDFWriter::writeDataRegionize] Successfully written %zd records\n",  vSelected.size());
                 }
             } else {
-                stdfprintf(stderr, "[XHDFWriter::writeDataRegionize] Couldn't write data\n");
+                xha_fprintf(stderr, "[XHDFWriter::writeDataRegionize] Couldn't write data\n");
             }
 
             int iLandWater[2];

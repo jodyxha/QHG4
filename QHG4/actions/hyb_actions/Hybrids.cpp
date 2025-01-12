@@ -11,7 +11,7 @@
 
 #include "MessLoggerT.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "BinomialDist.h"
 #include "LBController.h"
@@ -136,7 +136,7 @@ Hybrids<T,U>::Hybrids(SPopulation<T> *pPop,  SCellGrid *pCG, std::string sID, LB
     m_afHybridization = new float[this->m_pCG->m_iNumCells];
 
     // we need to build our own WELLs    
-    stdprintf("[Hybrids::Hybrids] using %u as seed for %d WELLs\n", iSeed, m_iNumThreads);
+    xha_printf("[Hybrids::Hybrids] using %u as seed for %d WELLs\n", iSeed, m_iNumThreads);
     m_apWELL = WELLUtils::buildWELLs(m_iNumThreads, iSeed);
  
 }
@@ -232,7 +232,7 @@ void Hybrids<T,U>::deleteAllocated() {
 template<typename T, class U>
 int Hybrids<T,U>::init() {
     int iResult = -1;
-    stdprintf("init called\n");
+    xha_printf("init called\n");
     deleteAllocated();
 
     
@@ -244,7 +244,7 @@ int Hybrids<T,U>::init() {
             m_iNumBlocks  = U::numNucs2Blocks(m_iGenomeSize);
 
             // initialize the buffer ...
-            stdprintf("initializing m_aGenome with (%d, %d)\n", m_pAgentController->getLayerSize(), m_iNumParents*m_iGenomeSize);
+            xha_printf("initializing m_aGenome with (%d, %d)\n", m_pAgentController->getLayerSize(), m_iNumParents*m_iGenomeSize);
             m_aGenome.init(m_pAgentController->getLayerSize(), m_iNumParents*m_iNumBlocks);
         
             // ... and add it to the AgentController
@@ -303,7 +303,7 @@ int Hybrids<T,U>::init() {
                     
                         iResult = 0;
                     } else {
-                        stdprintf("Couldn't create BinomialDistribution\n");
+                        xha_printf("Couldn't create BinomialDistribution\n");
                     }
                 }
 
@@ -311,14 +311,14 @@ int Hybrids<T,U>::init() {
                 m_pSeqIOOrigome = SequenceIOUtils<ulong>::createInstance(ORIGOME_DATASET_NAME, H5T_NATIVE_ULONG, &m_aOrigome, m_pAgentController, m_pvDeadList, m_iNumParents*m_iNumBlocks);
 
             } else {
-                stdprintf("Couldn't add buffer to controller\n");
+                xha_printf("Couldn't add buffer to controller\n");
             }
         } else {
-            stdprintf("[Hybrids] This module expects %d bit nucleotides, but the attruibute specifies %d bit nucleotides\n", U::BITSINNUC, m_iBitsPerNuc);
+            xha_printf("[Hybrids] This module expects %d bit nucleotides, but the attruibute specifies %d bit nucleotides\n", U::BITSINNUC, m_iBitsPerNuc);
         }
 
     } else {
-        stdprintf("Bad values for genome size or num crossovers or mutation rate\n");
+        xha_printf("Bad values for genome size or num crossovers or mutation rate\n");
     }
 
     return iResult;
@@ -500,7 +500,7 @@ int Hybrids<T,U>::determineHybridization() {
 
             m_afHybridization[iCellIndex] += fH/this->m_pPop->getNumAgents(iCellIndex);
             if (std::isnan( m_afHybridization[iCellIndex])) {
-                stdprintf("nan in cell %d ag %lu, fH %f, numA %lu\n", iCellIndex, pa->m_ulID, fH, this->m_pPop->getNumAgents(iCellIndex));
+                xha_printf("nan in cell %d ag %lu, fH %f, numA %lu\n", iCellIndex, pa->m_ulID, fH, this->m_pPop->getNumAgents(iCellIndex));
             }
         }
     } 
@@ -524,7 +524,7 @@ int Hybrids<T,U>::determineHybridization() {
 template<typename T, class U>
 int Hybrids<T,U>::writeAdditionalDataQDF(hid_t hSpeciesGroup) {
     int iResult = 0;
-    stdprintf("[Hybrids<T,U>::writeAdditionalDataQDF] Writing Genomes\n");
+    xha_printf("[Hybrids<T,U>::writeAdditionalDataQDF] Writing Genomes\n");
 
     iResult = m_pSeqIOGenome->writeSequenceDataQDF(hSpeciesGroup,this->m_pPop->getNumAgentsEffective());
     if (iResult == 0) {
@@ -688,7 +688,7 @@ int Hybrids<T,U>::extractAttributesQDF(hid_t hSpeciesGroup) {
         }
     }
     
-    stdprintf("[Hybrids] ExtractParamsQDF:res %d\n", iResult);
+    xha_printf("[Hybrids] ExtractParamsQDF:res %d\n", iResult);
     
     if (iResult == 0) {
         // we must call init() before callnig readAdditionalDataQDF()
@@ -737,7 +737,7 @@ int Hybrids<T,U>::dumpStateQDF(hid_t hSpeciesGroup) {
     if (m_bOwnWELL && (iResult == 0)) {
         iResult = dumpWELL(m_apWELL, m_iNumThreads, ATTR_HYBRIDS_NAME, hSpeciesGroup);
     }
-    stdprintf("Hybrids WELLState after dump\n");
+    xha_printf("Hybrids WELLState after dump\n");
     WELLUtils::showStates(m_apWELL, m_iNumThreads, false);
     return iResult;
 }
@@ -782,7 +782,7 @@ int Hybrids<T,U>::tryGetAttributes(const ModuleComplex *pMC) {
         if (iResult2 == 0) {
             iResult2 = m_pGenomeCreator->determineInitData(sTemp);
             if (iResult2 != 0) {
-                stdprintf("value for [%s] is malformed or unknown: [%s]\n", ATTR_HYBRIDS_INITIAL_MUTS, sTemp);
+                xha_printf("value for [%s] is malformed or unknown: [%s]\n", ATTR_HYBRIDS_INITIAL_MUTS, sTemp);
                 iResult = -1;
             } 
         }
@@ -791,7 +791,7 @@ int Hybrids<T,U>::tryGetAttributes(const ModuleComplex *pMC) {
         if (iResult2 == 0) {
             iResult2 = m_pOrigomeCreator->determineInitData(sTemp);
             if (iResult2 != 0) {
-                stdprintf("value for [%s] is malformed or unknown: [%s]\n", ATTR_HYBRIDS_INITIAL_ORIS, sTemp);
+                xha_printf("value for [%s] is malformed or unknown: [%s]\n", ATTR_HYBRIDS_INITIAL_ORIS, sTemp);
                 iResult = -1;
             } 
         }
@@ -822,11 +822,11 @@ int Hybrids<T,U>::createInitialGenomes(int iNumGenomes) {
                 iResult = m_pOrigomeCreator->createInitialOrigomes(m_iGenomeSize, iNumGenomes, m_aOrigome);
             }
         } else {
-            stdprintf("[Hybrids::createInitialGenomes] No new Genome created\n");
+            xha_printf("[Hybrids::createInitialGenomes] No new Genome created\n");
             iResult = 0;
         }
     } else {
-        stdprintf("Hybrids has not been initialized\n");
+        xha_printf("Hybrids has not been initialized\n");
     }   
     return iResult;
 }

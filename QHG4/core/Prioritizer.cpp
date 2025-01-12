@@ -6,7 +6,7 @@
 #include <set>
 #include <string>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "Prioritizer.h"
 #include "QDFUtils.h"
 #include "Action.h"
@@ -20,10 +20,10 @@ int Prioritizer<A>::setPrio(uint iPrio, std::string name) {
     int iResult = 0;
     if (m_names.find(name) != m_names.end()) {
         m_prios[iPrio].push_back(m_names[name]);
-        stdprintf("Prioritizer set Prio for [%s] to %u\n", name, iPrio);
+        xha_printf("Prioritizer set Prio for [%s] to %u\n", name, iPrio);
     } else {
         iResult = -1;
-        stdprintf("[Prioritizer<A>::setPrio] WARNING: Prioritizer tried to add non-existing action '%s'\n",name);
+        xha_printf("[Prioritizer<A>::setPrio] WARNING: Prioritizer tried to add non-existing action '%s'\n",name);
         showAttributes();
     }
     return iResult;
@@ -39,10 +39,10 @@ int Prioritizer<A>::addAction(Action<A> *act) {
     const std::string sActionName = act->getActionName();
     if (m_names.find(sActionName) != m_names.end()) {
         iResult = -1;
-        stdprintf("[Prioritizer<A>::addAction] WARNING: there already is an action with name [%s]\n", sActionName);
+        xha_printf("[Prioritizer<A>::addAction] WARNING: there already is an action with name [%s]\n", sActionName);
     } else {
         m_names[sActionName] = act;
-        stdprintf("[Prioritizer<A>::addAction] Prioritizer added actions [%s]\n", sActionName);
+        xha_printf("[Prioritizer<A>::addAction] Prioritizer added actions [%s]\n", sActionName);
     }
     return iResult;
 }
@@ -88,10 +88,10 @@ int Prioritizer<A>::removeAction(std::string name) {
             m_names.erase(itN);
             iResult = 0;
         } else {
-            stdprintf("[Prioritizer<A>::removeAction] couldn't remove Action [%s] /should not happen\n", name);
+            xha_printf("[Prioritizer<A>::removeAction] couldn't remove Action [%s] /should not happen\n", name);
         }
     } else {
-        stdprintf("[Prioritizer<A>::removeAction] Action [%s] not found\n", name);
+        xha_printf("[Prioritizer<A>::removeAction] Action [%s] not found\n", name);
     }
     return iResult;
 }
@@ -125,10 +125,10 @@ int Prioritizer<A>::disableAction(std::string name) {
         if (bDisabled) {
             iResult = 0;
         } else {
-            stdprintf("[Prioritizer<A>::disableAction] couldn't diaable Action [%s] /should not happen\n", name);
+            xha_printf("[Prioritizer<A>::disableAction] couldn't diaable Action [%s] /should not happen\n", name);
         }
     } else {
-        stdprintf("[Prioritizer<A>::disableAction] Action [%s] not found\n", name);
+        xha_printf("[Prioritizer<A>::disableAction] Action [%s] not found\n", name);
     }
     return iResult;
 }
@@ -163,7 +163,7 @@ int Prioritizer<A>::enableAction(std::string name) {
         iResult = 0;
     } else {
         // this should never happen
-        stdprintf("[Prioritizer<A>::removeAction] Action [%s] not found\n", name);
+        xha_printf("[Prioritizer<A>::removeAction] Action [%s] not found\n", name);
     }
     return iResult;
 }
@@ -261,7 +261,7 @@ int Prioritizer<A>::extractActionParamsQDF3(hid_t hSpeciesGroup) {
         iResult = it->second->extractAttributesQDF(hSpeciesGroup);
     }
     if (iResult != 0) {
-        stdprintf("[Prioritizer<A>::extractActionParamsQDF3] couldn't extract params 3 for [%s]\n", it->first);
+        xha_printf("[Prioritizer<A>::extractActionParamsQDF3] couldn't extract params 3 for [%s]\n", it->first);
         showAttributes();
     }
 
@@ -281,11 +281,11 @@ int Prioritizer<A>::writeActionParamsQDF3(hid_t hSpeciesGroup) {
     // we cycle through all actions and extract parameters
     // until we finish or until we find an error
     for (it = m_names.begin(); iResult == 0 && it != m_names.end(); ++it) {
-        // stdprintf("adding parameters for action %s\n",it->first);
+        // xha_printf("adding parameters for action %s\n",it->first);
         iResult = it->second->writeAttributesQDF(hSpeciesGroup);
     }
     if (iResult != 0) {
-        stdprintf("[Prioritizer<A>::writeActionParamsQDF3] couldn't write params 3 for [%s]\n", it->first);
+        xha_printf("[Prioritizer<A>::writeActionParamsQDF3] couldn't write params 3 for [%s]\n", it->first);
         showAttributes();
     }
 
@@ -313,19 +313,19 @@ int Prioritizer<A>::extractActionParamsQDF(hid_t hSpeciesGroup) {
                  if (iResult == 0) {
                      // success
                  } else {
-                     stdprintf("[Prioritizer<A>::extractActionParamsQDF4] ERROR: extracting additional data failed\n");
+                     xha_printf("[Prioritizer<A>::extractActionParamsQDF4] ERROR: extracting additional data failed\n");
                  }
             } else {
-                stdprintf("[Prioritizer<A>::extractActionParamsQDF4] ERROR: extracting attribute data failed\n");
+                xha_printf("[Prioritizer<A>::extractActionParamsQDF4] ERROR: extracting attribute data failed\n");
             }
             qdf_closeGroup(hActionGroup);
         } else {
             iResult = -1;
-            stdprintf("[Prioritizer<A>::extractActionParamsQDF4] WARNING: couldn't open action group [%s] for writing\n", it->first);
+            xha_printf("[Prioritizer<A>::extractActionParamsQDF4] WARNING: couldn't open action group [%s] for writing\n", it->first);
         }       
     }
     if (iResult != 0) {
-        stdprintf("[Prioritizer<A>::extractActionParamsQDF4] couldn't extract params for [%s]\n", it->first);
+        xha_printf("[Prioritizer<A>::extractActionParamsQDF4] couldn't extract params for [%s]\n", it->first);
         showAttributes();
     }
 
@@ -345,7 +345,7 @@ int Prioritizer<A>::writeActionParamsQDF(hid_t hSpeciesGroup) {
     // we cycle through all actions and extract parameters
     // until we finish or until we find an error
     for (it = m_names.begin(); iResult == 0 && it != m_names.end(); ++it) {
-        // stdprintff(stderr,"adding parameters for action %s\n",it->first);
+        // xha_printff(stderr,"adding parameters for action %s\n",it->first);
         hid_t hActionGroup = qdf_opencreateGroup(hSpeciesGroup, it->first);
         if (hActionGroup != H5P_DEFAULT) {
             iResult = it->second->writeAttributesQDF(hActionGroup);
@@ -354,19 +354,19 @@ int Prioritizer<A>::writeActionParamsQDF(hid_t hSpeciesGroup) {
                 if (iResult == 0) {
                     //success
                 } else {
-                    stdprintf("[Prioritizer<A>::writeActionParamsQDF4] ERROR: writing additional data failed\n");
+                    xha_printf("[Prioritizer<A>::writeActionParamsQDF4] ERROR: writing additional data failed\n");
                 }
             } else {
-                stdprintf("[Prioritizer<A>::writeActionParamsQDF4] ERROR: writiong attribute data failed\n");
+                xha_printf("[Prioritizer<A>::writeActionParamsQDF4] ERROR: writiong attribute data failed\n");
            }
             qdf_closeGroup(hActionGroup);
         } else {
             iResult = -1;
-            stdprintf("[Prioritizer<A>::writeActionParamsQDF4] WARNING: couldn't open action group [%s] for reading\n", it->first);
+            xha_printf("[Prioritizer<A>::writeActionParamsQDF4] WARNING: couldn't open action group [%s] for reading\n", it->first);
         }
     }
     if (iResult != 0) {
-        stdprintf("[Prioritizer<A>::writeActionParamsQDF4] couldn't write params for [%s]\n", it->first);
+        xha_printf("[Prioritizer<A>::writeActionParamsQDF4] couldn't write params for [%s]\n", it->first);
         showAttributes();
     }
 
@@ -405,7 +405,7 @@ int Prioritizer<A>::dumpActionStatesQDF(hid_t hSpeciesGroup) {
     // we cycle through all actions and extract parameters
     // until we finish or until we find an error
     for (it = m_names.begin(); iResult == 0 && it != m_names.end(); ++it) {
-        stdprintf("[Prioritizer<A>::dumpActionStatesQD] dumping state for action %s\n",it->first);
+        xha_printf("[Prioritizer<A>::dumpActionStatesQD] dumping state for action %s\n",it->first);
         iResult = it->second->dumpStateQDF(hSpeciesGroup);
     }
 
@@ -425,7 +425,7 @@ int Prioritizer<A>::modifyAttributes(const std::string sAttrName, double dValue)
 
     // we cycle through all actions until the parameter has changed
     for (it = m_names.begin(); (iResult < 0) && (it != m_names.end()); ++it) {
-        stdprintf("[Prioritizer<A>::modifyAttributes] adding parameters for action %s\n",it->first);
+        xha_printf("[Prioritizer<A>::modifyAttributes] adding parameters for action %s\n",it->first);
         iResult = it->second->modifyAttributes(sAttrName, dValue);
     }
 
@@ -446,11 +446,11 @@ int Prioritizer<A>::getActionAttributes(const modulemap &mModules) {
         if (itM != mModules.end()) { 
             iResult = it->second->tryGetAttributes(itM->second);  // in Action
             if (iResult != 0) {
-                stdprintf("[Prioritizer<A>::getActionParams] Couldn't get values for [%s]\n", it->first);
+                xha_printf("[Prioritizer<A>::getActionParams] Couldn't get values for [%s]\n", it->first);
             }
         } else {
             if (it->second->getNumAttributes() != 0) {
-                stdprintf("[Prioritizer<A>::getActionParams] couldn't find params for module [%s] (%s)\n", it->first, it->second->getActionName()); 
+                xha_printf("[Prioritizer<A>::getActionParams] couldn't find params for module [%s] (%s)\n", it->first, it->second->getActionName()); 
                 iResult = -1;
             } else {
                 iResult = 0;
@@ -472,7 +472,7 @@ bool Prioritizer<A>::isEqual(Prioritizer<A> *pP, bool bStrict) {
     if (m_names.size() == pP->m_names.size()) {
         bIsEqual = true;
         
-        stdprintf("prioritizer num actions %zd\n", m_names.size());
+        xha_printf("prioritizer num actions %zd\n", m_names.size());
 
         
         
@@ -485,12 +485,12 @@ bool Prioritizer<A>::isEqual(Prioritizer<A> *pP, bool bStrict) {
             it2 = pP->m_names.find(it->first);
             if (it2 != pP->m_names.end()) {
                 bIsEqual &= it->second->isEqual(it2->second, bStrict);
-                stdprintf("[Prioritizer<A>::isEqual] prioritizer equal for [%s]: %s\n", it->first, (bIsEqual ? "yes":"no")); 
+                xha_printf("[Prioritizer<A>::isEqual] prioritizer equal for [%s]: %s\n", it->first, (bIsEqual ? "yes":"no")); 
                 if (!bIsEqual) {
-                    stdprintf("[Prioritizer<A>::isEqual] difference for [%s]: [%s] - [%s]\n", it->first, it->second->getActionName(), it2->second->getActionName());
+                    xha_printf("[Prioritizer<A>::isEqual] difference for [%s]: [%s] - [%s]\n", it->first, it->second->getActionName(), it2->second->getActionName());
                 }
             } else {
-                stdprintf("[Prioritizer<A>::isEqual] prioritizer: action not found in other: [%s]\n", it->first); 
+                xha_printf("[Prioritizer<A>::isEqual] prioritizer: action not found in other: [%s]\n", it->first); 
                 bIsEqual = false;
             }
         }
@@ -508,7 +508,7 @@ void Prioritizer<A>::showAttributes() {
     printf("Required attributes for this population:\n");
     typename namelist::const_iterator it;
     for (it = m_names.begin(); it != m_names.end(); ++it) {
-        stdprintf("[%s]\n", it->first);
+        xha_printf("[%s]\n", it->first);
         it->second->showAttributes();
     }
     printf("++++++++++++++++++++++++++++++++++++++++\n");

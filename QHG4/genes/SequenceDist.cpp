@@ -1,6 +1,6 @@
 #include <cstring>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "QDFArray.h"
 #include "QDFArrayT.h"
@@ -80,15 +80,15 @@ int SequenceDist<T>::prepareNodes(const std::string sGridQDF, const std::string 
                 
                 
             } else {
-                stdfprintf(stderr, "couldn't extract travel times from stat file\n");
+                xha_fprintf(stderr, "couldn't extract travel times from stat file\n");
             }
 
         } else {
-            stdfprintf(stderr, "couldn't extract distances from stat file\n");
+            xha_fprintf(stderr, "couldn't extract distances from stat file\n");
         }
         
     } else {
-        stdfprintf(stderr, "reading grid qdf [%s] failed\n", sGridQDF);
+        xha_fprintf(stderr, "reading grid qdf [%s] failed\n", sGridQDF);
     }
     return iResult;
 }
@@ -104,7 +104,7 @@ int SequenceDist<T>::prepareNodes(const std::string sGridQDF, const std::string 
 template<typename T>
 int SequenceDist<T>::nodeIdsToIndexes(const std::string sGridQDF, std::vector<int> &vNodeIDs, node_index &mNodeIndexes) {
     int iResult = -1;
-    //@@    stdprintf("Reading indexes from [%s]\n", sGridQDF);
+    //@@    xha_printf("Reading indexes from [%s]\n", sGridQDF);
     QDFArray *pQA = QDFArray::create(sGridQDF);
     if (pQA != NULL) {
         
@@ -136,12 +136,12 @@ int SequenceDist<T>::nodeIdsToIndexes(const std::string sGridQDF, std::vector<in
 
             pQA->closeArray();
         } else {
-            stdfprintf(stderr, "Couldn't open Dataset [%s/%s]\n", GRIDGROUP_NAME, CELL_DATASET_NAME);
+            xha_fprintf(stderr, "Couldn't open Dataset [%s/%s]\n", GRIDGROUP_NAME, CELL_DATASET_NAME);
         }
             
         delete pQA;
     } else {
-        stdfprintf(stderr, "Couldn't open QDF file [%s]\n", sGridQDF);
+        xha_fprintf(stderr, "Couldn't open QDF file [%s]\n", sGridQDF);
     }
     
     return iResult;
@@ -155,7 +155,7 @@ template<typename T>
 int SequenceDist<T>::nodeIdsToStat(const std::string sStatQDF, const std::string sSpeciesName, node_index &mNodeIndexes, node_value &mNodeStats, const std::string sStatName) {
     int iResult = -1;
     
-    //@@    stdprintf("Reading distances from [%s]\n", pStatQDF);
+    //@@    xha_printf("Reading distances from [%s]\n", pStatQDF);
 
     QDFArray *pQA = QDFArray::create(sStatQDF);
     if (pQA != NULL) {
@@ -163,17 +163,17 @@ int SequenceDist<T>::nodeIdsToStat(const std::string sStatQDF, const std::string
         if (iResult == 0) {
             // that's ok, then
         } else {
-            stdprintf("Couldn't open array [%s] under [%s/%s]\n", sStatName, POPGROUP_NAME, sSpeciesName);
-            stdprintf("Trying old-style\n");
+            xha_printf("Couldn't open array [%s] under [%s/%s]\n", sStatName, POPGROUP_NAME, sSpeciesName);
+            xha_printf("Trying old-style\n");
             iResult = pQA->openArray(MSTATGROUP_NAME, sStatName);
             if (iResult == 0) {
                 // that's ok, then
             } else {
-                stdprintf("Couldn't open array [%s] under [%s]\n", sStatName, MSTATGROUP_NAME);
+                xha_printf("Couldn't open array [%s] under [%s]\n", sStatName, MSTATGROUP_NAME);
             }    
         }    
     } else {
-        stdprintf("Couldn't open qdf file [%s]\n", sStatQDF);
+        xha_printf("Couldn't open qdf file [%s]\n", sStatQDF);
     }
 
     if (iResult == 0) {
@@ -212,13 +212,13 @@ int SequenceDist<T>::nodeIdsToStat(const std::string sStatQDF, const std::string
         }
         
         delete[] pBuf;
-        //@@            stdprintf("found %zd indexdists\n", mIndexDistances.size());
+        //@@            xha_printf("found %zd indexdists\n", mIndexDistances.size());
         
         // now we can assign distances to node IDs 
         for (it = mNodeIndexes.begin(); it != mNodeIndexes.end(); ++it) {
             mNodeStats[it->first] = mIndexStats[it->second];
         }
-        //@@            stdprintf("got %zd distances\n", mIndexDistances.size());
+        //@@            xha_printf("got %zd distances\n", mIndexDistances.size());
             
     }
     return iResult;
@@ -289,9 +289,9 @@ int SequenceDist<T>::writeMetaData(const std::string sOutput) {
     // average the distance of all "original" indivduals to the other individuals
     int iC = 0;
 
-    std::string sName = stdsprintf(TEMPLATE_TABLE, sOutput);
+    std::string sName = xha_sprintf(TEMPLATE_TABLE, sOutput);
     FILE *fOut0 = fopen(sName.c_str(), "wt");
-    stdfprintf(fOut0, "#ID Longitude Latitude Time_Step Travel_Dist Travel_Time Region_Name Location_ID Region_ID\n");
+    xha_fprintf(fOut0, "#ID Longitude Latitude Time_Step Travel_Dist Travel_Time Region_Name Location_ID Region_ID\n");
 
     tnamed_ids::const_iterator it;
     for (it = m_mvIDs.begin(); it != m_mvIDs.end(); ++it) {
@@ -316,14 +316,14 @@ int SequenceDist<T>::writeMetaData(const std::string sOutput) {
         for (uint k = 0; k < it->second.size(); k++) {
             idtype iID = it->second[k];
             //  ID Lon Lat step traveldist traveltime regionname  locationID RegionID
-            stdfprintf(fOut0, "%ld %f %f %8.1f %f %f %s %d %d \n", iID, m_mIDLocs[iID].first, m_mIDLocs[iID].second, it->first.second, m_mTravelDists[it->second[k]],  m_mTravelTimes[it->second[k]], sLocName, iLocID, iRegID);
+            xha_fprintf(fOut0, "%ld %f %f %8.1f %f %f %s %d %d \n", iID, m_mIDLocs[iID].first, m_mIDLocs[iID].second, it->first.second, m_mTravelDists[it->second[k]],  m_mTravelTimes[it->second[k]], sLocName, iLocID, iRegID);
             
             iC++;
         }
 
     }
     fclose(fOut0);
-    stdprintf("Written data table (%dx%d)\n  [%s]\n", iC, 9, sName);
+    xha_printf("Written data table (%dx%d)\n  [%s]\n", iC, 9, sName);
     return iResult;
 }
 
@@ -346,16 +346,16 @@ int SequenceDist<T>::writeFullMatrix(const std::string sOutput, float **pM, int 
         // write distances with prepended location and agent ID
         for (int i = 0; i < iNumSequences1; i++) {
             for (int j = 0; j < iNumSequences2; j++) {
-                stdfprintf(fOut, "%f\t", pM[i][j]);
+                xha_fprintf(fOut, "%f\t", pM[i][j]);
             }
-            stdfprintf(fOut, "\n");
+            xha_fprintf(fOut, "\n");
         }
 
 
         fclose(fOut);
-        stdprintf("Written distance matrix (%dx%d)\n  [%s]\n", iNumSequences1, iNumSequences2, sOutput);
+        xha_printf("Written distance matrix (%dx%d)\n  [%s]\n", iNumSequences1, iNumSequences2, sOutput);
     } else {
-        stdfprintf(stderr, "Couldn't open output file [%s]\n", sOutput);
+        xha_fprintf(stderr, "Couldn't open output file [%s]\n", sOutput);
     }
     
     return iResult;
@@ -373,7 +373,7 @@ int SequenceDist<T>::createAndWriteDistMat(const std::string sOutput) {
     DistMat<T> *pDM = DistMat<T>::createDistMat(m_iSequenceSize, pSequences, m_mIDSeq.size(), m_fcalcdist);
     if (pDM != NULL) {
         float **pM = pDM->createMatrix();
-        std::string sName1 = stdsprintf(TEMPLATE_DIST_MAT, sOutput);
+        std::string sName1 = xha_sprintf(TEMPLATE_DIST_MAT, sOutput);
         iResult = writeFullMatrix(sName1, pM, m_mIDSeq.size(), m_mIDSeq.size());
         delete pDM;
     }
@@ -402,7 +402,7 @@ int SequenceDist<T>::createAndWriteDistMatRef(id_sequences &mIDSeqRef, tnamed_id
     if (pDM != NULL) {
         float **pM = pDM->createMatrix();
         
-        std::string sName1 = stdsprintf(TEMPLATE_REF_MAT, sOutput);
+        std::string sName1 = xha_sprintf(TEMPLATE_REF_MAT, sOutput);
         iResult = writeFullMatrix(sName1, pM, m_mIDSeq.size(), mIDSeqRef.size());
 
         delete pDM;
@@ -420,9 +420,9 @@ template<typename T>
 int SequenceDist<T>::extractAndWriteGeoSequenceDists(const std::string sOutput) {
     int iResult = -1;
 
-    std::string sTable  = stdsprintf(TEMPLATE_TABLE,   sOutput);
-    std::string sRefMat = stdsprintf(TEMPLATE_REF_MAT, sOutput);
-    std::string sGGOut  = stdsprintf(TEMPLATE_GEO_SEQ, sOutput);
+    std::string sTable  = xha_sprintf(TEMPLATE_TABLE,   sOutput);
+    std::string sRefMat = xha_sprintf(TEMPLATE_REF_MAT, sOutput);
+    std::string sGGOut  = xha_sprintf(TEMPLATE_GEO_SEQ, sOutput);
 
     LineReader *pLRTable = LineReader_std::createInstance(sTable, "rt");
     if (pLRTable != NULL) {
@@ -452,32 +452,32 @@ int SequenceDist<T>::extractAndWriteGeoSequenceDists(const std::string sOutput) 
                             }
                         }
                         if (vFields.size() > 4) {
-                            stdfprintf(fOut, "%s %s\n", vFields[4], pLineRefMat);
+                            xha_fprintf(fOut, "%s %s\n", vFields[4], pLineRefMat);
                             iC++;
                         } else {
-                            stdfprintf(stderr, "Not enough fields in [%s]\n", sTable);
+                            xha_fprintf(stderr, "Not enough fields in [%s]\n", sTable);
                             iResult = -1;
                         }
                     } else {
                         if ((pLineTable != NULL) != (pLineRefMat != NULL)) {
-                            stdfprintf(stderr, "[%s] and [%s] have different number of lines\n", sTable, sRefMat);
+                            xha_fprintf(stderr, "[%s] and [%s] have different number of lines\n", sTable, sRefMat);
                             iResult = -1;
                         }
                     }
                 }
                 fclose(fOut);
-                stdprintf("Written geo-genome distance matrix (%dx%d)\n  [%s]\n", iC, iW+1, sGGOut);
+                xha_printf("Written geo-genome distance matrix (%dx%d)\n  [%s]\n", iC, iW+1, sGGOut);
             } else {
-                stdfprintf(stderr, "Couldn't open [%s] for writing\n", sGGOut);
+                xha_fprintf(stderr, "Couldn't open [%s] for writing\n", sGGOut);
             }
             delete pLRRefMat;
         } else {
-            stdfprintf(stderr, "Couldn't open [%s] for reading\n", sRefMat);
+            xha_fprintf(stderr, "Couldn't open [%s] for reading\n", sRefMat);
         }
 
         delete pLRTable;
     } else {
-        stdfprintf(stderr, "Couldn't open [%s] for reading\n", sTable);
+        xha_fprintf(stderr, "Couldn't open [%s] for reading\n", sTable);
     }
     return iResult;
 }

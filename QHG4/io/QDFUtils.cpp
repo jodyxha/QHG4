@@ -13,7 +13,7 @@
 #include <unistd.h>
 
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "PolyLine.h"
 #include "QDFUtilsT.h"
 #include "QDFUtils.h"
@@ -103,7 +103,7 @@ hid_t qdf_createFile(const std::string sFileName, int iStep, float fStartTime, c
             printf("pflarz\n");
         }
     } else {
-        stdprintf("Couldn't create file [%s]\n", sFileName);
+        xha_printf("Couldn't create file [%s]\n", sFileName);
     }
     // Restore previous error handler
     H5Eset_auto(hErrorStack, hOldFunc, old_client_data);
@@ -140,19 +140,19 @@ hid_t qdf_openFile(const std::string sFileName, bool bRW) {
                     qdf_closeFile(hFile);
                     hFile = H5P_DEFAULT;
                     iResult = -1;
-                    stdfprintf(stderr, "qdf_openFile: [%s] couldn't extract attr [%s]\n", sFileName, ROOT_ATTR_NAME);
+                    xha_fprintf(stderr, "qdf_openFile: [%s] couldn't extract attr [%s]\n", sFileName, ROOT_ATTR_NAME);
                 }
             } else {
                 hFile = H5P_DEFAULT;
-                stdfprintf(stderr, "qdf_openFile: [%s] does not have attr [%s]\n", sFileName, ROOT_ATTR_NAME);
+                xha_fprintf(stderr, "qdf_openFile: [%s] does not have attr [%s]\n", sFileName, ROOT_ATTR_NAME);
             }
         } else { 
             hFile = H5P_DEFAULT;
-            stdfprintf(stderr, "qdf_openFile: couldn't open [%s] in %s mode\n", sFileName, bRW?"RDWR":"RDONLY");
+            xha_fprintf(stderr, "qdf_openFile: couldn't open [%s] in %s mode\n", sFileName, bRW?"RDWR":"RDONLY");
         }
     } else {
         hFile = H5P_DEFAULT;
-        stdfprintf(stderr, "qdf_openFile: [%s] doesn't exist\n", sFileName);
+        xha_fprintf(stderr, "qdf_openFile: [%s] doesn't exist\n", sFileName);
     }
     // Restore previous error handler
     H5Eset_auto(hErrorStack, hOldFunc, old_client_data);
@@ -364,10 +364,10 @@ int qdf_insertAttribute(hid_t hLoc, const std::string sName, const uint iNum, vo
         if (status == 0) {
             iResult = 0;
         } else {
-            stdprintf("write %s attribute err\n", msTypeNames[hType]);
+            xha_printf("write %s attribute err\n", msTypeNames[hType]);
         } 
     } else {
-        stdprintf("Attribute [%s] already exists\n", sName);
+        xha_printf("Attribute [%s] already exists\n", sName);
     }
 
     return iResult;
@@ -396,15 +396,15 @@ int qdf_extractAttribute(hid_t hLoc, const std::string sName, const uint iNum, v
             if (status == 0) {
                 iResult = 0;
             } else {
-                stdprintf("read %s attribute err\n", msTypeNames[hType]);
+                xha_printf("read %s attribute err\n", msTypeNames[hType]);
             } 
         } else {
-            stdprintf("Bad Rank (%d) or bad size %llu (!= %d)\n", rank, dims[0], iNum);
+            xha_printf("Bad Rank (%d) or bad size %llu (!= %d)\n", rank, dims[0], iNum);
         }
         qdf_closeDataSpace(hAttrSpace);
         qdf_closeAttribute(hAttribute);
     } else {
-        stdprintf("Attribute [%s] does not exist\n", sName);
+        xha_printf("Attribute [%s] does not exist\n", sName);
     }
     return iResult;
 }
@@ -430,7 +430,7 @@ std::string qdf_extractSAttribute(hid_t hLoc, const std::string sName) {
         qdf_closeAttribute(hAttribute);
         delete[] pString;
     } else {
-        stdprintf("Attribute [%s] does not exist\n", sName);
+        xha_printf("Attribute [%s] does not exist\n", sName);
     }
     return std::string(sValue);
 }
@@ -457,7 +457,7 @@ int qdf_extractSAttribute(hid_t hLoc, const std::string sName, std::string &sVal
         qdf_closeAttribute(hAttribute);
         delete[] pString;
     } else {
-        stdprintf("Attribute [%s] does not exist\n", sName);
+        xha_printf("Attribute [%s] does not exist\n", sName);
     }
     return iResult;
 }
@@ -474,7 +474,7 @@ int qdf_readArray(hid_t hGroup, const std::string sName, const uint iNum, void *
         status = H5Dread(hDataSet, hType, H5S_ALL, H5S_ALL, H5P_DEFAULT, vData);
         qdf_closeDataSet(hDataSet);
     } else {
-        stdprintf("Dataset [%s] does not exist in group\n", sName);
+        xha_printf("Dataset [%s] does not exist in group\n", sName);
     }
     return (status >= 0)?0:-1;
 }
@@ -554,7 +554,7 @@ int qdf_readArrays(hid_t hGroup, const std::string sName, const uint iNumArr, co
         qdf_closeDataSpace(hDataSpace);
         qdf_closeDataSpace(hMemSpace);
     } else {
-        stdprintf("Dataset [%s] does not exist in group\n", sName);
+        xha_printf("Dataset [%s] does not exist in group\n", sName);
     }
     return (status >= 0)?0:-1;
 }
@@ -695,10 +695,10 @@ int qdf_getDataExtents(hid_t hGroup, const std::string sName, std::vector<hsize_
             delete[] pSizes;
             
         } else {
-            stdprintf("Couldn't get data space for data set\n");
+            xha_printf("Couldn't get data space for data set\n");
         }
     } else {
-        stdprintf("Dataset [%s] does not exist in group\n", sName);
+        xha_printf("Dataset [%s] does not exist in group\n", sName);
         
     }
     return iResult;
@@ -742,16 +742,16 @@ const std::string qdf_getFirstPopulation(const std::string sPopQDF) {
                     sPopName = s;
                 
                 } else {
-                    stdprintf("No Population subgroup in file [%s]\n", sPopQDF);
+                    xha_printf("No Population subgroup in file [%s]\n", sPopQDF);
                 }
                 qdf_closeGroup(hPopGroup);
             }
         } else {
-            stdprintf("No Population Group in file [%s]\n", sPopQDF);
+            xha_printf("No Population Group in file [%s]\n", sPopQDF);
         }
         qdf_closeFile(hFile);
     } else {
-        stdprintf("Not a QDF file [%s]\n", sPopQDF);
+        xha_printf("Not a QDF file [%s]\n", sPopQDF);
     }
     return sPopName;
 }
@@ -777,10 +777,10 @@ const std::string qdf_checkForPop(const std::string sPopQDF, const std::string s
             }
             qdf_closeFile(hFile);
         } else {
-            stdprintf("No Population Group in file [%s]\n", sPopQDF);
+            xha_printf("No Population Group in file [%s]\n", sPopQDF);
         }
     } else {
-        stdprintf("Not a QDF file [%s]\n", sPopQDF);
+        xha_printf("Not a QDF file [%s]\n", sPopQDF);
     }
     return std::string(sPop);
 }
@@ -802,7 +802,7 @@ bool qdf_hasGeo(const std::string sQDF) {
         }
         qdf_closeFile(hFile);
     } else {
-        stdprintf("Not a QDF file [%s]\n", sQDF);
+        xha_printf("Not a QDF file [%s]\n", sQDF);
     }
     return bResult;
 }
@@ -812,7 +812,7 @@ bool qdf_hasGeo(const std::string sQDF) {
 // qdf_createPolyLine
 //
 PolyLine *qdf_createPolyLine(hid_t hSpeciesGroup, const std::string sPLParName) {
-    stdprintf("qdf_createPoly will work on %s\n", sPLParName);
+    xha_printf("qdf_createPoly will work on %s\n", sPLParName);
     PolyLine *pPL = NULL;
 
     hid_t hAttr = H5Aopen(hSpeciesGroup, sPLParName.c_str(), H5P_DEFAULT);
@@ -836,7 +836,7 @@ PolyLine *qdf_createPolyLine(hid_t hSpeciesGroup, const std::string sPLParName) 
                 pPL = new PolyLine((uint)0);
             }
         } else {
-            stdprintf("Couldn't read %s attribute\n", sPLParName);
+            xha_printf("Couldn't read %s attribute\n", sPLParName);
             
         }
         status = H5Dvlen_reclaim (hMemType, hSpace, H5P_DEFAULT, aPLData);
@@ -1050,11 +1050,11 @@ int qdf_getSurfType(const std::string sQDF, std::string &sSurfType) {
            }
            qdf_closeGroup(hGrid);
        } else {
-           stdprintf("QDF file [%s] has no grid group\n", sQDF);
+           xha_printf("QDF file [%s] has no grid group\n", sQDF);
        }
        qdf_closeFile(hFile);
    } else {
-       stdprintf("Couldn't open [%s] as QDF file\n", sQDF);
+       xha_printf("Couldn't open [%s] as QDF file\n", sQDF);
    }
    return iResult;
 }

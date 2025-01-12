@@ -3,8 +3,8 @@
 
 #include "types.h"
 #include "colors.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "MessLogger.h"
 
 
@@ -72,10 +72,10 @@ MessLogger *MessLogger::create(const std::string sName) {
         if (fOut.good()) {
             fOut.close();
             s_sLogName = sName;
-            stdprintf("Log name: [%s]\n", s_sLogName);
+            xha_printf("Log name: [%s]\n", s_sLogName);
             s_pML = new MessLogger(sName);
         } else {
-            stdprintf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ couldn't open [%s]\n", (sName.empty())?"stdout":sName);
+            xha_printf("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ couldn't open [%s]\n", (sName.empty())?"stdout":sName);
         }
     }
     return s_pML;
@@ -106,7 +106,7 @@ void MessLogger::write(const std::string sLine0, const std::string sPre, const s
     if (endsWith(sLine, "\n")) {
         sLine.pop_back();
     }
-    sLine = stdsprintf("%s%s%s", sPre, sLine, sPost);
+    sLine = xha_sprintf("%s%s%s", sPre, sLine, sPost);
 
     if (!endsWith(sLine, "\n")) {
             sLine += "\n";
@@ -148,27 +148,27 @@ void MessLogger::showLog(int iWhat) {
 //  or use SHOW_ALL to see all messages
 //
 void MessLogger::showLog(const std::string sLogFile, int iWhat) {
-    stdprintf("\n\n%s------------------------------------------------%s\n", MessLogger::s_sCurColorDisp, MessLogger::s_sCurColorStop);
+    xha_printf("\n\n%s------------------------------------------------%s\n", MessLogger::s_sCurColorDisp, MessLogger::s_sCurColorStop);
     if (sLogFile != _STDOUT) {
         std::ifstream fIn(sLogFile, std::ifstream::in);
         if (fIn .good()) {
-            stdprintf("%sShowing contents of [%s]%s\n\n", MessLogger::s_sCurColorDisp, sLogFile, MessLogger::s_sCurColorStop);
+            xha_printf("%sShowing contents of [%s]%s\n\n", MessLogger::s_sCurColorDisp, sLogFile, MessLogger::s_sCurColorStop);
             std::string sLine;
             while (std::getline(fIn, sLine)) {        
                 coloredLine(sLine, iWhat);
             }
             fIn.close();
         } else {
-            stdprintf("%s[MessLogger::showLog] couldn't open  [%s] for reading%s\n", MessLogger::s_sCurColorError, sLogFile, MessLogger::s_sCurColorStop);
+            xha_printf("%s[MessLogger::showLog] couldn't open  [%s] for reading%s\n", MessLogger::s_sCurColorError, sLogFile, MessLogger::s_sCurColorStop);
         }
     } else {
-        stdprintf("%sShowing contents of Buffer%s\n\n", MessLogger::s_sCurColorDisp, MessLogger::s_sCurColorStop);
+        xha_printf("%sShowing contents of Buffer%s\n\n", MessLogger::s_sCurColorDisp, MessLogger::s_sCurColorStop);
 
         for (uint i = 0; i < s_vFirstMessages.size(); i++) {
             coloredLine(s_vFirstMessages[i], iWhat);
         }
     }
-    stdprintf("%s------------------------------------------------%s\n\n", MessLogger::s_sCurColorDisp, MessLogger::s_sCurColorStop);
+    xha_printf("%s------------------------------------------------%s\n\n", MessLogger::s_sCurColorDisp, MessLogger::s_sCurColorStop);
 }
 
 
@@ -201,7 +201,7 @@ void  MessLogger::coloredLine(std::string sLine, int iWhat) {
         }
         if (bShow) {
             strReplace(sLine, "\n", "");
-            stdprintf("%s%s%s\n", sPre, sLine, sPost);
+            xha_printf("%s%s%s\n", sPre, sLine, sPost);
         }
     }
 }

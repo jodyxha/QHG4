@@ -17,7 +17,7 @@
 
 
 #include "qhg_consts.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "Triggers.h"
 
 bool g_bVerbose = false;
@@ -63,7 +63,7 @@ void Trigger::revert() {
 // show
 //
 std::string Trigger::toString() const {
-    return stdsprintf("[%f:%f]%f{%p}", m_fNextTime, m_fLastTime, m_fStep, this);
+    return xha_sprintf("[%f:%f]%f{%p}", m_fNextTime, m_fLastTime, m_fStep, this);
 }
 
 
@@ -180,7 +180,7 @@ int Triggers::parseTrigger(const std::string sTriggerDef) {
         }
         ++pTriggerDef;
     } else {
-        stdprintf("[ Triggers::parseTrigger] WARNING: no time mode given for trigger [%s]. Step mode (S) is used\n", sTriggerDef);
+        xha_printf("[ Triggers::parseTrigger] WARNING: no time mode given for trigger [%s]. Step mode (S) is used\n", sTriggerDef);
     }
 
     double dMin  = dPosInf;
@@ -289,7 +289,7 @@ int Triggers::parseTrigger(const std::string sTriggerDef) {
             iResult = -1;
         }
     } else {
-        stdprintf("[Triggers::parseTrigger] bad trigger \"%s\" (p1;\"%s\", p2:\"%s\", p3:\"%s\")\n", sTriggerDef, (p1==NULL)?"(null)":p1, (p2==NULL)?"(null)":p2, (p3==NULL)?"(null)":p3);
+        xha_printf("[Triggers::parseTrigger] bad trigger \"%s\" (p1;\"%s\", p2:\"%s\", p3:\"%s\")\n", sTriggerDef, (p1==NULL)?"(null)":p1, (p2==NULL)?"(null)":p2, (p3==NULL)?"(null)":p3);
         iResult = -1;
     }
 
@@ -299,12 +299,12 @@ int Triggers::parseTrigger(const std::string sTriggerDef) {
         // eliminate point triggers outside of out interval of interest 
         if ((dMin != dMax) || ((dMin >= m_dStartTime) && (dMax <= m_dEndTime))) {
 
-            stdprintf("Setting trigger %f, %f, %f\n", dMin, dMax, dStep);
+            xha_printf("Setting trigger %f, %f, %f\n", dMin, dMax, dStep);
             Trigger *pT = new Trigger(dMin, dMax, dStep);
             addTrigger(pT);
         } else {
             // not an error - we just ignore it
-            // stdprintf("Ignoring trigger %f, %f, %f\n", dMin, dMax, dStep);
+            // xha_printf("Ignoring trigger %f, %f, %f\n", dMin, dMax, dStep);
         }
     }
 
@@ -365,7 +365,7 @@ Triggers *Triggers::createTriggers(const std::string sTriggersDef, double dStart
 // toString
 //
 std::string Triggers::toString() const {
-    std::string sCur = stdsprintf("{{%p}}m[%f]", this, m_fNextTriggerTime);
+    std::string sCur = xha_sprintf("{{%p}}m[%f]", this, m_fNextTriggerTime);
 
     for (uint i = 0; i < m_vAllTriggers.size(); i++) {
         if (i > 0) {

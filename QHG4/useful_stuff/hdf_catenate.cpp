@@ -5,7 +5,7 @@
 #include <hdf5.h>
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
 
@@ -76,13 +76,13 @@ int copyDataSet(hid_t hStepOut, hid_t hStepIn, const std::string sDataSetName, h
             }
             *ppBuf = new aginfo_float[*iCurBufSize];
         }
-        if (bVerbose) stdprintf("Reading %llu from data set %s\n", dims, sDataSetName);fflush(stdout);
+        if (bVerbose) xha_printf("Reading %llu from data set %s\n", dims, sDataSetName);fflush(stdout);
         hid_t hMemSpace = H5Screate_simple (1, &dims, NULL); 
         status = H5Dread(hDataSetIn, hAgentDataType, hMemSpace,
                      hDataSpaceIn, H5P_DEFAULT, *ppBuf);
     
         if (status >= 0) {
-            if (bVerbose) stdprintf("Writing %llu to data set %s stepout %ld, hDSout %ld\n", dims, sDataSetName, hStepOut, hDataSpaceOut);fflush(stdout);
+            if (bVerbose) xha_printf("Writing %llu to data set %s stepout %ld, hDSout %ld\n", dims, sDataSetName, hStepOut, hDataSpaceOut);fflush(stdout);
             
             hid_t hDataSetOut = H5Dcreate2(hStepOut, sDataSetName, hAgentDataType, hDataSpaceOut, 
                                            H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
@@ -90,21 +90,21 @@ int copyDataSet(hid_t hStepOut, hid_t hStepIn, const std::string sDataSetName, h
             if (status >= 0) {
                 int iLandWater[2];
                 qdf_extractAttribute(hDataSetIn, "LandWater", 2, iLandWater);
-                if (bVerbose) stdprintf("Have attrs (%d, %d)\n", iLandWater[0], iLandWater[1]);fflush(stdout);
+                if (bVerbose) xha_printf("Have attrs (%d, %d)\n", iLandWater[0], iLandWater[1]);fflush(stdout);
                 qdf_insertAttribute(hDataSetOut, "LandWater", 2, iLandWater);
             } else {
                 iResult = -1;
-                stdfprintf(stderr, "Couldn't write data to [%s] \n", sDataSetName);fflush(stdout);
+                xha_fprintf(stderr, "Couldn't write data to [%s] \n", sDataSetName);fflush(stdout);
             }
             qdf_closeDataSet(hDataSetOut);
 
         } else {
             iResult = -1;
-            stdfprintf(stderr, "Couldn't read data from [%s] \n", sDataSetName);fflush(stdout);
+            xha_fprintf(stderr, "Couldn't read data from [%s] \n", sDataSetName);fflush(stdout);
         }
     } else {
         iResult = -1;
-        stdfprintf(stderr, "Couldn't get extents for [%s] \n", sDataSetName);fflush(stdout);
+        xha_fprintf(stderr, "Couldn't get extents for [%s] \n", sDataSetName);fflush(stdout);
     }
     qdf_closeDataSet(hDataSetIn);
 
@@ -164,7 +164,7 @@ char *qdf_getFirstGroup(hid_t hFile) {
         pGrp = new char[strlen(s)+1];
         strcpy(pGrp, s);
     } else {
-        stdprintf("No groups found\n");
+        xha_printf("No groups found\n");
     }
     return pGrp;
 }
@@ -186,22 +186,22 @@ int main(int iArgC, char *apArgV[]) {
     }
     if (iArgC > 2+iOffs) {
 
-        stdprintf("opening output file %s\n", apArgV[iOffs+1]); fflush(stdout);
+        xha_printf("opening output file %s\n", apArgV[iOffs+1]); fflush(stdout);
         hid_t hDest  = H5Fcreate(apArgV[1+iOffs], H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
         std::vector<std::string> vGroups;
 
         std::vector<hid_t> v;
-        stdprintf("opening input files %d - %d\n", iOffs+2, iArgC);
+        xha_printf("opening input files %d - %d\n", iOffs+2, iArgC);
         for (int i = iOffs+2; (iResult == 0) && (i < iArgC); i++) {
-            if (bVerbose) stdprintf("Trying to open %s ...", apArgV[i]); fflush(stdout);
+            if (bVerbose) xha_printf("Trying to open %s ...", apArgV[i]); fflush(stdout);
             hid_t hIn = H5Fopen(apArgV[i], H5F_ACC_RDONLY, H5P_DEFAULT);
             if (hIn != H5P_DEFAULT) {
                 v.push_back(hIn);
                 vGroups.push_back(qdf_getFirstGroup(hIn));
-                if (bVerbose) stdprintf("OK %ld != %ld!\n", hIn, H5P_DEFAULT);
+                if (bVerbose) xha_printf("OK %ld != %ld!\n", hIn, H5P_DEFAULT);
             } else {
                 iResult = -1;
-                if (bVerbose) stdprintf("Failed\n"); else stdprintf("Failed to open [%s]\n", apArgV[i+iOffs]);
+                if (bVerbose) xha_printf("Failed\n"); else xha_printf("Failed to open [%s]\n", apArgV[i+iOffs]);
             }
         }
 
@@ -227,21 +227,21 @@ int main(int iArgC, char *apArgV[]) {
 
         // loop through input files
         for (uint i = 0; i < v.size(); i++) {
-            stdprintf("Cppying data from [%s]\n", apArgV[i+iOffs+2]);
+            xha_printf("Cppying data from [%s]\n", apArgV[i+iOffs+2]);
             hid_t hSimOut = qdf_createGroup(hDest, vGroups[i]);
-            if (bVerbose) stdprintf("created top-level group %s\n", vGroups[i]);
+            if (bVerbose) xha_printf("created top-level group %s\n", vGroups[i]);
             // collect subgroup names (should be "step_XXX")
             std::vector<std::string> vSteps;
             vSteps.clear();
             hid_t hSimIn = qdf_openGroup(v[i], vGroups[i]);
-            if (bVerbose) stdprintf("finding steps for sim %u %s  (%ld) %ld\n", i, vGroups[i], hSimIn, v[i]);fflush(stdout);
+            if (bVerbose) xha_printf("finding steps for sim %u %s  (%ld) %ld\n", i, vGroups[i], hSimIn, v[i]);fflush(stdout);
             H5Literate(hSimIn, H5_INDEX_NAME, H5_ITER_INC, 0, get_group_name, &vSteps);
             
             // loop through subgroups
             for (uint k = 0; k < vSteps.size(); k++) {
-                if (bVerbose) stdprintf("Have group %s in %ld \n", vSteps[k], hSimOut);
+                if (bVerbose) xha_printf("Have group %s in %ld \n", vSteps[k], hSimOut);
                 hid_t hStepOut = qdf_createGroup(hSimOut, pStep);
-                if (bVerbose) stdprintf("-> %ld\n", hStepOut);
+                if (bVerbose) xha_printf("-> %ld\n", hStepOut);
                 // now t hrough datasets
                 hid_t hStepIn = qdf_openGroup(hSimIn, pStep);
 
@@ -276,7 +276,7 @@ int main(int iArgC, char *apArgV[]) {
             qdf_closeFile(v[i]);
         }
     } else {
-        stdprintf("usage: %s <hdf_out> <hdf_in>*\n", apArgV[0]);
+        xha_printf("usage: %s <hdf_out> <hdf_in>*\n", apArgV[0]);
     }
     return iResult;
 }

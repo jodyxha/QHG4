@@ -4,7 +4,7 @@
 
 #include "qhg_consts.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "Vec3D.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
@@ -110,7 +110,7 @@ int QDFImageExtractor::init(SurfaceGrid *pSG,
     m_dHV   = std::isnan(ip.dHV)?m_dHV:ip.dHV;
     m_dOLon = std::isnan(ip.dOLon)?m_dOLon:ip.dOLon;
     m_dOLat = std::isnan(ip.dOLat)?m_dOLat:ip.dOLat;
-    stdprintf("Win: %f %f %f %f\n", m_dWV, m_dHV, m_dOLon, m_dOLat);
+    xha_printf("Win: %f %f %f %f\n", m_dWV, m_dHV, m_dOLon, m_dOLat);
     m_bVerbose = bVerbose;
     iResult = splitArrayColors(sArrayData);
     if (iResult == 0) {
@@ -128,18 +128,18 @@ int QDFImageExtractor::init(SurfaceGrid *pSG,
                 m_pAC = AlphaComposer::createInstance(m_iW, m_iH);
                 if (m_pAC != NULL) {
                 } else {
-                    stdprintf("Couldn't create AlphaComposer\n");
+                    xha_printf("Couldn't create AlphaComposer\n");
                     iResult = -1;
                 }
             } else {
-                stdprintf("couldn't extrac attribute [%s] from [%s]\n", GRID_ATTR_NUM_CELLS, sQDFGrid);
+                xha_printf("couldn't extrac attribute [%s] from [%s]\n", GRID_ATTR_NUM_CELLS, sQDFGrid);
             }
         } else {
-            stdprintf("checkConsistent failed\n");
+            xha_printf("checkConsistent failed\n");
             // error already printed in checkConsistent
         }
     } else {
-        stdprintf("splitArrayColors failed\n");
+        xha_printf("splitArrayColors failed\n");
         // error already printed in splitArrayColors
     }
 
@@ -196,7 +196,7 @@ int QDFImageExtractor::checkArrayName(arrind &aiNameIndex) {
         const std::string s1 = sName.substr(4);
         m_mvArrayData[aiNameIndex] = ds_info(POPGROUP_NAME, s1, AGENT_DATASET_NAME, DS_TYPE_POP);
         if(m_bVerbose) {
-            stdprintf("Adding arrayData(%s, %s, %s, %d)\n", POPGROUP_NAME, s1, AGENT_DATASET_NAME, DS_TYPE_POP);
+            xha_printf("Adding arrayData(%s, %s, %s, %d)\n", POPGROUP_NAME, s1, AGENT_DATASET_NAME, DS_TYPE_POP);
         }
         //mvArrayData[pName] = ds_info(sGroup, AGENT_DATASET_NAME, DS_TYPE_POP);
         iCode = ARR_CODE_POP;
@@ -216,13 +216,13 @@ int QDFImageExtractor::checkArrayName(arrind &aiNameIndex) {
                 m_mvArrayData[aiNameIndex] = ds_info(POPGROUP_NAME, sPop, AGENT_DATASET_NAME, sItem, DS_TYPE_AG);
                 bOK = true;
                 if(true ||m_bVerbose) {
-                    stdprintf("Adding arrayData(%s, %s, %s, %s, %d)\n", POPGROUP_NAME, sPop, AGENT_DATASET_NAME, sItem, DS_TYPE_AG);
+                    xha_printf("Adding arrayData(%s, %s, %s, %s, %d)\n", POPGROUP_NAME, sPop, AGENT_DATASET_NAME, sItem, DS_TYPE_AG);
                 }
             }
         }
 
         if (!bOK) {
-            stdprintf("Bad agent item format\n");
+            xha_printf("Bad agent item format\n");
         } else {
             //mvArrayData[pName] = ds_info(sGroup, AGENT_DATASET_NAME, DS_TYPE_POP);
             iCode = ARR_CODE_AG;
@@ -234,7 +234,7 @@ int QDFImageExtractor::checkArrayName(arrind &aiNameIndex) {
 
     if (iCode != ARR_CODE_NONE) {
         if (m_bVerbose) {
-            stdprintf("added ARR [%s@%d] -> Group [%s%s%s], dataset [%s], type %d\n", 
+            xha_printf("added ARR [%s@%d] -> Group [%s%s%s], dataset [%s], type %d\n", 
                    aiNameIndex.first, 
                    aiNameIndex.second, 
                    m_mvArrayData[aiNameIndex].sGroup, 
@@ -286,12 +286,12 @@ int QDFImageExtractor::splitArraySpec(const std::string sArraySpec) {
                 std::string sParams = sArraySpec.substr(iPosParams+1);
                 stringvec vLUParams;
                 uint iNum = splitString(sParams, vLUParams, ":");
-                stdprintf("Found %u params for %s\n", iNum, sLUName);
+                xha_printf("Found %u params for %s\n", iNum, sLUName);
                 
                 LookUp *pLU = createLookUp(sLUName, vLUParams);
                 m_mvLookUpData[aiNameIndex] = pLU;
                 if (m_bVerbose) {
-                    stdprintf("added LU  [%s@%d] -> [%p]\n", aiNameIndex.first, aiNameIndex.second, pLU);
+                    xha_printf("added LU  [%s@%d] -> [%p]\n", aiNameIndex.first, aiNameIndex.second, pLU);
                 }
                 
                 if (pLU != NULL) {
@@ -302,18 +302,18 @@ int QDFImageExtractor::splitArraySpec(const std::string sArraySpec) {
                 }
                 
             } else {
-                stdprintf("Unknown array name [%s]\n", sArrName);
+                xha_printf("Unknown array name [%s]\n", sArrName);
                 iResult = -1;
             }
 
         } else {
-            stdprintf("Expected LookUp name after '|': [%s]\n", sArraySpec);
+            xha_printf("Expected LookUp name after '|': [%s]\n", sArraySpec);
             iResult = -1;
         }
     
 
     } else {
-        stdprintf("No lookup given: [%s]\n", sArraySpec);
+        xha_printf("No lookup given: [%s]\n", sArraySpec);
         iResult = -1;
     }
     
@@ -348,28 +348,28 @@ int QDFImageExtractor::checkConsistent() {
         if (hGrid != H5P_DEFAULT) {
             qdf_closeGroup(hGrid);
         } else {
-            stdprintf("No grid group in [%s]\n", m_vQDFs[0]);
+            xha_printf("No grid group in [%s]\n", m_vQDFs[0]);
             iResult =-1;
         }
         qdf_closeFile(hQDFGeoGrid);
 
         array_data::const_iterator it;
         if (m_bVerbose) {
-            stdprintf("Have %zd ArrayData elements\n", m_mvArrayData.size());
+            xha_printf("Have %zd ArrayData elements\n", m_mvArrayData.size());
         }
         for (it = m_mvArrayData.begin(); (iResult == 0) && (it != m_mvArrayData.end()); ++it) {
             bool bSearching = true;
             if (m_bVerbose) {
-                stdprintf("Have %zd QDFs\n", m_vQDFs.size());
+                xha_printf("Have %zd QDFs\n", m_vQDFs.size());
             }
             for (uint i = 0; bSearching && (i < m_vQDFs.size()); i++) {
                 if (m_bVerbose) {
-                    stdprintf("checking [%s]:%s(%s)\n", m_vQDFs[i], it->second.sGroup, it->second.sSubGroup);
+                    xha_printf("checking [%s]:%s(%s)\n", m_vQDFs[i], it->second.sGroup, it->second.sSubGroup);
                 }
                 if (checkGroupNew(m_vQDFs[i], it->second)) {
                     if ((it->first.second < 0) || (it->first.second == (int)i)) {
                         if (true || m_bVerbose) {
-                            stdprintf("%s: using Group [%s%s%s], Dataset [%s] in [%s]\n", 
+                            xha_printf("%s: using Group [%s%s%s], Dataset [%s] in [%s]\n", 
                                    it->first.first, 
                                    it->second.sGroup,  
                                    (it->second.sSubGroup != "")?"/":"",
@@ -385,7 +385,7 @@ int QDFImageExtractor::checkConsistent() {
                 if (bSearching) {
                     m_mvWhich[it->first] = -1;
                     iResult = -1;
-                    stdprintf("Group [%s%s%s], Dataset [%s] not found in any of the QDF files\n", 
+                    xha_printf("Group [%s%s%s], Dataset [%s] not found in any of the QDF files\n", 
                            it->second.sGroup,  
                            (it->second.sSubGroup != "")?"/":"",
                            it->second.sSubGroup,  
@@ -396,7 +396,7 @@ int QDFImageExtractor::checkConsistent() {
 
         }
     } else {
-        stdprintf("Couldn't open grid group in [%s]\n", m_vQDFs[0]);
+        xha_printf("Couldn't open grid group in [%s]\n", m_vQDFs[0]);
         iResult = -1;
     }
     return iResult;
@@ -411,11 +411,11 @@ bool QDFImageExtractor::checkGroupNew(const std::string sQDF, const ds_info &rdI
  
     std::string sSub("");
     if (rdInfo.sSubGroup != "") {
-        sSub = stdsprintf("%s/", rdInfo.sSubGroup);
+        sSub = xha_sprintf("%s/", rdInfo.sSubGroup);
     }
-    std::string sFull = stdsprintf("%s/%s%s", rdInfo.sGroup, sSub,  rdInfo.sDataSet);
+    std::string sFull = xha_sprintf("%s/%s%s", rdInfo.sGroup, sSub,  rdInfo.sDataSet);
     if (m_bVerbose) {
-        stdprintf("Checking [%s] for path [%s]\n", sQDF, sFull);
+        xha_printf("Checking [%s] for path [%s]\n", sQDF, sFull);
     }
     if (qdf_checkPathExists(sQDF, sFull) == 0) {
         bOK = true;
@@ -440,7 +440,7 @@ bool QDFImageExtractor::checkGroup(hid_t hFile, const ds_info &rdInfo) {
             hTestGroup = hSubGroup;
         } 
         if (hTestGroup != H5P_DEFAULT) {
-            stdprintf("in group [%s] checking for [%s]\n", rdInfo.sGroup, rdInfo.sSubGroup);
+            xha_printf("in group [%s] checking for [%s]\n", rdInfo.sGroup, rdInfo.sSubGroup);
             if (qdf_link_exists(hTestGroup, rdInfo.sDataSet)) {
                 bOK = true;
             }
@@ -487,7 +487,7 @@ double *QDFImageExtractor::extractData(const std::string sQDF, const ds_info &pG
         break;
 
     case DS_TYPE_POP: {
-        if (m_bVerbose) stdprintf("extracting pop [%s]\n", pGroupDS.sSubGroup);
+        if (m_bVerbose) xha_printf("extracting pop [%s]\n", pGroupDS.sSubGroup);
         memset(pdArr, 0, m_iNumCells*sizeof(double));
         QDFArray *pQA = QDFArray::create(sQDF);
         if (pQA != NULL) {
@@ -495,14 +495,14 @@ double *QDFImageExtractor::extractData(const std::string sQDF, const ds_info &pG
             if (iResult == 0) {
                 
                 uint iNumAgents = pQA->getSize();
-                if (m_bVerbose) stdprintf("found %d agents\n", iNumAgents);
+                if (m_bVerbose) xha_printf("found %d agents\n", iNumAgents);
                 int *pdArr2 = new int[iNumAgents];
                 uint iCount = pQA->getFirstSlab(pdArr2, iNumAgents, "CellID");
                 if (iCount != iNumAgents) {
-                    stdprintf("Got %d cell IDs instead of %d\n", iCount, iNumAgents);
+                    xha_printf("Got %d cell IDs instead of %d\n", iCount, iNumAgents);
                     iResult = -1;
                 } else {
-                    if (m_bVerbose) stdprintf("counting them per cell\n");
+                    if (m_bVerbose) xha_printf("counting them per cell\n");
                     for (uint i = 0; i < iNumAgents; ++i) {
                         pdArr[pdArr2[i]]++;
                     }
@@ -514,7 +514,7 @@ double *QDFImageExtractor::extractData(const std::string sQDF, const ds_info &pG
     }
     break;
     case DS_TYPE_AG: {
-        if (m_bVerbose) stdprintf("extracting item [%s] from pop [%s]\n", pGroupDS.sElement, pGroupDS.sSubGroup);
+        if (m_bVerbose) xha_printf("extracting item [%s] from pop [%s]\n", pGroupDS.sElement, pGroupDS.sSubGroup);
       
         memset(pdArr, 0, m_iNumCells*sizeof(double));
         double *pdArrN = new double[m_iNumCells];
@@ -526,14 +526,14 @@ double *QDFImageExtractor::extractData(const std::string sQDF, const ds_info &pG
             if (iResult == 0) {
                 
                 uint iNumAgents = pQA->getSize();
-                if (m_bVerbose) stdprintf("found %d agents\n", iNumAgents);
+                if (m_bVerbose) xha_printf("found %d agents\n", iNumAgents);
                 int *pdArr2 = new int[iNumAgents];
                 uint iCount = pQA->getFirstSlab(pdArr2, iNumAgents, "CellID");
                 if (iCount != iNumAgents) {
-                    stdprintf("Got %d cell IDs instead of %d\n", iCount, iNumAgents);
+                    xha_printf("Got %d cell IDs instead of %d\n", iCount, iNumAgents);
                     iResult = -1;
                 } else {
-                    if (m_bVerbose) stdprintf("counting them per cell\n");
+                    if (m_bVerbose) xha_printf("counting them per cell\n");
                     for (uint i = 0; i < iNumAgents; ++i) {
                         pdArrN[pdArr2[i]]++;
                     }
@@ -554,7 +554,7 @@ double *QDFImageExtractor::extractData(const std::string sQDF, const ds_info &pG
     }
         break;
     default:
-        stdprintf("Can't process data of type %d\n", pGroupDS.iDataType);
+        xha_printf("Can't process data of type %d\n", pGroupDS.iDataType);
     }
 
     qdf_closeGroup(hGroup);
@@ -575,7 +575,7 @@ double *QDFImageExtractor::extractData(const std::string sQDF, const ds_info &pG
             }
         }
         if (m_bVerbose) {
-            stdprintf("%s: min: %f @ %d; max %f @ %d\n", pGroupDS.sDataSet, dMin, iMin, dMax, iMax);
+            xha_printf("%s: min: %f @ %d; max %f @ %d\n", pGroupDS.sDataSet, dMin, iMin, dMax, iMax);
         }
     }
     if (iResult != 0) {
@@ -593,7 +593,7 @@ double *QDFImageExtractor::extractData(const std::string sQDF, const ds_info &pG
 int QDFImageExtractor::loadAgentsCell(const std::string sPop, const std::string sPopName, const std::string sItemName, double *pdArrN, double *pdArr) {
     hid_t hFilePop     = qdf_openFile(sPop);
     hid_t hPopulation  = qdf_openGroup(hFilePop, POPGROUP_NAME);
-    stdfprintf(stderr, "[loadAgentsCell] pop %s,popname %s\n", sPop, sPopName);
+    xha_fprintf(stderr, "[loadAgentsCell] pop %s,popname %s\n", sPop, sPopName);
     // at this point m_iNumCells should be known (loadNPP() loadAltIce() already called)
 
     int iResult = 0;
@@ -628,9 +628,9 @@ int QDFImageExtractor::loadAgentsCell(const std::string sPop, const std::string 
     }
 
     if (status >= 0) {
-        stdfprintf(stderr, "pop %s: %llu\n", sPopName, dims);
+        xha_fprintf(stderr, "pop %s: %llu\n", sPopName, dims);
     } else {
-        stdfprintf(stderr, "bad status for pop %s\n", sPopName);
+        xha_fprintf(stderr, "bad status for pop %s\n", sPopName);
         iResult = -1;
     }
     delete[] pInfos;
@@ -833,19 +833,19 @@ LookUp *QDFImageExtractor::createLookUp(std::string sLUName, stringvec &vParams)
     case 0:
         break;
     case -1:
-        stdprintf("Unknown lookup name [%s]\n", sLUName);
+        xha_printf("Unknown lookup name [%s]\n", sLUName);
         break;
     case -2:
-        stdprintf("Expected number for parameter of [%s]: [%d]\n", sLUName, iBadIndex);
+        xha_printf("Expected number for parameter of [%s]: [%d]\n", sLUName, iBadIndex);
         break;
     case -3:
-        stdprintf("Not enough parameters for [%s]\n", sLUName);
+        xha_printf("Not enough parameters for [%s]\n", sLUName);
         break;
     case -4:
-        stdprintf("Not a valid color description ('#RRGGBBAA'): [%s]\n", vParams[iBadIndex]);
+        xha_printf("Not a valid color description ('#RRGGBBAA'): [%s]\n", vParams[iBadIndex]);
         break;
     default:
-        stdprintf("Unknown error %d\n", iResult);
+        xha_printf("Unknown error %d\n", iResult);
     }
 
     return pLU;
@@ -859,7 +859,7 @@ LookUp *QDFImageExtractor::createLookUp(std::string sLUName, stringvec &vParams)
 int QDFImageExtractor::addTimeLayer(float fTime) {
     int iResult = 0;
 
-    std::string sText = stdsprintf("%05.1fky", fTime);
+    std::string sText = xha_sprintf("%05.1fky", fTime);
     iResult = addTextLayer(sText);
 
     return iResult;
@@ -885,7 +885,7 @@ int QDFImageExtractor::addTimeLayer(float fTime) {
             
             delete pTR;
         } else {
-            stdprintf("Couldn't create TextRenderer\n");
+            xha_printf("Couldn't create TextRenderer\n");
             iResult = -1;
         }
     }
@@ -908,7 +908,7 @@ int QDFImageExtractor::calcTextPos(TextRenderer *pTR, std::string sText, std::st
         if (sPos.length() == 2) {
             pTR->setFontSize(24);
             pTR->getExt(sText.c_str(), iWText, iHText);
-            stdprintf("Extents for [%s]: %d x %d\n", sText, iWText, iHText); 
+            xha_printf("Extents for [%s]: %d x %d\n", sText, iWText, iHText); 
 
             switch (sPos[0]) {
             case 'B':
@@ -923,7 +923,7 @@ int QDFImageExtractor::calcTextPos(TextRenderer *pTR, std::string sText, std::st
                 m_iOY = iOffs + iHText;
                 break;
             default:
-                stdprintf("Unknown y-pos character [%c] - only know 'B', 'C', or 'U'\n", sPos[1]);
+                xha_printf("Unknown y-pos character [%c] - only know 'B', 'C', or 'U'\n", sPos[1]);
                 iResult = -1;
         
             }
@@ -942,16 +942,16 @@ int QDFImageExtractor::calcTextPos(TextRenderer *pTR, std::string sText, std::st
                 m_iOX = m_iW - iWText -iOffs;
                 break;
             default:
-                stdprintf("Unknown x-pos character [%c] - only know 'L', 'C', or 'R'\n", sPos[1]);
+                xha_printf("Unknown x-pos character [%c] - only know 'L', 'C', or 'R'\n", sPos[1]);
                 iResult = -1;
         
             }
         } else {
-            stdprintf("Expected 2 pos chars but got [%s]\n", sPos);
+            xha_printf("Expected 2 pos chars but got [%s]\n", sPos);
             iResult = -1;
         }
     } else {
-        stdprintf("Couldn't convert offset [%s] to integer\n", sOffs);
+        xha_printf("Couldn't convert offset [%s] to integer\n", sOffs);
         iResult = -1;
     }
     return iResult;
@@ -985,7 +985,7 @@ int QDFImageExtractor::addTextLayer(std::string sText) {
                 // nothing to add
                 break;
             default:
-                stdprintf("Bad number of text pos details : %d (expected <text>[:<pos>[:><offs>]])\n");
+                xha_printf("Bad number of text pos details : %d (expected <text>[:<pos>[:><offs>]])\n");
                 iResult = -1;
             }
             if (iResult == 0) {
@@ -996,7 +996,7 @@ int QDFImageExtractor::addTextLayer(std::string sText) {
                 
 
                 if (iResult == 0) {
-                    stdprintf("for [%s]: iOX = %d iOY=%d\n", vParts[1], m_iOX, m_iOY);
+                    xha_printf("for [%s]: iOX = %d iOY=%d\n", vParts[1], m_iOX, m_iOY);
                     pTR->setColor(1, 1, 1, 1);
                     pTR->addText(vParts[0].c_str(), m_iOX, m_iOY);
                     
@@ -1014,7 +1014,7 @@ int QDFImageExtractor::addTextLayer(std::string sText) {
             delete pTR;
                         
         } else {
-            stdprintf("Couldn't create TextRenderer\n");
+            xha_printf("Couldn't create TextRenderer\n");
             iResult = -1;
         }
 
@@ -1039,10 +1039,10 @@ int QDFImageExtractor::extractAll(const std::string sOutPat, const std::string s
                                     
         if (iResult == 0) {
             if (m_bVerbose) {
-                stdprintf("success for merge\n");
+                xha_printf("success for merge\n");
             }
         } else {
-            stdprintf("Image creation failed\n");
+            xha_printf("Image creation failed\n");
         }
     }
     return iResult;                                
@@ -1064,7 +1064,7 @@ int QDFImageExtractor::LoopLayers(const std::string sOutPat, const std::string s
         if ((m_mvWhich[aiNameIndex] >= 0) && (m_mvWhich[aiNameIndex] < m_iNumLayers))  {
             pData = extractData(m_vQDFs[m_mvWhich[aiNameIndex]], dsCur);
         } else {
-            stdprintf("What? whichvalue %d  -- this should not happen!\n", m_mvWhich[aiNameIndex]);
+            xha_printf("What? whichvalue %d  -- this should not happen!\n", m_mvWhich[aiNameIndex]);
             iResult = -1;
         }
 
@@ -1077,16 +1077,16 @@ int QDFImageExtractor::LoopLayers(const std::string sOutPat, const std::string s
             if (sCompOp.empty()) {
                             
                 // no compositing: create png data and write to file
-                std::string sFullName = stdsprintf("%s_%d", sName, m_mvWhich[aiNameIndex]);
+                std::string sFullName = xha_sprintf("%s_%d", sName, m_mvWhich[aiNameIndex]);
                 
                 iResult = writePNGFile(sOutPat, sFullName);
                             
                 if (iResult == 0) {
                     if (m_bVerbose) {
-                        stdprintf("success for [%s]\n", sName);
+                        xha_printf("success for [%s]\n", sName);
                     }
                 } else {
-                    stdprintf("Image creation failed\n");
+                    xha_printf("Image creation failed\n");
                 }
                 m_pAC->clear();
             }
@@ -1172,7 +1172,7 @@ int QDFImageExtractor::writePNGFile(std::string sPat, const std::string sReplace
     PNGImage *pPI = new PNGImage(m_iW, m_iH);
     if (pPI != NULL) {
         if (m_bVerbose) {
-            stdprintf("Writing data to [%s]\n", sPat);
+            xha_printf("Writing data to [%s]\n", sPat);
         }
         bool bOK = pPI->createPNGFromData(m_pAC->getData(), sPat);
         if (bOK) {
@@ -1205,7 +1205,7 @@ double **QDFImageExtractor::createDataMatrix(double *pData) {
     double dDeltaLon = m_dWV/(m_iW+1);
     double dDeltaLat = m_dHV/(m_iH+1);
         
-    stdprintf("start at %f\n", m_dOLon+m_dHV);
+    xha_printf("start at %f\n", m_dOLon+m_dHV);
     double dCurLat = (m_dOLat+m_dHV) - dDeltaLat;
     for (int i = 0; i < m_iH; i++) {
         double dCurLon = dDeltaLon+m_dOLon;

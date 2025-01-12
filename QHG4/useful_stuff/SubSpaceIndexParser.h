@@ -2,8 +2,8 @@
 #define __SUBSPACEINDEXPARSER_H__
 
 #include "types.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "SubSpace.h"  // for types and constants
 
 

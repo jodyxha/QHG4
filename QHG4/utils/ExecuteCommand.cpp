@@ -6,7 +6,8 @@
 
 #include <string>
 #include <vector>
-#include "stdstrutils.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "ExecuteCommand.h"
 
 int executeCommand(std::string sCommand, std::vector<std::string> & vLines) {
@@ -95,7 +96,7 @@ int executeCommand(char **pCommand, std::vector<std::string> & vLines) {
         //int i = WEXITSTATUS(waitstatus);    
         //printf("Return2: %d (%d)\n", i, getpid());
     } else {
-        fprintf(stderr, "couldn't create pipes\n");
+        xha_fprintf(stderr, "couldn't create pipes\n");
     }
     return iResult;
 }

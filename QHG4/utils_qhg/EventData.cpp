@@ -13,8 +13,8 @@
 #include <string>
 
 #include "strutils.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "EventData.h"
 
 //-----------------------------------------------------------------------------
@@ -64,6 +64,6 @@ bool EventData::equals(EventData *pED) {
 // toString
 //
 void EventData::toString(std::string &sCur) const {
-    std::string sOut = stdsprintf("(%d)|%s", m_iEventType, m_sData);
+    std::string sOut = xha_sprintf("(%d)|%s", m_iEventType, m_sData);
     sCur += sOut;
 }

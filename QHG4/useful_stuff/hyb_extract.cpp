@@ -12,8 +12,8 @@
 #include <map>
 #include <algorithm>
 #include "strutils.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "LineReader.h"
 #include "ParamReader.h"
 #include "QDFUtils.h"
@@ -76,15 +76,15 @@ int calcLandWater(const char *pPopQDF, loc_cells &mSelected, loc_landwater &mLan
             pdAlt = new double[iNumCells];
             uint iCount = pQA->getFirstSlab(pdAlt, iNumCells);
             if (iCount == iNumCells) {
-                stdfprintf(stderr, "[calcLandWater] Read %d Altitudes\n", iCount);
+                xha_fprintf(stderr, "[calcLandWater] Read %d Altitudes\n", iCount);
                 iResult = 0;
             } else {
                 iResult = -1;
-                stdfprintf(stderr, "[calcLandWater] Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", pPopQDF, GEOGROUP_NAME, GEO_DS_ALTITUDE, iCount, iNumCells);
+                xha_fprintf(stderr, "[calcLandWater] Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", pPopQDF, GEOGROUP_NAME, GEO_DS_ALTITUDE, iCount, iNumCells);
             }
         } else {
             iResult = -1;
-            stdfprintf(stderr, "[calcLandWater] Couldn't open data set [%s]\n", GEO_DS_ALTITUDE);
+            xha_fprintf(stderr, "[calcLandWater] Couldn't open data set [%s]\n", GEO_DS_ALTITUDE);
         }
         pQA->closeArray();
     
@@ -112,7 +112,7 @@ int calcLandWater(const char *pPopQDF, loc_cells &mSelected, loc_landwater &mLan
         delete pQA;;
     } else {
         iResult = -1;
-        stdfprintf(stderr, "[calcLandWater] Couldn't create QDFArray\n");
+        xha_fprintf(stderr, "[calcLandWater] Couldn't create QDFArray\n");
   
     }
     return iResult;
@@ -197,7 +197,7 @@ int addCSVLine(FILE *fOutCSV, const char *pName, int iCurStep, uint iNumAgs, con
 
     if (iNumAgs > 0) {
         //@@@@ here we loop over mLocHybs to do the stats
-        stdfprintf(stderr, "[addCSVLine] adding data for %zd regions\n", mLocHybs.size());
+        xha_fprintf(stderr, "[addCSVLine] adding data for %zd regions\n", mLocHybs.size());
         locvalvec::const_iterator itLoc2;
         for (itLoc2 = mLocHybs.begin(); itLoc2 != mLocHybs.end(); ++itLoc2)  {
             // make sorted version to find median
@@ -234,7 +234,7 @@ int addCSVLine(FILE *fOutCSV, const char *pName, int iCurStep, uint iNumAgs, con
             vStats.push_back(fMedian);
             mStats[itLoc2->first].first = vHybs.size();
         }
-        stdfprintf(stderr, "[addCSVLine] Stats collected\n");
+        xha_fprintf(stderr, "[addCSVLine] Stats collected\n");
 
         // loop mstats! 
         statmap::const_iterator itStat;
@@ -299,14 +299,14 @@ FILE *openCSV(const std::string sName, loc_cells &mSelected, bool bCSVHeader) {
             std::string sHeader{"sim_name;step"};
             for (it = mSelected.begin(); it != mSelected.end(); ++it)  {
                 const char *pName = it->first.c_str();
-                sHeader += stdsprintf(";%s_count;%s_min;%s_max;%s_median;", pName, pName, pName, pName);
+                sHeader += xha_sprintf(";%s_count;%s_min;%s_max;%s_median;", pName, pName, pName, pName);
 
             }
             fprintf(fCSV, "%s\n", sHeader.c_str());
             
         }
     } else {
-        stdfprintf(stderr, "[openCSV] Couldn't open [%s] for writng\n", sName);
+        xha_fprintf(stderr, "[openCSV] Couldn't open [%s] for writng\n", sName);
     }
     return fCSV;
 }
@@ -320,7 +320,7 @@ FILE *openCSV(const std::string sName, loc_cells &mSelected, bool bCSVHeader) {
 int structureData(uchar *pData, uint iNumAgs,  const loc_cells &mSelected, locvalvec& mLocHybs){
 
     // store item values by cell id
-    stdfprintf(stderr, "[structurData] filling %u agent items to map\n", iNumAgs);
+    xha_fprintf(stderr, "[structurData] filling %u agent items to map\n", iNumAgs);
     std::map<int, std::vector<float>> mAllHybs;
 
     aginfo_float ai;
@@ -342,7 +342,7 @@ int structureData(uchar *pData, uint iNumAgs,  const loc_cells &mSelected, locva
         iV += vHybVals.size();
         mLocHybs[itSel->first] = vHybVals;
     }
-    stdfprintf(stderr, "[structurData] selected total of %u\n", iV);
+    xha_fprintf(stderr, "[structurData] selected total of %u\n", iV);
     return 0;
 }
 
@@ -387,7 +387,7 @@ int main(int iArgC, char *apArgV[]) {
                         *pSpc++ = '\0';
                         pSpecies = pSpc;
                     } else {
-                        stdfprintf(stderr, "No Species given - %s is used\n", DEF_SPC);
+                        xha_fprintf(stderr, "No Species given - %s is used\n", DEF_SPC);
                         pSpecies = DEF_SPC;
                     }
 
@@ -399,7 +399,7 @@ int main(int iArgC, char *apArgV[]) {
                     if (pDataType != NULL) {
                         *pDataType++ = '\0';
                     } else {
-                        stdfprintf(stderr, "expected ':' followed by datatype\n");
+                        xha_fprintf(stderr, "expected ':' followed by datatype\n");
                         iResult = -1;
                     }
                 }
@@ -412,8 +412,8 @@ int main(int iArgC, char *apArgV[]) {
                 if (iResult == 0) {
 
                     // create output names
-                    std::string sOutNameHDF = stdsprintf("%s.hdf", sOutbody);
-                    std::string sOutNameCSV = stdsprintf("%s.csv", sOutbody);
+                    std::string sOutNameHDF = xha_sprintf("%s.hdf", sOutbody);
+                    std::string sOutNameCSV = xha_sprintf("%s.csv", sOutbody);
 
                     stringvec vNames;
                     loc_cells mSelected;
@@ -423,14 +423,14 @@ int main(int iArgC, char *apArgV[]) {
                         mSelected = pCS->getSelected();
                         vNames = pCS->getNames();
                         
-                        stdfprintf(stderr, "CellSampler found %zd regions\n", mSelected.size());
+                        xha_fprintf(stderr, "CellSampler found %zd regions\n", mSelected.size());
                         if (bVerbose) {
                             pCS->showSelected(stderr, 10);
                         }
                         delete pCS;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "Couldn't create CellSampler\n");
+                        xha_fprintf(stderr, "Couldn't create CellSampler\n");
                     }
 
                     FILE *fOutCSV = openCSV(sOutNameCSV, mSelected, bCSVHeader);
@@ -447,15 +447,15 @@ int main(int iArgC, char *apArgV[]) {
                                 splitString(sPopQDF, vParts, "/");
                                 const char *pSimName = vParts[vParts.size()-2].c_str();
 
-                                stdfprintf(stderr, "sPopDir [%s], pSimName [%s]\n", sPopQDF, pSimName);
+                                xha_fprintf(stderr, "sPopDir [%s], pSimName [%s]\n", sPopQDF, pSimName);
                                 locvalvec mLocHybs;
                                 loc_landwater mLandWater;
                                 if (bDiedOut) {
-                                    stdfprintf(stderr, "doing diedout outputs\n"); fflush(stderr);
+                                    xha_fprintf(stderr, "doing diedout outputs\n"); fflush(stderr);
                                     pHHW->writeDataRegionized(pSimName, -1, -1, NULL, 0, mSelected, mLandWater);
                                     iResult = addCSVLine(fOutCSV, pSimName, -1, 0, mLocHybs);
                                 } else {
-                                    stdfprintf(stderr, "doing normal outputs\n"); fflush(stderr);
+                                    xha_fprintf(stderr, "doing normal outputs\n"); fflush(stderr);
                                     if (sGeoQDF == NULL) {
                                         sGeoQDF = sPopQDF;
                                     }
@@ -469,7 +469,7 @@ int main(int iArgC, char *apArgV[]) {
                                         float  fStartTime  = pAIC->getStartTime();
 
                                         iResult = calcLandWater(sPopQDF, mSelected, mLandWater);
-                                        stdfprintf(stderr, "AgentItemCollector found %u values\n", iNumAgs);
+                                        xha_fprintf(stderr, "AgentItemCollector found %u values\n", iNumAgs);
 
                                         std::vector<uint> vSelIndexes;
                                         structureData(pData, iNumAgs, mSelected, mLocHybs);
@@ -478,18 +478,18 @@ int main(int iArgC, char *apArgV[]) {
                                             //iResult = addCSVLine(fOutCSV, sSimName, pData, iNumAgs, mSelected);
                                             iResult = addCSVLine(fOutCSV, pSimName,  iCurStep, iNumAgs, mLocHybs);
                                             if (iResult == 0) {
-                                                stdfprintf(stderr, "+++ success for [%s] +++\n", sPopQDF);
+                                                xha_fprintf(stderr, "+++ success for [%s] +++\n", sPopQDF);
                                             } else {
-                                                stdfprintf(stderr, "couldn't add csv line\n");
+                                                xha_fprintf(stderr, "couldn't add csv line\n");
                                             }
                                         } else {
                                             iResult = -1;
-                                            stdfprintf(stderr, "couldn't write data to HDF file\n");
+                                            xha_fprintf(stderr, "couldn't write data to HDF file\n");
                                         }
                                         delete pAIC;
                                     } else {
                                         iResult = -1;
-                                        stdfprintf(stderr, "Couldn't create AgentItemCollector\n");
+                                        xha_fprintf(stderr, "Couldn't create AgentItemCollector\n");
                                     }
                                 }
                             }
@@ -497,12 +497,12 @@ int main(int iArgC, char *apArgV[]) {
                             delete pHHW;
                         } else {
                             iResult = -1;
-                            stdfprintf(stderr, "couldn't create HDF file [%s]\n", sOutNameHDF);
+                            xha_fprintf(stderr, "couldn't create HDF file [%s]\n", sOutNameHDF);
                         }
                         fclose(fOutCSV);
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "couldn't open [%s] for writing\n", sOutNameCSV);
+                        xha_fprintf(stderr, "couldn't open [%s] for writing\n", sOutNameCSV);
                     }
                 } else {
                 }
@@ -510,11 +510,11 @@ int main(int iArgC, char *apArgV[]) {
                 usage(apArgV[0]);
             }
         } else {
-            stdfprintf(stderr, "Couldn't set ParamReader options\n");
+            xha_fprintf(stderr, "Couldn't set ParamReader options\n");
         }
         delete pPR;
     } else {
-        stdfprintf(stderr, "Couldn't create ParamReader\n");
+        xha_fprintf(stderr, "Couldn't create ParamReader\n");
     }
 
     return iResult;

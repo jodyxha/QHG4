@@ -1,6 +1,6 @@
 #include <cstring>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "LineReader.h"
 #include "colors.h"
 #include "AnalysisUtils.h"
@@ -49,7 +49,7 @@ int fillLocData(const locspec *pLocSpec, loc_data &mLocData, stringvec *pvNames)
                 }
                 mLocData[pName]  =  li;
             } else {
-                stdfprintf(stderr, "%sCouldn't read enough items from line [%s]%s\n", colors::RED, pLine, colors::OFF);
+                xha_fprintf(stderr, "%sCouldn't read enough items from line [%s]%s\n", colors::RED, pLine, colors::OFF);
                 iResult = -1;
             }
             pLine = pLR->getNextLine();
@@ -57,7 +57,7 @@ int fillLocData(const locspec *pLocSpec, loc_data &mLocData, stringvec *pvNames)
 
         delete pLR;
     } else {
-        stdfprintf(stderr, "%sCouldn't open file [%s]%s\n", colors::RED, pLocSpec->sLocFile, colors::OFF);
+        xha_fprintf(stderr, "%sCouldn't open file [%s]%s\n", colors::RED, pLocSpec->sLocFile, colors::OFF);
     }
 
     return iResult;

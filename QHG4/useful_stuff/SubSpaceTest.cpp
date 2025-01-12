@@ -7,8 +7,8 @@
 #include <locale.h>
 
 #include "types.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 
 #include "ParamReader.h"
 #include "LineReader.h"
@@ -20,35 +20,35 @@
 // usage
 //
 void usage(std::string sApp) {
-    stdprintf("usage:\n");
-    stdprintf("   %s  (-e <extents> | -i <input-file>) -s <slice-indexes>\n", sApp);
-    stdprintf("       [-o <output-file>] [-q] [-v]\n");
-    stdprintf("where\n");
-    stdprintf("  extents        extents of hypervolume. If set, SubSpace elements will be consecutive\n");
-    stdprintf("  slice-indexes  operations to perform along the dimensions\n");
-    stdprintf("  input-file     read SubSpace from file\n");
-    stdprintf("  output-file    write SubSpace to file\n");
-    stdprintf("  -q             squeeze entire hypervolume (remove dimensions with extent 1)\n");
-    stdprintf("  -v             verbose\n");
-    stdprintf("formats:\n");
-    stdprintf("  dimensions     ::= <number> [\":\" <number>]\n");
-    stdprintf("  slice-indexes  ::= <slice-index> [\":\"<slice-index>]\n");
-    stdprintf("    slice-index  ::= <numeric> | <reduction>[\".\"]\n");
-    stdprintf("    reduction    ::= \"*\" | \"#\" | \"%%\"\n");
-    stdprintf("    numeric      ::= <number> [\"+\"] <number>}\n");
-    stdprintf("If the format is numeric, slices will be extracted for the specified numbers\n"); 
-    stdprintf("If the format is \"*\" this dimension is kept (shorthand for 0+1+2+..+n)\n"); 
-    stdprintf("If the format is \"#\" the SubSpace will be reduced along this dimension\n"); 
-    stdprintf("If the format is \"%%\" the SubSpace will be averaged along this dimension\n");
-    stdprintf("If a reduction format is followed by a \".\", the corresponding dimension will be squeezed\n"); 
-    stdprintf("requirements:\n");
-    stdprintf("  * the number of slice indexes must be equal to the number of dimensions\n"); 
-    stdprintf("  * the numbers used in the i-th <numeric> must be less than the size of the i-th dimension\n"); 
-    stdprintf("  * the numbers used in a <numeric> should all differ from each other\n"); 
-    stdprintf("Note: slices come before reductions (i.e. sums and averages)\n"); 
+    xha_printf("usage:\n");
+    xha_printf("   %s  (-e <extents> | -i <input-file>) -s <slice-indexes>\n", sApp);
+    xha_printf("       [-o <output-file>] [-q] [-v]\n");
+    xha_printf("where\n");
+    xha_printf("  extents        extents of hypervolume. If set, SubSpace elements will be consecutive\n");
+    xha_printf("  slice-indexes  operations to perform along the dimensions\n");
+    xha_printf("  input-file     read SubSpace from file\n");
+    xha_printf("  output-file    write SubSpace to file\n");
+    xha_printf("  -q             squeeze entire hypervolume (remove dimensions with extent 1)\n");
+    xha_printf("  -v             verbose\n");
+    xha_printf("formats:\n");
+    xha_printf("  dimensions     ::= <number> [\":\" <number>]\n");
+    xha_printf("  slice-indexes  ::= <slice-index> [\":\"<slice-index>]\n");
+    xha_printf("    slice-index  ::= <numeric> | <reduction>[\".\"]\n");
+    xha_printf("    reduction    ::= \"*\" | \"#\" | \"%%\"\n");
+    xha_printf("    numeric      ::= <number> [\"+\"] <number>}\n");
+    xha_printf("If the format is numeric, slices will be extracted for the specified numbers\n"); 
+    xha_printf("If the format is \"*\" this dimension is kept (shorthand for 0+1+2+..+n)\n"); 
+    xha_printf("If the format is \"#\" the SubSpace will be reduced along this dimension\n"); 
+    xha_printf("If the format is \"%%\" the SubSpace will be averaged along this dimension\n");
+    xha_printf("If a reduction format is followed by a \".\", the corresponding dimension will be squeezed\n"); 
+    xha_printf("requirements:\n");
+    xha_printf("  * the number of slice indexes must be equal to the number of dimensions\n"); 
+    xha_printf("  * the numbers used in the i-th <numeric> must be less than the size of the i-th dimension\n"); 
+    xha_printf("  * the numbers used in a <numeric> should all differ from each other\n"); 
+    xha_printf("Note: slices come before reductions (i.e. sums and averages)\n"); 
 
-    stdprintf("Example:\n");
-    stdprintf("  %s -e 4:2:3:5 -s 1+2:*:#.:4 -v\n", sApp);
+    xha_printf("Example:\n");
+    xha_printf("  %s -e 4:2:3:5 -s 1+2:*:#.:4 -v\n", sApp);
 }
 
 //----------------------------------------------------------------------------
@@ -60,7 +60,7 @@ static void show_uintvec(const uintvec vS, std::string &s){
         if (j > 0) {
             s = s + ",";
         }
-        s = s + stdsprintf("%d", vS[j]);
+        s = s + xha_sprintf("%d", vS[j]);
     }
 }
 
@@ -98,7 +98,7 @@ double *createBuffer(uintvec vSizes, uint *piNumVals) {
 
     std::string sVec;
     show_uintvec(vSizes, sVec);
-    stdfprintf(stderr, "[*createBuffer(uintvec vSizes, uint *piNumVals)] numvals %u, sizes [%s]\n", iNumVals, sVec);
+    xha_fprintf(stderr, "[*createBuffer(uintvec vSizes, uint *piNumVals)] numvals %u, sizes [%s]\n", iNumVals, sVec);
     *piNumVals = iNumVals;
     
     // allocate buffer
@@ -122,7 +122,7 @@ double *createBuffer(SubSpace<T> *pSS) {
 
     std::string sVec;
     show_uintvec(vSizes, sVec);
-    stdfprintf(stderr, "[*createBuffer(SubSpace<T> *pSS)] numvals %u, sizes [%s]\n", iNumVals, sVec);
+    xha_fprintf(stderr, "[*createBuffer(SubSpace<T> *pSS)] numvals %u, sizes [%s]\n", iNumVals, sVec);
 
     // allocate buffer
     double *pOut = new double[iNumVals];
@@ -142,21 +142,21 @@ int writeOutputFile(const std::string sOutputFile, SubSpace<double> *pSS, std::s
     int iResult = 0;
     FILE *fOut = fopen(sOutputFile.c_str(), "wt");
     if (fOut != NULL) {
-        stdfprintf(fOut, "# dimensions: ");
+        xha_fprintf(fOut, "# dimensions: ");
         const uintvec vSizes = pSS->get_sizes();
         for (uint i = 0; i < vSizes.size(); i++) {
-            stdfprintf(fOut, " %u", vSizes[i]);
+            xha_fprintf(fOut, " %u", vSizes[i]);
         }
-        stdfprintf(fOut, "\n");
-        // stdfprintf(fOut, "# slices:      %s\n", sSliceDesc);
-        // stdfprintf(fOut, "\n");
+        xha_fprintf(fOut, "\n");
+        // xha_fprintf(fOut, "# slices:      %s\n", sSliceDesc);
+        // xha_fprintf(fOut, "\n");
         
 
         pSS->show_data_nice(DISP_FLOAT, fOut, vFileSeps, false);
         fprintf(fOut, "\n");
         fclose(fOut);
     } else {
-        stdfprintf(stderr, "Couldn't open [%s] for writing\n", sOutputFile);
+        xha_fprintf(stderr, "Couldn't open [%s] for writing\n", sOutputFile);
     }
     return iResult;
 }
@@ -206,24 +206,24 @@ double *readInputFile(const std::string sInputFile, uintvec &vSizes) {
                             iCount++;
                         } else {
                             iResult = -1;
-                            stdfprintf(stderr, "Couldn't convert [%s] to number\n");
+                            xha_fprintf(stderr, "Couldn't convert [%s] to number\n");
                         }
                     }
                     pLine = pLR->getNextLine();
                 }
                 if ((iResult == 0) && (iCount != iNumVals)) {
-                    stdfprintf(stderr, "Only found %u values instead of %u\n", iCount, iNumVals);
+                    xha_fprintf(stderr, "Only found %u values instead of %u\n", iCount, iNumVals);
                     iResult = -1;
                 }
             } else {
-                stdfprintf(stderr, "Couldn't convert ·dimensions to sizes\n");
+                xha_fprintf(stderr, "Couldn't convert ·dimensions to sizes\n");
             }
         } else {
-            stdfprintf(stderr, "Expected \"dimensions: <d> <d>...\" as first line\n");
+            xha_fprintf(stderr, "Expected \"dimensions: <d> <d>...\" as first line\n");
         }
         delete pLR;
     } else {
-        stdfprintf(stderr, "Couldn't open [%s] for reading\n", sInputFile);
+        xha_fprintf(stderr, "Couldn't open [%s] for reading\n", sInputFile);
     }
 
 
@@ -254,12 +254,12 @@ int parseIndexElements(uintvec vSizes, std::string sIndexDesc, uintvecvec &vAllI
             stringvec vsX;
             uintvec   vX;
             if ((vsA[i] == "*")  || (vsA[i] == "#") || (vsA[i] == "%")) {
-                if (bVerbose) {stdprintf("found '%s' for %d: range(%d)\n", vsA[i], i, vSizes[i]);}
+                if (bVerbose) {xha_printf("found '%s' for %d: range(%d)\n", vsA[i], i, vSizes[i]);}
                 for (uint k = 0; k < vSizes[i]; ++k) {
                     vX.push_back(k);
                 }
-                if (bVerbose) {stdprintf("vX (%zd): %bv\n", vX.size(), vX);}
-                // if (bVerbose) {stdprintf("vX (%zd):", vX.size());for (uint z = 0; z < vX.size(); z++){ stdprintf(" %d", vX[z]);}printf("\n");}
+                if (bVerbose) {xha_printf("vX (%zd): %bv\n", vX.size(), vX);}
+                // if (bVerbose) {xha_printf("vX (%zd):", vX.size());for (uint z = 0; z < vX.size(); z++){ xha_printf(" %d", vX[z]);}printf("\n");}
                 if (vsA[i] == "#") {
                     mAllReds[i] = RED_TYPE_SUM;
                 } else if (vsA[i] == "%") {
@@ -267,14 +267,14 @@ int parseIndexElements(uintvec vSizes, std::string sIndexDesc, uintvecvec &vAllI
                 }
             } else {
                 uint iNumSummands = splitString(vsA[i], vsX, "+");
-                if (bVerbose) {stdprintf("vsX (%zd): %bv\n", vsX.size(), vsX);}
-                // if (bVerbose) {stdprintf("vsX (%zd):", vsX.size());for (uint z = 0; z < vsX.size(); z++){ stdprintf(" %s", vsX[z]);}printf("\n");}
+                if (bVerbose) {xha_printf("vsX (%zd): %bv\n", vsX.size(), vsX);}
+                // if (bVerbose) {xha_printf("vsX (%zd):", vsX.size());for (uint z = 0; z < vsX.size(); z++){ xha_printf(" %s", vsX[z]);}printf("\n");}
                 for (uint i = 0; (iResult == 0) && (i < iNumSummands); i++) {
                     int k = 0;
                     if (strToNum(vsX[i], &k)) {
                         vX.push_back(k);
                     } else {
-                        stdfprintf(stderr, "invalid index configuration [%s]\n", vsX[i]);
+                        xha_fprintf(stderr, "invalid index configuration [%s]\n", vsX[i]);
                         iResult = -1;
                     }
                 }
@@ -284,7 +284,7 @@ int parseIndexElements(uintvec vSizes, std::string sIndexDesc, uintvecvec &vAllI
 
         }
     } else {
-        stdfprintf(stderr, "there should be %u index combinations but only found %u in [%s]\n", iNumDims, iDims2, sIndexDesc); 
+        xha_fprintf(stderr, "there should be %u index combinations but only found %u in [%s]\n", iNumDims, iDims2, sIndexDesc); 
     }
     return iResult;
 }
@@ -296,7 +296,7 @@ int parseIndexElements(uintvec vSizes, std::string sIndexDesc, uintvecvec &vAllI
 void showSliceIndexes(const uintvecvec  &vNeededDims, const uintuintmap &mReductionDims, const uintuintmap &mSqueezeDims) {
     stringvec sRed{"*", "+", "%"};
 
-    stdfprintf(stderr, "SliceIndexes:\n");
+    xha_fprintf(stderr, "SliceIndexes:\n");
     for (uint i = 0; i < vNeededDims.size(); i++) {
 
         uintuintmap::const_iterator it = mReductionDims.find(i);
@@ -305,11 +305,11 @@ void showSliceIndexes(const uintvecvec  &vNeededDims, const uintuintmap &mReduct
         it = mSqueezeDims.find(i);
         s += (it != mSqueezeDims.end())?"!":" ";
 
-        stdfprintf(stderr, ":  %s ", s);
+        xha_fprintf(stderr, ":  %s ", s);
         for (uint j = 0; j < vNeededDims[i].size(); j++) {
-            stdfprintf(stderr, "%d", vNeededDims[i][j]);
+            xha_fprintf(stderr, "%d", vNeededDims[i][j]);
         }
-        stdfprintf(stderr, "\n");
+        xha_fprintf(stderr, "\n");
     }
 }
 
@@ -327,11 +327,11 @@ SubSpace<double> *createSubSpaceFromExtents(std::string sExtents, bool bVerbose)
             pSS->set_data(pData, 0, pSS->getNumVals());
             delete[] pData;
         } catch (const SubSpaceException &sse) {
-            throw SubSpaceException(stdsprintf("Exception in [createSubSpaceFromExtents]: %s\n", sse.what()));
+            throw SubSpaceException(xha_sprintf("Exception in [createSubSpaceFromExtents]: %s\n", sse.what()));
         }
         
     } else {
-        stdfprintf(stderr, "failed to create SubSpace from dimension string [%s]\n");
+        xha_fprintf(stderr, "failed to create SubSpace from dimension string [%s]\n");
     }
     return pSS;
 }
@@ -353,9 +353,9 @@ SubSpace<double> *createSubSpaceFromFile(std::string sInputFile, bool bVerbose) 
         if (pSS != NULL) {
             try {
                 pSS->set_data(pData, 0, pSS->getNumVals());
-                stdfprintf(stderr, "read file\n");
+                xha_fprintf(stderr, "read file\n");
             } catch (const SubSpaceException &sse) {
-                throw SubSpaceException(stdsprintf("Exception in [createSubSpaceFromFile]: %s\n", sse.what()));
+                throw SubSpaceException(xha_sprintf("Exception in [createSubSpaceFromFile]: %s\n", sse.what()));
             }
         }
         
@@ -376,12 +376,12 @@ SubSpace<double> *makeSlices(SubSpace<double> *pSS, const uintvecvec  &vNeededDi
         try {
             pSSResult = pSS->create_slice(vNeededDims);
         } catch (const SubSpaceException &sse) {
-            throw SubSpaceException(stdsprintf("Exception in [makeSlices]: %s\n", sse.what()));
+            throw SubSpaceException(xha_sprintf("Exception in [makeSlices]: %s\n", sse.what()));
         }
         delete pOldSS;   
         
         if (pSSResult != NULL) {
-            stdfprintf(stderr, "Have slice\n");
+            xha_fprintf(stderr, "Have slice\n");
             
             pSSResult->show_sizes();
             if (bVerbose) {
@@ -405,12 +405,12 @@ SubSpace<double> *makeReductions(SubSpace<double> *pSS, const uintuintmap &mRedu
         try {
             pSSResult = pOldSS->create_reductions(mReductionDims);
         } catch (const SubSpaceException &sse) {
-            throw SubSpaceException(stdsprintf("Exception in [makeReductions]: %s\n", sse.what()));
+            throw SubSpaceException(xha_sprintf("Exception in [makeReductions]: %s\n", sse.what()));
         } 
         delete pOldSS;
         
         if (pSSResult != NULL) {
-            stdfprintf(stderr, "Have reductiona\n");
+            xha_fprintf(stderr, "Have reductiona\n");
             
             pSSResult->show_sizes();
             if (bVerbose) {
@@ -433,12 +433,12 @@ SubSpace<double> *makeSqueeze(SubSpace<double> *pSS, const uintuintmap &mSqueezD
     try {
         pSSResult = pOldSS->squeeze(mSqueezDims);
     } catch (const SubSpaceException &sse) {
-        throw SubSpaceException(stdsprintf("Exception in [makeSqueeze]: %s\n", sse.what()));
+        throw SubSpaceException(xha_sprintf("Exception in [makeSqueeze]: %s\n", sse.what()));
     }
     delete pOldSS;
     
     if (pSSResult != NULL) {
-        stdfprintf(stderr, "Have squeeze\n");
+        xha_fprintf(stderr, "Have squeeze\n");
         
         pSSResult->show_sizes();
         if (bVerbose) {
@@ -514,7 +514,7 @@ int main(int iArgC, char *apArgV[]) {
                         try {
                             for (uint j = 0; j < iNumDesc; j++) {
                                 std::string sCurSlices = vSliceDescs[j];
-                                // stdprintf(">>>>>handling [%s]\n", sCurSlices);
+                                // xha_printf(">>>>>handling [%s]\n", sCurSlices);
                                 
                                 pSSIP->init(pSS->get_sizes());
                                 
@@ -552,7 +552,7 @@ int main(int iArgC, char *apArgV[]) {
                                 
                             } // descr loop
                         } catch (const SubSpaceException &sse) {
-                            stdfprintf(stderr, sse.what());
+                            xha_fprintf(stderr, sse.what());
                         }
                         delete pSSIP;
                     }
@@ -562,13 +562,13 @@ int main(int iArgC, char *apArgV[]) {
                     // pSS is NULL
                 }    
             }  else {
-                stdfprintf(stderr, "Either dimensions or in0put file must be specified\n");
+                xha_fprintf(stderr, "Either dimensions or in0put file must be specified\n");
             }
         } else {
             usage(apArgV[0]);
         }
     } else {
-        stdfprintf(stderr, "Couldn't create ParamReader\n");
+        xha_fprintf(stderr, "Couldn't create ParamReader\n");
     }
 
 

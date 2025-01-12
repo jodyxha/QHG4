@@ -5,7 +5,7 @@
 #include <algorithm>
 
 #include "clsutils.cpp"
-#include "stdstrutils.h"
+#include "xha_strutils.h"
 #include "ParamProvider2.h"
 #include "ArrayShare.h"
 #include "SPopulation.h"
@@ -74,7 +74,7 @@ int IndexCollector<T>::preLoop() {
 
     //share the array
     ArrayShare::getInstance()->shareArray(m_sShareName, this->m_pCG->m_iNumCells, m_avLocalIndexes);
-    stdprintf("[IndexCollector<T>::preLoop][%s] xxxShare shared index array as [%s]: %p\n", this->m_pPop->getSpeciesName(), m_sShareName, m_avLocalIndexes);
+    xha_printf("[IndexCollector<T>::preLoop][%s] xxxShare shared index array as [%s]: %p\n", this->m_pPop->getSpeciesName(), m_sShareName, m_avLocalIndexes);
 
     return iResult;
 }
@@ -86,7 +86,7 @@ int IndexCollector<T>::preLoop() {
 //
 template<typename T>
 int IndexCollector<T>::initialize(float fT) {
-    stdprintf("[IndexCollector<T>::initialize] collecting indexes for [%s] at T %f\n", this->m_pPop->getSpeciesName(), fT);
+    xha_printf("[IndexCollector<T>::initialize] collecting indexes for [%s] at T %f\n", this->m_pPop->getSpeciesName(), fT);
 
     int iResult = 0;
 

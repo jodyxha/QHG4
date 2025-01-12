@@ -26,7 +26,7 @@ int CoordRangeSampling::setRangeDescription(void *pDescr) {
     coordrad vDisks = *((coordrad*)(pDescr));
    
     cellrad vCDisks;
-    if (m_bVerbose) stdprintf("Doing %zd discs\n", vDisks.size());
+    if (m_bVerbose) xha_printf("Doing %zd discs\n", vDisks.size());
 
     // here: convert x,y to cell ID and hand over to CellRangeSampling
 

@@ -3,7 +3,7 @@
 #include "LayerBuf.cpp"
 #include "LayerArrBuf.cpp"
 #include "Action.cpp"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 ////////////////////////////
 #include "ArrayShare.h"
 
@@ -140,13 +140,13 @@ int PDAltPredPop::preLoop() {
         // the action's preLoop is called in SPopulation::preLoop()
         // so let's do the sharing before calling it
         
-        std::string s = stdsprintf(ATTR_PD_TEMPLATE_INDEXES, m_sSpeciesName);
+        std::string s = xha_sprintf(ATTR_PD_TEMPLATE_INDEXES, m_sSpeciesName);
         m_pIC->setShareName(s);
         
         // at  this time we know the species name and can share the array as "<speciesname>_Masses"
-        std::string sArrName = stdsprintf("%s_Masses", m_sSpeciesName);
+        std::string sArrName = xha_sprintf("%s_Masses", m_sSpeciesName);
         ArrayShare::getInstance()->shareArray(sArrName, m_pCG->m_iNumCells, m_afMassArray[0]);
-        stdprintf("[PDPredPop::preLoop] Share m_afMassArray[0] (%p) as [%s]\n", m_afMassArray[0], sArrName);
+        xha_printf("[PDPredPop::preLoop] Share m_afMassArray[0] (%p) as [%s]\n", m_afMassArray[0], sArrName);
         
         
         iResult = SPopulation<PDAltPredAgent>::preLoop();
@@ -171,7 +171,7 @@ int PDAltPredPop::initializeStep(float fTime) {
     int iResult = SPopulation<PDAltPredAgent>::initializeStep(fTime);
 
     // later: update number of local agents array for PDPred
-    std::string sArrName = stdsprintf("%s_Masses", m_sSpeciesName);
+    std::string sArrName = xha_sprintf("%s_Masses", m_sSpeciesName);
     //    printf("[PDPredPop::initializeStep] Updating shared m_afMassArray[0] (%p) [%s]\n", m_afMassArray[0], sArrName);
     // update mass array
 

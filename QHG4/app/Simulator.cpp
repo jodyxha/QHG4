@@ -16,8 +16,8 @@
 #include "ParamReader.h"
 #include "LBController.h"
 #include "strutils.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "gzutils.h"
 #include "ArrayShare.h"
 #include "GeoGroupReader.h"
@@ -211,10 +211,10 @@ void Simulator::checkEvents(int iCurStep) {
             std::vector<EventData*> vEDSet;
             vEDSet = m_pEM->getEventData();
             for (unsigned int i = 0; i < vEDSet.size(); i++) {
-                stdprintf("processing event (%d,[%s])\n", vEDSet[i]->m_iEventType, vEDSet[i]->m_sData); 
+                xha_printf("processing event (%d,[%s])\n", vEDSet[i]->m_iEventType, vEDSet[i]->m_sData); 
                 int iOK = processEvent(vEDSet[i]);
                 if (iOK != 0) {
-                    //stdprintf("Couldn't process event (%d,[%s])\n", vEDSet[i]->m_iEventType, vEDSet[i]->m_sData);
+                    //xha_printf("Couldn't process event (%d,[%s])\n", vEDSet[i]->m_iEventType, vEDSet[i]->m_sData);
                     LOG_WARNING2("Couldn't process event (%d,[%s])\n", vEDSet[i]->m_iEventType, vEDSet[i]->m_sData);
                 }
             }
@@ -228,7 +228,7 @@ void Simulator::checkEvents(int iCurStep) {
 //
 void Simulator::checkFinalEvents() {
     // check for events
-    stdprintf("[Simulator::checkFinalEvents] checking final events\n");
+    xha_printf("[Simulator::checkFinalEvents] checking final events\n");
     if (m_pEM != NULL) {
         m_pEM->findFinalEvents();
         std::vector<EventData*> vEDSet;
@@ -237,7 +237,7 @@ void Simulator::checkFinalEvents() {
         for (unsigned int i = 0; i < vEDSet.size(); i++) {
             int iOK = processEvent(vEDSet[i]);
             if (iOK != 0) {
-                //stdprintf("Couldn't process event (%d,[%s])\n", vEDSet[i]->m_iEventType, vEDSet[i]->m_sData);
+                //xha_printf("Couldn't process event (%d,[%s])\n", vEDSet[i]->m_iEventType, vEDSet[i]->m_sData);
                 LOG_WARNING2("Couldn't process event (%d,[%s])\n", vEDSet[i]->m_iEventType, vEDSet[i]->m_sData);
             }
         }
@@ -301,7 +301,7 @@ int Simulator::runLoop() {
             for (it_pop = m_pPopLooper->begin(); it_pop != m_pPopLooper->end(); ++it_pop) {
                 PopBase *pPop = it_pop->second;
                 if ( pPop->getNumAgentsEffective() == 0) {
-                    stdprintf("Population [%s] has died out at step [%d] - removing it from action loop\n", pPop->getSpeciesName(), m_iCurStep);
+                    xha_printf("Population [%s] has died out at step [%d] - removing it from action loop\n", pPop->getSpeciesName(), m_iCurStep);
                     // we must clean up the recyling buffers, otherwise attempted writes will cause a problem 
                     pPop->flushDeadSpace();
                     viDeadIDs.push_back(it_pop->first);
@@ -434,7 +434,7 @@ int Simulator::runLoop() {
 	iFinalTotal += vDeadPops[i]->getNumAgentsEffective();
     }
 
-    std::string sTemplate = stdsprintf("  %%%ds: %%9d\n", iMaxNameLen);
+    std::string sTemplate = xha_sprintf("  %%%ds: %%9d\n", iMaxNameLen);
     // print it out nicely
     for (it_pop = m_pPopLooper->begin(); it_pop != m_pPopLooper->end(); ++it_pop) {
         LOG_STATUS2(sTemplate, it_pop->second->getSpeciesName(), it_pop->second->getNumAgentsEffective());
@@ -471,7 +471,7 @@ int Simulator::postLoop() {
 //
 int Simulator::handleWriteEvent(const std::string sDesc, int iDumpMode) {
     int iResult = -1;
-    //stdprintf("[Simulator::handleWriteEvent] Handling writeEvent [%s] at step %d\n", sDesc, m_iCurStep);
+    //xha_printf("[Simulator::handleWriteEvent] Handling writeEvent [%s] at step %d\n", sDesc, m_iCurStep);
     LOG_STATUS2("[Simulator::handleWriteEvent] Handling writeEvent [%s] at step %d\n", sDesc, m_iCurStep);
 
     std::string sTemp  = sDesc;
@@ -496,7 +496,7 @@ int Simulator::handleWriteEvent(const std::string sDesc, int iDumpMode) {
                     iWhat += WR_POP;
                     sSub = vSub[1];
                 } else {
-                    stdprintf("Invalid event param [%s]\n", vEvents[i]);
+                    xha_printf("Invalid event param [%s]\n", vEvents[i]);
                     iResult = -1;
                 }
             } else if (sEvent ==  EVENT_PARAM_WRITE_GRID) {
@@ -524,7 +524,7 @@ int Simulator::handleWriteEvent(const std::string sDesc, int iDumpMode) {
             } else {
                 iWhat = WR_NONE;
                 iResult = -1;
-                //stdprintf("Unknown output type [%s] (%s)\n", sEvent, sDesc);
+                //xha_printf("Unknown output type [%s] (%s)\n", sEvent, sDesc);
                 LOG_ERROR2("Unknown output type [%s] (%s)\n", sEvent, sDesc);
             }
     
@@ -577,8 +577,8 @@ int Simulator::handleWriteEvent(const std::string sDesc, int iDumpMode) {
 
                         sPops += sSub;
                         sPops += sD;
-                        stdprintf("current sPops is [%s])\n", sPops);
-                        stdprintf("pushing back (%s, %d)\n", sSub, iWS);
+                        xha_printf("current sPops is [%s])\n", sPops);
+                        xha_printf("pushing back (%s, %d)\n", sSub, iWS);
                 
                         vSubs.push_back(std::pair<std::string, popwrite_flags>(sSub, iWS));
                     }
@@ -595,13 +595,13 @@ int Simulator::handleWriteEvent(const std::string sDesc, int iDumpMode) {
     if (iResult == 0) {
         printf("[Simulator::handleWriteEvent] vSubs has %zd elements\n", vSubs.size());
         for (uint i = 0; i < vSubs.size(); i++) {
-            stdprintf("[Simulator::handleWriteEvent]  %s -> %d\n", vSubs[i].first, vSubs[i].second);
+            xha_printf("[Simulator::handleWriteEvent]  %s -> %d\n", vSubs[i].first, vSubs[i].second);
         }
         
         m_pPopLooper->preWrite(m_iCurStep);
 
-        std::string sName = stdsprintf("%s%s%s%s_%s_%06d.qdf", m_sOutputDir, m_sOutputPrefix, (iDumpMode != LBController::DUMP_MODE_NONE)?"_dump":"", sPops, sOther, m_iCurStep);
-        stdprintf("[Simulator::handleWriteEvent] writing file [%s] with %sdump\n", sName, (iDumpMode != LBController::DUMP_MODE_NONE)?"":"no ");
+        std::string sName = xha_sprintf("%s%s%s%s_%s_%06d.qdf", m_sOutputDir, m_sOutputPrefix, (iDumpMode != LBController::DUMP_MODE_NONE)?"_dump":"", sPops, sOther, m_iCurStep);
+        xha_printf("[Simulator::handleWriteEvent] writing file [%s] with %sdump\n", sName, (iDumpMode != LBController::DUMP_MODE_NONE)?"":"no ");
         iResult = writeState(sName, iWhat, vSubs, iDumpMode);
         if (iDumpMode != LBController::DUMP_MODE_NONE) {
             m_vDumpNames.push_back(sName);
@@ -618,7 +618,7 @@ int Simulator::handleWriteEvent(const std::string sDesc, int iDumpMode) {
 int Simulator::handleDumpEvent(const std::string sDesc) {
     int iResult = 0;
     int iDumpMode = LBController::DUMP_MODE_NONE;
-    //stdprintf("Handling dumpEvent [%s] at step %d\n", sDesc, m_iCurStep);
+    //xha_printf("Handling dumpEvent [%s] at step %d\n", sDesc, m_iCurStep);
     LOG_STATUS2("Handling dumpEvent [%s] at step %d\n", sDesc, m_iCurStep);
     if (sDesc == "flat") {
         iDumpMode = LBController::DUMP_MODE_FLAT;
@@ -627,7 +627,7 @@ int Simulator::handleDumpEvent(const std::string sDesc) {
     } else if (sDesc == "free") {
         iDumpMode = LBController::DUMP_MODE_FREE;
     } else {
-        //stdprintf("Illegal DumpMode [%s]\n", sDesc);
+        //xha_printf("Illegal DumpMode [%s]\n", sDesc);
         LOG_STATUS2("Illegal DumpMode [%s]\n", sDesc);
         iResult = -1;
     }
@@ -645,13 +645,13 @@ int Simulator::handleDumpEvent(const std::string sDesc) {
                 sTemp += ":" + it_pop->second->getSpeciesName();
             }
             // writing pop dump
-            stdprintf("sending off dump writeevent [%s]\n", sTemp); 
+            xha_printf("sending off dump writeevent [%s]\n", sTemp); 
             iResult = handleWriteEvent(sTemp, iDumpMode);
         }
         // now write param config file for resume
         if (iResult == 0) {
-            std::string sConfigOut = stdsprintf("%s%s_dump_%06d.cfg", m_sOutputDir, m_sOutputPrefix, m_iCurStep);
-            stdprintf("Writing resume config file [%s]\n", sConfigOut);
+            std::string sConfigOut = xha_sprintf("%s%s_dump_%06d.cfg", m_sOutputDir, m_sOutputPrefix, m_iCurStep);
+            xha_printf("Writing resume config file [%s]\n", sConfigOut);
             writeResumeConfig(sConfigOut);
         }
     }
@@ -668,7 +668,7 @@ int Simulator::handleDumpEvent(const std::string sDesc) {
 int Simulator::handleEnvironmentEvent(const std::string sDesc) {
     int iResult = -1;
 
-    //stdprintf("Handling environmentEvent [%s] at step %d\n", sDesc, m_iCurStep);
+    //xha_printf("Handling environmentEvent [%s] at step %d\n", sDesc, m_iCurStep);
     LOG_STATUS2("Handling environmentEvent [%s] at step %d\n", sDesc, m_iCurStep);
 
     stringvec vParts;
@@ -717,7 +717,7 @@ int Simulator::handleEnvironmentEvent(const std::string sDesc) {
                         iResult = setNav(hFile, true);  // true: isUpdate
                     } else {
                         // iResult = -1;
-                        //stdprintf("ignoring unknown environment type: [%s]\n", sCurType);
+                        //xha_printf("ignoring unknown environment type: [%s]\n", sCurType);
                         LOG_ERROR2("ignoring unknown environment type [%s]\n", sCurType);                
                     }               
                 }
@@ -734,17 +734,17 @@ int Simulator::handleEnvironmentEvent(const std::string sDesc) {
                     }
                 }
             } else {
-                //stdprintf("couldn't find file [%s]\n", sFile);
+                //xha_printf("couldn't find file [%s]\n", sFile);
                 LOG_ERROR2("couldn't find file [%s]\n", sFile);
             }
 
         } else {
-            //stdprintf("expected at least 1 type\n");
+            //xha_printf("expected at least 1 type\n");
             LOG_ERROR2("expected at least 1 type\n");
         }
         
     } else {
-        //stdprintf("expected params of the form \"<type>[+<type>]:<qdf-file>\": [%s]\n", sDesc);
+        //xha_printf("expected params of the form \"<type>[+<type>]:<qdf-file>\": [%s]\n", sDesc);
         LOG_ERROR2("expected params of the form \"<type>[+<type>]:<qdf-file>\": [%s]\n", sDesc);
     }
 
@@ -760,7 +760,7 @@ int Simulator::handleEnvironmentEvent(const std::string sDesc) {
 int Simulator::handleEnvArrayEvent(const std::string sDesc) {
     int iResult = -1;
 
-    //stdprintf("Handling envArrayEvent [%s] at step %d\n", sDesc, m_iCurStep);
+    //xha_printf("Handling envArrayEvent [%s] at step %d\n", sDesc, m_iCurStep);
     LOG_STATUS2("Handling envArrayEvent [%s] at step %d\n", sDesc, m_iCurStep);
     stringvec vParts;
     uint iNum = splitString(sDesc, vParts, ":");
@@ -785,11 +785,11 @@ int Simulator::handleEnvArrayEvent(const std::string sDesc) {
                 iEvent = EVENT_ID_VEG;
                 iResult = setVegArray(hFile, sArrName);
             } else if (sGroup == EVENT_PARAM_NAME_NAV) {
-                //stdprintf("[handleEnvArrayEvent] no array setting  for [%s]\n", sGroup);
+                //xha_printf("[handleEnvArrayEvent] no array setting  for [%s]\n", sGroup);
                 LOG_ERROR2("[handleEnvArrayEvent] no array setting  for [%s]\n", sGroup);
             } else {
                 // iResult = -1;
-                //stdprintf("[handleEnvArrayEvent] ignoring unknown environment type: [%s]\n", sGroup);
+                //xha_printf("[handleEnvArrayEvent] ignoring unknown environment type: [%s]\n", sGroup);
                 LOG_ERROR2("[handleEnvArrayEvent] ignoring unknown environment type [%s]\n", sGroup);                
             }                                   
                     
@@ -805,7 +805,7 @@ int Simulator::handleEnvArrayEvent(const std::string sDesc) {
                 }
             } else {
 
-                stdprintf("[handleEnvArrayEvent] Couldn't open array [%s]  for group [%s] in file [%s]\n", sArrName, sGroup, sExistingFile);
+                xha_printf("[handleEnvArrayEvent] Couldn't open array [%s]  for group [%s] in file [%s]\n", sArrName, sGroup, sExistingFile);
             }
         } else {
             LOG_ERROR2("[handleEnvArrayEvent] couldn't find file [%s]\n", sFile);
@@ -984,7 +984,7 @@ int Simulator::handleUserEvent(const std::string sDesc) {
    
         int iUserEvent = -1;
         if (strToNum(sID, &iUserEvent) && ((iUserEvent >= EVENT_ID_USR_MIN) && (iUserEvent <= EVENT_ID_USR_MAX))) {
-            stdprintf("[Simulator::handleUserEvent] we need to do something with id %d and data [%s]\n", iUserEvent, sData);
+            xha_printf("[Simulator::handleUserEvent] we need to do something with id %d and data [%s]\n", iUserEvent, sData);
             iResult = 0;
 
         } else {
@@ -1165,21 +1165,21 @@ int Simulator::handleCommEvent(const std::string sCommFile) {
                 }
                 delete pLR;
             } else {
-                stdprintf("Couldn'get open [%s]\n", sCommFile);
+                xha_printf("Couldn'get open [%s]\n", sCommFile);
             }
             //
             stringvec vs;
             m_pEM->toString(vs);
             for (uint i = 0; i < vs.size(); ++i) {
                 std::string &sCur = vs[i];
-                stdprintf("%s\n", addEventName(sCur));
+                xha_printf("%s\n", addEventName(sCur));
             }
 
         }
     } else {
         iResult = 0;
-        stdprintf("Couldn'get stat for [%s]\n", sCommFile);
-        stdprintf("Trying [%s] as command\n", sCommFile);
+        xha_printf("Couldn'get stat for [%s]\n", sCommFile);
+        xha_printf("Trying [%s] as command\n", sCommFile);
         handleCommLine(sCommFile);
     }
     return iResult;
@@ -1233,17 +1233,17 @@ int Simulator::handleCommLine(const std::string sLine) {
                     if (sCommand == CMD_REMOVE_ACTION){
                         iResult = pPop->removeAction(sAction);
                         if (iResult == 0) {
-                            stdprintf("[Simulator::handleCommLine] Successfully removed action [%s]\n", sAction);
+                            xha_printf("[Simulator::handleCommLine] Successfully removed action [%s]\n", sAction);
                         }
                     } else if(sCommand == CMD_DISABLE_ACTION) {
                         iResult = pPop->disableAction(sAction);
                         if (iResult == 0) {
-                            stdprintf("[Simulator::handleCommLine] Successfully disabled action [%s]\n", sAction);
+                            xha_printf("[Simulator::handleCommLine] Successfully disabled action [%s]\n", sAction);
                         }
                     } else if(sCommand == CMD_ENABLE_ACTION) {
                         iResult = pPop->enableAction(sAction);
                         if (iResult == 0) {
-                            stdprintf("[Simulator::handleCommLine] Successfully enabled action [%s]\n", sAction);
+                            xha_printf("[Simulator::handleCommLine] Successfully enabled action [%s]\n", sAction);
                         }
                     }
                     iResult = 0;
@@ -1378,7 +1378,7 @@ int Simulator::writeState(const std::string sQDFOut, int iWhat, std::vector<std:
     LOG_WARNING2("[%d] Writing of [%s] took %fs\n", m_iCurStep, sQDFOut, dEndW - dStartW);
     
     if (iResult != 0) {
-        stdprintf("StatusWriter [%s]\n", m_pSW->getError());
+        xha_printf("StatusWriter [%s]\n", m_pSW->getError());
         if (iResult < 0) {
             LOG_ERROR("StatusWriter [%s]\n", m_pSW->getError());
         } else {
@@ -1390,16 +1390,16 @@ int Simulator::writeState(const std::string sQDFOut, int iWhat, std::vector<std:
         if (m_bZipOutput) {
             double dStartZ = omp_get_wtime();
 
-            std::string sQDFOutgz = stdsprintf("%s.gz", sQDFOut);
-	    stdprintf("gzipping %s -> %s\n", sQDFOut, sQDFOutgz);
+            std::string sQDFOutgz = xha_sprintf("%s.gz", sQDFOut);
+	    xha_printf("gzipping %s -> %s\n", sQDFOut, sQDFOutgz);
             iResult = m_pgzCompressor->do_gzip(sQDFOut, sQDFOutgz);
             double dEndZ = omp_get_wtime();
             if (iResult == 0) {
                 if (m_bDeleteOrig) {
-                    stdprintf("[%d] deleted original [%s]\n", m_iCurStep, sQDFOut);
+                    xha_printf("[%d] deleted original [%s]\n", m_iCurStep, sQDFOut);
                     remove(sQDFOut.c_str());
                 } else {
-                    stdprintf("[%d] keeping original [%s]\n", m_iCurStep, sQDFOut);
+                    xha_printf("[%d] keeping original [%s]\n", m_iCurStep, sQDFOut);
                 }
             } else {
                 LOG_ERROR2("[%d] gzip failed\n", m_iCurStep);
@@ -1435,7 +1435,7 @@ void Simulator::showInputs() {
         printf("Populations: %zd\n   ", m_pPopLooper->getNumPops());
         popmap::const_iterator it_pop;
         for (it_pop = m_pPopLooper->begin(); it_pop != m_pPopLooper->end(); ++it_pop) {
-            stdprintf("%s  ", it_pop->second->getSpeciesName());
+            xha_printf("%s  ", it_pop->second->getSpeciesName());
         }
         printf("\n");
     }
@@ -1486,8 +1486,8 @@ bool rangeEliminate(std::string &sRange, int iStep) {
         int r2 = 0;
         if (strToNum(s1, &r1) && strToNum(s2, &r2)) {
             bEliminated = true;
-            std::string sSub = stdsprintf("%d", iStep-1);
-            std::string sSup = stdsprintf("%d", iStep+1);
+            std::string sSub = xha_sprintf("%d", iStep-1);
+            std::string sSup = xha_sprintf("%d", iStep+1);
             if ((r1 < iStep) && (iStep < r2) ) {
                 sRange = "["+s1+":"+sSub+"]+["+sSup+":"+s2+"]";
             } else if (r1 == iStep) {
@@ -1584,7 +1584,7 @@ void Simulator::writeResumeConfig(const std::string sConfigOut) {
                                 }
                                 sTimes = sTimes + vSingleEvents[k];
                             } else {
-                                //stdprintf("%s is removed\n", vSingleEvents[k]);
+                                //xha_printf("%s is removed\n", vSingleEvents[k]);
                             }
                         }
                         if (sTimes != "") {
@@ -1611,7 +1611,7 @@ void Simulator::writeResumeConfig(const std::string sConfigOut) {
     vsOptions.push_back("--resume");
     FILE *fOut = fopen(sConfigOut.c_str(), "wt");
     for (uint i = 0; i< vsOptions.size(); ++i) {
-        stdfprintf(fOut, "%s\n", vsOptions[i]);
+        xha_fprintf(fOut, "%s\n", vsOptions[i]);
     }
     fclose(fOut);
 }

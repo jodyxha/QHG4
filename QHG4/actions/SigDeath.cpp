@@ -50,10 +50,10 @@ int SigDeath<T>::preLoop() {
     
     m_dScale = 1+exp(-m_dRange);
 
-    stdprintf("[SigDeath<T>::preLoop()] MaxAge: %f\n", m_dMaxAge);
-    stdprintf("[SigDeath<T>::preLoop()] Range:  %f\n", m_dRange);
-    stdprintf("[SigDeath<T>::preLoop()] Slope:  %f\n", m_dSlope);
-    stdprintf("[SigDeath<T>::preLoop()] Scale:  %f\n", m_dScale);
+    xha_printf("[SigDeath<T>::preLoop()] MaxAge: %f\n", m_dMaxAge);
+    xha_printf("[SigDeath<T>::preLoop()] Range:  %f\n", m_dRange);
+    xha_printf("[SigDeath<T>::preLoop()] Slope:  %f\n", m_dSlope);
+    xha_printf("[SigDeath<T>::preLoop()] Scale:  %f\n", m_dScale);
     
     return 0;
 }

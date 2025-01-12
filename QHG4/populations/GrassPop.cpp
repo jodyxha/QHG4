@@ -99,7 +99,7 @@ void GrassPop::addPopSpecificAgentDataTypeQDF(hid_t *hAgentDataType) {
 //   write the available grass mass as an array in the population group
 //
 int GrassPop::writeAdditionalDataQDF(hid_t hSpeciesGroup) {
-    stdprintf("GrassPop::writeAdditionalDataQDF() reached\n");
+    xha_printf("GrassPop::writeAdditionalDataQDF() reached\n");
     int iResult = qdf_writeArray(hSpeciesGroup, "GrassMassAvail", m_pCG->m_iNumCells, m_pdGrassAvailable, H5T_NATIVE_DOUBLE);
     if (iResult != 0) {
         LOG_ERROR("[GrassPop::writeAdditionalDataQDF] couldn't write GrassMassAvail data");

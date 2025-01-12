@@ -2,7 +2,7 @@
 #include <omp.h>
 
 #include "types.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "PopBase.h"
 #include "PopLooper.h"
 
@@ -64,7 +64,7 @@ int PopLooper::tryMerge() {
         for (; (iResult < 0) && (it2 != m_mP.end()); ++it2) {
             iResult = it1->second->mergePop(it2->second);
             if (iResult == 0) {
-	        stdprintf("[PopLooper] merged pop #%di (%s)\n", it2->first,it2->second->getSpeciesName());
+	        xha_printf("[PopLooper] merged pop #%di (%s)\n", it2->first,it2->second->getSpeciesName());
                 vMerged.push_back(it2->first);
 
                 // adjust highest id used
@@ -103,7 +103,7 @@ int PopLooper::addPop(PopBase *pPop) {
         pPop->getPrios(m_vPrioLevels);
         m_mP[m_iCurIndex] = pPop;
         m_iCurIndex++;
-        stdprintf("[PopLooper::addPop] added pop [%s](%p)\n", pPop->getSpeciesName(), pPop);
+        xha_printf("[PopLooper::addPop] added pop [%s](%p)\n", pPop->getSpeciesName(), pPop);
         idtype iCurMaxID = pPop->getMaxLoadedID();
         if (iCurMaxID > m_iMaxID) {
             m_iMaxID = iCurMaxID;
@@ -274,10 +274,10 @@ PopBase *PopLooper::getPopByID(idtype iSpeciesID) {
 //
 PopBase *PopLooper::getPopByName(const std::string sSpeciesName) {
     PopBase *pPop = NULL;
-    stdprintf("[PopLooper] Searching for [%s]\n", sSpeciesName);
+    xha_printf("[PopLooper] Searching for [%s]\n", sSpeciesName);
     popmap::iterator it;
     for (it = m_mP.begin(); (pPop == NULL) && (it != m_mP.end()); ++it) {
-        stdprintf("  found [%s]\n", it->second->getSpeciesName());
+        xha_printf("  found [%s]\n", it->second->getSpeciesName());
         if (it->second->getSpeciesName() == sSpeciesName) {
             pPop = it->second;
         }

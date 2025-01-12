@@ -4,8 +4,8 @@
 
 #include "types.h"
 #include "strutils.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "ParamReader.h"
 #include "CubemapImages.h"
 
@@ -17,9 +17,9 @@
 // usage
 //
 void usage(std::string sApp) {
-    stdprintf("%s - create 6 images for OGL cubemaps\n", sApp);
-    stdprintf("Usage:\n");
-    stdprintf("CVompile: %s\n", "g++ -g -Wall QDF2CubemapImages.cpp CubemapImages.cpp -I../utils -I../icosa  -I../io -I../visual  -L../icosa -lIcosa -L../io -lIO -L../visual -lVisual -L../utils -lUtils -lhdf5 -lz -lpng");
+    xha_printf("%s - create 6 images for OGL cubemaps\n", sApp);
+    xha_printf("Usage:\n");
+    xha_printf("CVompile: %s\n", "g++ -g -Wall QDF2CubemapImages.cpp CubemapImages.cpp -I../utils -I../icosa  -I../io -I../visual  -L../icosa -lIcosa -L../io -lIO -L../visual -lVisual -L../utils -lUtils -lhdf5 -lz -lpng");
 }
 
 
@@ -166,13 +166,13 @@ int main(int iArgC, char *apArgV[]) {
                     
                 iResult = pCI->createImages(sOutputBody);
                 if (iResult == 0) {
-                    stdprintf("success");
+                    xha_printf("success");
                 } else {
-                    stdprintf("couldn#t create images\n");
+                    xha_printf("couldn#t create images\n");
                 }
                 delete pCI;
             } else {
-                stdprintf("Couldn#t extract array [%s] from [%s]\n", sArrayPath, sInputQDF);
+                xha_printf("Couldn#t extract array [%s] from [%s]\n", sArrayPath, sInputQDF);
             }
         } else {
             printf("ParamReader result: %d\n", iResult);

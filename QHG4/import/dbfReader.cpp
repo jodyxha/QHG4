@@ -6,8 +6,8 @@
 #include <vector>
 #include <map>
 
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 
 #include "shpUtils.h"
 #include "dbfReader.h"
@@ -37,9 +37,9 @@ int dbfReader::read(const std::string sFieldName, vecdouble &vVals) {
     if (iResult == 0) {
         nameoffsets::const_iterator it;
         /*
-        stdprintf("Field names, offsets + lengths\n");
+        xha_printf("Field names, offsets + lengths\n");
         for (it = m_mOffsets.begin(); it != m_mOffsets.end(); ++it) {
-            stdprintf("%12s: %d %d\n", it->first.c_str(), it->second.first, it->second.second);
+            xha_printf("%12s: %d %d\n", it->first.c_str(), it->second.first, it->second.second);
         }
         */
         if (!sFieldName.empty()) {
@@ -47,7 +47,7 @@ int dbfReader::read(const std::string sFieldName, vecdouble &vVals) {
             if (it != m_mOffsets.end()) {
                 iResult = readRecords(it->second.first, it->second.second, vVals);
             } else {
-                stdprintf("No field with name [%s] found\n", sFieldName);
+                xha_printf("No field with name [%s] found\n", sFieldName);
                 iResult =-1;
             }
         }
@@ -71,12 +71,12 @@ int dbfReader::readHeader() {
         p = shpUtils::getNum(p, &m_iHeaderSize, LITTLEENDIAN);
         p = shpUtils::getNum(p, &m_iRecordSize, LITTLEENDIAN);
         iResult = 0;
-        //        stdprintf("DBF: %d records of size %d starting at pos %d\n", m_iNumRecords, m_iRecordSize, m_iHeaderSize);
+        //        xha_printf("DBF: %d records of size %d starting at pos %d\n", m_iNumRecords, m_iRecordSize, m_iHeaderSize);
         
         m_mOffsets.clear();
         iResult = readFieldDescriptors();
     } else {
-        stdprintf("Only read [%d] instead of [%d] bytes\n", iRead, DBF_HEADER_SIZE);
+        xha_printf("Only read [%d] instead of [%d] bytes\n", iRead, DBF_HEADER_SIZE);
     }
     return iResult;
 }
@@ -101,7 +101,7 @@ int dbfReader::readFieldDescriptors() {
         uchar cLen  = *p++;
         //unused        uchar cDec  = *p++;
 
-        //        stdprintf("Field [%10s] offs[%3d], type %c, addr %d, len %3d, count %3d\n", sName, iOffs, cType, iAddr, cLen, cDec);
+        //        xha_printf("Field [%10s] offs[%3d], type %c, addr %d, len %3d, count %3d\n", sName, iOffs, cType, iAddr, cLen, cDec);
         if (cType == 'N') {
             m_mOffsets[sName] = std::pair<int,int>(iOffs, cLen);
         }
@@ -122,7 +122,7 @@ int dbfReader::readFieldDescriptors() {
 //
 int dbfReader::readRecords(int iFieldOffset, int iLen, vecdouble &vVals) {
     int iResult = 0;  
-    stdprintf("Reading records\n");
+    xha_printf("Reading records\n");
     uchar *pBuf = new uchar[m_iRecordSize];
 
     int iCount = 0;
@@ -140,14 +140,14 @@ int dbfReader::readRecords(int iFieldOffset, int iLen, vecdouble &vVals) {
         if (*pEnd == '\0') {
             vVals.push_back(dVal);
         } else {
-            stdprintf("Non-numeric value found in record #%d: [%s]\n", iCount, pVal);
+            xha_printf("Non-numeric value found in record #%d: [%s]\n", iCount, pVal);
             iResult = -1;
         }
         iRead = fread(pBuf, 1, m_iRecordSize, m_fIn);
         iCount++;
     }
     //    if (iResult == 0) {
-    //        stdprintf("extracted from %d records\n", iCount);
+    //        xha_printf("extracted from %d records\n", iCount);
     //    }
     return iResult;
 }

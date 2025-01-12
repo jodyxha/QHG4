@@ -3,7 +3,7 @@
 #include <hdf5.h>
 #include <string>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "Geography.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
@@ -81,12 +81,12 @@ int GeoGroupReader::readArray(Geography *pGG, const std::string sArrayName) {
     } else {
         iResult = -1;
         if (m_pAttributes != NULL) {
-            stdprintf("Number of cells or max neighbors do not correspond:\n");
+            xha_printf("Number of cells or max neighbors do not correspond:\n");
             if (m_pAttributes->m_iNumCells != pGG->m_iNumCells) {
-               stdprintf("  GeoGroupReader::m_iNumCells: %d; Geography::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pGG->m_iNumCells);
+               xha_printf("  GeoGroupReader::m_iNumCells: %d; Geography::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pGG->m_iNumCells);
             }
             if (m_pAttributes->m_iMaxNeighbors != pGG->m_iMaxNeighbors) {
-                stdprintf("  GeoGroupReader::m_iMaxNeighbors: %d; Geography::m_iMaxNeighbors: %d\n", m_pAttributes->m_iMaxNeighbors,  pGG->m_iMaxNeighbors);
+                xha_printf("  GeoGroupReader::m_iMaxNeighbors: %d; Geography::m_iMaxNeighbors: %d\n", m_pAttributes->m_iMaxNeighbors,  pGG->m_iMaxNeighbors);
             }
         }
     }
@@ -109,7 +109,7 @@ int GeoGroupReader::readArray(Geography *pGG, const std::string sArrayName) {
         } else if (sArrayName == GEO_DS_COASTAL) {
             iResult = qdf_readArray(m_hGroup, GEO_DS_COASTAL,   pGG->m_iNumCells, (char *)pGG->m_abCoastal);
         } else {
-            stdprintf("Unknown array [%s]\n", sArrayName);
+            xha_printf("Unknown array [%s]\n", sArrayName);
             iResult = -1;
         }
     }
@@ -130,12 +130,12 @@ int GeoGroupReader::readData(Geography *pGG) {
     } else {
         iResult = -1;
         if (m_pAttributes != NULL) {
-            stdprintf("Number of cells or max neighbors do not correspond:\n");
+            xha_printf("Number of cells or max neighbors do not correspond:\n");
             if (m_pAttributes->m_iNumCells != pGG->m_iNumCells) {
-               stdprintf("  GeoGroupReader::m_iNumCells: %d; Geography::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pGG->m_iNumCells);
+               xha_printf("  GeoGroupReader::m_iNumCells: %d; Geography::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pGG->m_iNumCells);
             }
             if (m_pAttributes->m_iMaxNeighbors != pGG->m_iMaxNeighbors) {
-                stdprintf("  GeoGroupReader::m_iMaxNeighbors: %d; Geography::m_iMaxNeighbors: %d\n", m_pAttributes->m_iMaxNeighbors,  pGG->m_iMaxNeighbors);
+                xha_printf("  GeoGroupReader::m_iMaxNeighbors: %d; Geography::m_iMaxNeighbors: %d\n", m_pAttributes->m_iMaxNeighbors,  pGG->m_iMaxNeighbors);
             }
         }
     }
@@ -157,11 +157,11 @@ int GeoGroupReader::readData(Geography *pGG) {
     if (iResult == 0) {
         iResult = qdf_readArray(m_hGroup, GEO_DS_ICE_COVER, pGG->m_iNumCells, (char *)pGG->m_abIce);
         /*
-           stdprintf("Read ice    : ");
+           xha_printf("Read ice    : ");
             for (int i = 0; i < 32; i++) {
-               stdprintf(" %d", pGG->m_abIce[i]);
+               xha_printf(" %d", pGG->m_abIce[i]);
             }
-           stdprintf(" ...\n");
+           xha_printf(" ...\n");
         */
     }
     if (iResult == 0) {
@@ -173,11 +173,11 @@ int GeoGroupReader::readData(Geography *pGG) {
         if (qdf_link_exists(m_hGroup, GEO_DS_COASTAL)) {
             iResult = qdf_readArray(m_hGroup, GEO_DS_COASTAL, pGG->m_iNumCells,  (char *)pGG->m_abCoastal);
             /*
-           stdprintf("Read coastal: ");
+           xha_printf("Read coastal: ");
             for (int i = 0; i < 32; i++) {
-               stdprintf(" %d", pGG->m_abCoastal[i]);
+               xha_printf(" %d", pGG->m_abCoastal[i]);
             }
-           stdprintf(" ...\n");
+           xha_printf(" ...\n");
             */
         }
     }

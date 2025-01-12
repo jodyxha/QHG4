@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "png.h"
 #include "PNGImage.h"
 
@@ -42,7 +42,7 @@ PNGImage::PNGImage(int iWidth, int iHeight, int iBitDepth/*=8*/, int iColorType/
         createRows(m_iByteWidth*m_iWidth);
         //        printf("[PNGImage] row size: %d\n", m_iByteWidth*m_iWidth);
     } else {
-        stdprintf("[PNGImage] Init problem\n");
+        xha_printf("[PNGImage] Init problem\n");
     }  
 };
 
@@ -184,7 +184,7 @@ bool PNGImage::testSettings() {
     m_bHasAlpha = false;
 
     if (m_bVerbose) {
-        stdprintf("iColorType: %d, bitDepth:%d\n", m_iColorType, m_iBitDepth);
+        xha_printf("iColorType: %d, bitDepth:%d\n", m_iColorType, m_iBitDepth);
     }
 
     if (m_iColorType == PNG_COLOR_TYPE_GRAY) {
@@ -225,11 +225,11 @@ bool PNGImage::testSettings() {
         m_iPixSize = 1 << m_iBitDepth;
 
         if (m_bVerbose) {
-            stdprintf("BitDepth    : %d\n", m_iBitDepth);
-            stdprintf("NumChannels : %d\n", m_iNumChannels);
-            stdprintf("NumRowBits  : %d\n", iNumRowBits);
-            stdprintf("ByteWidth   : %d\n", m_iByteWidth);
-            stdprintf("PixSize     : %d\n", m_iPixSize);
+            xha_printf("BitDepth    : %d\n", m_iBitDepth);
+            xha_printf("NumChannels : %d\n", m_iNumChannels);
+            xha_printf("NumRowBits  : %d\n", iNumRowBits);
+            xha_printf("ByteWidth   : %d\n", m_iByteWidth);
+            xha_printf("PixSize     : %d\n", m_iPixSize);
         }
     }
 
@@ -367,7 +367,7 @@ bool PNGImage::writePNGFile(const std::string sOutputFile) {
         if (bOK) {
 
 	    if (setjmp(png_jmpbuf(m_pPNGWrite))) {
-                stdprintf("[write_png_file] Error during writing bytes");
+                xha_printf("[write_png_file] Error during writing bytes");
                 bOK = false;
             } else {
                 png_write_info(m_pPNGWrite, m_pPNGWriteInfo);
@@ -380,10 +380,10 @@ bool PNGImage::writePNGFile(const std::string sOutputFile) {
                 }
 
                 if (m_pPNGWriteInfo == NULL) {
-                    stdprintf("Dummy PNGWriteINfo is NULL\n");
+                    xha_printf("Dummy PNGWriteINfo is NULL\n");
                 }
                 if (m_pucRows == NULL) {
-                    stdprintf("Dummy pucRows is NULL\n");
+                    xha_printf("Dummy pucRows is NULL\n");
                 }
                 png_write_image(m_pPNGWrite, m_pucRows);
 
@@ -391,12 +391,12 @@ bool PNGImage::writePNGFile(const std::string sOutputFile) {
         //                    printf("Called end to data.\n");
             }
         } else {
-            stdprintf("[PNGImage] error during InitializeWritePNG\n");
+            xha_printf("[PNGImage] error during InitializeWritePNG\n");
             bOK = false;
         }
         fclose(fOut);
     } else {
-        stdprintf("[PNGImage] couldn't open %s for writing\n", sOutputFile);
+        xha_printf("[PNGImage] couldn't open %s for writing\n", sOutputFile);
     }
     return bOK;
 }
@@ -425,7 +425,7 @@ bool PNGImage::readPNGFile(const std::string sInputFile) {
 	            if (m_pPNGReadInfo != NULL) {
 
 	                if (setjmp(png_jmpbuf(m_pPNGRead))) {
-                            stdprintf("[read_png_file 2] Error during init_io");
+                            xha_printf("[read_png_file 2] Error during init_io");
                             bOK = false;
                         } else {
 
@@ -450,11 +450,11 @@ bool PNGImage::readPNGFile(const std::string sInputFile) {
 
                             /* read file */
 	                    if (setjmp(png_jmpbuf(m_pPNGRead))) {
-                                stdprintf("[read_png_file] Error during read_image");
+                                xha_printf("[read_png_file] Error during read_image");
                             } else {
                                 uint iRowBytes = png_get_rowbytes(m_pPNGRead, m_pPNGReadInfo);
                                 if (m_bVerbose) {
-                                    stdprintf("[PNGImage::Read] w:%d, h:%d, ct:%d. BD:%d, row size: %u\n", m_iWidth, m_iHeight, m_iColorType, m_iBitDepth, iRowBytes);
+                                    xha_printf("[PNGImage::Read] w:%d, h:%d, ct:%d. BD:%d, row size: %u\n", m_iWidth, m_iHeight, m_iColorType, m_iBitDepth, iRowBytes);
                                 }
                                 createRows(iRowBytes);
 
@@ -465,28 +465,28 @@ bool PNGImage::readPNGFile(const std::string sInputFile) {
                                 m_iNumRead = png_get_text(m_pPNGRead, m_pPNGReadInfo, &m_pReadTexts, &m_iNumRead);
                                 
                                 if (m_bVerbose) {
-                                    stdprintf("Found %d chunks\n", m_iNumRead);
+                                    xha_printf("Found %d chunks\n", m_iNumRead);
                                     for (int i = 0; i < m_iNumRead; ++i) {
-                                        stdprintf("%s -> %s\n", m_pReadTexts[i].key, m_pReadTexts[i].text);
+                                        xha_printf("%s -> %s\n", m_pReadTexts[i].key, m_pReadTexts[i].text);
                                     }
                                 }
                             }
                         }
                     } else {
-                        stdprintf("[read_png_file] png_create_info_struct failed");
+                        xha_printf("[read_png_file] png_create_info_struct failed");
                         bOK = false;
                     }
                 } else {
-                    stdprintf("[read_png_file] png_create_read_struct failed");
+                    xha_printf("[read_png_file] png_create_read_struct failed");
                     bOK = false;
                 }
             } else {
-                stdprintf("[read_png_file] File %s is not recognized as a PNG file", sInputFile);
+                xha_printf("[read_png_file] File %s is not recognized as a PNG file", sInputFile);
             bOK = false;
         }        
         fclose(fp);
     } else {
-            stdprintf("[read_png_file] File %s could not be opened for reading", sInputFile);
+            xha_printf("[read_png_file] File %s could not be opened for reading", sInputFile);
         bOK = false;
     }
     return bOK;
@@ -605,11 +605,11 @@ bool PNGImage::initializeWritePNG(FILE *fOut) {
                 // write error
                 png_destroy_write_struct(&m_pPNGWrite, &m_pPNGWriteInfo);
                 bOK = false;
-                stdprintf("write error");
+                xha_printf("write error");
             }
         } else {
             png_destroy_write_struct(&m_pPNGWrite,(png_infopp)NULL);
-            stdprintf("couldn't allocate info structure\n");
+            xha_printf("couldn't allocate info structure\n");
         }
     } else {
 	  printf("couldn't allocate write structure\n");

@@ -31,7 +31,7 @@ COPT=-c $< -o $@ $(CADD) $(CFLAGS) $(DYN) -fPIC $(C_STD) $(CRAY_DEF) $(COMP) $(D
 
 $(warning DEFS in utils is $(DEFS))
 
-TESTS=BinoDistTest L2LTest LABTest LBTest SysInfoTest  WELLTest stdsprintf_test
+TESTS=BinoDistTest L2LTest LABTest LBTest SysInfoTest  WELLTest xha_sprintf_test
 
 ARFL=rv
 
@@ -43,7 +43,7 @@ all: libUtils.a
 utils: libUtils.a
 
 
-libUtils.a: strutils.o stdstrutils.o geomutils.o calcutils.o PolyLine.o gzutils.o \
+libUtils.a: strutils.o xha_strutils.o geomutils.o calcutils.o PolyLine.o gzutils.o \
       LineReader.o \
       Pattern.o FileList.o  \
       Quat.o \
@@ -73,7 +73,7 @@ clean:
 strutils.o: strutils.cpp  strutils.h 
 	$(CC) $(COPT) $(DEFS) -fPIC
 
-stdstrutils.o: stdstrutils.cpp  stdstrutils.h
+xha_strutils.o: xha_strutils.cpp  xha_strutils.h
 	$(CC) $(COPT) $(DEFS) -fPIC	
 
 
@@ -95,10 +95,10 @@ Vec3D.o: Vec3D.cpp  Vec3D.h
 Quat.o: Quat.cpp  Quat.h Vec3D.h
 	$(CC) $(COPT) $(DEFS)
 
-MessLogger.o: MessLogger.cpp MessLogger.h MessLoggerT.h stdstrutils.h stdstrutilsT.h
+MessLogger.o: MessLogger.cpp MessLogger.h MessLoggerT.h xha_strutils.h xha_strutilsT.h
 	$(CC) $(COPT) $(DEFS) -fPIC
 
-ParamReader.o: ParamReader.cpp ParamReader.h stdstrutils.h stdstrutilsT.h
+ParamReader.o: ParamReader.cpp ParamReader.h xha_strutils.h xha_strutilsT.h
 	$(CC) $(COPT) $(DEFS) -fPIC
 
 Pattern.o: Pattern.cpp Pattern.h
@@ -237,12 +237,12 @@ RTTest: RTTest.o RankTable.o
 	RTTest.o RankTable.o \
 	-L$(UTILS) -lUtils 
 
-stdsprintf_test.o: stdsprintf_test.cpp 
+xha_sprintf_test.o: xha_sprintf_test.cpp 
 	$(CC) $(COPT) $(DEFS) 
 
-stdsprintf_test: stdsprintf_test.o
-	$(CC) -o stdsprintf_test \
-	stdsprintf_test.o \
+xha_sprintf_test: xha_sprintf_test.o
+	$(CC) -o xha_sprintf_test \
+	xha_sprintf_test.o \
         -L$(UTILS) -lUtils
 
 

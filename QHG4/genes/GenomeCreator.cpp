@@ -17,7 +17,7 @@
 #include <omp.h>
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "GenomeCreator.h"
 
 #define INIT_STATE_NONE     0
@@ -111,7 +111,7 @@ int GenomeCreator<U>::determineInitData(std::string sLine) {
                     m_dInitialSiteRate  = 0;
                     iResult = 0;
                 } else {
-                    stdprintf("expected [%s:<num_mutations>]\n", INIT_NAME_VARIANTS);
+                    xha_printf("expected [%s:<num_mutations>]\n", INIT_NAME_VARIANTS);
                 }
             } else if (vParts[0] == INIT_NAME_RANDOM) {
                 m_iInitialType      = INIT_STATE_RANDOM;
@@ -142,17 +142,17 @@ int GenomeCreator<U>::determineInitData(std::string sLine) {
                             m_dInitialSiteRate  = dS;
                             iResult = 0;
                         } else {
-                            stdprintf("Not a number: [%s]\n", s2);
+                            xha_printf("Not a number: [%s]\n", s2);
                         }
                     } else {
-                        stdprintf("Not a number: [%s]\n", s1);
+                        xha_printf("Not a number: [%s]\n", s1);
                     }
                 } else {
-                    stdprintf("expected [%s:<mut_rate>:<site_rate>]\n", INIT_NAME_HW);
+                    xha_printf("expected [%s:<mut_rate>:<site_rate>]\n", INIT_NAME_HW);
                 }
             }
         } else {
-            stdprintf("empty params?\n");
+            xha_printf("empty params?\n");
         }
     }
     if (iResult == 0) {
@@ -176,7 +176,7 @@ void GenomeCreator<U>::buildInitString() {
         break;
     
     case INIT_STATE_VARIANTS:
-        m_sInitString = stdsprintf("%s:%d", INIT_NAME_VARIANTS, m_iInitialMutations);
+        m_sInitString = xha_sprintf("%s:%d", INIT_NAME_VARIANTS, m_iInitialMutations);
         break;
     
     case INIT_STATE_RANDOM:
@@ -188,7 +188,7 @@ void GenomeCreator<U>::buildInitString() {
         break;
     
     case INIT_STATE_HW:
-        m_sInitString = stdsprintf("%s:%4.2e:%4.2e", INIT_NAME_HW, m_dInitialMutRate, m_dInitialSiteRate);
+        m_sInitString = xha_sprintf("%s:%4.2e:%4.2e", INIT_NAME_HW, m_dInitialMutRate, m_dInitialSiteRate);
         break;
 
     default:

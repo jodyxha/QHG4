@@ -8,7 +8,7 @@
 #include <omp.h>
 
 #include "types.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "AgentCounter.h"
 #include "HDataSetCollector.h"
@@ -84,7 +84,7 @@ int PseudoPopCounts::checkRequired(std::string sSpecies, const std::string sPopQ
         if (iResult != 0) {
             iResult = qdf_checkPathExists(sEnvQDF, sTemp);
             if (iResult != 0) {
-                stdprintf("The path [%s] can not be found; neither in [%s] nor in [%s]\n", s2, sPopQDF, sEnvQDF);
+                xha_printf("The path [%s] can not be found; neither in [%s] nor in [%s]\n", s2, sPopQDF, sEnvQDF);
             }
         }
     }
@@ -131,12 +131,12 @@ double *PseudoPopCounts::createArray(const std::string sPath, const std::string 
                 delete[] pCounts;
             }
         } else {
-            stdprintf("The path [%s] does not exist in the pop file [%s]\n", sPath, sPopQDF);
+            xha_printf("The path [%s] does not exist in the pop file [%s]\n", sPath, sPopQDF);
             
         }
         
     } else {
-        stdprintf("Path [%s] does not match this PseudoPopArray [%s]\n", sPath, m_sPathPat);
+        xha_printf("Path [%s] does not match this PseudoPopArray [%s]\n", sPath, m_sPathPat);
     }
     return m_pdData;
 }

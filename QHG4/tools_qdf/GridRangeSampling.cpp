@@ -4,7 +4,7 @@
 #include <map>
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "geomutils.h"
 #include "Sampling.h"

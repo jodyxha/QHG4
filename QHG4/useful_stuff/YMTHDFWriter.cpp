@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <hdf5.h>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
 #include "SPopulation.h"
@@ -61,12 +61,12 @@ int YMTHDFWriter::init(const std::string sFileName, uint iNumRegions) {
 
     bool bNew = false;
     
-    stdfprintf(stderr, "[YMTHDFWriter::init] using [%s]\n", sFileName); fflush(stderr);
+    xha_fprintf(stderr, "[YMTHDFWriter::init] using [%s]\n", sFileName); fflush(stderr);
     if (fileExists(sFileName)) {
-        stdfprintf(stderr, "[YMTHDFWriter::init] opening [%s] with H5F_ACC_RDWR\n", sFileName); fflush(stderr);
+        xha_fprintf(stderr, "[YMTHDFWriter::init] opening [%s] with H5F_ACC_RDWR\n", sFileName); fflush(stderr);
         m_hFile = H5Fopen(sFileName.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
     } else {
-        stdfprintf(stderr, "[YMTHDFWriter::init] [%s] does not exist, create with H5F_ACC_TRUNC\n", sFileName); fflush(stderr);
+        xha_fprintf(stderr, "[YMTHDFWriter::init] [%s] does not exist, create with H5F_ACC_TRUNC\n", sFileName); fflush(stderr);
         m_hFile = H5Fcreate(sFileName.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
         bNew = true;
         
@@ -82,13 +82,13 @@ int YMTHDFWriter::init(const std::string sFileName, uint iNumRegions) {
                     iResult = 0;
                 }
             } else {
-                stdfprintf(stderr, "[YMTHDFWriter::init] Couldn't create datatype");
+                xha_fprintf(stderr, "[YMTHDFWriter::init] Couldn't create datatype");
             }
         } else {
-            stdfprintf(stderr, "[YMTHDFWriter::init] Couldn't create root group");
+            xha_fprintf(stderr, "[YMTHDFWriter::init] Couldn't create root group");
         }
     } else {
-        stdfprintf(stderr, "[YMTHDFWriter::init] Couldn't create HDF file [%s]", sFileName);
+        xha_fprintf(stderr, "[YMTHDFWriter::init] Couldn't create HDF file [%s]", sFileName);
     }
     return iResult;
 }
@@ -134,10 +134,10 @@ int YMTHDFWriter::writeData(const std::string sSimName, uchar *pData, int iNumVa
     if (status >= 0) {
         iResult = 0;
         if (m_bVerbose) {
-             stdfprintf(stderr, "[YMTHDFWriter::writeData] Successfully written %d records\n", iNumVals);
+             xha_fprintf(stderr, "[YMTHDFWriter::writeData] Successfully written %d records\n", iNumVals);
         }
     } else {
-        stdfprintf(stderr, "[YMTHDFWriter::writeData] Couldn't write data\n");
+        xha_fprintf(stderr, "[YMTHDFWriter::writeData] Couldn't write data\n");
     }
 
     qdf_closeDataSet(hDataSet);
@@ -153,12 +153,12 @@ int YMTHDFWriter::writeData(const std::string sSimName, uchar *pData, int iNumVa
 int YMTHDFWriter::writeDataRegionized(const std::string sSimName, int iStep, float fStartTime, uchar *pData, uint iNumAgs, const loc_cells& mLocCells, loc_landwater &mLandWater) {
     int iResult = -1;
     /*
-    stdfprintf(stderr, "YMTHDFWriter: some values before writing\n"); 
+    xha_fprintf(stderr, "YMTHDFWriter: some values before writing\n"); 
     for (uint i = 0; i < 5; i++) {
         aginfo_ymt *pai = (aginfo_ymt  *)pData;
-        stdfprintf(stderr, "%d: agent id %u, cell id %d, hyb %f\n", i, pai[i].m_ulID, pai[i].m_ulCellID, pai[i].m_fHybridization);
+        xha_fprintf(stderr, "%d: agent id %u, cell id %d, hyb %f\n", i, pai[i].m_ulID, pai[i].m_ulCellID, pai[i].m_fHybridization);
         int j = iNumAgs-i-1;
-        stdfprintf(stderr, "%d: agent id %u, cell id %d, hyb %f\n", j, pai[j].m_ulID, pai[j].m_ulCellID, pai[j].m_fHybridization);
+        xha_fprintf(stderr, "%d: agent id %u, cell id %d, hyb %f\n", j, pai[j].m_ulID, pai[j].m_ulCellID, pai[j].m_fHybridization);
     }
     */
    
@@ -166,7 +166,7 @@ int YMTHDFWriter::writeDataRegionized(const std::string sSimName, int iStep, flo
         iResult = qdf_insertAttribute(m_hRoot, ROOT_TIME_NAME, 1, &fStartTime);
     }
 
-    stdfprintf(stderr, "[YMTHDFWriter::writeDataRegionize] adding group [%s]\n", sSimName); fflush(stderr);
+    xha_fprintf(stderr, "[YMTHDFWriter::writeDataRegionize] adding group [%s]\n", sSimName); fflush(stderr);
     hid_t hSimGroup = qdf_opencreateGroup(m_hRoot, sSimName);
     
     char sStep[1024];
@@ -214,10 +214,10 @@ int YMTHDFWriter::writeDataRegionized(const std::string sSimName, int iStep, flo
             if (status >= 0) {
                 iResult = 0;
                 if (m_bVerbose) {
-                    stdfprintf(stderr, "[YMTHDFWriter::writeDataRegionize] Successfully written %zd records\n",  vSelected.size());
+                    xha_fprintf(stderr, "[YMTHDFWriter::writeDataRegionize] Successfully written %zd records\n",  vSelected.size());
                 }
             } else {
-                stdfprintf(stderr, "[YMTHDFWriter::writeDataRegionize] Couldn't write data\n");
+                xha_fprintf(stderr, "[YMTHDFWriter::writeDataRegionize] Couldn't write data\n");
             }
 
             int iLandWater[2];

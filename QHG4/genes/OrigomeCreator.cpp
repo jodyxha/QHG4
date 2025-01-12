@@ -14,8 +14,8 @@
 #include <string>
 
 #include "strutils.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "OrigomeCreator.h"
 
 #define INIT_STATE_NONE     0
@@ -71,7 +71,7 @@ int OrigomeCreator<U>::determineInitData(std::string sLine) {
                 printf("expcted  [const]\n");
             }
         } else {
-            stdprintf("Unknown Origome type [%s]\n", sName);
+            xha_printf("Unknown Origome type [%s]\n", sName);
         }
 
         if (iResult == 0) {

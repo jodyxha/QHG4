@@ -5,8 +5,8 @@
 
 #include <cstring>
 #include "clsutils.cpp"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "ParamProvider2.h"
 #include "ArrayShare.h"
 #include "SPopulation.h"
@@ -70,8 +70,8 @@ ShareEvaluator<T>::ShareEvaluator(SPopulation<T> *pPop, SCellGrid *pCG, std::str
     
     m_sID = sID;
 
-    std::string sKeyArrName  = stdsprintf(ATTR_SHAREEVAL_ARRAYNAME, m_sID);
-    std::string sKeyPolyName = stdsprintf(ATTR_SHAREEVAL_POLYNAME, m_sID);
+    std::string sKeyArrName  = xha_sprintf(ATTR_SHAREEVAL_ARRAYNAME, m_sID);
+    std::string sKeyPolyName = xha_sprintf(ATTR_SHAREEVAL_POLYNAME, m_sID);
     this->m_vNames.push_back(sKeyArrName);    
     this->m_vNames.push_back(sKeyPolyName);
 
@@ -102,9 +102,9 @@ int ShareEvaluator<T>::preLoop() {
     // get array if it does not exist
     m_adInputData = (double *) ArrayShare::getInstance()->getArray(m_sArrayName);
     if (m_adInputData != NULL) {
-        stdprintf("[ShareEvaluator<T>::preLoop][%s] xxxShare Loaded shared array [%s]: %p\n", this->m_pPop->getSpeciesName(), m_sArrayName, m_adInputData);
+        xha_printf("[ShareEvaluator<T>::preLoop][%s] xxxShare Loaded shared array [%s]: %p\n", this->m_pPop->getSpeciesName(), m_sArrayName, m_adInputData);
     } else {
-        stdprintf("No array with name [%s] found in ArrayExchange\n", m_sArrayName);
+        xha_printf("No array with name [%s] found in ArrayExchange\n", m_sArrayName);
         iResult = -1;
     }
 
@@ -121,7 +121,7 @@ int ShareEvaluator<T>::initialize(float fT) {
 
     if (this->m_bNeedUpdate || this->m_bAlwaysUpdate || (fT == 0)) {   // need for sure at first step
         
-        stdprintf("ShareEvaluator::initialize is updating weights for %s\n", m_sPolyName); 
+        xha_printf("ShareEvaluator::initialize is updating weights for %s\n", m_sPolyName); 
         
         calcValues(); // get cell values from PolyLine
         
@@ -259,8 +259,8 @@ int ShareEvaluator<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
         delete (this->m_pPL);
     }
 
-    std::string sKeyArrName  = stdsprintf(ATTR_SHAREEVAL_ARRAYNAME, m_sID);
-    std::string sKeyPolyName = stdsprintf(ATTR_SHAREEVAL_POLYNAME, m_sID);
+    std::string sKeyArrName  = xha_sprintf(ATTR_SHAREEVAL_ARRAYNAME, m_sID);
+    std::string sKeyPolyName = xha_sprintf(ATTR_SHAREEVAL_POLYNAME, m_sID);
 
     if (iResult == 0) {
         iResult = qdf_extractSAttribute(hSpeciesGroup, sKeyArrName, m_sArrayName);
@@ -277,7 +277,7 @@ int ShareEvaluator<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
     }
 
     if (!m_sPolyName.empty()) {
-        stdprintf("ShareEvaluator::extractAttributesQDF will work on %s\n", m_sPolyName);
+        xha_printf("ShareEvaluator::extractAttributesQDF will work on %s\n", m_sPolyName);
         m_pPL = qdf_createPolyLine(hSpeciesGroup, m_sPolyName);
         if (m_pPL != NULL) {
             if (m_pPL->m_iNumSegments == 0) {
@@ -290,7 +290,7 @@ int ShareEvaluator<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
             iResult = -1;
         }
     } else {
-        stdprintf("ShareEvaluator::extractAttributesQDF: empty poly name\n");
+        xha_printf("ShareEvaluator::extractAttributesQDF: empty poly name\n");
         iResult = -1;
     }
     return iResult;
@@ -305,15 +305,15 @@ template<typename T>
 int ShareEvaluator<T>::writeAttributesQDF(hid_t hSpeciesGroup) {
     int iResult = 0;
 
-    std::string sKeyArrName  = stdsprintf(ATTR_SHAREEVAL_ARRAYNAME, m_sID);
-    std::string sKeyPolyName = stdsprintf(ATTR_SHAREEVAL_POLYNAME, m_sID);
+    std::string sKeyArrName  = xha_sprintf(ATTR_SHAREEVAL_ARRAYNAME, m_sID);
+    std::string sKeyPolyName = xha_sprintf(ATTR_SHAREEVAL_POLYNAME, m_sID);
 
-    //    stdprintf("writing att [%s]:%s\n", sKeyArrName, m_sArrayName);
+    //    xha_printf("writing att [%s]:%s\n", sKeyArrName, m_sArrayName);
     iResult += qdf_insertSAttribute(hSpeciesGroup, sKeyArrName, m_sArrayName);
-    //    stdprintf("writing att [%s]:%s\n", sKeyPolyName, m_sPolyName);
+    //    xha_printf("writing att [%s]:%s\n", sKeyPolyName, m_sPolyName);
     iResult += qdf_insertSAttribute(hSpeciesGroup, sKeyPolyName, m_sPolyName);
     if (!m_sPolyName.empty()) {
-        //        stdprintf("writing poly [%s]:%s\n", sKeyPolyName, m_sPolyName);fflush(stdout);
+        //        xha_printf("writing poly [%s]:%s\n", sKeyPolyName, m_sPolyName);fflush(stdout);
         iResult += qdf_writePolyLine(hSpeciesGroup, m_pPL, m_sPolyName);
     }
     return iResult;
@@ -333,8 +333,8 @@ int ShareEvaluator<T>::tryGetAttributes(const ModuleComplex *pMC) {
     const stringmap &mParams = pMC->getAttributes();
     if (this->checkAttributes(mParams) == 0) {
         iResult = 0;
-        std::string sKeyArrName  = stdsprintf(ATTR_SHAREEVAL_ARRAYNAME, m_sID);
-        std::string sKeyPolyName = stdsprintf(ATTR_SHAREEVAL_POLYNAME, m_sID);
+        std::string sKeyArrName  = xha_sprintf(ATTR_SHAREEVAL_ARRAYNAME, m_sID);
+        std::string sKeyPolyName = xha_sprintf(ATTR_SHAREEVAL_POLYNAME, m_sID);
 
         iResult += getAttributeStr(mParams,  sKeyArrName, m_sArrayName);  
         iResult += getAttributeStr(mParams,  sKeyPolyName, m_sPolyName);  
@@ -383,8 +383,8 @@ bool ShareEvaluator<T>::isEqual(Evaluator *pEval, bool bStrict) {
 template<typename T>
 void ShareEvaluator<T>::showAttributes() {
 
-    std::string sKeyArrName = stdsprintf(ATTR_SHAREEVAL_ARRAYNAME, m_sID);
-    stdprintf("  %s\n", sKeyArrName);
-    std::string sKeyPolyName = stdsprintf(ATTR_SHAREEVAL_POLYNAME, m_sID);
-    stdprintf("  %s\n", sKeyPolyName);
+    std::string sKeyArrName = xha_sprintf(ATTR_SHAREEVAL_ARRAYNAME, m_sID);
+    xha_printf("  %s\n", sKeyArrName);
+    std::string sKeyPolyName = xha_sprintf(ATTR_SHAREEVAL_POLYNAME, m_sID);
+    xha_printf("  %s\n", sKeyPolyName);
 }

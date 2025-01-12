@@ -8,7 +8,7 @@
 #include <omp.h>
 
 #include "types.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "GeneUtils.h"
 #include "BitGeneUtils.h"
 #include "QDFUtils.h"
@@ -181,7 +181,7 @@ int GenomeVarChecker::init_qdf(const std::string sQDFPopFile,
         if (!sPopName.empty()) {
             m_sDataSetGenome =  sDataSetGenome;
                 
-            stdprintf("%s: using population [%s]\n", sQDFPopFile, sPopName);
+            xha_printf("%s: using population [%s]\n", sQDFPopFile, sPopName);
                 
             // open qdf and get species
             // we know file, pop group and species group exist
@@ -209,19 +209,19 @@ int GenomeVarChecker::init_qdf(const std::string sQDFPopFile,
 
                 iResult = processGenomesPar(sDataSetGenome);
             } else {
-                stdfprintf(stderr, "Couldn't extract Attribute [%s] for genome size\n", sAttrGenomeSize);
+                xha_fprintf(stderr, "Couldn't extract Attribute [%s] for genome size\n", sAttrGenomeSize);
             }
             
  
         } else {
             if (sSpeciesName.empty()) {
-                stdfprintf(stderr, "Couldn't find any population in [%s]\n", sQDFPopFile);
+                xha_fprintf(stderr, "Couldn't find any population in [%s]\n", sQDFPopFile);
             } else {
-                stdfprintf(stderr, "Couldn't get population [%s] from [%s]\n", sSpeciesName, sQDFPopFile);
+                xha_fprintf(stderr, "Couldn't get population [%s] from [%s]\n", sSpeciesName, sQDFPopFile);
             }
         }
     } else {
-        stdfprintf(stderr, "The name for the GenomeSize attribute must not be NULL\n");
+        xha_fprintf(stderr, "The name for the GenomeSize attribute must not be NULL\n");
     }
     return iResult;
 }
@@ -288,9 +288,9 @@ int GenomeVarChecker::init_bin(const std::string sBinGeneFile) {
                 iTot +=iC;
             }
          
-            stdprintf("processed %d half genes (expected: %zd)\n", 2*iTot, 2*mIDGen.size());
+            xha_printf("processed %d half genes (expected: %zd)\n", 2*iTot, 2*mIDGen.size());
             if (iResult == 0) {
-                stdprintf("post-processing\n");
+                xha_printf("post-processing\n");
                 iResult = accumulateThreadData();
                 iResult = makeCounts();
                 iResult = calcOderedFreqs();

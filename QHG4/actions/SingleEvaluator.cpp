@@ -5,7 +5,7 @@
 
 #include <cstring>
 #include "clsutils.cpp"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "ParamProvider2.h"
 #include "ArrayShare.h"
 #include "SPopulation.h"
@@ -151,7 +151,7 @@ int SingleEvaluator<T>::initialize(float fT) {
         if (this->m_bNeedUpdate || (m_bFirst)) {   // need for sure at first step
 
             m_bFirst = false;
-            if (!m_sPLParName.empty()) {stdprintf("SingleEvaluator::initialize is updating weights for %s\n", m_sPLParName);} 
+            if (!m_sPLParName.empty()) {xha_printf("SingleEvaluator::initialize is updating weights for %s\n", m_sPLParName);} 
             
             calcValues(); // get cell values from PolyLine
             
@@ -159,7 +159,7 @@ int SingleEvaluator<T>::initialize(float fT) {
 
         }
     } else {
-        stdprintf("No array with name [%s] found in ArrayExchange\n", m_sInputArrayName);
+        xha_printf("No array with name [%s] found in ArrayExchange\n", m_sInputArrayName);
         iResult = -1;
     }
 
@@ -254,7 +254,7 @@ int SingleEvaluator<T>::extractAttributesQDF(hid_t hSpeciesGroup) {
 
     int iResult = -1;
     if (!m_sPLParName.empty()) {
-        stdprintf("SingleEvaluator::extractAttributesQDF will work on %s\n", m_sPLParName);
+        xha_printf("SingleEvaluator::extractAttributesQDF will work on %s\n", m_sPLParName);
         if (this->m_pPL != NULL) {
             delete (this->m_pPL);
         }
@@ -388,11 +388,11 @@ bool SingleEvaluator<T>::isEqual(Evaluator *pEval, bool bStrict) {
 //
 template<typename T>
 void SingleEvaluator<T>::showAttributes() {
-    stdprintf("  %s\n", m_sPLParName);
+    xha_printf("  %s\n", m_sPLParName);
     if (m_pPL != NULL) {
         m_pPL->display("  ", "PolyLine");
     } else {
-        stdprintf("PolyLine null\n");
+        xha_printf("PolyLine null\n");
     }
 }
 

@@ -1,6 +1,6 @@
 #include <cstdio>
 
-#include "stdstrutilsT.h" 
+#include "xha_strutilsT.h" 
 #include "DepScanner.h"
 
 #include <regex>
@@ -38,8 +38,8 @@ int main(int iArgC, char *apArgV[]) {
         }
 
             
-        stdprintf("dirsA caller [%s], callee [%s]\n", sCallerDir, sCalleeDir);
-        stdprintf("dirsA caller [%s], callee [%s]\n", sCallerDir.c_str(), sCalleeDir.c_str());
+        xha_printf("dirsA caller [%s], callee [%s]\n", sCallerDir, sCalleeDir);
+        xha_printf("dirsA caller [%s], callee [%s]\n", sCallerDir.c_str(), sCalleeDir.c_str());
     
 
         DepScanner *pDS = DepScanner::createInstance(sCalleeDir, sCalleeSuffs, sCallerDir, sCallerSuffs);

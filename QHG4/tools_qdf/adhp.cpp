@@ -3,7 +3,7 @@
 #include <filesystem>
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "Agent2DataExtractor.h"
 #include "AgentDataHistoPie.h"
@@ -13,26 +13,26 @@
 // usage
 //
 void usage(const std::string sApp) {
-    stdprintf("%s - calculate hstogram foran agent data item and write a pie entry in QDF\n", sApp);
-    stdprintf("usage:\n");
-    stdprintf("  %s -i <inputQDF> [-o <outputQDF>] -d <DataItemName>\n", sApp);
-    stdprintf("     [-p <popName>] -s <samplingInfo> -b <dmin>:<dmax>;<bins>[:!]\n");
-    stdprintf("     [-m <mode>[:<mode>]*]\n");
-    stdprintf("or\n");
-    stdprintf("  %s -i <inputQDF> -l\n", sApp);
-    stdprintf("where\n");
-    stdprintf("  inputQDF       QDF file containing agent data and a geography group\n");
-    stdprintf("  outputQDF      QDF file to which pie group is to be added (if omitted, pie grou will be written to input file)\n");
-    stdprintf("  dataItemName   name of data item to extract\n");
-    stdprintf("  popName        name of population (if omitzted,  \"sapiens\" is used)\n");
-    stdprintf("  samplingInfo   text file containing snmpling info. format see below\n");
-    stdprintf("  dmin           minimum value for bins\n");
-    stdprintf("  dmax           minimum value for bins\n");
-    stdprintf("  bins           number of bins\n");
-    stdprintf("  mode           etiher \"txt\", \"csv\" or \"pie\"\n");
-    stdprintf("");
-    stdprintf("format for sampling info:\n");
-    stdprintf("  file ::= <header><NL><datalines>\n");
+    xha_printf("%s - calculate hstogram foran agent data item and write a pie entry in QDF\n", sApp);
+    xha_printf("usage:\n");
+    xha_printf("  %s -i <inputQDF> [-o <outputQDF>] -d <DataItemName>\n", sApp);
+    xha_printf("     [-p <popName>] -s <samplingInfo> -b <dmin>:<dmax>;<bins>[:!]\n");
+    xha_printf("     [-m <mode>[:<mode>]*]\n");
+    xha_printf("or\n");
+    xha_printf("  %s -i <inputQDF> -l\n", sApp);
+    xha_printf("where\n");
+    xha_printf("  inputQDF       QDF file containing agent data and a geography group\n");
+    xha_printf("  outputQDF      QDF file to which pie group is to be added (if omitted, pie grou will be written to input file)\n");
+    xha_printf("  dataItemName   name of data item to extract\n");
+    xha_printf("  popName        name of population (if omitzted,  \"sapiens\" is used)\n");
+    xha_printf("  samplingInfo   text file containing snmpling info. format see below\n");
+    xha_printf("  dmin           minimum value for bins\n");
+    xha_printf("  dmax           minimum value for bins\n");
+    xha_printf("  bins           number of bins\n");
+    xha_printf("  mode           etiher \"txt\", \"csv\" or \"pie\"\n");
+    xha_printf("");
+    xha_printf("format for sampling info:\n");
+    xha_printf("  file ::= <header><NL><datalines>\n");
 
 }
 
@@ -44,11 +44,11 @@ int listDataType(std::string sQDFInputFile, std::string sPopName) {
     std::string sDSPath =  "/Populations/" + sPopName + "/AgentDataSet";
     Agent2DataExtractor *pADE = Agent2DataExtractor::createInstance(sQDFInputFile, sDSPath);
     if (pADE != NULL) {
-        stdprintf("Members of compund data type\n");
+        xha_printf("Members of compund data type\n");
         pADE->listDataType();
         delete pADE;
     } else  {
-        stdprintf("Couldn't create AgentDataExtractor for [%s}", sQDFInputFile);
+        xha_printf("Couldn't create AgentDataExtractor for [%s}", sQDFInputFile);
         iResult = -1;
     }
     return iResult;
@@ -100,14 +100,14 @@ int main(int iArgC, char *apArgV[]) {
             iResult = pPR->getParams(iArgC, apArgV);
             if (iResult == 0) {
                 if (bVerbose) {
-                    stdprintf("-i: [%s]\n", sQDFInputFile);
-                    stdprintf("-o: [%s]\n", sQDFOutputBody);
-                    stdprintf("-d: [%s]\n", sDataItemName);
-                    stdprintf("-p: [%s]\n", sPopName);
-                    stdprintf("-s: [%s]\n", sSamplingInfo);
-                    stdprintf("-l: [%d]\n", bList);
-                    stdprintf("-m: [%s]\n", sOutputModes);
-                    stdprintf("-v: [%d]\n", bVerbose);
+                    xha_printf("-i: [%s]\n", sQDFInputFile);
+                    xha_printf("-o: [%s]\n", sQDFOutputBody);
+                    xha_printf("-d: [%s]\n", sDataItemName);
+                    xha_printf("-p: [%s]\n", sPopName);
+                    xha_printf("-s: [%s]\n", sSamplingInfo);
+                    xha_printf("-l: [%d]\n", bList);
+                    xha_printf("-m: [%s]\n", sOutputModes);
+                    xha_printf("-v: [%d]\n", bVerbose);
                 }
 
 
@@ -132,7 +132,7 @@ int main(int iArgC, char *apArgV[]) {
                                 } else if (vParts[i] == "std") {
                                     bstd = true;
                                 } else {
-                                    stdprintf("unknown output mode [%s]\n", vParts[i]);
+                                    xha_printf("unknown output mode [%s]\n", vParts[i]);
                                     bOK = false;
                                 }
                             }
@@ -147,16 +147,16 @@ int main(int iArgC, char *apArgV[]) {
                             iResult = -1;
                         }
                     } else {
-                        stdprintf("Required options missing;\n");
+                        xha_printf("Required options missing;\n");
                                                   
                         if (sDataItemName.empty()) {
-                            stdprintf("  -d <data_item>\n");
+                            xha_printf("  -d <data_item>\n");
                         }
                         if (sSamplingInfo.empty()) {
-                            stdprintf("  -s <sampling_info>\n");
+                            xha_printf("  -s <sampling_info>\n");
                         } 
                         if (sBinInfo.empty()) {
-                            stdprintf("  -b <bin_info>\n");
+                            xha_printf("  -b <bin_info>\n");
                         }
                         usage(apArgV[0]);
                         iResult = -1;
@@ -189,7 +189,7 @@ int main(int iArgC, char *apArgV[]) {
                                                 sQDFOutputFile = sQDFOutputBody+".qdf";
                                             }
                                             std::filesystem::copy_file(sQDFInputFile, sQDFOutputFile);
-                                            stdprintf("copied the input file [%s] to [%s]\n", sQDFInputFile, sQDFOutputFile);
+                                            xha_printf("copied the input file [%s] to [%s]\n", sQDFInputFile, sQDFOutputFile);
                                         } else {
                                             sQDFOutputFile = sQDFOutputBody+".qdf";
                                         }
@@ -204,15 +204,15 @@ int main(int iArgC, char *apArgV[]) {
                                         iResult = pADHP->writeCSV(sQDFOutputBody+".csv", bstd);
                                     }
                                     if (iResult == 0) {
-                                        stdprintf("+++ success +++\n");
+                                        xha_printf("+++ success +++\n");
                                     } else {
-                                        stdprintf("--- failure ---\n");
+                                        xha_printf("--- failure ---\n");
                                     } 
                                 }
                             }
                             delete pADHP;
                         } else {
-                            stdprintf("Coudn't create AgentDataHistoPie\n");
+                            xha_printf("Coudn't create AgentDataHistoPie\n");
                             iResult = -1;
                         }
                     }

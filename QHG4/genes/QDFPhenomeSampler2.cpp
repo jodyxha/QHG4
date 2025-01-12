@@ -28,44 +28,44 @@
 // usage
 //
 void usage(char *pApp) {
-    stdprintf("%s - Extract genome samples from a QDF population file\n", pApp);
-    stdprintf("Usage:\n");
-    stdprintf("%s -i <QDFPopFile> [-s <SpeciesName>] -o <OutputName> [-f <format>(\":\"<format>)*]\n", pApp);
-    stdprintf("      --location-file=<LocationFile>\n");
-    stdprintf("      [-g <QDFGeoFile>]\n");
-    stdprintf("      [--seed=<phrase>]\n");
-    stdprintf("      [--ref-location=<RefLocationFile>\n");
-    stdprintf("      [--dense]\n");
-    stdprintf("      [--attr-phenome-size=<NameAttrPhenomeSize>]\n");
-    stdprintf("      [--attr-ploidy=<NameAttrPloidy>]\n");
-    stdprintf("      [--dataset-phenome=<NameDSPhenome>]\n");
-    stdprintf("      [--phenomes-per-buf=<NumPhenomesPerBuf>]\n");
-    stdprintf("      [-c]\n");
-    stdprintf("where\n");
-    stdprintf("  QDFPopFile           QDF Population file with genome info\n");
-    stdprintf("  SpeciesName          Species name ( if omitted, first species will be used)\n");
-    stdprintf("  OutputName           Name body for output files\n");
-    stdprintf("  format               output format; one of \"bin\" and/or \"asc\"\n");
-    stdprintf("  Locationfile         name of location file (format: see below)\n");
-    stdprintf("  QDFGeoFile           QDF grid file \n");
-    stdprintf("  --dense              use if selected genomes dense in all genomes\n");
-    stdprintf("  RefLocationfile      name of location file for reference genome (format: see below)\n");
-    stdprintf("  NameAttrPhenomeSize  name of the phenome size attribute in the QDF file (default \"%s\")\n", ATTR_PHENOME_SIZE);
-    stdprintf("  NameAttrPloidy       name of the phenome size attribute in the QDF file (default \"%s\")\n", ATTR_PLOIDY);
-    stdprintf("  NameDSPhenome        name of the phenome data set in the QDF file (default \"%s\")\n", DATASET_PHENOME);
-    stdprintf("  NumPhenomesPerBuf    determines size of buffer: NumPhenomesPerBuf*2*phenomesize (default 1000000)\n");
-    stdprintf("  phrase               arbitrary sequence of characters to seed random generator (use quotes if pPhrase contains spaces) (default: [%s])\n", DEFAULT_PHRASE);
-    stdprintf("  -c                   use cartesian instead of spherical distances (default false)\n");
-    stdprintf("\n");
-    stdprintf("Location File Format\n");
-    stdprintf("  LocationFile ::= <LocationLine>*\n");     
-    stdprintf("  LocationLine ::= <identifier> <lon> <lat> <dist> <num> NL\n");     
-    stdprintf("  identifier   : string (name of location)\n");
-    stdprintf("  longitude    : double (longitude in degrees)\n");
-    stdprintf("  latitude     : double (latitude in degrees)\n");
-    stdprintf("  dist         : double (sample radius in km)\n");
-    stdprintf("  num          : int    (number of elements to sample)\n");
-    stdprintf("\n");
+    xha_printf("%s - Extract genome samples from a QDF population file\n", pApp);
+    xha_printf("Usage:\n");
+    xha_printf("%s -i <QDFPopFile> [-s <SpeciesName>] -o <OutputName> [-f <format>(\":\"<format>)*]\n", pApp);
+    xha_printf("      --location-file=<LocationFile>\n");
+    xha_printf("      [-g <QDFGeoFile>]\n");
+    xha_printf("      [--seed=<phrase>]\n");
+    xha_printf("      [--ref-location=<RefLocationFile>\n");
+    xha_printf("      [--dense]\n");
+    xha_printf("      [--attr-phenome-size=<NameAttrPhenomeSize>]\n");
+    xha_printf("      [--attr-ploidy=<NameAttrPloidy>]\n");
+    xha_printf("      [--dataset-phenome=<NameDSPhenome>]\n");
+    xha_printf("      [--phenomes-per-buf=<NumPhenomesPerBuf>]\n");
+    xha_printf("      [-c]\n");
+    xha_printf("where\n");
+    xha_printf("  QDFPopFile           QDF Population file with genome info\n");
+    xha_printf("  SpeciesName          Species name ( if omitted, first species will be used)\n");
+    xha_printf("  OutputName           Name body for output files\n");
+    xha_printf("  format               output format; one of \"bin\" and/or \"asc\"\n");
+    xha_printf("  Locationfile         name of location file (format: see below)\n");
+    xha_printf("  QDFGeoFile           QDF grid file \n");
+    xha_printf("  --dense              use if selected genomes dense in all genomes\n");
+    xha_printf("  RefLocationfile      name of location file for reference genome (format: see below)\n");
+    xha_printf("  NameAttrPhenomeSize  name of the phenome size attribute in the QDF file (default \"%s\")\n", ATTR_PHENOME_SIZE);
+    xha_printf("  NameAttrPloidy       name of the phenome size attribute in the QDF file (default \"%s\")\n", ATTR_PLOIDY);
+    xha_printf("  NameDSPhenome        name of the phenome data set in the QDF file (default \"%s\")\n", DATASET_PHENOME);
+    xha_printf("  NumPhenomesPerBuf    determines size of buffer: NumPhenomesPerBuf*2*phenomesize (default 1000000)\n");
+    xha_printf("  phrase               arbitrary sequence of characters to seed random generator (use quotes if pPhrase contains spaces) (default: [%s])\n", DEFAULT_PHRASE);
+    xha_printf("  -c                   use cartesian instead of spherical distances (default false)\n");
+    xha_printf("\n");
+    xha_printf("Location File Format\n");
+    xha_printf("  LocationFile ::= <LocationLine>*\n");     
+    xha_printf("  LocationLine ::= <identifier> <lon> <lat> <dist> <num> NL\n");     
+    xha_printf("  identifier   : string (name of location)\n");
+    xha_printf("  longitude    : double (longitude in degrees)\n");
+    xha_printf("  latitude     : double (latitude in degrees)\n");
+    xha_printf("  dist         : double (sample radius in km)\n");
+    xha_printf("  num          : int    (number of elements to sample)\n");
+    xha_printf("\n");
 
 }
 
@@ -115,37 +115,37 @@ int writeOutput(QDFPhenomeExtractor2 *pQPE, const std::string sOutputBody, int i
 
     if ((iWhat & OUT_BIN) != 0) {
         // create name
-        sOutBin = stdsprintf("%s.%sbin", sOutputBody, bRef?"ref.":"");
-        if (bVerbose) stdprintf("writing %s\n", sOutBin);
+        sOutBin = xha_sprintf("%s.%sbin", sOutputBody, bRef?"ref.":"");
+        if (bVerbose) xha_printf("writing %s\n", sOutBin);
         int iResult1 = PheneWriter2::writeSequence(FORMAT_BIN, pQPE, sOutBin, mLocDefs, pSample, false, false, iPloidy); // false,false: reduced output, (ignored)
         if (iResult1 != 0) {
             iResult += iResult1;
             iErr |=  OUT_BIN;
         }
-        stdprintf("bin file [%s] written\n", sOutBin);
+        xha_printf("bin file [%s] written\n", sOutBin);
     }
     if ((iWhat & OUT_ASC) != 0) {
         // create name
-        sOutAsc = stdsprintf("%s.%sasc", sOutputBody, bRef?"ref.":"");
-        if (bVerbose) stdprintf("writing %s\n", sOutAsc);
+        sOutAsc = xha_sprintf("%s.%sasc", sOutputBody, bRef?"ref.":"");
+        if (bVerbose) xha_printf("writing %s\n", sOutAsc);
         int iResult1 = PheneWriter2::writeSequence(FORMAT_ASC, pQPE, sOutAsc, mLocDefs, pSample, false, false, iPloidy); // false,false: reduced output, no headers
         if (iResult1 != 0) {
             iResult += iResult1;
             iErr |=  OUT_ASC;
         }
-        stdprintf("asc file [%s] written\n", sOutAsc);
+        xha_printf("asc file [%s] written\n", sOutAsc);
     }
 
 
     if (iResult != 0) {
-        stdfprintf(stderr, "writing failed for ");
+        xha_fprintf(stderr, "writing failed for ");
         if ((iErr & OUT_BIN) != 0) {
-            stdfprintf(stderr, "[%s] ", sOutBin);
+            xha_fprintf(stderr, "[%s] ", sOutBin);
         } 
         if ((iErr & OUT_ASC) != 0) {
-            stdfprintf(stderr, "[%s] ", sOutAsc);
+            xha_fprintf(stderr, "[%s] ", sOutAsc);
         } 
-        stdfprintf(stderr, "\n");
+        xha_fprintf(stderr, "\n");
          
     }
     return iResult;
@@ -161,12 +161,12 @@ int writeIndexIDMap(const arrpos_ids &mSelected, const char *pMapOut) {
      if (f != NULL) {
           arrpos_ids::const_iterator it;
 	  for (it = mSelected.begin(); it != mSelected.end(); ++it) {
-              stdfprintf(f, "%u %lu\n", it->first, it->second);
+              xha_fprintf(f, "%u %lu\n", it->first, it->second);
 	  }
 	  fclose(f);
 	  iResult = 0;
      } else {
-         stdfprintf(stderr, "Couldn't open file [%s] for writing\n", pMapOut);
+         xha_fprintf(stderr, "Couldn't open file [%s] for writing\n", pMapOut);
 	 iResult = -1;
      }
      return iResult;
@@ -247,17 +247,17 @@ int main(int iArgC, char *apArgV[]) {
     
                 if (iResult == 0) {
                     if (!bQuiet) {
-                        stdprintf("selected %d ids:", pQPE->getNumSelected());
+                        xha_printf("selected %d ids:", pQPE->getNumSelected());
                         const idset &sSelected = pQPE->getSelectedIDs();
                         if (false) {
                             for (idset::const_iterator it = sSelected.begin(); it != sSelected.end(); ++it) {
-                                stdprintf(" %ld", *it);
+                                xha_printf(" %ld", *it);
                             }
                         }
-                        stdprintf("\n");
+                        xha_printf("\n");
                     }
                 } else {
-                    stdfprintf(stderr, "error creating selection\n");
+                    xha_fprintf(stderr, "error creating selection\n");
                 }
 
 
@@ -275,7 +275,7 @@ int main(int iArgC, char *apArgV[]) {
                             iResult = writeIndexIDMap(pQPE->getIndexIDMap(), pMapFile);
                         }    
                     } else {
-                        stdfprintf(stderr, "failed writing outputs\n");
+                        xha_fprintf(stderr, "failed writing outputs\n");
                     }
                     
                     if (bHasRef && (iResult == 0)) {
@@ -283,7 +283,7 @@ int main(int iArgC, char *apArgV[]) {
                         if (iResult == 0) {
                             //ok
                         } else {
-                            stdfprintf(stderr, "couldn't create reference selection\n");
+                            xha_fprintf(stderr, "couldn't create reference selection\n");
                         }
                     }
                 }
@@ -291,7 +291,7 @@ int main(int iArgC, char *apArgV[]) {
 
 
                 if (iResult == 0) {
-                    stdprintf("+++ success +++\n");
+                    xha_printf("+++ success +++\n");
                 }
 
                
@@ -307,11 +307,11 @@ int main(int iArgC, char *apArgV[]) {
                 usage(apArgV[0]);
             }
         } else {
-            stdfprintf(stderr,"Couldn't set ParamReader options\n");
+            xha_fprintf(stderr,"Couldn't set ParamReader options\n");
         }
         delete pPR;
     } else {
-        stdfprintf(stderr, "Couldn't create ParamReader\n");
+        xha_fprintf(stderr, "Couldn't create ParamReader\n");
     }
 
     return iResult;

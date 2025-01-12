@@ -10,7 +10,7 @@
 
 #include "types.h"
 #include "qhg_consts.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "ParamReader.h"
 #include "SurfaceGrid.h"
 #include "QDFImageExtractor.h"
@@ -31,82 +31,82 @@ typedef  std::vector<desc_entry> desc_list;
 // usage
 //
 void usage(const std::string sApp) {
-    stdprintf("%s - export QDF arrays to PNG\n", sApp);
-    stdprintf("Usage:\n");
-    stdprintf("  %s -g <qdf_grid> -q <qdf_data>[,<qdf_data>]*]  \n", sApp);
-    stdprintf("     -s <w>x<h> -o <outpat>  -a <arrayspec>,[<arrayspec>]*\n");
-    stdprintf("    [-c <operation>] [-r <lon_roll>] [-w <ww>x<hw>+<ox>+<oy> ] [-t <text>[:<pos>[:<offs>]]] [-v]\n");
-    stdprintf("or");
-    stdprintf("  %s -g <qdf_grid> -f <batch_file>\n", sApp);
-    stdprintf("     -s <w>x<h>  -a <arrayspec>,[<arrayspec>]*\n");
-    stdprintf("    [-c <operation>] [-r <lon_roll>] [-t <text>[:<pos>[:<offs>]]] [-v]\n");
-    stdprintf("where\n");
-    stdprintf("  qdf_grid       QDF containing a grid and geography\n");
-    stdprintf("  qdf_data       QDF file containing data to be extracted\n");
-    stdprintf("                 which is not contained in <qdf_grid>\n");
-    stdprintf("  batch_file     file containing lines of the form:\n");
-    stdprintf("                 <timestamp>\":\"<qdf_data>[,<qdf_data>]*\":\"<output>\n");
-    stdprintf("  w              width  of output png\n");
-    stdprintf("  h              height of output png\n");
-    stdprintf("  ww             width  of depicted area in degrees (default 360)\n");
-    stdprintf("  hw             height of depicted area in degrees (default 180)\n");
-    stdprintf("  ox             longitude offset of depicted area (default 0)\n");
-    stdprintf("  oy             latitude offset of depicted area (default -90)\n");
-    stdprintf("  outpat         pattern for output pngs: the substring '###' will be replaced with the array name\n");
-    stdprintf("  arrayspec      array specification. Format:\n");
-    stdprintf("                 array_spec ::= <array_name>[@<index>][|<lookup>]\n");
-    stdprintf("                 array_name  :   name of array (s. below)\n");
-    stdprintf("                 index       :   index of qdf in which to look (0: qdf_geogrid, 1-N: qdf-data in given order)\n");
-    stdprintf("                 lookup      :   info for lookup, with format <lookup_name>[:<data>]* (s. below)\n");
-    stdprintf("  operation      compositing operator (currenly only: 'over' (simple alpha compositing)\n");
-    stdprintf("  longroll       longitude for smallest x value (rolls image)\n");
-    stdprintf("  text           text to be rendered on image\n");
-    stdprintf("  pos            position of text in image (default: '%s')\n", DEF_POS);
-    stdprintf("                       +----+----+----+\n");
-    stdprintf("                       | UL | UC | UR |\n");
-    stdprintf("                       +----+----+----+\n");
-    stdprintf("                       | CL | CC | CR |\n");
-    stdprintf("                       +----+----+----+\n");
-    stdprintf("                       | BL | BC | BR |\n");
-    stdprintf("                       +----+----+----+\n");
-    stdprintf("  offs             text offset from image border (default: %d)\n", DEF_OFFSET); 
-    stdprintf("  -v             verbose\n");
-    stdprintf("Arraynames:\n");
-    stdprintf("  lon       longitude   (Geography::m_adLongitude)\n");
-    stdprintf("  lat       latitude    (Geography::m_adLatitude)\n");
-    stdprintf("  alt       altitudes   (Geography::m_adAltitude)\n");
-    stdprintf("  ice       ice cover   (Geography::m_abIce)\n");
-    stdprintf("  water     water       (Geography::m_adWater)\n");
-    stdprintf("  coastal   coastal     (Geography::m_abCoastal)\n");
-    stdprintf("  temp      temperature (Climate::m_adAnnualMeanTemp)\n");
-    stdprintf("  rain      rainfall    (Climate::m_adAnnualRainfall)\n");
-    stdprintf("  npp       total npp   (NPPVegetation::m_adTotalANPP)\n");
-    stdprintf("  npp_b     base npp    (NPPVegetation::m_adBaseANPP)\n");
-    stdprintf("  dist      travel distance (MoveStats::m_adDist)\n");
-    stdprintf("  time      travel time     (MoveStats::m_adTime)\n");
-    stdprintf("  pop       population count\n");
-    stdprintf("  agent     average of an agent variable\n");
-    stdprintf("Lookups:\n");
-    stdprintf("  rainbow   data: min, max\n");
-    stdprintf("  rainbow2  data: min, max\n");
-    stdprintf("  geo       data: min, sealevel, max\n");
-    stdprintf("  twotone   data: Sepvalue, RGBA1, RGBA2\n");
-    stdprintf("  fadeout   data: min,max, RGBAmax\n");
-    stdprintf("  fadeto    data: min,max, RGBAmin, RGBAmax\n");
+    xha_printf("%s - export QDF arrays to PNG\n", sApp);
+    xha_printf("Usage:\n");
+    xha_printf("  %s -g <qdf_grid> -q <qdf_data>[,<qdf_data>]*]  \n", sApp);
+    xha_printf("     -s <w>x<h> -o <outpat>  -a <arrayspec>,[<arrayspec>]*\n");
+    xha_printf("    [-c <operation>] [-r <lon_roll>] [-w <ww>x<hw>+<ox>+<oy> ] [-t <text>[:<pos>[:<offs>]]] [-v]\n");
+    xha_printf("or");
+    xha_printf("  %s -g <qdf_grid> -f <batch_file>\n", sApp);
+    xha_printf("     -s <w>x<h>  -a <arrayspec>,[<arrayspec>]*\n");
+    xha_printf("    [-c <operation>] [-r <lon_roll>] [-t <text>[:<pos>[:<offs>]]] [-v]\n");
+    xha_printf("where\n");
+    xha_printf("  qdf_grid       QDF containing a grid and geography\n");
+    xha_printf("  qdf_data       QDF file containing data to be extracted\n");
+    xha_printf("                 which is not contained in <qdf_grid>\n");
+    xha_printf("  batch_file     file containing lines of the form:\n");
+    xha_printf("                 <timestamp>\":\"<qdf_data>[,<qdf_data>]*\":\"<output>\n");
+    xha_printf("  w              width  of output png\n");
+    xha_printf("  h              height of output png\n");
+    xha_printf("  ww             width  of depicted area in degrees (default 360)\n");
+    xha_printf("  hw             height of depicted area in degrees (default 180)\n");
+    xha_printf("  ox             longitude offset of depicted area (default 0)\n");
+    xha_printf("  oy             latitude offset of depicted area (default -90)\n");
+    xha_printf("  outpat         pattern for output pngs: the substring '###' will be replaced with the array name\n");
+    xha_printf("  arrayspec      array specification. Format:\n");
+    xha_printf("                 array_spec ::= <array_name>[@<index>][|<lookup>]\n");
+    xha_printf("                 array_name  :   name of array (s. below)\n");
+    xha_printf("                 index       :   index of qdf in which to look (0: qdf_geogrid, 1-N: qdf-data in given order)\n");
+    xha_printf("                 lookup      :   info for lookup, with format <lookup_name>[:<data>]* (s. below)\n");
+    xha_printf("  operation      compositing operator (currenly only: 'over' (simple alpha compositing)\n");
+    xha_printf("  longroll       longitude for smallest x value (rolls image)\n");
+    xha_printf("  text           text to be rendered on image\n");
+    xha_printf("  pos            position of text in image (default: '%s')\n", DEF_POS);
+    xha_printf("                       +----+----+----+\n");
+    xha_printf("                       | UL | UC | UR |\n");
+    xha_printf("                       +----+----+----+\n");
+    xha_printf("                       | CL | CC | CR |\n");
+    xha_printf("                       +----+----+----+\n");
+    xha_printf("                       | BL | BC | BR |\n");
+    xha_printf("                       +----+----+----+\n");
+    xha_printf("  offs             text offset from image border (default: %d)\n", DEF_OFFSET); 
+    xha_printf("  -v             verbose\n");
+    xha_printf("Arraynames:\n");
+    xha_printf("  lon       longitude   (Geography::m_adLongitude)\n");
+    xha_printf("  lat       latitude    (Geography::m_adLatitude)\n");
+    xha_printf("  alt       altitudes   (Geography::m_adAltitude)\n");
+    xha_printf("  ice       ice cover   (Geography::m_abIce)\n");
+    xha_printf("  water     water       (Geography::m_adWater)\n");
+    xha_printf("  coastal   coastal     (Geography::m_abCoastal)\n");
+    xha_printf("  temp      temperature (Climate::m_adAnnualMeanTemp)\n");
+    xha_printf("  rain      rainfall    (Climate::m_adAnnualRainfall)\n");
+    xha_printf("  npp       total npp   (NPPVegetation::m_adTotalANPP)\n");
+    xha_printf("  npp_b     base npp    (NPPVegetation::m_adBaseANPP)\n");
+    xha_printf("  dist      travel distance (MoveStats::m_adDist)\n");
+    xha_printf("  time      travel time     (MoveStats::m_adTime)\n");
+    xha_printf("  pop       population count\n");
+    xha_printf("  agent     average of an agent variable\n");
+    xha_printf("Lookups:\n");
+    xha_printf("  rainbow   data: min, max\n");
+    xha_printf("  rainbow2  data: min, max\n");
+    xha_printf("  geo       data: min, sealevel, max\n");
+    xha_printf("  twotone   data: Sepvalue, RGBA1, RGBA2\n");
+    xha_printf("  fadeout   data: min,max, RGBAmax\n");
+    xha_printf("  fadeto    data: min,max, RGBAmin, RGBAmax\n");
     /*
-    stdprintf("Postprocessing:\n");
-    stdprintf("For superposition use imagemagick:\n");
-    stdprintf("  composite -compose Over onklop_ice.png onklop_alt.png destination.png\n");
+    xha_printf("Postprocessing:\n");
+    xha_printf("For superposition use imagemagick:\n");
+    xha_printf("  composite -compose Over onklop_ice.png onklop_alt.png destination.png\n");
     */
-    stdprintf("Call example\n");
-    stdprintf("%s -g zworld_22.0_kya_256.qdf \\\n", sApp);
-    stdprintf("          -q ooa_pop-Sapiens_ooa__010000.qdf,aternative_ice.qdf \\\n");
-    stdprintf("          -s 720x360 \\\n");
-    stdprintf("          -o onklop_###_024.PNG \\\n");
-    stdprintf("          -a 'alt|geo:-6000:0:6000,ice@2|twotone:0.5:#00000000:#FFFFFFFF, \\\n");
-    stdprintf("             pop_sapiens|fadeout:0:40:#00FF00FF,agent:neander[PheneticHyb]|rainbow:0:1' \\\n"); 
-    stdprintf("          -r -25 \\\n");
-    stdprintf("          -c over\n");
+    xha_printf("Call example\n");
+    xha_printf("%s -g zworld_22.0_kya_256.qdf \\\n", sApp);
+    xha_printf("          -q ooa_pop-Sapiens_ooa__010000.qdf,aternative_ice.qdf \\\n");
+    xha_printf("          -s 720x360 \\\n");
+    xha_printf("          -o onklop_###_024.PNG \\\n");
+    xha_printf("          -a 'alt|geo:-6000:0:6000,ice@2|twotone:0.5:#00000000:#FFFFFFFF, \\\n");
+    xha_printf("             pop_sapiens|fadeout:0:40:#00FF00FF,agent:neander[PheneticHyb]|rainbow:0:1' \\\n"); 
+    xha_printf("          -r -25 \\\n");
+    xha_printf("          -c over\n");
 }  
 
 
@@ -142,7 +142,7 @@ int splitDescFile(const std::string sDescFile,  desc_list &tsl) {
                 tsl.push_back(desc_entry(vParts[0], vParts[1], vParts[2])) ;
                 pLine = pLR->getNextLine();
             } else {
-                stdprintf("Expected third entry (output pat)\n");
+                xha_printf("Expected third entry (output pat)\n");
                 iResult = -1;
             }
 
@@ -160,20 +160,20 @@ int splitDescFile(const std::string sDescFile,  desc_list &tsl) {
                             pLine = pLR->getNextLine();
                             
                         } else {
-                            stdprintf("Expected third entry (output pat)\n");
+                            xha_printf("Expected third entry (output pat)\n");
                             iResult = -1;
                         }
                     } else {
-                        stdprintf("Expected second entry (qdf list)\n");
+                        xha_printf("Expected second entry (qdf list)\n");
                         iResult = -1;
                     }
                 } else {
-                    stdprintf("first entry must be a double [%s]\n", p);
+                    xha_printf("first entry must be a double [%s]\n", p);
                     iResult = -1;
                 }
 
             } else {
-                stdprintf("DescFile empty string?\n");
+                xha_printf("DescFile empty string?\n");
                 iResult = -1;
             }
             */
@@ -181,7 +181,7 @@ int splitDescFile(const std::string sDescFile,  desc_list &tsl) {
         }
         delete pLR;
     } else {
-        stdprintf("Couldn't open Descfile [%s]\n", sDescFile);
+        xha_printf("Couldn't open Descfile [%s]\n", sDescFile);
     }
     return iResult;
 }
@@ -216,9 +216,9 @@ int doSingleImage(const std::string sQDFData, SurfaceGrid *pSG, const std::strin
     }
     if (iResult == 0) {
         //        if (bVerbose) {
-            stdprintf("QDF files:\n");
+            xha_printf("QDF files:\n");
             for (uint i = 0; i < vQDFs.size(); ++i) {
-                stdprintf("%2u: %s\n", i, vQDFs[i]);
+                xha_printf("%2u: %s\n", i, vQDFs[i]);
             }
             //        }
         
@@ -227,14 +227,14 @@ int doSingleImage(const std::string sQDFData, SurfaceGrid *pSG, const std::strin
             pQIE->extractAll(sOutPat, sCompOp, sText);
             delete pQIE;
         } else {
-            stdprintf("Couldn't create QDFImageExtractor\n");
+            xha_printf("Couldn't create QDFImageExtractor\n");
             iResult = -1;
         }
         
         
         
     } else {
-        stdprintf("Couldn't split qdf data\n");
+        xha_printf("Couldn't split qdf data\n");
         iResult = -1;
     }
     if (pCopy != NULL) {
@@ -286,7 +286,7 @@ int main(int iArgC, char *apArgV[]) {
             }
             int iW = -1;
             int iH = -1;
-            stdprintf("Verbose: %s\n", bVerbose?"yes":"no");
+            xha_printf("Verbose: %s\n", bVerbose?"yes":"no");
             bOK = splitSizeString(sSize.c_str(), &iW, &iH);
             if (bOK) {
                 if (!sCompOp.empty()) {
@@ -317,7 +317,7 @@ int main(int iArgC, char *apArgV[]) {
                             }
                             
                         } else {
-                            stdprintf("OutPat (-o) must be given if no BatchFile (-f) is used\n");
+                            xha_printf("OutPat (-o) must be given if no BatchFile (-f) is used\n");
                             iResult = -1;
                         }
                     }
@@ -329,7 +329,7 @@ int main(int iArgC, char *apArgV[]) {
                         if (pSG != NULL) {
                         
                             for (uint i = 0; (iResult == 0) && (i < tsl.size()); ++i) {
-                                stdprintf("List: [%s]\n", tsl[i].sQDFList);
+                                xha_printf("List: [%s]\n", tsl[i].sQDFList);
                                 iResult = doSingleImage(tsl[i].sQDFList, 
                                                         pSG, 
                                                         sQDFGrid, 
@@ -342,30 +342,30 @@ int main(int iArgC, char *apArgV[]) {
                             }
                             delete pSG;
                             if (iResult == 0) {
-                                stdprintf("+++ success +++\n");
+                                xha_printf("+++ success +++\n");
                             } else {
-                                stdprintf("--- failed ---\n");
+                                xha_printf("--- failed ---\n");
                             }
                         } else {
-                            stdprintf("Couldn't create SurfaceGrid\n");
+                            xha_printf("Couldn't create SurfaceGrid\n");
                         }
                     }
                 } else {
-                    stdprintf("Couldn't split window string\n");
+                    xha_printf("Couldn't split window string\n");
                     iResult = -1;
                 }
             } else {
-                stdprintf("Couldn't split size string\n");
+                xha_printf("Couldn't split size string\n");
                 iResult = -1;
             }
         } else {
-            stdprintf("ParamReader result: %d\n", iResult);
-            stdprintf("%s: %s %s\n", pPR->getErrorMessage(iResult),  pPR->getBadArg(), pPR->getBadVal());
+            xha_printf("ParamReader result: %d\n", iResult);
+            xha_printf("%s: %s %s\n", pPR->getErrorMessage(iResult),  pPR->getBadArg(), pPR->getBadVal());
             usage(apArgV[0]);
             iResult = -1;
         }
     } else {
-        stdprintf("Error in setOptions\n");
+        xha_printf("Error in setOptions\n");
     }
     delete pPR;
     return iResult;

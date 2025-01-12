@@ -1,16 +1,16 @@
 /*============================================================================
-| stdstrutils.cpp
+| xha_strutils.cpp
 | 
 |  Regular functions std::string-capable string utilities.
 |  
-|  Also see stdstrutilsT.h, stdstrutils.h
+|  Also see xha_strutilsT.h, xha_strutils.h
 |
 |  
 |  Author: Jody Weissmann
 \===========================================================================*/ 
 
-#ifndef __STDSTRUTILS_CPP__
-#define __STDSTRUTILS_CPP__
+#ifndef __XHA_STRUTILS_CPP__
+#define __XHA_STRUTILS_CPP__
 
 #include <iostream>
 #include <string>
@@ -23,7 +23,7 @@
 #include <sys/stat.h>
  
 #include "types.h"
-#include "stdstrutils.h"
+#include "xha_strutils.h"
 
 //----------------------------------------------------------------------------
 // splitString
@@ -219,14 +219,14 @@ std::string readKeyString(std::string sLine, const std::string sKey, const std::
     return std::string(sVal);
 }
 
-// These are the "termination" functions for the recursive template functions around stdsprintf.
-// Somehow i can't have these versions of recursiveFormat() and simpleFormat() in stdstrutilsT.h -
+// These are the "termination" functions for the recursive template functions around xha_sprintf.
+// Somehow i can't have these versions of recursiveFormat() and simpleFormat() in xha_strutilsT.h -
 // they have no template arguments, and when declared 'static' i always get 'unused' warnings
 
 
 //----------------------------------------------------------------------------
 // recursiveFormat
-//   termination version of stdstrutils::recursiveFormat
+//   termination version of xha_strutils::recursiveFormat
 //
 std::string recursiveFormat(stringvec &vParts, stringvec &vFormats, uint i) {
     return vParts[i];

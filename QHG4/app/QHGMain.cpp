@@ -79,18 +79,18 @@ int main(int iArgC, char *apArgV[]) {
             if (iResult == 0) {
                 //            iResult = pSim->writeState(apArgV[3+iOffs], WR_POP);
                 if (iResult == 0) {
-                    stdprintf("%s+++success+++%s\n", colors::GREEN, colors::OFF);
+                    xha_printf("%s+++success+++%s\n", colors::GREEN, colors::OFF);
                 }
             } else {
-                stdprintf("%serror in loops%s\n", colors::RED, colors::OFF);
+                xha_printf("%serror in loops%s\n", colors::RED, colors::OFF);
             }
             
         } else {
             if (iResult == 3) {
-                stdprintf("%susage%s: %d\n", colors::HIRED, colors::OFF, PARAMREADER_ERR_MANDATORY_MISSING);
-                stdprintf("%s", colors::HIRED);
+                xha_printf("%susage%s: %d\n", colors::HIRED, colors::OFF, PARAMREADER_ERR_MANDATORY_MISSING);
+                xha_printf("%s", colors::HIRED);
                 Simulator::helpParams();
-                stdprintf("%s\n", colors::OFF);
+                xha_printf("%s\n", colors::OFF);
             } else if (iResult == 2) {
                 Simulator::showTopicHelp(pSim->getHelpTopic());
             }
@@ -99,10 +99,10 @@ int main(int iArgC, char *apArgV[]) {
         MessLogger::free();
        
     } else {
-        stdprintf("%susage%s\n", colors::HIRED, colors::OFF);
-        stdprintf("%s", colors::HIRED);
+        xha_printf("%susage%s\n", colors::HIRED, colors::OFF);
+        xha_printf("%s", colors::HIRED);
         Simulator::helpParams();
-        stdprintf("%s\n", colors::OFF);
+        xha_printf("%s\n", colors::OFF);
         
     }
     return iResult;

@@ -73,8 +73,8 @@ int ClimateGroupReader::readArray(Climate *pCG, const std::string sArrayName) {
     } else {
         iResult = -1;
         if (m_pAttributes != NULL) {
-            stdprintf("Number of cells does not correspond:\n");
-            stdprintf("  ClimateGroupReader::m_iNumCells: %d; Climate::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pCG->m_iNumCells);
+            xha_printf("Number of cells does not correspond:\n");
+            xha_printf("  ClimateGroupReader::m_iNumCells: %d; Climate::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pCG->m_iNumCells);
         }
     }
     
@@ -88,7 +88,7 @@ int ClimateGroupReader::readArray(Climate *pCG, const std::string sArrayName) {
         } else if (sArrayName == CLI_DS_ANN_TOT_RAIN) {
             iResult = qdf_readArray(m_hGroup, CLI_DS_ANN_TOT_RAIN,   pCG->m_iNumCells, pCG->m_adAnnualRainfall);
         } else {
-            stdprintf("Unknown array [%s]\n", sArrayName);
+            xha_printf("Unknown array [%s]\n", sArrayName);
             iResult = -1;
         }
     }
@@ -108,8 +108,8 @@ int ClimateGroupReader::readData(Climate *pCG) {
     } else {
         iResult = -1;
         if (m_pAttributes != NULL) {
-            stdprintf("Number of cells or max neighbors do not correspond:\n");
-            stdprintf("  ClimateGroupReader::m_iNumCells: %d; Climate::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pCG->m_iNumCells);
+            xha_printf("Number of cells or max neighbors do not correspond:\n");
+            xha_printf("  ClimateGroupReader::m_iNumCells: %d; Climate::m_iNumCells: %d\n", m_pAttributes->m_iNumCells,  pCG->m_iNumCells);
         }
     }
 

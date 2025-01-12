@@ -2,7 +2,7 @@
 #include <cmath>
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "QDFArray.h"
 #include "QDFArrayT.h"
@@ -32,9 +32,9 @@ void showGroups(groupedvals<double> &vG) {
     for (it = vG.begin(); it != vG.end(); ++it) {
         printf("(%0*d) %03d: ", n, i++, it->first);
 	for (unsigned int k = 0; k < it->second.size(); ++k) {
-             stdprintf(" %f", it->second[k]);
+             xha_printf(" %f", it->second[k]);
 	}
-	stdprintf("\n");
+	xha_printf("\n");
     }
 }
 
@@ -45,11 +45,11 @@ void showGroups(groupedvals<double> &vG) {
 void showHistos(maphistos &mH, int iNumBin) {
     maphistos::const_iterator it;
     for (it = mH.begin(); it != mH.end(); ++it) {
-        stdprintf("(%d): ", it->first);
+        xha_printf("(%d): ", it->first);
 	for (int k = 0; k < iNumBin; ++k) {
-             stdprintf(" %d", it->second[k]);
+             xha_printf(" %d", it->second[k]);
 	}
-	stdprintf("\n");
+	xha_printf("\n");
     }
 }
 
@@ -79,13 +79,13 @@ double **fillCoordMap(const std::string sQDFGeoGrid, uint *piNumCells) {
                 //                fprintf(stderr, "Read %d CellIDs\n", iCount);
                 iResult = 0;
             } else {
-                stdfprintf(stderr, "Read bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)\n", sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, iNumCells);
+                xha_fprintf(stderr, "Read bad number of grid IDs from [%s:%s/%s/%s]: %d (instead of %d)\n", sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME,GRID_DS_CELL_ID, iCount, iNumCells);
                 iResult = -1;
             }
             pQA->closeArray();
         } else {
             iResult = -1;
-            stdfprintf(stderr, "Couldn't open QDF array for [%s:%s/%s]\n", sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME);
+            xha_fprintf(stderr, "Couldn't open QDF array for [%s:%s/%s]\n", sQDFGeoGrid, GRIDGROUP_NAME, CELL_DATASET_NAME);
         }
 
         // get the cell Longitudes
@@ -97,15 +97,15 @@ double **fillCoordMap(const std::string sQDFGeoGrid, uint *piNumCells) {
                     pdLon = new double[iNumCells];
                     uint iCount = pQA->getFirstSlab(pdLon, iNumCells);
                     if (iCount == iNumCells) {
-                        stdfprintf(stderr, "Read %d Longitudes\n", iCount);
+                        xha_fprintf(stderr, "Read %d Longitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, iNumCells);
+                        xha_fprintf(stderr, "Read bad number of read longitudes from [%s:%s/%s]: %d instead of %d\n", sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE, iCount, iNumCells);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "Number of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE);
+                    xha_fprintf(stderr, "Number of longitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LONGITUDE);
                 }
                 pQA->closeArray();
             }
@@ -120,15 +120,15 @@ double **fillCoordMap(const std::string sQDFGeoGrid, uint *piNumCells) {
                     pdLat = new double[iNumCells];
                     uint iCount = pQA->getFirstSlab(pdLat, iNumCells);
                     if (iCount == iNumCells) {
-                        stdfprintf(stderr, "Read %d Latitudes\n", iCount);
+                        xha_fprintf(stderr, "Read %d Latitudes\n", iCount);
                         iResult = 0;
                     } else {
                         iResult = -1;
-                        stdfprintf(stderr, "Couldn't read latitudes from [%s:%s/%s]: %d instead of %d\n", sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL,iNumCells);
+                        xha_fprintf(stderr, "Couldn't read latitudes from [%s:%s/%s]: %d instead of %d\n", sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE, iNumCellsL,iNumCells);
                     }
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "Number of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE);
+                    xha_fprintf(stderr, "Number of latitudes (%d) differs from number of cellIDs (%d) in [%s:%s/%s]\n", iNumCellsL, iNumCells, sQDFGeoGrid, GEOGROUP_NAME, GEO_DS_LATITUDE);
                 }
 
                 pQA->closeArray();
@@ -137,7 +137,7 @@ double **fillCoordMap(const std::string sQDFGeoGrid, uint *piNumCells) {
     
         delete pQA;
     } else {
-        stdfprintf(stderr, "Couldn't create QDFArray\n");
+        xha_fprintf(stderr, "Couldn't create QDFArray\n");
     }
      
     // put everything into a map CellID => (lon, lat)
@@ -190,14 +190,14 @@ int main(int iArgC, char *apArgV[]) {
         Agent2DataExtractor *pADE = Agent2DataExtractor::createInstance(sFileName, sDSPath);
         if (pADE != NULL) {
             if (bList) {
-                stdprintf("Members of compund data type\n");
+                xha_printf("Members of compund data type\n");
                 pADE->listDataType();
             } else {
-                stdprintf("Extracting ");
+                xha_printf("Extracting ");
                 for (uint i = 0; i < vItems.size(); i++) {
-                    stdprintf(" [%s]", vItems[i].c_str());
+                    xha_printf(" [%s]", vItems[i].c_str());
                 }
-                stdprintf("\n");
+                xha_printf("\n");
 
                 struct_manager *pSM = pADE->extractVarV(vItems);
                 if (pSM != NULL) {
@@ -205,18 +205,18 @@ int main(int iArgC, char *apArgV[]) {
                     std::vector<std::pair<int, double>> vIV;
                     pSM->makeIndexedVals(iNumItems, vIV);
                     
-                    stdprintf("Got %zd values.\n", vIV.size());
+                    xha_printf("Got %zd values.\n", vIV.size());
                     
                     /*
                       for (uint i = 0; i < vIV.size(); i++) {
-                      stdprintf("%d: %f\n", vIV[i].first, vIV[i].second);
+                      xha_printf("%d: %f\n", vIV[i].first, vIV[i].second);
                       }
                     */
                     uint iNumCells;
 
                     double **apCoords = fillCoordMap(sFileName, &iNumCells);
                     if (apCoords != NULL) {
-                        stdprintf("Got %u cells.\n", iNumCells);
+                        xha_printf("Got %u cells.\n", iNumCells);
                         
                         if (iResult == 0) {
                             /*
@@ -261,17 +261,17 @@ int main(int iArgC, char *apArgV[]) {
                                 if (iResult == 0) {
                                     iResult = pPW->writeToQDF(sQDFFileName);
                                     if (iResult == 0) {
-                                        stdprintf("+++ successfully written\n");
+                                        xha_printf("+++ successfully written\n");
                                         
                                     } else {
-                                        stdprintf("couldn't write data\n");
+                                        xha_printf("couldn't write data\n");
                                     }
                                 } else {
-                                    stdprintf("couldn't prepare data\n");
+                                    xha_printf("couldn't prepare data\n");
                                 }
                                 delete pPW;
                             } else {
-                                stdprintf("couldn't create pie writer\n");
+                                xha_printf("couldn't create pie writer\n");
                             }
                             
                             
@@ -284,21 +284,21 @@ int main(int iArgC, char *apArgV[]) {
                         delete[] apCoords[1];
                         delete[] apCoords;
                     } else {
-                        stdprintf("Couldn't extract coordinates from [%s]\n", sFileName);
+                        xha_printf("Couldn't extract coordinates from [%s]\n", sFileName);
                     }
                     delete pSM;
                 } else {
-                    stdprintf("Couldn't create struct manager\n");
+                    xha_printf("Couldn't create struct manager\n");
                 }
                
                 
             }
             delete pADE;
         } else {
-            stdprintf("Couldn't create AgentDataExtractorn");
+            xha_printf("Couldn't create AgentDataExtractorn");
         }
     } else {
-        stdprintf("usage ; %s <qdf-file> [<item-name>]\n", apArgV[0]);
+        xha_printf("usage ; %s <qdf-file> [<item-name>]\n", apArgV[0]);
     }
     
 }

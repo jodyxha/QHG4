@@ -11,7 +11,7 @@
 
 #include "ParamReader.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "Vec3D.h"
 #include "QDFUtils.h"
 #include "QDFUtilsT.h"
@@ -195,7 +195,7 @@ int checkArrayName(arrind &aiNameIndex, array_data &mvArrayData) {
         iCode = ARR_CODE_TIME;
     } else if (startsWith(sName, "pop_"))  {
         const std::string sRest = sName.substr(4);
-        std::string sGroup = stdsprintf("%s/%s", POPGROUP_NAME, sRest);
+        std::string sGroup = xha_sprintf("%s/%s", POPGROUP_NAME, sRest);
 
         mvArrayData[aiNameIndex] = ds_info(POPGROUP_NAME, sRest, AGENT_DATASET_NAME, DS_TYPE_POP);
         //mvArrayData[pName] = ds_info(sGroup, AGENT_DATASET_NAME, DS_TYPE_POP);
@@ -206,7 +206,7 @@ int checkArrayName(arrind &aiNameIndex, array_data &mvArrayData) {
     
 
     if (iCode != ARR_CODE_NONE) {
-        stdprintf("added ARR [%s@%d] -> Group [%s], dataset [%s], type %d\n", 
+        xha_printf("added ARR [%s@%d] -> Group [%s], dataset [%s], type %d\n", 
                aiNameIndex.first, 
                aiNameIndex.second, 
                mvArrayData[aiNameIndex].sGroup, 
@@ -390,19 +390,19 @@ LookUp *createLookUp(char *pLUName, string_list &vParams) {
     case 0:
         break;
     case -1:
-        stdprintf("Unknown lookup name [%s]\n", pLUName);
+        xha_printf("Unknown lookup name [%s]\n", pLUName);
         break;
     case -2:
-        stdprintf("Expected number for parameter of [%s]: [%s]\n", pLUName, vParams[iBadIndex]);
+        xha_printf("Expected number for parameter of [%s]: [%s]\n", pLUName, vParams[iBadIndex]);
         break;
     case -3:
-        stdprintf("Not enough parameters for [%s]\n", pLUName);
+        xha_printf("Not enough parameters for [%s]\n", pLUName);
         break;
     case -4:
-        stdprintf("Not a valid color description ('#RRGGBBAA'): [%s]\n", vParams[iBadIndex]);
+        xha_printf("Not a valid color description ('#RRGGBBAA'): [%s]\n", vParams[iBadIndex]);
         break;
     default:
-        stdprintf("Unknown error %d\n", iResult);
+        xha_printf("Unknown error %d\n", iResult);
     }
 
     return pLU;
@@ -446,7 +446,7 @@ int splitArraySpec(char *sArrayData, array_data &mvArrayData, lookup_data &mvLoo
                 
                 LookUp *pLU = createLookUp(p2, vParams);
                 mvLookUpData[aiNameIndex] = pLU;
-                stdprintf("added LU  [%s@%d] -> [%p]\n", aiNameIndex.first, aiNameIndex.second, pLU);
+                xha_printf("added LU  [%s@%d] -> [%p]\n", aiNameIndex.first, aiNameIndex.second, pLU);
 
                 if (pLU != NULL) {
                     vOrder.push_back(aiNameIndex);
@@ -538,7 +538,7 @@ int checkConsistent(string_list &vQDFs, array_data &mvArrayData, which_data &mvW
         if (hGrid != H5P_DEFAULT) {
             qdf_closeGroup(hGrid);
         } else {
-            stdprintf("No grid group in [%s]\n", vQDFs[0]);
+            xha_printf("No grid group in [%s]\n", vQDFs[0]);
             iResult =-1;
         }
         qdf_closeFile(hQDFGeoGrid);
@@ -553,7 +553,7 @@ int checkConsistent(string_list &vQDFs, array_data &mvArrayData, which_data &mvW
 
                         if ((it->first.second < 0) || (it->first.second == (int)i)) {
                     
-                            stdprintf("%s: using Group [%s%s%s], Dataset [%s] in [%s]\n", 
+                            xha_printf("%s: using Group [%s%s%s], Dataset [%s] in [%s]\n", 
                                       it->first.first, 
                                       it->second.sGroup,  
                                       (it->second.sSubGroup != "")?"/":"",
@@ -567,7 +567,7 @@ int checkConsistent(string_list &vQDFs, array_data &mvArrayData, which_data &mvW
                     } 
                     qdf_closeFile(hQDFData);
                 } else {
-                    stdprintf("Couldn't open [%s]\n", vQDFs[i]);
+                    xha_printf("Couldn't open [%s]\n", vQDFs[i]);
                     iResult = -1;
                 }
             }
@@ -575,7 +575,7 @@ int checkConsistent(string_list &vQDFs, array_data &mvArrayData, which_data &mvW
             if (bSearching) {
                 mvWhich[it->first] = -1;
                 iResult = -1;
-                stdprintf("Group [%s], Dataset [%s] not found in any of the QDF files\n", 
+                xha_printf("Group [%s], Dataset [%s] not found in any of the QDF files\n", 
                        it->second.sGroup,  
                        it->second.sDataSet);
             } else {
@@ -586,7 +586,7 @@ int checkConsistent(string_list &vQDFs, array_data &mvArrayData, which_data &mvW
 
 
     } else {
-        stdprintf("Couldn't open grid group in [%s]\n", vQDFs[0]);
+        xha_printf("Couldn't open grid group in [%s]\n", vQDFs[0]);
         iResult = -1;
     }
     return iResult;
@@ -772,7 +772,7 @@ int writePNGFile(uchar **ppuData, int iW, int iH, const std::string sOut) {
     
     PNGImage *pPI = new PNGImage(iW, iH);
     if (pPI != NULL) {
-        stdprintf("Writing data to [%s]\n", sOut);
+        xha_printf("Writing data to [%s]\n", sOut);
         bool bOK = pPI->createPNGFromData(ppuData, sOut.c_str());
         if (bOK) {
             iResult = 0;
@@ -830,7 +830,7 @@ int main(int iArgC, char *apArgV[]) {
                 if (iResult == 0) {
                     printf("QDF files:\n");
                     for (uint i = 0; i < vQDFs.size(); ++i) {
-                        stdprintf("%2u: %s\n", i, vQDFs[i]);
+                        xha_printf("%2u: %s\n", i, vQDFs[i]);
                     }
                     array_data  mvArrayData;
                     lookup_data mvLookUpData;
@@ -865,7 +865,7 @@ int main(int iArgC, char *apArgV[]) {
                                         if ((mvWhich[aiNameIndex] >= 0) && (mvWhich[aiNameIndex] < (int) vQDFs.size()))  {
                                             pData = extractData(vQDFs[mvWhich[aiNameIndex]], iNumCells, dsCur);
                                         } else {
-                                            stdprintf("What? whichvalue %d  -- this should not happen!\n", mvWhich[aiNameIndex]);
+                                            xha_printf("What? whichvalue %d  -- this should not happen!\n", mvWhich[aiNameIndex]);
                                             iResult = -1;
                                         }
                             
@@ -878,15 +878,15 @@ int main(int iArgC, char *apArgV[]) {
                                             if (sCompOp == NULL) {
                                             
                                                 // no compositing: create png data and write to file
-                                                std::string sFullName = stdsprintf("%s_%d", sName, mvWhich[aiNameIndex]);
+                                                std::string sFullName = xha_sprintf("%s_%d", sName, mvWhich[aiNameIndex]);
                                                 std::string sOutName = replacePat(sOutPat, sFullName);
                                             
                                                 iResult = writePNGFile(pAC->getData(), iW, iH, sOutName.c_str());
                                             
                                                 if (iResult == 0) {
-                                                    stdprintf("success for [%s]\n", sName);
+                                                    xha_printf("success for [%s]\n", sName);
                                                 } else {
-                                                    stdprintf("Image creation failed\n");
+                                                    xha_printf("Image creation failed\n");
                                                 }
                                                 pAC->clear();
                                             }
@@ -917,7 +917,7 @@ int main(int iArgC, char *apArgV[]) {
 
                                                 delete pTR;
                                             } else {
-                                                stdprintf("Couldn't create TextRenderer\n");
+                                                xha_printf("Couldn't create TextRenderer\n");
                                                 iResult = -1;
                                             }
                                         }
@@ -967,7 +967,7 @@ int main(int iArgC, char *apArgV[]) {
             }
         } else {
             printf("ParamReader result: %d\n", iResult);
-            stdprintf("%s: %s %s\n", pPR->getErrorMessage(iResult),  pPR->getBadArg(), pPR->getBadVal());
+            xha_printf("%s: %s %s\n", pPR->getErrorMessage(iResult),  pPR->getBadArg(), pPR->getBadVal());
             usage(apArgV[0]);
         }
     } else {

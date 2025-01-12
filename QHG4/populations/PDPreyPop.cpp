@@ -3,7 +3,7 @@
 #include "LayerBuf.cpp"
 #include "LayerArrBuf.cpp"
 #include "Action.cpp"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 ////////////////////////////
 #include "ArrayShare.h"
 
@@ -87,7 +87,7 @@ int PDPreyPop::preLoop() {
     int iResult = 0;
 
     // do sharing before SPopulation::preLoop
-    std::string s = stdsprintf(ATTR_PD_TEMPLATE_INDEXES, m_sSpeciesName);
+    std::string s = xha_sprintf(ATTR_PD_TEMPLATE_INDEXES, m_sSpeciesName);
     m_pIC->setShareName(s);
     
     iResult = SPopulation<PDPreyAgent>::preLoop();

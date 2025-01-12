@@ -10,7 +10,7 @@
 #include "hdf5.h"
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "geomutils.h"
 #include "SPopulation.h"
 #include "QDFUtils.h"
@@ -77,9 +77,9 @@ int AgentXItemCollector::init(const std::string sPopQDF, const std::string sSpec
     float f2 = omp_get_wtime();
     if (iResult == 0) {
         
-        stdfprintf(stderr, "Successfully read agent items from [%s] (%fs)\n", sPopQDF, f2 - f1);
+        xha_fprintf(stderr, "Successfully read agent items from [%s] (%fs)\n", sPopQDF, f2 - f1);
     } else {
-        stdfprintf(stderr, "Couldn't get agent items\n");
+        xha_fprintf(stderr, "Couldn't get agent items\n");
     }
     return iResult;
 }
@@ -101,23 +101,23 @@ int AgentXItemCollector::getRootAttributes(hid_t hFile) {
             if (iResult == 0) {
                 if (strToNum(sValue, &m_fStartTime)) {
 
-                    stdfprintf(stderr, "step %d, start %f\n", m_iCurStep, m_fStartTime);
+                    xha_fprintf(stderr, "step %d, start %f\n", m_iCurStep, m_fStartTime);
                     iResult = 0;
                 } else {
                     iResult = -1;
-                    stdfprintf(stderr, "Couldn't convert attribute [%s] (%s) to number\n", ROOT_TIME_NAME, sValue);
+                    xha_fprintf(stderr, "Couldn't convert attribute [%s] (%s) to number\n", ROOT_TIME_NAME, sValue);
                 }
             } else {
                 iResult = -1;
-                stdfprintf(stderr, "Couldn't get attribute [%s]\n", ROOT_TIME_NAME);
+                xha_fprintf(stderr, "Couldn't get attribute [%s]\n", ROOT_TIME_NAME);
             }
         } else {
             iResult = -1;
-            stdfprintf(stderr, "Couldn't convert attribute [%s] (%s) to number\n", ROOT_STEP_NAME, sValue);
+            xha_fprintf(stderr, "Couldn't convert attribute [%s] (%s) to number\n", ROOT_STEP_NAME, sValue);
         }
     } else {
         iResult = -1;
-        stdfprintf(stderr, "Couldn't get attribute [%s]\n", ROOT_STEP_NAME);
+        xha_fprintf(stderr, "Couldn't get attribute [%s]\n", ROOT_STEP_NAME);
     }
     return iResult;
 }
@@ -134,7 +134,7 @@ int AgentXItemCollector::getItemNames(const std::string sPopQDF, const std::stri
     if (hFile != H5P_DEFAULT) {
         iResult = getRootAttributes(hFile);
         if (iResult == 0) {
-            std::string sGroupName = stdsprintf("%s/%s", POPGROUP_NAME, sSpecies);
+            std::string sGroupName = xha_sprintf("%s/%s", POPGROUP_NAME, sSpecies);
         hid_t hGroup = qdf_openGroup(hFile, sGroupName);
         if (hGroup != H5P_DEFAULT) {
             hid_t hDSet  = qdf_openDataSet(hGroup, AGENT_DATASET_NAME);
@@ -162,24 +162,24 @@ int AgentXItemCollector::getItemNames(const std::string sPopQDF, const std::stri
                     
                     H5Tclose(hType);
                 } else {
-                    stdfprintf(stderr, "Couldn't open get data type for data set [%s]\n", AGENT_DATASET_NAME);
+                    xha_fprintf(stderr, "Couldn't open get data type for data set [%s]\n", AGENT_DATASET_NAME);
                 }
                 qdf_closeDataSet(hDSet);
             } else {
-                stdfprintf(stderr, "Couldn't open data set [%s]\n", AGENT_DATASET_NAME);
+                xha_fprintf(stderr, "Couldn't open data set [%s]\n", AGENT_DATASET_NAME);
             }
             qdf_closeGroup(hGroup);
         } else {
-            stdfprintf(stderr, "Couldn't open group [%s]\n", sGroupName);
+            xha_fprintf(stderr, "Couldn't open group [%s]\n", sGroupName);
         }
 
         } else {
-            stdfprintf(stderr, "Couldn't get root attributesof [%s]\n", sPopQDF);
+            xha_fprintf(stderr, "Couldn't get root attributesof [%s]\n", sPopQDF);
         }
         qdf_closeFile(hFile);
 
     } else {
-        stdfprintf(stderr, "Couldn't open [%s] for reading\n", sPopQDF);
+        xha_fprintf(stderr, "Couldn't open [%s] for reading\n", sPopQDF);
     }
     return iResult;
 
@@ -228,7 +228,7 @@ int AgentXItemCollector::loadAgentsCell(const std::string sPop, const std::strin
 
     hid_t hFilePop     = qdf_openFile(sPop);
     hid_t hPopulation  = qdf_openGroup(hFilePop, POPGROUP_NAME);
-    stdfprintf(stderr, "[loadAgentsCell] pop %s,popname %s\n", sPop, sPopName);
+    xha_fprintf(stderr, "[loadAgentsCell] pop %s,popname %s\n", sPop, sPopName);
     // at this point m_iNumCells should be known (loadNPP() loadAltIce() already called)
 
     int iResult = getRootAttributes(hFilePop);
@@ -248,9 +248,9 @@ int AgentXItemCollector::loadAgentsCell(const std::string sPop, const std::strin
         hid_t hMemSpace = H5Screate_simple (1, &dims, NULL); 
         herr_t status = H5Dread(hDataSet, hAgentDataType, hMemSpace, hDataSpace, H5P_DEFAULT, m_pInfos);
         if (status >= 0) {
-            stdfprintf(stderr, "pop %s: %llu\n", sPopName, dims);
+            xha_fprintf(stderr, "pop %s: %llu\n", sPopName, dims);
         } else {
-            stdfprintf(stderr, "bad status for pop %s\n", sPopName);
+            xha_fprintf(stderr, "bad status for pop %s\n", sPopName);
             
             delete[] m_pInfos;
             m_pInfos = NULL;
@@ -269,12 +269,12 @@ int AgentXItemCollector::loadAgentsCell(const std::string sPop, const std::strin
    
 
     /*
-    stdfprintf(stderr, "AgentXItemCollector: some values of %u after reading\n", m_iNumAgents); 
+    xha_fprintf(stderr, "AgentXItemCollector: some values of %u after reading\n", m_iNumAgents); 
     for (uint i = 0; i < 5; i++) {
         aginfo_ymt *pai = (aginfo_ymt *)m_pInfos;
-        stdfprintf(stderr, "%d: agent id %u, cell id %d, hyb %f\n", i, pai[i].m_ulID, pai[i].m_ulCellID, pai[i].m_fHybridization);
+        xha_fprintf(stderr, "%d: agent id %u, cell id %d, hyb %f\n", i, pai[i].m_ulID, pai[i].m_ulCellID, pai[i].m_fHybridization);
         int j = m_iNumAgents-i-1;
-        stdfprintf(stderr, "%d: agent id %u, cell id %d, hyb %f\n", j, pai[j].m_ulID, pai[j].m_ulCellID, pai[j].m_fHybridization);
+        xha_fprintf(stderr, "%d: agent id %u, cell id %d, hyb %f\n", j, pai[j].m_ulID, pai[j].m_ulCellID, pai[j].m_fHybridization);
     }
     */
     return iResult;

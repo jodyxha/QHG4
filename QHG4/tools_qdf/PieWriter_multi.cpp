@@ -4,7 +4,7 @@
 #include "hdf5.h"
 
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "QDFUtils.h"
 #include "PieWriter_multi.h"
@@ -75,7 +75,7 @@ int PieWriter_multi::init(const multimaphistos &mHistos) {
             iNumPies = it->second.size();
         } else {
             if (iNumPies != it->second.size()) {
-                stdprintf("num pies not equal among histos: %d != %d\n", iNumPies, it->second.size());
+                xha_printf("num pies not equal among histos: %d != %d\n", iNumPies, it->second.size());
                 iResult = -1;
             }
         }
@@ -83,16 +83,16 @@ int PieWriter_multi::init(const multimaphistos &mHistos) {
     if (iResult == 0) {
     // number of pies
         m_iNumPies = iNumPies;
-        if (m_bVerbose) stdprintf("num pies: %d\n", m_iNumPies);
+        if (m_bVerbose) xha_printf("num pies: %d\n", m_iNumPies);
     
         /*
         // number of values
         m_iNumVals = (uint) iNumVals;
-        stdprintf("num vals: %d\n", m_iNumVals);
+        xha_printf("num vals: %d\n", m_iNumVals);
         */
         // create default value names ("item_XXX")
         int iNumDigits = 1+(int)(log(m_iNumVals)/log(10));
-        if (m_bVerbose) stdprintf("numvals %d, numdigits %d\n", m_iNumVals, iNumDigits);
+        if (m_bVerbose) xha_printf("numvals %d, numdigits %d\n", m_iNumVals, iNumDigits);
         m_sValNames="";
         for (uint i = 0; i < m_iNumVals; i++) {
             std::string s0 = std::to_string(i);
@@ -128,7 +128,7 @@ int PieWriter_multi::setValueNames(const stringvec &svValueNames) {
         m_sValNames = sFinal;
         iResult = 0;
     } else {
-        stdprintf("Exactly %u value names are required, not %zd\n", m_iNumVals, svValueNames.size());
+        xha_printf("Exactly %u value names are required, not %zd\n", m_iNumVals, svValueNames.size());
     }
 
     return iResult;
@@ -155,7 +155,7 @@ int PieWriter_multi::prepareData(const mapmappointnorms &mmPointNorms) {
                 std::map<int, pointnorm>::const_iterator it2 = mPointsNorms.find(ith->first);
                 if (it2 == mPointsNorms.end()) {
                     iResult = -1;
-                    stdprintf("ID [%d] is missing from provided pointnorm map\n", ith->first);
+                    xha_printf("ID [%d] is missing from provided pointnorm map\n", ith->first);
                 }
             }
         
@@ -168,7 +168,7 @@ int PieWriter_multi::prepareData(const mapmappointnorms &mmPointNorms) {
             }
         } else {
             iResult = -1;
-            stdprintf("name [%s] if histo not found inpoint norm map\n", it->first);
+            xha_printf("name [%s] if histo not found inpoint norm map\n", it->first);
         }    
     }
     
@@ -269,7 +269,7 @@ int PieWriter_multi::prepareDataReal() {
             delete[] pH;
         }
     } else {
-        stdprintf("One of the pPrepareData(...) methods must be called berfore prepareDataReal()\n");
+        xha_printf("One of the pPrepareData(...) methods must be called berfore prepareDataReal()\n");
         iResult = -1;
     }
     return iResult;
@@ -286,7 +286,7 @@ int PieWriter_multi::writeToQDF(const std::string sQDFFile) {
 
     hid_t hFile = qdf_openFile(sQDFFile.c_str(), "r+");
     if (hFile != H5P_DEFAULT) {
-        //stdprintf("opened file\n");
+        //xha_printf("opened file\n");
         if (qdf_link_exists(hFile, PIEGROUP_NAME)) {
             // a pie group already exists, so we can use it
                 
@@ -296,14 +296,14 @@ int PieWriter_multi::writeToQDF(const std::string sQDFFile) {
 
         hid_t hPieGroup = qdf_openGroup(hFile, PIEGROUP_NAME, true);
         if (hPieGroup != H5P_DEFAULT) {
-            //stdprintf("opened pie group\n");
+            //xha_printf("opened pie group\n");
 
             mapdata::const_iterator it;
             for (it = m_pAllData.begin(); (iResult == 0) && (it != m_pAllData.end()); ++it) {
 
 
                 if (!qdf_link_exists(hPieGroup, it->first)) {
-                    // stdprintf("opened sub group [%s]\n", m_sPieName);
+                    // xha_printf("opened sub group [%s]\n", m_sPieName);
                     hid_t hPieItem = qdf_createGroup(hPieGroup, it->first);
                     if (hPieItem != H5P_DEFAULT) {
                         // now we add some attributes
@@ -313,30 +313,30 @@ int PieWriter_multi::writeToQDF(const std::string sQDFFile) {
                         qdf_insertAttribute(hPieItem,  PIE_ATTR_NUM_DIMS,  1, &m_iNumDims);
                         qdf_insertSAttribute(hPieItem, PIE_ATTR_VAL_NAMES,     m_sValNames);
 
-                        if (m_bVerbose) stdprintf("written attributes\n");
+                        if (m_bVerbose) xha_printf("written attributes\n");
                         // now let's add the data
 
-                        if (m_bVerbose) stdprintf("writing array of %d elements\n", m_iNumPies*(6+m_iNumVals));
+                        if (m_bVerbose) xha_printf("writing array of %d elements\n", m_iNumPies*(6+m_iNumVals));
                         qdf_writeArray(hPieItem, PIE_DATASET_NAME, m_iNumPies*(6+m_iNumVals), it->second);
 
                         qdf_closeGroup(hPieItem);
                         iResult = 0;
                     } else {
-                        stdprintf("Couldn't open subgroup [%s]\n", m_sPieName);
+                        xha_printf("Couldn't open subgroup [%s]\n", m_sPieName);
                         iResult = -1;
                     }
                 
                 } else {
-                    stdprintf("Pie subgroup [%s] already exists\n", m_sPieName);
+                    xha_printf("Pie subgroup [%s] already exists\n", m_sPieName);
                 }
             }
 
         } else {
-            stdprintf("Couldn't open group [%s]\n", PIEGROUP_NAME);
+            xha_printf("Couldn't open group [%s]\n", PIEGROUP_NAME);
         }
         qdf_closeFile(hFile);
     } else {
-        stdprintf("The file [%s] does not exist or is not a QDF file\n");
+        xha_printf("The file [%s] does not exist or is not a QDF file\n");
     }
     return iResult;
 }

@@ -50,10 +50,10 @@ int ATanDeath<T>::preLoop() {
     
     m_dScale = (Q_PI/2-EPS)/atan(m_dSlope*m_dRange);
 
-    stdprintf("[ATanDeath<T>::preLoop()] MaxAge: %f\n", m_dMaxAge);
-    stdprintf("[ATanDeath<T>::preLoop()] Range:  %f\n", m_dRange);
-    stdprintf("[ATanDeath<T>::preLoop()] Slope:  %f\n", m_dSlope);
-    stdprintf("[ATanDeath<T>::preLoop()] Scale:  %f\n", m_dScale);
+    xha_printf("[ATanDeath<T>::preLoop()] MaxAge: %f\n", m_dMaxAge);
+    xha_printf("[ATanDeath<T>::preLoop()] Range:  %f\n", m_dRange);
+    xha_printf("[ATanDeath<T>::preLoop()] Slope:  %f\n", m_dSlope);
+    xha_printf("[ATanDeath<T>::preLoop()] Scale:  %f\n", m_dScale);
     
     return 0;
 }

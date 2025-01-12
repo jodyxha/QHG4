@@ -16,8 +16,8 @@
 #include <unistd.h>
 
 #include "types.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "MessLogger.h"
 
 /*
@@ -29,7 +29,7 @@ template<typename... Args>
 void MessLogger::mprintf(const std::string sFormat, Args... args) {
 #ifndef MUTE
 
-    std::string sLine = stdsprintf(sFormat.c_str(), args...);
+    std::string sLine = xha_sprintf(sFormat.c_str(), args...);
 
     if (s_pML != NULL) {
         s_pML->write(sLine, "", "");
@@ -96,7 +96,7 @@ void MessLogger::logSpecial(const std::string sHeader, const std::string sColor,
   
     std::string sLine = sHeader;
 
-    sLine += stdsprintf(sFormat.c_str(), args...);
+    sLine += xha_sprintf(sFormat.c_str(), args...);
 
     if (s_pML != NULL) {
         s_pML->write(sLine, sColor, MessLogger::s_sCurColorStop);
@@ -111,7 +111,7 @@ void MessLogger::logSpecial(const std::string sHeader, const std::string sColor,
 //
 template<typename... Args>
 void MessLogger::logIgnore(const std::string sFormat, Args... args) {
-    stdprintf("ignore\n");
+    xha_printf("ignore\n");
 }
 */
 
@@ -121,7 +121,7 @@ void MessLogger::logIgnore(const std::string sFormat, Args... args) {
 //
 template<typename... Args>
 void MessLogger::logStatus2(const std::string sFormat, Args... args) {
-    stdprintf(sFormat, args...);
+    xha_printf(sFormat, args...);
     logStatus(sFormat, args...);
 }
 
@@ -131,7 +131,7 @@ void MessLogger::logStatus2(const std::string sFormat, Args... args) {
 //
 template<typename... Args>
 void MessLogger::logWarning2(const std::string sFormat, Args... args) {
-    stdprintf(sFormat, args...);
+    xha_printf(sFormat, args...);
     logWarning(sFormat, args...);
 }
 
@@ -141,7 +141,7 @@ void MessLogger::logWarning2(const std::string sFormat, Args... args) {
 //
 template<typename... Args>
 void MessLogger::logError2(const std::string sFormat, Args... args) {
-    stdprintf(sFormat, args...);
+    xha_printf(sFormat, args...);
     logError(sFormat, args...);
 }
 
@@ -151,7 +151,7 @@ void MessLogger::logError2(const std::string sFormat, Args... args) {
 //
 template<typename... Args>
 void MessLogger::logDisp2(const std::string sFormat, Args... args) {
-    stdprintf(sFormat, args...);
+    xha_printf(sFormat, args...);
     logDisp(sFormat, args...);
 }
 

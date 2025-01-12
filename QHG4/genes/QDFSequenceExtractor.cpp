@@ -5,7 +5,7 @@
 #include <hdf5.h>
 
 #include "types.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "ParamReader.h"
 #include "GeneUtils.h"
 #include "BitGeneUtils.h"
@@ -166,7 +166,7 @@ int QDFSequenceExtractor<T>::init(const std::string sQDFGeoFile,
             if (qdf_hasGeo(sQDFGeoFile)) {
                 m_sSequenceDataSetName = sSequenceDataSetName;
                 
-                if (m_bVerbose) stdprintf("using population [%s]\n", m_sPopName);
+                if (m_bVerbose) xha_printf("using population [%s]\n", m_sPopName);
                 
                 m_sQDFGeoFile = sQDFGeoFile;
                 
@@ -180,7 +180,7 @@ int QDFSequenceExtractor<T>::init(const std::string sQDFGeoFile,
                    
                 iResult = qdf_extractAttribute(m_hSpecies, sAttrSequenceSize, 1, &m_iSequenceSize);
                 if (iResult == 0) {
-                    stdprintf("Sequence size %d\n", m_iSequenceSize);
+                    xha_printf("Sequence size %d\n", m_iSequenceSize);
                     iResult = extractAdditionalAttributes();
 
                     if (iResult == 0) {
@@ -189,13 +189,13 @@ int QDFSequenceExtractor<T>::init(const std::string sQDFGeoFile,
 
                     if (m_iPloidy == 0) {
                         iResult = -1; 
-                        stdfprintf(stderr, "The Ploidy of the sequence should be set in extractAdditionalAttributes()\n");
+                        xha_fprintf(stderr, "The Ploidy of the sequence should be set in extractAdditionalAttributes()\n");
                     }
                 } else {
-		    stdfprintf(stderr, "Couldn't extract Attribute [%s] for sequence size\n", sAttrSequenceSize);
+		    xha_fprintf(stderr, "Couldn't extract Attribute [%s] for sequence size\n", sAttrSequenceSize);
                 }
             } else {
- 	        stdfprintf(stderr, "No Grid & Geo in [%s]\n", sQDFGeoFile);
+ 	        xha_fprintf(stderr, "No Grid & Geo in [%s]\n", sQDFGeoFile);
             }
         }
     } else {
@@ -220,14 +220,14 @@ int QDFSequenceExtractor<T>::getSelectedSequencesDense(const std::string sSequen
     T *aBuf = new T[iReadBufSize];
    
     // open the DataSet and data space
-    if (m_bVerbose) { stdprintf("Opening data set [%s] in species\n", sSequenceDataSetName); fflush(stdout); }
+    if (m_bVerbose) { xha_printf("Opening data set [%s] in species\n", sSequenceDataSetName); fflush(stdout); }
     hid_t hDataSet = qdf_openDataSet(m_hSpecies, sSequenceDataSetName);
     hid_t hDataSpace = H5Dget_space(hDataSet);
 
     // get total number of elements in dataset
     hsize_t dims;
     herr_t status = H5Sget_simple_extent_dims(hDataSpace, &dims, NULL);
-    if (m_bVerbose) stdprintf("Dataspace extent: %lld\n", dims);
+    if (m_bVerbose) xha_printf("Dataspace extent: %lld\n", dims);
 
     // initialize some counters and indexes
     hsize_t iCount;
@@ -240,7 +240,7 @@ int QDFSequenceExtractor<T>::getSelectedSequencesDense(const std::string sSequen
     //    indexids::const_iterator itIdxId = m_mSelected.begin();
     arrpos_ids::const_iterator itIdxId = mAllSelected.begin();
     
-    if (m_bVerbose) stdprintf("Trying to extract %zd genomes\n", mAllSelected.size());
+    if (m_bVerbose) xha_printf("Trying to extract %zd genomes\n", mAllSelected.size());
     // loop until all elements have been read
     while ((iResult == 0) && (dims > 0) && (itIdxId != mAllSelected.end())) {
         // can we get a full load of the buffer?
@@ -276,16 +276,16 @@ int QDFSequenceExtractor<T>::getSelectedSequencesDense(const std::string sSequen
             iOffset       += iCount;
             
         } else {
-	    stdfprintf(stderr, "Error during slab reading\n");
+	    xha_fprintf(stderr, "Error during slab reading\n");
 	    iResult = -1;
         }
     }
     
 
     if (m_mSequences.size() == mAllSelected.size()) {
-        stdprintf("Successfully read all required %zd sequences\n", m_mSequences.size());
+        xha_printf("Successfully read all required %zd sequences\n", m_mSequences.size());
     } else {
-        stdfprintf(stderr, "Error: read only %zd of %zd required sequences\n", m_mSequences.size(), m_mSelected.size());
+        xha_fprintf(stderr, "Error: read only %zd of %zd required sequences\n", m_mSequences.size(), m_mSelected.size());
         iResult = -1;
     }
 
@@ -315,7 +315,7 @@ int QDFSequenceExtractor<T>::getSelectedSequencesSparse(const std::string sSeque
     printf("getSelectedGenes (sparse)\n");
     printf("m_iNumBlocks: %d\n", m_iNumBlocks);
     // open the DataSet and data space
-    if (m_bVerbose) {stdprintf("Opening data set [%s] in species\n", sSequenceDataSetName); fflush(stdout);}
+    if (m_bVerbose) {xha_printf("Opening data set [%s] in species\n", sSequenceDataSetName); fflush(stdout);}
     hid_t hDataSet = qdf_openDataSet(m_hSpecies, sSequenceDataSetName);
     hid_t hDataSpace = H5Dget_space(hDataSet);
 
@@ -363,9 +363,9 @@ int QDFSequenceExtractor<T>::getSelectedSequencesSparse(const std::string sSeque
     }
 
     if (m_mSequences.size() == mAllSelected.size()) {
-        stdprintf("Successfully read all required %zd sequences\n", m_mSequences.size());
+        xha_printf("Successfully read all required %zd sequences\n", m_mSequences.size());
     } else {
-        stdfprintf(stderr, "Error: read only %zd of %zd required sequences\n", m_mSequences.size(), m_mSelected.size());
+        xha_fprintf(stderr, "Error: read only %zd of %zd required sequences\n", m_mSequences.size(), m_mSelected.size());
         iResult = -1;
     }
 
@@ -412,7 +412,7 @@ int QDFSequenceExtractor<T>::createSelection(const std::string sLocFile, int iNu
     locspec ls(sLocFile, dSampDist, iNumSamp);
     locspec rs(sRefFile, dSampDist, iNumSamp);
 
-    if (m_bVerbose) stdprintf("--- creating IDSampler from [%s] for locations [%s] (pSampIn:[%s])\n", m_sQDFGeoFile, sLocFile, sSampIn);
+    if (m_bVerbose) xha_printf("--- creating IDSampler from [%s] for locations [%s] (pSampIn:[%s])\n", m_sQDFGeoFile, sLocFile, sSampIn);
     if (sSampIn.empty()) {
         IDSampler2 *pIS = IDSampler2::createInstance(m_sQDFGeoFile, m_pWELL, m_bCartesian);
         if (pIS != NULL) {
@@ -432,7 +432,7 @@ int QDFSequenceExtractor<T>::createSelection(const std::string sLocFile, int iNu
             m_pRefSample = pIS->getRefSample();
 
             if ((iResult == 0) && (!sSampOut.empty())) {
-                stdprintf("writing samples to [%s]\n", sSampOut);
+                xha_printf("writing samples to [%s]\n", sSampOut);
                 m_pCurSample->write(sSampOut);
             }
             
@@ -441,21 +441,21 @@ int QDFSequenceExtractor<T>::createSelection(const std::string sLocFile, int iNu
 
         } else {
             iResult = -1;
-            stdfprintf(stderr, "Couldn't create IDSampler for Grid [%s]\n", m_sQDFGeoFile);
+            xha_fprintf(stderr, "Couldn't create IDSampler for Grid [%s]\n", m_sQDFGeoFile);
         }
     } else {
-        stdprintf("Getting samples from [%s]\n", sSampIn);
+        xha_printf("Getting samples from [%s]\n", sSampIn);
         m_pCurSample = new IDSample();
         m_pRefSample = new IDSample();
         iResult = m_pCurSample->read(sSampIn);
         fillLocData(&ls, m_mLocData);
         if (iResult == 0)  {
             if (!sSampOut.empty()) {
-                stdprintf("writing samples to [%s]\n", sSampOut);
+                xha_printf("writing samples to [%s]\n", sSampOut);
                 m_pCurSample->write(sSampOut);
             }
         } else {
-            stdfprintf(stderr, "Couldn't read IDSample from [%s]\n", sSampIn);
+            xha_fprintf(stderr, "Couldn't read IDSample from [%s]\n", sSampIn);
 
             delete m_pCurSample;
             m_pCurSample = NULL;
@@ -476,7 +476,7 @@ int QDFSequenceExtractor<T>::createSelection(const std::string sLocFile, int iNu
             //           pIS->getLocationIDSet();
 
             m_iNumSelected = m_sSelected.size();
-            if (m_bVerbose) { stdprintf("Sampled: Total %d id%s\n", m_iNumSelected, (m_iNumSelected!=1)?"s":"");fflush(stdout);}
+            if (m_bVerbose) { xha_printf("Sampled: Total %d id%s\n", m_iNumSelected, (m_iNumSelected!=1)?"s":"");fflush(stdout);}
             
             double dT0 = omp_get_wtime();
             if (bDense) {
@@ -485,10 +485,10 @@ int QDFSequenceExtractor<T>::createSelection(const std::string sLocFile, int iNu
                 iResult = getSelectedSequencesSparse(m_sSequenceDataSetName, iNumPerBuf);
             }
             double dT1 = omp_get_wtime();
-            if (m_bVerbose) { stdprintf("Got sequences: [%p] R[%d]\n", m_sSequenceDataSetName, iResult);fflush(stdout);}
-            if (m_bVerbose) { stdprintf("QDFSequenceExtractor: time to get genomes: %f\n", dT1- dT0);}
+            if (m_bVerbose) { xha_printf("Got sequences: [%p] R[%d]\n", m_sSequenceDataSetName, iResult);fflush(stdout);}
+            if (m_bVerbose) { xha_printf("QDFSequenceExtractor: time to get genomes: %f\n", dT1- dT0);}
         } else {
-	    stdfprintf(stderr, "Couldn't get samples\n");
+	    xha_fprintf(stderr, "Couldn't get samples\n");
         }
         
     }

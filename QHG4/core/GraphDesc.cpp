@@ -5,8 +5,8 @@
 
 #include <string.h>
 
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "LineReader.h"
 #include "surfconsts.h"
 #include "GraphDesc.h"
@@ -81,47 +81,47 @@ int GraphDesc::init(std::string sFileName) {
                                     if (iResult == 0) {
                                         iResult = readLinks(pLR);
                                         if (iResult == 0) {
-                                            stdprintf("Successfully read file [%s]\n", sFileName);
+                                            xha_printf("Successfully read file [%s]\n", sFileName);
                                         }
                                     }
                                 } else {
                                     iResult = -1;
-                                    stdprintf("Expected number instead of [%s]\n", px);
+                                    xha_printf("Expected number instead of [%s]\n", px);
                                 }        
                                 
                             } else {
                                 iResult = -1;
-                                stdprintf("Expected '=' in 'MAXLINKS=' line instead of [%s]\n", pLine);
+                                xha_printf("Expected '=' in 'MAXLINKS=' line instead of [%s]\n", pLine);
                             }        
 
                         } else {
                             iResult = -1;
-                            stdprintf("Expected 'NUMNODES=' line instead of [%s]\n", pLine);
+                            xha_printf("Expected 'NUMNODES=' line instead of [%s]\n", pLine);
                         }        
                     } else {
                         iResult = -1;
-                        stdprintf("Expected number instead of [%s]\n", px);
+                        xha_printf("Expected number instead of [%s]\n", px);
                     }        
                     
                 } else {
                     iResult = -1;
-                    stdprintf("Expected '=' in 'NUMNODE=' line instead of [%s]\n", pLine);
+                    xha_printf("Expected '=' in 'NUMNODE=' line instead of [%s]\n", pLine);
                 }        
 
                 } else {
                     iResult = -1;
-                    stdprintf("Expected 'NUMNODES=' line instead of [%s]\n", pLine);
+                    xha_printf("Expected 'NUMNODES=' line instead of [%s]\n", pLine);
                 }        
         } else {
             iResult = -1;
-            stdprintf("Expected header line instead of [%s]\n", pLine);
+            xha_printf("Expected header line instead of [%s]\n", pLine);
         }
 
         
         delete pLR;
     } else {
         iResult = -1;
-        stdprintf("Couldn't open [%s] for reading\n", sFileName);
+        xha_printf("Couldn't open [%s] for reading\n", sFileName);
     }
     return iResult;
 }
@@ -137,7 +137,7 @@ int GraphDesc::readNodes(LineReader *pLR) {
     if (strcmp(pLine, NODES_BEGIN.c_str()) == 0) {
         pLine = pLR->getNextLine();
         while (/*pLR->isEoF() &&*/ (pLine != NULL) && (strcmp(NODES_END.c_str(), pLine) != 0)) {
-            //stdprintf("node line: [%s]\n", pLine);
+            //xha_printf("node line: [%s]\n", pLine);
             stringvec vParts;
             uint iNum = splitString(pLine, vParts, " \t", false);
             
@@ -149,11 +149,11 @@ int GraphDesc::readNodes(LineReader *pLR) {
                         m_mNodeLinks[iNode].clear();
                     } else {  
                         iResult = -1;
-                        stdprintf("The node number [%u] is already registered\n", iNode);
+                        xha_printf("The node number [%u] is already registered\n", iNode);
                     }
                 } else {
                     iResult = -1;
-                    stdprintf("Expected a node number, not [%s]\n", vParts[i]);
+                    xha_printf("Expected a node number, not [%s]\n", vParts[i]);
                 }
 
             }
@@ -162,16 +162,16 @@ int GraphDesc::readNodes(LineReader *pLR) {
         }
     } else {
         iResult = -1;
-        stdprintf("Expected 'NODES_BEGIN' line instead of [%s]\n", pLine);
+        xha_printf("Expected 'NODES_BEGIN' line instead of [%s]\n", pLine);
     }
     if (NODES_END == pLine) {
         if (m_mNodeLinks.size() != m_iNumNodes) {
             iResult = -1;
-            stdprintf("Found %u nodes in NODES section intead of %u\n", m_mNodeLinks.size(), m_iNumNodes);
+            xha_printf("Found %u nodes in NODES section intead of %u\n", m_mNodeLinks.size(), m_iNumNodes);
         }
     } else {
         iResult = -1;
-        stdprintf("Expected 'NODES_END' line instead of [%s]\n", pLine);
+        xha_printf("Expected 'NODES_END' line instead of [%s]\n", pLine);
     }
     return iResult;
 
@@ -186,7 +186,7 @@ int GraphDesc::readLinks(LineReader *pLR) {
     if (LINKS_BEGIN == pLine) {
         pLine = pLR->getNextLine();
         while (/*pLR->isEoF() &&*/ (pLine != NULL) && (strcmp(LINKS_END.c_str(), pLine) != 0)) {
-            //stdprintf("link line: [%s]\n", pLine);
+            //xha_printf("link line: [%s]\n", pLine);
             stringvec vParts;
             uint iNum = splitString(pLine, vParts, " \t:", false);
             
@@ -196,7 +196,7 @@ int GraphDesc::readLinks(LineReader *pLR) {
                     if (it != m_mNodeLinks.end()) {
                         if (iNum <= m_iMaxLinks) {
                             iResult = -1;
-                            stdprintf("Node [%d] has %u links (max links:%u)\n", vParts[0], iNum-1, m_iMaxLinks);
+                            xha_printf("Node [%d] has %u links (max links:%u)\n", vParts[0], iNum-1, m_iMaxLinks);
                         } 
                         if (iResult == 0) {
                             std::vector<uint> &vLinks = it->second;
@@ -213,27 +213,27 @@ int GraphDesc::readLinks(LineReader *pLR) {
                                             vLinks.push_back(iNode);
                                         } else {
                                             iResult = -1;
-                                            stdprintf("The the link %u for node [%u] is a duplicate\n", iNode, iCurNode);
+                                            xha_printf("The the link %u for node [%u] is a duplicate\n", iNode, iCurNode);
                                         }
                                     } else {  
                                         iResult = -1;
-                                        stdprintf("The node number [%u] is not registered\n", iNode);
+                                        xha_printf("The node number [%u] is not registered\n", iNode);
                                     }
                                 
                                 } else {
                                     iResult = -1;
-                                    stdprintf("Expected a node number, not [%s]\n", vParts[i]);
+                                    xha_printf("Expected a node number, not [%s]\n", vParts[i]);
                                 }
                             }
                         }
                     } else {
                         iResult = -1;
-                        stdprintf("Node [%d] is not registered\n", iCurNode);
+                        xha_printf("Node [%d] is not registered\n", iCurNode);
                     }
 
             }   else {
                 iResult = -1;
-                stdprintf("Expected a node number, not [%s]\n", vParts[0]);
+                xha_printf("Expected a node number, not [%s]\n", vParts[0]);
             }
  
             pLine = pLR->getNextLine();
@@ -241,11 +241,11 @@ int GraphDesc::readLinks(LineReader *pLR) {
         }
     } else {
         iResult = -1;
-        stdprintf("Expected 'LINKS_BEGIN' line instead of [%s]\n", pLine);
+        xha_printf("Expected 'LINKS_BEGIN' line instead of [%s]\n", pLine);
     }
     if (LINKS_END != pLine) {
         iResult = -1;
-        stdprintf("Expected 'LINKS_END' line instead of [%s]\n", pLine);
+        xha_printf("Expected 'LINKS_END' line instead of [%s]\n", pLine);
     }
     return iResult;
 }
@@ -270,41 +270,41 @@ int GraphDesc::write(std::string sFileName) {
     if (fOut != NULL) {
 
         // header
-        stdfprintf(fOut, "%s\n", HEADER_LINE);
-        stdfprintf(fOut, "%s%d\n", NUMNODE_PREFIX, m_iNumNodes);
-        stdfprintf(fOut, "%s%d\n", MAXLINKS_PREFIX, m_iMaxLinks);
+        xha_fprintf(fOut, "%s\n", HEADER_LINE);
+        xha_fprintf(fOut, "%s%d\n", NUMNODE_PREFIX, m_iNumNodes);
+        xha_fprintf(fOut, "%s%d\n", MAXLINKS_PREFIX, m_iMaxLinks);
 
         // nodes
-        stdfprintf(fOut, "%s\n", NODES_BEGIN);
+        xha_fprintf(fOut, "%s\n", NODES_BEGIN);
         intvecmap::const_iterator it;
         int iC = 0;
         for (it=m_mNodeLinks.begin(); it != m_mNodeLinks.end(); ++it) {
-            stdfprintf(fOut, "%*d", p, it->first);
+            xha_fprintf(fOut, "%*d", p, it->first);
             iC++;
             if ((iC % 16) == 0) {
-                stdfprintf(fOut, "\n");
+                xha_fprintf(fOut, "\n");
             }
         }
         if ((iC % 16) != 0) {
-            stdfprintf(fOut, "\n");
+            xha_fprintf(fOut, "\n");
         }
-        stdfprintf(fOut, "%s\n", NODES_END);
+        xha_fprintf(fOut, "%s\n", NODES_END);
 
         // links
-        stdfprintf(fOut, "%s\n", LINKS_BEGIN);
+        xha_fprintf(fOut, "%s\n", LINKS_BEGIN);
         for (it=m_mNodeLinks.begin(); it != m_mNodeLinks.end(); ++it) {
-            stdfprintf(fOut, " %*d: ", p, it->first);
+            xha_fprintf(fOut, " %*d: ", p, it->first);
             for (uint i = 0; i < it->second.size(); i++) {
-                stdfprintf(fOut, "%*d", p, it->second[i]);
+                xha_fprintf(fOut, "%*d", p, it->second[i]);
             }
-            stdfprintf(fOut, "\n");
+            xha_fprintf(fOut, "\n");
         }
-        stdfprintf(fOut, "%s\n", LINKS_END);
+        xha_fprintf(fOut, "%s\n", LINKS_END);
         
 
         fclose(fOut);
     } else {
-        stdprintf("Couldn't open [%s] for writing\n", sFileName);
+        xha_printf("Couldn't open [%s] for writing\n", sFileName);
     }
     return iResult;
 }

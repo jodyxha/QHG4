@@ -1,7 +1,7 @@
 #include <cstdio>
 
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "GraphDesc.h"
 
 int main(int iArgC, char *apArgV[]) {
@@ -16,7 +16,7 @@ int main(int iArgC, char *apArgV[]) {
         }
     } else {
         iResult = -1;
-        stdprintf("usage: %s <infile> <outfile>\n", apArgV[0]);
+        xha_printf("usage: %s <infile> <outfile>\n", apArgV[0]);
     }
 
     return iResult;

@@ -3,7 +3,7 @@
 #include <hdf5.h>
 #include <omp.h>
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "QDFUtils.h"
 #include "AgentCounter.h"
 
@@ -236,30 +236,30 @@ int AgentCounter::loadCC(const std::string sCC) {
     hid_t hCCGroup     = H5P_DEFAULT;
     hid_t hPopGroup    = H5P_DEFAULT;
    
-    if (s_bVerbose) stdprintf("loading CCs for %zd name\n", m_vNames.size());
+    if (s_bVerbose) xha_printf("loading CCs for %zd name\n", m_vNames.size());
     if (qdf_link_exists(hFileCC, POPGROUP_NAME)) {
         hPopGroup = qdf_openGroup(hFileCC, POPGROUP_NAME);
-        if (s_bVerbose) stdprintf("opened group [%s]\n", POPGROUP_NAME);
+        if (s_bVerbose) xha_printf("opened group [%s]\n", POPGROUP_NAME);
         
         for (uint i = 0; (iResult == 0) && (i < m_vNames.size()); i++) {
             const std::string &sName = m_vNames[i];
             if (qdf_link_exists(hPopGroup, sName)) {
                 hCCGroup = qdf_openGroup(hPopGroup, sName);
                 
-                if (s_bVerbose) stdprintf("opened subgroup [%s]\n", sName);
+                if (s_bVerbose) xha_printf("opened subgroup [%s]\n", sName);
                 double *pCC;
                 int iSizeCC  = loadEnvArray(hCCGroup, SPOP_DS_CAP, &pCC);
                 if (iSizeCC > 0) {
-                    if (s_bVerbose) stdprintf("Successfully read %d cc items\n", iSizeCC);
+                    if (s_bVerbose) xha_printf("Successfully read %d cc items\n", iSizeCC);
                     iResult = 0;
                     if (m_iNumCells < 0) {
                         m_iNumCells = iSizeCC;
                     } else if (m_iNumCells != iSizeCC) {
-                        stdprintf("established number of cells (%d) does not match number of npp times (%d)\n", m_iNumCells, iSizeCC);
+                        xha_printf("established number of cells (%d) does not match number of npp times (%d)\n", m_iNumCells, iSizeCC);
                         iResult = -1;
                     } else {
                         // ok
-                        stdprintf("Adding CCs to collection\n");
+                        xha_printf("Adding CCs to collection\n");
                         m_mpCC[sName] = pCC;
                     }
                 } else {
@@ -267,13 +267,13 @@ int AgentCounter::loadCC(const std::string sCC) {
                     iResult = -1;
                 }
             } else {
-                stdprintf("Cuodn0t find species group [%s] in group [%s] exist in [%s]\n", m_vNames[i], POPGROUP_NAME, sCC);
+                xha_printf("Cuodn0t find species group [%s] in group [%s] exist in [%s]\n", m_vNames[i], POPGROUP_NAME, sCC);
                 iResult = -1;
             }
             qdf_closeGroup(hCCGroup);
         }
     } else {
-        stdprintf("group [%s] exist in [%s]\n", POPGROUP_NAME, sCC);
+        xha_printf("group [%s] exist in [%s]\n", POPGROUP_NAME, sCC);
         iResult = -1;
     }
 
@@ -291,7 +291,7 @@ int AgentCounter::loadCC(const std::string sCC) {
 int AgentCounter::loadAgentsCell(const std::string sPop, const std::string sPopName) {
     hid_t hFilePop     = qdf_openFile(sPop);
     hid_t hPopulation  = qdf_openGroup(hFilePop, POPGROUP_NAME);
-    if (s_bVerbose) stdprintf("[loadAgentsCell] pop %s,popname %s\n", sPop, sPopName);
+    if (s_bVerbose) xha_printf("[loadAgentsCell] pop %s,popname %s\n", sPop, sPopName);
     // at this point m_iNumCells should be known (loadNPP() loadAltIce() already called)
     getPopulationNames(hPopulation);
     for (uint i = 0; i < m_vNames.size(); i++) {
@@ -325,10 +325,10 @@ int AgentCounter::loadAgentsCell(const std::string sPop, const std::string sPopN
         hid_t hMemSpace = H5Screate_simple (1, &dims, NULL); 
         herr_t status = H5Dread(hDataSet, hAgentDataType, hMemSpace, hDataSpace, H5P_DEFAULT, m_pInfos);
         if (status >= 0) {
-            stdprintf("pop %s: %llu\n", *it, dims);
+            xha_printf("pop %s: %llu\n", *it, dims);
             m_mpInfos[*it] = std::pair<size_t, aginfo*>(dims, m_pInfos);
         } else {
-            stdprintf("bad status for pop %s\n", *it);
+            xha_printf("bad status for pop %s\n", *it);
 
             delete[] m_pInfos;
 	    m_pInfos = NULL;

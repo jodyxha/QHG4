@@ -6,8 +6,8 @@
 
 #include "types.h"
 #include "strutils.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "clsutils.h"
 
 
@@ -23,10 +23,10 @@ int getAttributeVal(const stringmap &mParams, const std::string sKey, T *pVal) {
         if (strToNum(it->second, pVal)) {
             iResult = 0;
         } else {
-            stdprintf("Expected param [%s] to be a number: [%s]\n", sKey, it->second);
+            xha_printf("Expected param [%s] to be a number: [%s]\n", sKey, it->second);
         }
     } else {
-        stdprintf("Couldn't find param [%s]\n", sKey);
+        xha_printf("Couldn't find param [%s]\n", sKey);
     }
     return iResult;
 }
@@ -44,7 +44,7 @@ int getAttributeArr(const stringmap &mParams, const std::string sKey, int iNum, 
         iResult = stringToArr(sCopy, iNum, pVal);
 
     } else {
-        stdprintf("Couldn't find param [%s]\n", sKey);
+        xha_printf("Couldn't find param [%s]\n", sKey);
     }
 
     return iResult;
@@ -62,7 +62,7 @@ int getAttributeStr(const stringmap &mParams, std::string sKey, std::string &sVa
         sVal = it->second;
         iResult = 0;
     } else {
-        stdprintf("Couldn't find param [%s]\n", sKey);
+        xha_printf("Couldn't find param [%s]\n", sKey);
     }
     return iResult;
 }

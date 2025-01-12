@@ -2,7 +2,7 @@
 #include <cstring>
 
 
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 #include "ParamProvider2.h"
 
 #define ATTR_NAME   "name"
@@ -52,7 +52,7 @@ int ModuleComplex::addParam(const std::string sKey, const std::string &sVal) {
         m_mParams[sKey] = sVal;
         iResult = 0;
     } else {
-        stdprintf("Already have parameter [%s]\n", it->first);
+        xha_printf("Already have parameter [%s]\n", it->first);
     }
     return iResult;
 }
@@ -68,7 +68,7 @@ int ModuleComplex::addSubModule(const std::string sKey, ModuleComplex *pSubModul
         m_mSubModules[sKey] = pSubModule;
         iResult = 0;
     } else {
-        stdprintf("Already have submodule [%s]\n", it->first);
+        xha_printf("Already have submodule [%s]\n", it->first);
     }
     return iResult;
 }
@@ -83,7 +83,7 @@ const std::string ModuleComplex::getParam(const std::string sKey) {
     if (it != m_mParams.end()) {
         sRes = it->second;
     } else {
-        stdprintf("Have no parameter [%s]\n", sKey);
+        xha_printf("Have no parameter [%s]\n", sKey);
     }
     return std::string(sRes);
 }
@@ -99,7 +99,7 @@ ModuleComplex *ModuleComplex::getModule(const std::string sModuleName) {
     if (it != m_mSubModules.end()) {
         pSub = it->second;
     } else {
-        stdprintf("Have no submodule [%s]\n", sModuleName);
+        xha_printf("Have no submodule [%s]\n", sModuleName);
     }
     return pSub;
 }
@@ -188,10 +188,10 @@ const stringmap *ParamProvider2::getParams(const std::string sModuleName) {
         if (itm != m_pCurClassInfo->mods.end()) {
             pP = &itm->second->getAttributes();
         } else {
-            stdprintf("Unknown module name [%s]\n", sModuleName);
+            xha_printf("Unknown module name [%s]\n", sModuleName);
         }
     } else {
-        stdprintf("No class is selected\n");
+        xha_printf("No class is selected\n");
     }
     return pP;
 }
@@ -212,10 +212,10 @@ int ParamProvider2::selectClass(const std::string sClassName) {
             m_sSpeciesName = ita->second;
             iResult = 0;
         } else {
-            stdprintf("class [%s] has no [%s] attribute\n", sClassName, ATTR_SPC_NAME);
+            xha_printf("class [%s] has no [%s] attribute\n", sClassName, ATTR_SPC_NAME);
         }
     } else {
-        stdprintf("class [%s] is not known\n", sClassName);
+        xha_printf("class [%s] is not known\n", sClassName);
     }
     return iResult;
 }
@@ -231,23 +231,23 @@ int ParamProvider2::processParam(qhgXMLNode *pParam, const std::string sSubtag, 
  
     if (pParam != NULL) {
         std::string sPName = pParam->getName();
-        //stdprintf("[ParamProvider2::processParam] processing module [%s] (subtag [%s]\n", sPName, sSubtag);
+        //xha_printf("[ParamProvider2::processParam] processing module [%s] (subtag [%s]\n", sPName, sSubtag);
         if (sPName == sSubtag) {
             stringmap &mAttr = pParam->getAttrs();
             const std::string sName  = getAttribute(mAttr, ATTR_NAME);
             const std::string sValue = getAttribute(mAttr, ATTR_VALUE);
-            //stdprintf("[ParamProvider2::processParam]   got [%s] = [%s]\n", sName, sValue);
+            //xha_printf("[ParamProvider2::processParam]   got [%s] = [%s]\n", sName, sValue);
             if ((!sName.empty()) && (!sValue.empty())) {
                 att_param[sName] = sValue;
                 iResult = 0;
             } else {
-                stdprintf("Couldn't find 'name' and/or 'value' in attribute tag\n");
+                xha_printf("Couldn't find 'name' and/or 'value' in attribute tag\n");
             }
         } else {
-            stdprintf("Expected Element to be '%s' not '%s'\n", sSubtag, sPName);
+            xha_printf("Expected Element to be '%s' not '%s'\n", sSubtag, sPName);
         }
     } else {
-        stdprintf("Can't do NULL element'\n");
+        xha_printf("Can't do NULL element'\n");
     }
     return iResult;
 }
@@ -267,7 +267,7 @@ int ParamProvider2::processModule(qhgXMLNode *pModule, modulemap &mModules) {
             const std::string sName = getAttribute(mAttr, ATTR_NAME);
             if (!sName.empty()) {
                 const std::string sID = getAttribute(mAttr, ATTR_ID);
-                //stdprintf("[ParamProvider2::processModule] processing module [%s] (id [%s])\n", sName, sID);
+                //xha_printf("[ParamProvider2::processModule] processing module [%s] (id [%s])\n", sName, sID);
 
                 iResult = 0;
 
@@ -283,25 +283,25 @@ int ParamProvider2::processModule(qhgXMLNode *pModule, modulemap &mModules) {
                     
 
                 if (iResult == 0)  {
-                    //stdprintf("[ParamProvider2::processModule] everytin ok; have name [%s] and id [%s]\n", sName, sID);
+                    //xha_printf("[ParamProvider2::processModule] everytin ok; have name [%s] and id [%s]\n", sName, sID);
                     ModuleComplex *pMC = new ModuleComplex(att_param, subMods); 
                     std::string sName2 = "";
                     if (!sID.empty()) {
-                        sName2 = stdsprintf("%s[%s]", sName, sID);
+                        sName2 = xha_sprintf("%s[%s]", sName, sID);
                     } else {
                         sName2 = sName;
                     }
-                    //stdprintf("[ParamProvider2::processModule] added module [%s] to modulemap\n", sName2);
+                    //xha_printf("[ParamProvider2::processModule] added module [%s] to modulemap\n", sName2);
                     mModules[sName2] = pMC;
                 }
             } else {
-                stdprintf("Attribute 'name' of node '%s' does not exist\n", pModule->getName());
+                xha_printf("Attribute 'name' of node '%s' does not exist\n", pModule->getName());
             }
         } else {
-            stdprintf("Expected Element to be '%s' not '%s'\n", ELEM_MODULE, pModule->getName());
+            xha_printf("Expected Element to be '%s' not '%s'\n", ELEM_MODULE, pModule->getName());
         }
     } else {
-        stdprintf("Can't do NULL element'\n");
+        xha_printf("Can't do NULL element'\n");
     }
 
     return iResult;
@@ -316,17 +316,17 @@ int ParamProvider2::processPriorities(qhgXMLNode *pPrios, stringmap &pa) {
     if (pPrios != NULL) {
         if (pPrios->getName() == ELEM_PRIOS) {
             iResult = 0;
-            //stdprintf("[ParamProvider2::processPriorities] processing priorities\n");
+            //xha_printf("[ParamProvider2::processPriorities] processing priorities\n");
             qhgXMLNode *pChild = pPrios->getChild();
             while ((iResult == 0) && (pChild != NULL)) {
                 iResult = processParam(pChild, ELEM_PRIO, pa);
                 pChild = pChild->getNext();
             }
         } else {
-            stdprintf("Expected Element to be '%s' not '%s'\n", ELEM_PRIOS, pPrios->getName());
+            xha_printf("Expected Element to be '%s' not '%s'\n", ELEM_PRIOS, pPrios->getName());
         }
     } else {
-        stdprintf("Can't do NULL element'\n");
+        xha_printf("Can't do NULL element'\n");
     }
 
     return iResult;
@@ -340,17 +340,17 @@ int ParamProvider2::processVarDefs(qhgXMLNode *pPrios, stringmap &vd) {
     if (pPrios != NULL) {
         if (pPrios->getName() == ELEM_VARDEFS) {
             iResult = 0;
-            //stdprintf("[ParamProvider2::processPriorities] processing priorities\n");
+            //xha_printf("[ParamProvider2::processPriorities] processing priorities\n");
             qhgXMLNode *pChild = pPrios->getChild();
             while ((iResult == 0) && (pChild != NULL)) {
                 iResult = processParam(pChild, ELEM_VAR, vd);
                 pChild = pChild->getNext();
             }
         } else {
-            stdprintf("Expected Element to be '%s' not '%s'\n", ELEM_VARDEFS, pPrios->getName());
+            xha_printf("Expected Element to be '%s' not '%s'\n", ELEM_VARDEFS, pPrios->getName());
         }
     } else {
-        stdprintf("Can't do NULL element'\n");
+        xha_printf("Can't do NULL element'\n");
     }
 
     return iResult;
@@ -367,7 +367,7 @@ int ParamProvider2::processClass(qhgXMLNode *pClass) {
             stringmap &mAttr = pClass->getAttrs();
             const std::string sName = getAttribute(mAttr, ATTR_NAME);
             if (!sName.empty()) {
-                stdprintf("[ParamProvider2::processClass] processing class [%s]\n", sName);
+                xha_printf("[ParamProvider2::processClass] processing class [%s]\n", sName);
                 stringmap attr_class;
                 stringmap::const_iterator it;
                 for (it = mAttr.begin(); it != mAttr.end(); ++it)   {
@@ -385,14 +385,14 @@ int ParamProvider2::processClass(qhgXMLNode *pClass) {
                     while ((iResult == 0) && (pChild != NULL)) {
                         if (pChild->getName() == ELEM_MODULE) {
                             iResult = processModule(pChild, m_mModules);
-                            stdprintf("[ParamProvider2::processClass] class [%s] now has %zd  modules \n", sName, m_mModules.size());
+                            xha_printf("[ParamProvider2::processClass] class [%s] now has %zd  modules \n", sName, m_mModules.size());
 
                         } else if (pChild->getName() == ELEM_PRIOS) {
                             iResult = processPriorities(pChild, attr_prios);
                         } else if (pChild->getName() == ELEM_VARDEFS) {
                             iResult = processVarDefs(pChild, var_defs);
                         } else {
-                            stdprintf("unknown element:%s\n", pChild->getName());
+                            xha_printf("unknown element:%s\n", pChild->getName());
                         } 
                         pChild = pChild->getNext();
                     }
@@ -406,18 +406,18 @@ int ParamProvider2::processClass(qhgXMLNode *pClass) {
                     m_vClassNames.push_back(sName);
 
                 } else {
-                    stdprintf("class attributes must include  [%s]\n", ATTR_SPC_NAME);
+                    xha_printf("class attributes must include  [%s]\n", ATTR_SPC_NAME);
                 }
             } else {
-                stdprintf("Attribute '%s' of node '%s' does not exist\n", ATTR_NAME, pClass->getName());
+                xha_printf("Attribute '%s' of node '%s' does not exist\n", ATTR_NAME, pClass->getName());
             }
           
 
         } else {
-            stdprintf("Expected Element to be '%s' not '%s'\n", ELEM_CLASS, pClass->getName());
+            xha_printf("Expected Element to be '%s' not '%s'\n", ELEM_CLASS, pClass->getName());
         } 
     } else {
-        stdprintf("Can't do NULL element'\n");
+        xha_printf("Can't do NULL element'\n");
     }
     return iResult;
 }
@@ -452,12 +452,12 @@ void showModule(ModuleComplex *pModule, const std::string sIndent) {
     
     stringmap::const_iterator  itp;
     for (itp = pModule->getAttributes().begin(); itp != pModule->getAttributes().end(); ++itp) {
-        stdprintf("%s%s -> %s\n", sIndent, itp->first, itp->second);
+        xha_printf("%s%s -> %s\n", sIndent, itp->first, itp->second);
     }
     std::string sIndent2 = "    " + sIndent;    
     modulemap::const_iterator  itm;
     for (itm = pModule->getSubModules().begin(); itm != pModule->getSubModules().end(); ++itm) {
-        stdprintf("%s%s: \n", sIndent, itm->first);
+        xha_printf("%s%s: \n", sIndent, itm->first);
         showModule(itm->second, sIndent2);
     }        
 
@@ -470,26 +470,26 @@ void showModule(ModuleComplex *pModule, const std::string sIndent) {
 void ParamProvider2::showTree() {
     classes::const_iterator itc;
     for (itc = m_mClasses.begin(); itc != m_mClasses.end(); ++itc) {
-        stdprintf("------ class\n");
-        stdprintf("class '%s'\n", itc->first);
+        xha_printf("------ class\n");
+        xha_printf("class '%s'\n", itc->first);
         const stringmap &cattr = itc->second.cattr;
         stringmap::const_iterator  ita;
         for (ita = cattr.begin(); ita != cattr.end(); ++ita) {
-            stdprintf("  %s: %s\n", ita->first, ita->second);
+            xha_printf("  %s: %s\n", ita->first, ita->second);
         }
-        stdprintf("------ modules\n");
+        xha_printf("------ modules\n");
         const modulemap &mods = itc->second.mods;
         modulemap::const_iterator itm;
         for (itm = mods.begin(); itm != mods.end(); ++itm) {
-            stdprintf("  module '%s'\n", itm->first);
+            xha_printf("  module '%s'\n", itm->first);
             showModule(itm->second, "    ");
                         
         }
-        stdprintf("------ priorities\n");
+        xha_printf("------ priorities\n");
         const stringmap &pattr = itc->second.prios;
         stringmap::const_iterator  ita3;
         for (ita3 = pattr.begin(); ita3 != pattr.end(); ++ita3) {
-            stdprintf("  %s: %s\n", ita3->first, ita3->second);
+            xha_printf("  %s: %s\n", ita3->first, ita3->second);
         }
 
     }

@@ -13,8 +13,8 @@
 #include "EventManager.h"
 #include "EventConsts.h"
 #include "strutils.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "colors.h"
 #include "MessLoggerT.h"
 #include "WELL512.h"
@@ -247,36 +247,36 @@ int SimParams::setHelpTopic(const std::string sHelpTopic) {
 // helpParams
 //
 void SimParams::helpParams() {
-    stdprintf("  -h,                        show this help\n");            
-    stdprintf("  --help=<topic>             show deailed help for topic (use name of option or \"all\")\n");            
-    stdprintf("  --log-file=<filename>      set name of log file (default:\"%s\")\n", DEF_LOG_FILE);            
-    stdprintf("  --grid=<grid-file>         set grid file\n");     
-    stdprintf("  --num-iters=<iters>        set number of iterations\n");  
-    stdprintf("  --geo=<geo-file>           set geography file\n");       
-    stdprintf("  --climate=<climate-file>   set climate file\n");    
-    stdprintf("  --veg=<veg-file>           set vegetation file\n");    
-    stdprintf("  --nav=<nav-file>           set navigation file\n");    
-    stdprintf("  --pops=<pop-list>          set population files\n");       
-    stdprintf("  --output-prefix=<name>     prefix for output files (default: \"%s\")\n", DEF_OUT_PREFIX);    
-    stdprintf("  --output-dir=<dirname>     output directory (default: \"./\")\n");    
-    stdprintf("  --data-dirs=<dirnames>     data directories (default: \"./\")\n");    
-    stdprintf("  --read-config=<conf>       read config from file <conf>\n");
-    stdprintf("  --write-config=<conf>      write config to file <conf>\n");
-    stdprintf("  --events=<event-list>      set events\n");    
-    stdprintf("  --start-time=<time>        set 'real' time for simulation step 0 (default: 0)\n");
-    stdprintf("  --dyn-pops                 use populations from so director<y\n");    
-    stdprintf("  --so-dirs=<dirnames>       search directories for population so-files (default: \"./\")\n");    
-    stdprintf("  --interpol-step=<step>     set step size for interpolation (default: 1)\n");
-    stdprintf("  --interpolation=<params>   set interpolation params\n");
-    stdprintf("  --layer-size=<size>        set layer size (default: %d)\n", DEF_LAYERSIZE);
-    stdprintf("  --shuffle=<num>            shift random generator's sequence (default: 0)\n");
-    stdprintf("  --seed=<seedtype>          set seed for random number generators\n");
-    stdprintf("  --pop-params=<paramstring> set special population parameters\n");
-    stdprintf("  --zip-output               use gzip to zip all output qdf files\n");
-    stdprintf("  --info-string=<infostring> information to be written to root group of output files\n");
-    stdprintf("  --resume                   resume from previously dumped env and pop files\n");
-    stdprintf("  --no-merge-pops            merge compatible populations (same IDs, same actions, same agent types)\n");
-    stdprintf("  --dump-on-interrupt        set interrupt handler for Ctrl-C (SIG_INT): dump and exit\n");
+    xha_printf("  -h,                        show this help\n");            
+    xha_printf("  --help=<topic>             show deailed help for topic (use name of option or \"all\")\n");            
+    xha_printf("  --log-file=<filename>      set name of log file (default:\"%s\")\n", DEF_LOG_FILE);            
+    xha_printf("  --grid=<grid-file>         set grid file\n");     
+    xha_printf("  --num-iters=<iters>        set number of iterations\n");  
+    xha_printf("  --geo=<geo-file>           set geography file\n");       
+    xha_printf("  --climate=<climate-file>   set climate file\n");    
+    xha_printf("  --veg=<veg-file>           set vegetation file\n");    
+    xha_printf("  --nav=<nav-file>           set navigation file\n");    
+    xha_printf("  --pops=<pop-list>          set population files\n");       
+    xha_printf("  --output-prefix=<name>     prefix for output files (default: \"%s\")\n", DEF_OUT_PREFIX);    
+    xha_printf("  --output-dir=<dirname>     output directory (default: \"./\")\n");    
+    xha_printf("  --data-dirs=<dirnames>     data directories (default: \"./\")\n");    
+    xha_printf("  --read-config=<conf>       read config from file <conf>\n");
+    xha_printf("  --write-config=<conf>      write config to file <conf>\n");
+    xha_printf("  --events=<event-list>      set events\n");    
+    xha_printf("  --start-time=<time>        set 'real' time for simulation step 0 (default: 0)\n");
+    xha_printf("  --dyn-pops                 use populations from so director<y\n");    
+    xha_printf("  --so-dirs=<dirnames>       search directories for population so-files (default: \"./\")\n");    
+    xha_printf("  --interpol-step=<step>     set step size for interpolation (default: 1)\n");
+    xha_printf("  --interpolation=<params>   set interpolation params\n");
+    xha_printf("  --layer-size=<size>        set layer size (default: %d)\n", DEF_LAYERSIZE);
+    xha_printf("  --shuffle=<num>            shift random generator's sequence (default: 0)\n");
+    xha_printf("  --seed=<seedtype>          set seed for random number generators\n");
+    xha_printf("  --pop-params=<paramstring> set special population parameters\n");
+    xha_printf("  --zip-output               use gzip to zip all output qdf files\n");
+    xha_printf("  --info-string=<infostring> information to be written to root group of output files\n");
+    xha_printf("  --resume                   resume from previously dumped env and pop files\n");
+    xha_printf("  --no-merge-pops            merge compatible populations (same IDs, same actions, same agent types)\n");
+    xha_printf("  --dump-on-interrupt        set interrupt handler for Ctrl-C (SIG_INT): dump and exit\n");
 
 
 }
@@ -366,7 +366,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
         iResult = m_pPR->getParams(iArgC, apArgV);
         if (sHelpTopic != "") {
              setHelpTopic(sHelpTopic);
-             stdprintf("HelpTopic [%s]\n", m_sHelpTopic);
+             xha_printf("HelpTopic [%s]\n", m_sHelpTopic);
              iResult = 2;
         } else  if (bHelp) {
             setHelp(bHelp);
@@ -395,7 +395,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
 
                 if (iResult > 0) {
                     LOG_WARNING("ParamReader Warning:\n%s", m_pPR->getErrorMessage(iResult));
-                    stdprintf("ParamReader Warning:\n%s", m_pPR->getErrorMessage(iResult));
+                    xha_printf("ParamReader Warning:\n%s", m_pPR->getErrorMessage(iResult));
 
                     iResult = 0;
                 }
@@ -440,7 +440,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                 }
 
 
-                stdprintf("numiters: %d\n", m_iNumIters);
+                xha_printf("numiters: %d\n", m_iNumIters);
                 if (m_iNumIters < 0) {
                     iRes2   = -1;
                     iResult = (iRes2 < iResult)?iRes2:iResult;
@@ -454,7 +454,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setDataDirs");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setDataDir %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setDataDir %d\n", iResult);
 
                 if (sSODirs != "") {
                     iRes2   = setSODirs(sSODirs);
@@ -471,7 +471,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setSeed");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setSeed %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setSeed %d\n", iResult);
 
                 if (sShuffles != "") {
                     iRes2   = setShuffles(sShuffles);
@@ -480,7 +480,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setShuffles");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setShuffles %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setShuffles %d\n", iResult);
                 
                 if (sGridFile != "") {
                     iRes2   = setGrid(sGridFile);
@@ -491,7 +491,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         m_pEnvInt = new EnvInterpolator(m_pCG);
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setGrid %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setGrid %d\n", iResult);
 
                 if (sGeoFile != "") {
                     iRes2   = setGeo(sGeoFile);
@@ -500,7 +500,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setGeo");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setGeo %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setGeo %d\n", iResult);
 
                 if (sClimateFile != "") {
                     iRes2   = setClimate(sClimateFile);
@@ -509,7 +509,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setClimate");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setClimate %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setClimate %d\n", iResult);
 
                 if (sVegFile != "") {
                     iRes2   = setVeg(sVegFile);
@@ -519,7 +519,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                     }
                     iResult = (iRes2 < iResult)?iRes2:iResult;
                 }
-                if (bIntermediateResult) stdprintf("After setVeg %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setVeg %d\n", iResult);
 
                 if (sNavFile != "") {
                     iRes2   = setNav(sNavFile);
@@ -537,7 +537,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                     }
                     iResult = (iRes2 < iResult)?iRes2:iResult;
                 }
-                if (bIntermediateResult) stdprintf("After setNav %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setNav %d\n", iResult);
 
                 if (sPops != "") {
                     iRes2   = setPopList(sPops);
@@ -546,7 +546,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setPopList");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setPopList %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setPopList %d\n", iResult);
 
                 if (sPopParams != "") {
                     iRes2   = setPopParams(sPopParams);
@@ -555,7 +555,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setPopParams");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setPopParams %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setPopParams %d\n", iResult);
 
                 if (sOutputPrefix != "") {
                     iRes2   = setOutputPrefix(sOutputPrefix);
@@ -564,7 +564,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setOutputPrefix");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setOutputPrefix %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setOutputPrefix %d\n", iResult);
 
                 if (sOutputDir != "") {
                     iRes2   = setOutputDir(sOutputDir);
@@ -573,7 +573,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setOutputDir");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setOutputDir %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setOutputDir %d\n", iResult);
 
                 if ((pEvents != NULL) && (*pEvents != '\0')) {
                     iRes2   = addEventTriggers(pEvents, true); // true: update event list
@@ -582,13 +582,13 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("addEventTriggers");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After addEventTriggers %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After addEventTriggers %d\n", iResult);
 
 
                 if ((pInfoString != NULL) && (*pInfoString != '\0')) {
                     m_sInfoString = pInfoString;
                 }
-                if (bIntermediateResult) stdprintf("After input string %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After input string %d\n", iResult);
 
 
                 if ((pInterpolationData != NULL) && (*pInterpolationData != '\0')) {
@@ -598,7 +598,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setInterpolationData");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setInterpolationData %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setInterpolationData %d\n", iResult);
 
                 if (sConfigOut != "") {
                     iRes2   = setConfigOut(sConfigOut);
@@ -607,7 +607,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                         vsErrorInfo.push_back("setConfigOut");
                     }
                 }
-                if (bIntermediateResult) stdprintf("After setConfigOut %d\n", iResult);
+                if (bIntermediateResult) xha_printf("After setConfigOut %d\n", iResult);
 
                 m_bMergePops = !bNoMerge;
 
@@ -631,7 +631,7 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
                     stringvec vMand;
                     int iNum = m_pPR->getMandatoryParams(vMand);
                     for (int i = 0; i < iNum; i++) {
-                        std::string sPar = stdsprintf("  %s\n", vMand[i]);
+                        std::string sPar = xha_sprintf("  %s\n", vMand[i]);
                         LOG_ERROR2(sPar, "  %s\n", vMand[i]);
                     }
                 }
@@ -649,26 +649,26 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
         LOG_DISP("-------------------------------------\n");
         
         if (!m_sConfigOut.empty()) {
-            std::string sConfPath = stdsprintf("%s%s", m_sOutputDir, m_sConfigOut);
+            std::string sConfPath = xha_sprintf("%s%s", m_sOutputDir, m_sConfigOut);
             LOG_STATUS("writing to config file [%s]\n", sConfPath);
             // omit the option  "--write-config"
             m_pPR->writeConfigFile(sConfPath, "--write-config");
         }
 
         /*
-        stdprintf("Random seed:\n");
+        xha_printf("Random seed:\n");
         LOG_STATUS("Random seed:\n");
         std::string sState("");
         for (uint i = 0; i < STATE_SIZE/4; i++) {
             sState = "";                
             for (uint j = 0; j < 4; j++) {
-                std::string sDig = stdsprintf(" %08x", m_aulState[4*i+j]);
+                std::string sDig = xha_sprintf(" %08x", m_aulState[4*i+j]);
                 sState += sDig;
             }
             LOG_STATUS("    %s\n", sState);
-            stdprintf("    %s\n", sState);
+            xha_printf("    %s\n", sState);
         }
-        stdprintf("\n");
+        xha_printf("\n");
         */
         LOG_STATUS2("Layer Size: %d\n", m_iLayerSize);
         
@@ -699,25 +699,25 @@ int SimParams::readOptions(int iArgC, char *apArgV[]) {
 //
 bool SimParams::exists(const std::string sFile, std::string &sExists) {
     bool bExists = false;
-    stdprintf("exists: [%s]?\n", sFile);
+    xha_printf("exists: [%s]?\n", sFile);
     if (!fileExists(sFile))  {
         if (!m_vDataDirs.empty()) {
             std::string sTest;
             sExists = "";
             for (uint i = 0; (sExists.empty() && (i < m_vDataDirs.size())); i++) {
-                std::string  sTest0 = stdsprintf("%s%s", m_vDataDirs[i], sFile);
+                std::string  sTest0 = xha_sprintf("%s%s", m_vDataDirs[i], sFile);
                 int iRes = replaceEnvVars(sTest0, sTest);
                 if (iRes == 0) {
-                    stdprintf("exists: [%s]? - ", sTest);
+                    xha_printf("exists: [%s]? - ", sTest);
                     if (fileExists(sTest)) {
                         sExists = sTest;
                         bExists = true;
-                        stdprintf("yes\n");
+                        xha_printf("yes\n");
                     } else {
-                        stdprintf("no\n");
+                        xha_printf("no\n");
                     }
                 } else {
-                    stdprintf("unknown env var: [%s]?\n", sTest);
+                    xha_printf("unknown env var: [%s]?\n", sTest);
                     bExists = false;
                 }
             }
@@ -761,7 +761,7 @@ int SimParams::setGrid(const std::string sFile) {
                 // err couldn't read
                 LOG_ERROR2("Couldn't read [%s] as QDF grid file\n", sFile);
                 /*
-                stdprintf("use old way\n");
+                xha_printf("use old way\n");
                 // do it the "old" way
                 m_pLRGrid = LineReader_std::createInstance(sRealFile, "rt");
                 if (m_pLRGrid != NULL) {
@@ -808,9 +808,9 @@ int SimParams::setGrid(hid_t hFile, bool bUpdate /* = false */) {
         } else {
             if (strToNum(sTime, &m_iStartStep)) {
                 iResult = 0;
-                stdprintf("Have timestamp %d\n", m_iStartStep);
+                xha_printf("Have timestamp %d\n", m_iStartStep);
             } else {
-                stdprintf("Timestamp not valid [%s]\n", sTime);
+                xha_printf("Timestamp not valid [%s]\n", sTime);
                 iResult = -1;
             }
 	}
@@ -818,11 +818,11 @@ int SimParams::setGrid(hid_t hFile, bool bUpdate /* = false */) {
 
         if (bUpdate) {
             if (m_pCG == NULL) {
-                stdprintf("[setGrid] updating non-existent grid!!!\n");
+                xha_printf("[setGrid] updating non-existent grid!!!\n");
                 iResult = -1;
             }
             if ((uint)gridatt.m_iNumCells != m_pCG->m_iNumCells) {
-                stdprintf("[setGrid] updating grid failed: different cell number!!!\n");
+                xha_printf("[setGrid] updating grid failed: different cell number!!!\n");
                 iResult = -1;
             }
         }
@@ -832,7 +832,7 @@ int SimParams::setGrid(hid_t hFile, bool bUpdate /* = false */) {
                 m_pCG = new SCellGrid(0, gridatt.m_iNumCells, gridatt.smData);
                 m_pCG->m_aCells = new SCell[gridatt.m_iNumCells];
             } else {
-                stdprintf("[setGrid] updating grid...\n");
+                xha_printf("[setGrid] updating grid...\n");
             }
             iResult = pGR->readData(m_pCG);
             if (iResult == 0) {
@@ -1035,7 +1035,7 @@ int SimParams::setGeo(hid_t hFile, bool bRequired, bool bUpdate /* = false */) {
          
          delete pGR;
      } else {
-         stdprintf("[setGeo] Couldn't create GeoGroupReader: did not find group [%s]\n", GEOGROUP_NAME);
+         xha_printf("[setGeo] Couldn't create GeoGroupReader: did not find group [%s]\n", GEOGROUP_NAME);
          if (bRequired) {
              LOG_ERROR("[setGeo] Couldn't create GeoGroupReader: did not find group [%s]\n", GEOGROUP_NAME);
          }
@@ -1116,7 +1116,7 @@ int SimParams::setClimate(hid_t hFile, bool bRequired, bool bUpdate /* = false *
         
         delete pCR;
     } else {
-        stdprintf("[setClimate] Couldn't create ClimateGroupReader: did not find group [%s]\n", CLIGROUP_NAME);
+        xha_printf("[setClimate] Couldn't create ClimateGroupReader: did not find group [%s]\n", CLIGROUP_NAME);
         if (bRequired) {
             LOG_ERROR("[setClimate] Couldn't create ClimateGroupReader: did not find group [%s]\n", CLIGROUP_NAME);
         }
@@ -1390,23 +1390,23 @@ int SimParams::setPops(const std::string sFile) {
 
     // get a population factory if we don't have one already
     if (m_pPopFac == NULL) {
-        stdprintf("[SimParams::setPops] bDynPops is %dn", m_bDynPops);
+        xha_printf("[SimParams::setPops] bDynPops is %dn", m_bDynPops);
 
 #ifdef DYNAMIC_POPS
-        stdprintf("[SimParams::setPops] in DYNAMIC_POPS compilation branch\n");
+        xha_printf("[SimParams::setPops] in DYNAMIC_POPS compilation branch\n");
         m_pPopFac = DynPopFactory::createInstance(m_vSODirs, m_pCG, m_pPopLooper, m_iLayerSize, m_apIDG, m_aulState, m_aiSeeds);
         if (m_pPopFac == NULL) {
-            stdprintf("[setPops} couldn't create DynPopFactory\n");
+            xha_printf("[setPops} couldn't create DynPopFactory\n");
             iResult = -1;
         } else {
             iResult = 0;
         }
 #else
-        stdprintf("[SimParams::setPops] in STATIC_POPS compilation branch\n");
+        xha_printf("[SimParams::setPops] in STATIC_POPS compilation branch\n");
         if (m_bDynPops) {
             m_pPopFac = DynPopFactory::createInstance(m_vSODirs, m_pCG, m_pPopLooper, m_iLayerSize, m_apIDG, m_aulState, m_aiSeeds);
             if (m_pPopFac == NULL) {
-                stdprintf("[setPops} couldn't create DynPopFactory\n");
+                xha_printf("[setPops} couldn't create DynPopFactory\n");
                 iResult = -1;
             } else {
                 iResult = 0;
@@ -1426,10 +1426,10 @@ int SimParams::setPops(const std::string sFile) {
             std::string sXMLFile  = "";
             std::string sDataFile = "";
             if (exists(vDefs[0], sXMLFile) && exists(vDefs[1], sDataFile)) {
-                stdprintf("[setPops] trying [%s] as XML\n", sXMLFile);
+                xha_printf("[setPops] trying [%s] as XML\n", sXMLFile);
                 iResult = setPopsFromXMLFile(sXMLFile, sDataFile);
                 if (iResult != 0) {
-                    stdprintf("[setPops] [%s] seems not to be a QHG XML file\n", sXMLFile);
+                    xha_printf("[setPops] [%s] seems not to be a QHG XML file\n", sXMLFile);
                 }
             } else {
                 if (sXMLFile.empty()) {
@@ -1492,10 +1492,10 @@ int SimParams::setPops(hid_t hFile, const std::string sPopName, bool bRequired) 
                                     LOG_STATUS2("[setPops] successfully added Population: %s: %ld agents\n", pPop->getSpeciesName(), pPop->getNumAgentsTotal());
                                     if (!m_bResume) {
                                         if (m_aiSeeds[0] > 0) {
-                                            stdprintf("Randomizing(1) with %u\n", m_aiSeeds[0]);
+                                            xha_printf("Randomizing(1) with %u\n", m_aiSeeds[0]);
                                             pPop->randomize(m_aiSeeds[0]);
                                         } else {
-                                            stdprintf("No seeds???\n");
+                                            xha_printf("No seeds???\n");
                                         }
                                     }
                                 } else {
@@ -1562,24 +1562,24 @@ int SimParams::setPopsFromXMLFile(const std::string sXMLFile, const std::string 
             iResult = 0;
             ParamProvider2 *pPP = ParamProvider2::createInstance(sXMLFile);
             if (pPP != NULL) {
-                stdprintf("ParamProvider:::::::::::\n");
+                xha_printf("ParamProvider:::::::::::\n");
                 pPP->showTree();
                 const stringvec &vClassNames = pPP->getClassNames();
                 for (uint i = 0; (iResult == 0) && (i < vClassNames.size()); ++i){
                     iResult = pPP->selectClass(vClassNames[i]);
                     PopBase *pPop = m_pPopFac->readPopulation(pPP);
                     if (pPop != NULL) {
-                        stdprintf("doing species [%s]\n", pPop->getSpeciesName());
+                        xha_printf("doing species [%s]\n", pPop->getSpeciesName());
                         // read agent data
                         iResult = readAgentData(pPop, sDataFile);
                         if (iResult == 0) {
                             m_pPopLooper->addPop(pPop);
                             LOG_STATUS("[setPopsFromXMLFile] successfully added Population: %s\n", pPop->getSpeciesName());
                             if (m_aiSeeds[0] > 0) {
-                                stdprintf("Randomizing(1) with %u\n", m_aiSeeds[0]);
+                                xha_printf("Randomizing(1) with %u\n", m_aiSeeds[0]);
                                 pPop->randomize(m_aiSeeds[0]);
                             } else {
-                            stdprintf("No seeds???\n");        
+                            xha_printf("No seeds???\n");        
                             }
                         }
                     } else {
@@ -1647,18 +1647,18 @@ int SimParams::setInterpolationData(const std::string sInterpolationData){
             if (strToNum(vParts[2], &iStep)) {
                 m_iInterpolStep = iStep;
                 
-                stdprintf("[SimParams::setInterpolationData] have step [%d]\n", m_iInterpolStep);
+                xha_printf("[SimParams::setInterpolationData] have step [%d]\n", m_iInterpolStep);
                 iResult = 0;
             } else {
-                stdprintf("[SimParams::setInterpolationData] expected a number [%s] not found\n", vParts[2]);
+                xha_printf("[SimParams::setInterpolationData] expected a number [%s] not found\n", vParts[2]);
             }
                 
         } else {
-            stdprintf("[SimParams::setInterpolationData] file [%s] not found\n", vParts[1]);
+            xha_printf("[SimParams::setInterpolationData] file [%s] not found\n", vParts[1]);
         }
         
     } else {
-        stdprintf("[SimParams::setInterpolationData] expected 3 ':'-separated terms\n");
+        xha_printf("[SimParams::setInterpolationData] expected 3 ':'-separated terms\n");
     }
 
     
@@ -1676,12 +1676,12 @@ int SimParams::setInterpolationData(const std::string sInterpolationData){
                     //                    vTargets.push_back(string_combi("Vegetation/NPP", string_pair("Vegetation", "NPP")));
                     vTargets.push_back(target_info("Vegetation/NPP", "Vegetation", "NPP"));
                 } else {
-                    stdprintf("[SimParams::setInterpolationData] Unknown array name [%s]\n", vShorts[i]);
+                    xha_printf("[SimParams::setInterpolationData] Unknown array name [%s]\n", vShorts[i]);
                     iResult = -1;
                 }
             }
         } else {
-            stdprintf("[SimParams::setInterpolationData] Expected at least one array short name\n");
+            xha_printf("[SimParams::setInterpolationData] Expected at least one array short name\n");
         }
     }
 
@@ -1689,10 +1689,10 @@ int SimParams::setInterpolationData(const std::string sInterpolationData){
     if (iResult == 0) {
         m_pAutInt = AutoInterpolator::createInstance(m_pCG, sEvtFile, m_fStartTime, vTargets);
         if (m_pAutInt != NULL) {
-            stdprintf("[SimParams::setInterpolationData] AutoInterpolator created ok\n");
+            xha_printf("[SimParams::setInterpolationData] AutoInterpolator created ok\n");
         } else {
             iResult = -1;
-            stdprintf("[SimParams::setInterpolationData] Failed to create AutoInterpolator!\n");
+            xha_printf("[SimParams::setInterpolationData] Failed to create AutoInterpolator!\n");
         }
     }
 
@@ -1704,31 +1704,31 @@ int SimParams::setInterpolationData(const std::string sInterpolationData){
     if (pShorts != NULL) {
         pFile = strtok(NULL, ":");
         if (pFile != NULL) {
-            stdprintf("[SimParams::setInterpolationData] have file [%s]\n", pFile);
+            xha_printf("[SimParams::setInterpolationData] have file [%s]\n", pFile);
                 if (exists(pFile, sEvtFile)) {
-                stdprintf("[SimParams::setInterpolationData] using filke [%s]\n", sEvtFile);
+                xha_printf("[SimParams::setInterpolationData] using filke [%s]\n", sEvtFile);
                 char *pStep =  strtok(NULL, ":");
                 if (pStep != NULL) {
                     int iStep = 0;
                     if (strToNum(pStep, &iStep)) {
                         m_iInterpolStep = iStep;
-                        stdprintf("[SimParams::setInterpolationData] have step [%d]\n", m_iInterpolStep);
+                        xha_printf("[SimParams::setInterpolationData] have step [%d]\n", m_iInterpolStep);
                         iResult = 0;
                     } else {
-                        stdprintf("[SimParams::setInterpolationData] expected number, not [%s]\n", pStep);
+                        xha_printf("[SimParams::setInterpolationData] expected number, not [%s]\n", pStep);
                     }
                 } else {
-                    stdprintf("[SimParams::setInterpolationData] expected step size\n");
+                    xha_printf("[SimParams::setInterpolationData] expected step size\n");
                 }
             } else {
-                stdprintf("[SimParams::setInterpolationData] fil [%s] not found\n", pFile);
+                xha_printf("[SimParams::setInterpolationData] fil [%s] not found\n", pFile);
             }      
         } else {
-            stdprintf("[SimParams::setInterpolationData] expected file name\n");
+            xha_printf("[SimParams::setInterpolationData] expected file name\n");
         }
         
     } else {
-        stdprintf("[SimParams::setInterpolationData] empty string\n");
+        xha_printf("[SimParams::setInterpolationData] empty string\n");
     }
     
 
@@ -1741,7 +1741,7 @@ int SimParams::setInterpolationData(const std::string sInterpolationData){
             } else if (strcmp(pArr, "npp") == 0) {
                 vTargets.push_back(string_combi("Vegetation/NPP", string_pair("Vegetation", "NPP")));
             } else {
-                stdprintf("[SimParams::setInterpolationData] Unknown array name [%s]\n", pArr);
+                xha_printf("[SimParams::setInterpolationData] Unknown array name [%s]\n", pArr);
                 iResult = -1;
             }
             pArr = strtok(NULL, "+");
@@ -1750,10 +1750,10 @@ int SimParams::setInterpolationData(const std::string sInterpolationData){
     if (iResult == 0) {
         m_pAutInt = AutoInterpolator::createInstance(m_pCG, sEvtFile, m_fStartTime, vTargets);
         if (m_pAutInt != NULL) {
-            stdprintf("[SimParams::setInterpolationData] AutoInterpolator created ok\n");
+            xha_printf("[SimParams::setInterpolationData] AutoInterpolator created ok\n");
         } else {
             iResult = -1;
-            stdprintf("[SimParams::setInterpolationData] Failed to create AutoInterpolator!\n");
+            xha_printf("[SimParams::setInterpolationData] Failed to create AutoInterpolator!\n");
         }
     }
 */
@@ -1864,7 +1864,7 @@ int SimParams::readSeed(const std::string sFileName, std::vector<uint32_t> &vulS
                     }
                     p = pLR->getNextLine();
                     while ((p != NULL) && (iResult == 0) && (strcasecmp(p, SEED_FOOTER) != 0)) {
-                        //@@stdprintf("checking [%s]\n", p);
+                        //@@xha_printf("checking [%s]\n", p);
                         iResult = WELLUtils::stringToSeed(p, vulState);
                         if (iResult == 0) {
                             p = pLR->getNextLine();
@@ -2004,7 +2004,7 @@ int SimParams::setShuffles(const std::string sShuffles) {
         }
         
     } else {
-        stdprintf("[SimParams::setShuffles] empty shuffle string?\n");
+        xha_printf("[SimParams::setShuffles] empty shuffle string?\n");
         iResult = -1;
     }
     return iResult;
@@ -2024,9 +2024,9 @@ int SimParams::setLayerSize(const uint iLayerSize) {
     if ((iLayerSize <= MAX_LAYERSIZE) && ((1u << i) == iLayerSize)) {
         m_iLayerSize = iLayerSize;
         
-        stdprintf("[SimParams::setLayerSize} m_iLayerSize  is set to %u\n", m_iLayerSize);
+        xha_printf("[SimParams::setLayerSize} m_iLayerSize  is set to %u\n", m_iLayerSize);
     } else {
-        stdprintf("[SimParams::setLayerSize] layerSize should be a power of 2 less than %u, but is %u\n", MAX_LAYERSIZE, iLayerSize);
+        xha_printf("[SimParams::setLayerSize] layerSize should be a power of 2 less than %u, but is %u\n", MAX_LAYERSIZE, iLayerSize);
         iResult = -1;
     }
     return iResult;
@@ -2210,7 +2210,7 @@ int SimParams::readAgentData(PopBase *pPop, const std::string sAgentDataFile) {
 
 
                     if (lNode >= 0) {
-                        //                        stdprintf("%f %f -> %d\n", dLon, dLat, lNode);
+                        //                        xha_printf("%f %f -> %d\n", dLon, dLat, lNode);
                         int iIndex = m_pCG->m_mIDIndexes[lNode];
                         iResult = pPop->addAgent(iIndex, pLine, false); //don't update counts
                         /*
@@ -2222,7 +2222,7 @@ int SimParams::readAgentData(PopBase *pPop, const std::string sAgentDataFile) {
                             int iIndex = m_pCG->m_mIDIndexes[lNode];
                             iResult = pPop->addAgent(iIndex, pData, false); //don't update counts
                         } else {
-                            stdprintf("[readAgentData] No colon ':' in line:[%s]\n", pLine);
+                            xha_printf("[readAgentData] No colon ':' in line:[%s]\n", pLine);
                             LOG_ERROR("[readAgentData] No colon ':' in line:[%s]\n", pLine);
                             iResult = -1;
                         }
@@ -2268,20 +2268,20 @@ void printHeaderLine(int iL, const std::string sTopic) {
     //    *sDashi = '\0';    
     if (!sTopic.empty()) {
         
-        std::string sTemp1 = stdsprintf(" Help for topic: %s ",  sTopic);
+        std::string sTemp1 = xha_sprintf(" Help for topic: %s ",  sTopic);
         size_t i1 = sTemp1.size();
         //char sTemp2[256];
-        std::string sTemp2 = stdsprintf(" Help for topic: %s%s%s%s ",  colors::BOLDBLUE, sTopic, colors::OFF, colors::BOLD);
+        std::string sTemp2 = xha_sprintf(" Help for topic: %s%s%s%s ",  colors::BOLDBLUE, sTopic, colors::OFF, colors::BOLD);
         size_t i2 = sTemp2.size();
         size_t iPos = (iL-i1)/2;
         std::string sDash(iPos, '-');
-        stdprintf("i1:%zd, i2:%zd\n", i1, i2);
+        xha_printf("i1:%zd, i2:%zd\n", i1, i2);
         std::string sDashi((i2-i1), '-');
         //sDash[i2-i1] = '\0';
         //strcat(sDash, sDashi);
         //sDash += sDashi;
         //memcpy(sDash+iPos, sTemp2, i2);
-        stdprintf("\n%s%s%s%s%s\n\n", colors::BOLD, sDash, sTemp2, sDash, colors::OFF);
+        xha_printf("\n%s%s%s%s%s\n\n", colors::BOLD, sDash, sTemp2, sDash, colors::OFF);
     } else {
     }
 }
@@ -2298,412 +2298,412 @@ void SimParams::showTopicHelp(const std::string sTopic) {
     //-- topic "help"
     if (bAll || (sTopic == "help")) {
         printHeaderLine(iL, "help");
-        stdprintf("  %s--help=<topic>%s    show detailed help for specified topic\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    Use 'all' to see info for all options.\n");
+        xha_printf("  %s--help=<topic>%s    show detailed help for specified topic\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    Use 'all' to see info for all options.\n");
         bFound = true;
     }
 
     //-- topic "log-file"
     if (bAll || (sTopic == "log-file")) {
         printHeaderLine(iL, "log-file");
-        stdprintf("  %s--log-file=<filename>%s    set name of logfile (default: \"%s\")\n", colors::BOLDBLUE, colors::OFF, DEF_LOG_FILE);
+        xha_printf("  %s--log-file=<filename>%s    set name of logfile (default: \"%s\")\n", colors::BOLDBLUE, colors::OFF, DEF_LOG_FILE);
         bFound = true;
     }
 
     //-- topic "grid"
     if (bAll || (sTopic == "grid")) {
         printHeaderLine(iL, "grid");
-        stdprintf("  %s--grid=<grid-file>%s    set grid file (required option)\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    grid-file is a QDF file which must contain a grid group, but may also contain geography, climate, \n");
-        stdprintf("    and vegetation data.\n");
-        stdprintf("    In this case the corresponding \"--geo\", \"--climate\", and/or \"--veg\" options can be omitted.\n");
+        xha_printf("  %s--grid=<grid-file>%s    set grid file (required option)\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    grid-file is a QDF file which must contain a grid group, but may also contain geography, climate, \n");
+        xha_printf("    and vegetation data.\n");
+        xha_printf("    In this case the corresponding \"--geo\", \"--climate\", and/or \"--veg\" options can be omitted.\n");
         bFound = true;
     }
 
     //-- topic "num-iters"
     if (bAll || (sTopic == "num-iters")) {
         printHeaderLine(iL, "num-iters");
-        stdprintf("  %s--num-iters=<iters>%s    set number of iterations (required option)\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("  %s--num-iters=<iters>%s    set number of iterations (required option)\n", colors::BOLDBLUE, colors::OFF);
         bFound = true;
     } 
 
     //-- topic "geo"
     if (bAll || (sTopic == "geo")) {
         printHeaderLine(iL, "geo");
-        stdprintf("  %s--geo=<geo-file>%s    set geography file\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    geo-file is a QDF-file containing geography data.\n");
-        stdprintf("    It must contain data for the same number of cells as the grid file\n");
+        xha_printf("  %s--geo=<geo-file>%s    set geography file\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    geo-file is a QDF-file containing geography data.\n");
+        xha_printf("    It must contain data for the same number of cells as the grid file\n");
         bFound = true;
     } 
 
     //-- topic "climate"
     if (bAll || (sTopic == "climate")) {
         printHeaderLine(iL, "climate");
-        stdprintf("  %s--climate=<climate-file>%s    set climate file\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    climate-file is a QDF-file containing climate data.\n");
-        stdprintf("    It must contain data for the same number of cells as the grid file\n");
+        xha_printf("  %s--climate=<climate-file>%s    set climate file\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    climate-file is a QDF-file containing climate data.\n");
+        xha_printf("    It must contain data for the same number of cells as the grid file\n");
         bFound = true;
     } 
 
     //-- topic "veg"
     if (bAll || (sTopic == "veg")) {
         printHeaderLine(iL, "veg");
-        stdprintf("  %s--veg=<veg-file>%s    set vegetation file\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    veg-file is a QDF-file containing vegetation data.\n");
-        stdprintf("    It must contain data for the same number of cells as the grid file\n");
+        xha_printf("  %s--veg=<veg-file>%s    set vegetation file\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    veg-file is a QDF-file containing vegetation data.\n");
+        xha_printf("    It must contain data for the same number of cells as the grid file\n");
         bFound = true;
     } 
 
     //-- topic "pops"
     if (bAll || (sTopic == "pops")) {
         printHeaderLine(iL, "pops");
-        stdprintf("  %s--pops=<pop-list>%s    set populations data\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    pop-list is a comma-separated list of QDF-files, each containing population data.\n");
-        stdprintf("    It must contain data for the same number of cells as the grid file\n");
-        stdprintf("    Alternatively you may use\n");
-        stdprintf("      --pops=<xml-file>:<dat-file>\n");
-        stdprintf("    where xml--file is a class definition xml file,\n");
-        stdprintf("    and dat-file is a file containing agent position and other data.\n");
+        xha_printf("  %s--pops=<pop-list>%s    set populations data\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    pop-list is a comma-separated list of QDF-files, each containing population data.\n");
+        xha_printf("    It must contain data for the same number of cells as the grid file\n");
+        xha_printf("    Alternatively you may use\n");
+        xha_printf("      --pops=<xml-file>:<dat-file>\n");
+        xha_printf("    where xml--file is a class definition xml file,\n");
+        xha_printf("    and dat-file is a file containing agent position and other data.\n");
         bFound = true;
     } 
 
     //-- topic "output-prefix"
     if (bAll || (sTopic == "output-prefix")) {
         printHeaderLine(iL, "output-prefix");
-        stdprintf("  %s--output-prefix=<prefix>%s    prefix for output files (default: \"%s\")\n", colors::BOLDBLUE, colors::OFF, DEF_OUT_PREFIX);    
-        stdprintf("    This prefix is prepended to all output files\n");
+        xha_printf("  %s--output-prefix=<prefix>%s    prefix for output files (default: \"%s\")\n", colors::BOLDBLUE, colors::OFF, DEF_OUT_PREFIX);    
+        xha_printf("    This prefix is prepended to all output files\n");
         bFound = true;
     } 
 
     //-- topic "output-dir"
     if (bAll || (sTopic == "output-dir")) {
         printHeaderLine(iL, "output-dir");
-        stdprintf("  %s--output-dir=<dir-name>%s    set output directory (default: \"./\")\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    If the output directory does not exist, it is created\n");
+        xha_printf("  %s--output-dir=<dir-name>%s    set output directory (default: \"./\")\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    If the output directory does not exist, it is created\n");
         bFound = true;
     }
 
     //-- topic "data-dirs"
     if (bAll || (sTopic == "data-dirs")) {
         printHeaderLine(iL, "data-dirs");
-        stdprintf("  %s--data-dirs=<dir-names>%s    search-directories for input files (default: \"./\")\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    dir-names is a comma-separated list of directories.\n");
-        stdprintf("    The order of the directores in the list defines the search order.\n");
+        xha_printf("  %s--data-dirs=<dir-names>%s    search-directories for input files (default: \"./\")\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    dir-names is a comma-separated list of directories.\n");
+        xha_printf("    The order of the directores in the list defines the search order.\n");
         bFound = true;
     } 
 
     //-- topic "dyn-pops"
     if (bAll || (sTopic == "dyn-pops")) {
-        stdprintf("  %s--dyn-pops%s                 use populations from so directory specified in \"--so-dirs\"\n", colors::BOLDBLUE, colors::OFF);    
+        xha_printf("  %s--dyn-pops%s                 use populations from so directory specified in \"--so-dirs\"\n", colors::BOLDBLUE, colors::OFF);    
         bFound = true;
     } 
 
     //-- topic "so-dirs"
     if (bAll || (sTopic == "so-dirs")) {
         printHeaderLine(iL, "so-dirs");
-        stdprintf("  %s--so-dirs=<dir-names>%s    search-directories for population so files (default: \"./\")\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    dir-names is a comma-separated list of directories.\n");
-        stdprintf("    The order of the directores in the list defines the search order.\n");
+        xha_printf("  %s--so-dirs=<dir-names>%s    search-directories for population so files (default: \"./\")\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    dir-names is a comma-separated list of directories.\n");
+        xha_printf("    The order of the directores in the list defines the search order.\n");
         bFound = true;
     } 
 
     //-- topic "read-config"
     if (bAll || (sTopic == "read-config")) {
         printHeaderLine(iL, "read-config");
-        stdprintf("  %s--read-config=<conf>%s    read options from configuration file.\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    A configuration file must consist of lines\n");
-        stdprintf("    each of which is a option setting of the form\n");
-        stdprintf("      --<option-name>=value\n");
-        stdprintf("    Options passed as parameters to the application supercede the settings in\n");
-        stdprintf("    the config file\n");
+        xha_printf("  %s--read-config=<conf>%s    read options from configuration file.\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    A configuration file must consist of lines\n");
+        xha_printf("    each of which is a option setting of the form\n");
+        xha_printf("      --<option-name>=value\n");
+        xha_printf("    Options passed as parameters to the application supercede the settings in\n");
+        xha_printf("    the config file\n");
         bFound = true;
     } 
 
     //-- topic "write-config"
     if (bAll || (sTopic == "write-config")) {
         printHeaderLine(iL, "write-config");
-        stdprintf("  %s--write-config=<conf>%s    write configuration file.\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    The configuration file created with this call can be used\n");
-        stdprintf("    with the option \"--read-config\"\n");
+        xha_printf("  %s--write-config=<conf>%s    write configuration file.\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    The configuration file created with this call can be used\n");
+        xha_printf("    with the option \"--read-config\"\n");
         bFound = true;
     }
 
     //-- topic "events"
     if (bAll || (sTopic == "events")) {
         printHeaderLine(iL, "events");
-        stdprintf("  %s--events=<event-list>%s    set event list\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    The event-list string is a comma-separated list of events:\n");
-        stdprintf("      %sevent-list%s       ::= \"%s'%s\" <event> [\"%s,%s\" <event>]*\"%s'%s\"\n", 
+        xha_printf("  %s--events=<event-list>%s    set event list\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    The event-list string is a comma-separated list of events:\n");
+        xha_printf("      %sevent-list%s       ::= \"%s'%s\" <event> [\"%s,%s\" <event>]*\"%s'%s\"\n", 
                colors::BOLD, colors::OFF, colors::BOLD, colors::OFF, colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
-        stdprintf("    The entire event list must be enclosed in quotes;\n");
-        stdprintf("    if the event list contains environment variables, use double quotes.\n");
-        stdprintf("      %sevent%s            ::= <event-type> \"%s|%s\" <event-params> \"%s@%s\" <event-times>\n", 
+        xha_printf("    The entire event list must be enclosed in quotes;\n");
+        xha_printf("    if the event list contains environment variables, use double quotes.\n");
+        xha_printf("      %sevent%s            ::= <event-type> \"%s|%s\" <event-params> \"%s@%s\" <event-times>\n", 
                colors::BOLD, colors::OFF, colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
-        stdprintf("      %sevent-type%s       ::= \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" | \n", colors::BOLD, colors::OFF, 
+        xha_printf("      %sevent-type%s       ::= \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" | \n", colors::BOLD, colors::OFF, 
                colors::BOLD, EVENT_TYPE_WRITE, colors::OFF, 
                colors::BOLD, EVENT_TYPE_ENV, colors::OFF, 
                colors::BOLD, EVENT_TYPE_ARR, colors::OFF, 
                colors::BOLD, EVENT_TYPE_POP, colors::OFF, 
                colors::BOLD, EVENT_TYPE_FILE, colors::OFF);
-        stdprintf("                           \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" |  \"%s%s%s\" \n",  
+        xha_printf("                           \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" |  \"%s%s%s\" \n",  
                colors::BOLD, EVENT_TYPE_DUMP, colors::OFF,
                colors::BOLD, EVENT_TYPE_INTERPOL, colors::OFF,
                colors::BOLD, EVENT_TYPE_COMM, colors::OFF,
                colors::BOLD, EVENT_TYPE_CHECK, colors::OFF,
                colors::BOLD, EVENT_TYPE_USER, colors::OFF,
                colors::BOLD, EVENT_TYPE_SCRAMBLE, colors::OFF);
-        stdprintf("    <event-times> defines at which times the event should be triggered.\n"); 
-        stdprintf("      %sevent-times%s      ::= <full-trigger> [ \"%s+%s\" <full-trigger>]*\n", 
+        xha_printf("    <event-times> defines at which times the event should be triggered.\n"); 
+        xha_printf("      %sevent-times%s      ::= <full-trigger> [ \"%s+%s\" <full-trigger>]*\n", 
                colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
-        stdprintf("      %sfull-trigger%s     ::= [\"%sS%s\"|\"%sT%s\"]<full-trigger-sub>\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
-        stdprintf("      If \"S\" or nothing is prefixed, the following numbers are interpreted as steps.\n");
-        stdprintf("      If \"T\" is prefixed, the following numbers are interpreted as 'real' times.\n");
-        stdprintf("      %sfull-trigger-sub%s ::= <normal-trigger> | <point-trigger> | <final-trigger>\n", colors::BOLD, colors::OFF);
-        stdprintf("      %snormal-trigger%s   ::= [<trigger-interval>] <step-size>\n", colors::BOLD, colors::OFF);
-        stdprintf("      %strigger-interval%s ::= \"%s[%s\"[<minval>] \"%s:%s\" [<maxval>] \"%s]%s\"\n",  
+        xha_printf("      %sfull-trigger%s     ::= [\"%sS%s\"|\"%sT%s\"]<full-trigger-sub>\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
+        xha_printf("      If \"S\" or nothing is prefixed, the following numbers are interpreted as steps.\n");
+        xha_printf("      If \"T\" is prefixed, the following numbers are interpreted as 'real' times.\n");
+        xha_printf("      %sfull-trigger-sub%s ::= <normal-trigger> | <point-trigger> | <final-trigger>\n", colors::BOLD, colors::OFF);
+        xha_printf("      %snormal-trigger%s   ::= [<trigger-interval>] <step-size>\n", colors::BOLD, colors::OFF);
+        xha_printf("      %strigger-interval%s ::= \"%s[%s\"[<minval>] \"%s:%s\" [<maxval>] \"%s]%s\"\n",  
                colors::BOLD, colors::OFF, colors::BOLD, colors::OFF,  colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
-        stdprintf("      This form causes events to be triggered at time <minval>+k*<step-size>, for\n");
-        stdprintf("      k = 0 ... (<maxval>-<minval>)/<step-size>.\n");
-        stdprintf("      If <minval> is omitted, it is set to fNegInf,\n");
-        stdprintf("      if <maxval> is omitted, it is set to fPosInf.\n");
-        stdprintf("      If <trigger-interval> is omitted, it is set to [fNegInf:fPosInf].\n");
-        stdprintf("      %spoint-trigger%s    ::= \"%s[%s\"<time>\"%s]%s\"\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
-        stdprintf("      This form causes a single event at the specified time.\n");
-        stdprintf("      %sfinal-trigger%s    ::= \"%sfinal%s\"\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
-        stdprintf("      This form causes a single event at the end of the simulation.\n");
-        stdprintf("      Trigger Example:\n");
-        stdprintf("         %s20+[305:]500+[250:600]10+[37]%s\n", colors::BOLD, colors::OFF);
-        stdprintf("         fire events every 20 steps,\n");
-        stdprintf("         and every 500 steps starting from step 305,\n");
-        stdprintf("         and every 10 steps between steps 250 and 600,\n");
-        stdprintf("         and a single event at step 37.\n");
-        stdprintf("\n");
-        stdprintf("    The event parameters differ for the event types:\n");
+        xha_printf("      This form causes events to be triggered at time <minval>+k*<step-size>, for\n");
+        xha_printf("      k = 0 ... (<maxval>-<minval>)/<step-size>.\n");
+        xha_printf("      If <minval> is omitted, it is set to fNegInf,\n");
+        xha_printf("      if <maxval> is omitted, it is set to fPosInf.\n");
+        xha_printf("      If <trigger-interval> is omitted, it is set to [fNegInf:fPosInf].\n");
+        xha_printf("      %spoint-trigger%s    ::= \"%s[%s\"<time>\"%s]%s\"\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
+        xha_printf("      This form causes a single event at the specified time.\n");
+        xha_printf("      %sfinal-trigger%s    ::= \"%sfinal%s\"\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
+        xha_printf("      This form causes a single event at the end of the simulation.\n");
+        xha_printf("      Trigger Example:\n");
+        xha_printf("         %s20+[305:]500+[250:600]10+[37]%s\n", colors::BOLD, colors::OFF);
+        xha_printf("         fire events every 20 steps,\n");
+        xha_printf("         and every 500 steps starting from step 305,\n");
+        xha_printf("         and every 10 steps between steps 250 and 600,\n");
+        xha_printf("         and a single event at step 37.\n");
+        xha_printf("\n");
+        xha_printf("    The event parameters differ for the event types:\n");
 
-        stdprintf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_WRITE, colors::OFF);
-        stdprintf("      %sevent-params%s ::= <type> [\"+\" <type>]*\n", colors::BOLD, colors::OFF);
-        stdprintf("      %stype%s         ::= \"%s%s%s\" | \"%s%s%s\"   | \"%s%s%s \" | \"%s%s%s \" |\n", colors::BOLD, colors::OFF, 
+        xha_printf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_WRITE, colors::OFF);
+        xha_printf("      %sevent-params%s ::= <type> [\"+\" <type>]*\n", colors::BOLD, colors::OFF);
+        xha_printf("      %stype%s         ::= \"%s%s%s\" | \"%s%s%s\"   | \"%s%s%s \" | \"%s%s%s \" |\n", colors::BOLD, colors::OFF, 
                colors::BOLD, EVENT_PARAM_WRITE_GRID, colors::OFF, 
                colors::BOLD, EVENT_PARAM_WRITE_GEO, colors::OFF, 
                colors::BOLD, EVENT_PARAM_WRITE_CLIMATE, colors::OFF, 
                colors::BOLD, EVENT_PARAM_WRITE_VEG, colors::OFF);
-        stdprintf("                       \"%s%s%s\"  | \"%s%s%s\" |  \"%s%s%s\" |  \"%s%s:%s\"<speciesname>[<filter>]\n", 
+        xha_printf("                       \"%s%s%s\"  | \"%s%s%s\" |  \"%s%s%s\" |  \"%s%s:%s\"<speciesname>[<filter>]\n", 
                colors::BOLD, EVENT_PARAM_WRITE_NAV, colors::OFF, 
                colors::BOLD, EVENT_PARAM_WRITE_OCC, colors::OFF, 
                colors::BOLD, EVENT_PARAM_WRITE_STATS, colors::OFF, 
                colors::BOLD, EVENT_PARAM_WRITE_POP, colors::OFF);
-        stdprintf("    Write the specified data sets to file.\n");
-        stdprintf("    In case of \"%s%s%s\", an optional filter character can be appendef to the populaton name to filter the output:.\n", colors::BOLD, EVENT_PARAM_WRITE_POP, colors::OFF);
-        stdprintf("       '%s#%s'   only write agent data\n", colors::BOLD, colors::OFF);
-        stdprintf("       '%s%%%s'   only write status arrays\n", colors::BOLD, colors::OFF);
-        stdprintf("       '%s~%s'   only write additional data\n", colors::BOLD, colors::OFF);
-        stdprintf("\n");
+        xha_printf("    Write the specified data sets to file.\n");
+        xha_printf("    In case of \"%s%s%s\", an optional filter character can be appendef to the populaton name to filter the output:.\n", colors::BOLD, EVENT_PARAM_WRITE_POP, colors::OFF);
+        xha_printf("       '%s#%s'   only write agent data\n", colors::BOLD, colors::OFF);
+        xha_printf("       '%s%%%s'   only write status arrays\n", colors::BOLD, colors::OFF);
+        xha_printf("       '%s~%s'   only write additional data\n", colors::BOLD, colors::OFF);
+        xha_printf("\n");
 
-        stdprintf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_ENV, colors::OFF); 
-        stdprintf("      %sevent-params%s   ::= <type> [\"+\" <type>]* \":\" <qdf-file>\n", colors::BOLD, colors::OFF);
-        stdprintf("      %stype%s           ::= \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\"\n", colors::BOLD, colors::OFF,             
+        xha_printf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_ENV, colors::OFF); 
+        xha_printf("      %sevent-params%s   ::= <type> [\"+\" <type>]* \":\" <qdf-file>\n", colors::BOLD, colors::OFF);
+        xha_printf("      %stype%s           ::= \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\"\n", colors::BOLD, colors::OFF,             
                colors::BOLD, EVENT_PARAM_NAME_GEO, colors::OFF, 
                colors::BOLD, EVENT_PARAM_NAME_CLIMATE, colors::OFF, 
                colors::BOLD, EVENT_PARAM_NAME_VEG, colors::OFF,
                colors::BOLD, EVENT_PARAM_NAME_NAV, colors::OFF),
-        stdprintf("    Read the specified data sets from file.\n");
-        stdprintf("\n");
+        xha_printf("    Read the specified data sets from file.\n");
+        xha_printf("\n");
 
-        stdprintf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_ARR, colors::OFF); 
-        stdprintf("      %sevent-params%s   ::= <type> \":\" <arrayname> \":\" <qdf-file>\n", colors::BOLD, colors::OFF);
-        stdprintf("      %stype%s           ::= \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\"\n", colors::BOLD, colors::OFF,             
+        xha_printf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_ARR, colors::OFF); 
+        xha_printf("      %sevent-params%s   ::= <type> \":\" <arrayname> \":\" <qdf-file>\n", colors::BOLD, colors::OFF);
+        xha_printf("      %stype%s           ::= \"%s%s%s\" | \"%s%s%s\" | \"%s%s%s\"\n", colors::BOLD, colors::OFF,             
                colors::BOLD, EVENT_PARAM_NAME_GEO, colors::OFF, 
                colors::BOLD, EVENT_PARAM_NAME_CLIMATE, colors::OFF, 
                colors::BOLD, EVENT_PARAM_NAME_VEG, colors::OFF),
-        stdprintf("    Read the specified arrays from file.\n");
-        stdprintf("\n");
+        xha_printf("    Read the specified arrays from file.\n");
+        xha_printf("\n");
 
-        stdprintf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_POP, colors::OFF); 
-        stdprintf("      %sevent-params%s   ::= <speciesname> [\"+\" <speciesname>]* \":\" <qdf-file>\n", colors::BOLD, colors::OFF);
-        stdprintf("    Read the specified populations from file.\n");
-        stdprintf("\n");
+        xha_printf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_POP, colors::OFF); 
+        xha_printf("      %sevent-params%s   ::= <speciesname> [\"+\" <speciesname>]* \":\" <qdf-file>\n", colors::BOLD, colors::OFF);
+        xha_printf("    Read the specified populations from file.\n");
+        xha_printf("\n");
 
-        stdprintf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_FILE, colors::OFF); 
-        stdprintf("      %sevent-params%s   ::= <filename>\n", colors::BOLD, colors::OFF);
-        stdprintf("      The file must contain lines of the form\n");
-        stdprintf("      %sline%s            ::= <event-type> \"%s|%s\" <event-params> \"%s@%s\" <event-times>\n", 
+        xha_printf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_FILE, colors::OFF); 
+        xha_printf("      %sevent-params%s   ::= <filename>\n", colors::BOLD, colors::OFF);
+        xha_printf("      The file must contain lines of the form\n");
+        xha_printf("      %sline%s            ::= <event-type> \"%s|%s\" <event-params> \"%s@%s\" <event-times>\n", 
                colors::BOLD, colors::OFF, colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
-        stdprintf("    Add the events listed in the file to the event manager.\n");
-        stdprintf("\n");
+        xha_printf("    Add the events listed in the file to the event manager.\n");
+        xha_printf("\n");
 
-        stdprintf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_INTERPOL, colors::OFF); 
-        stdprintf("      %sevent-params%s     ::= <interpol-data> | <command> \n", colors::BOLD, colors::OFF);
-        stdprintf("      %sinterpol-data%s    ::= \"file:\" <interpol-file> \n", colors::BOLD, colors::OFF);
-        stdprintf("      %scommand%s          ::= \"cmd:\" <interpol-command> \n", colors::BOLD, colors::OFF);
-        stdprintf("      %sinterpol-command%s ::= \"start\" | \"stop\" \n", colors::BOLD, colors::OFF);
-        stdprintf("    where\n");
-        stdprintf("      interpol-file : a QDF file containing interpolation steps.\n");
-        stdprintf("      \"stop\"      : stop interpolation\n");  
-        stdprintf("      \"start\"     : restart interpolation\n");  
-        stdprintf("\n");
+        xha_printf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_INTERPOL, colors::OFF); 
+        xha_printf("      %sevent-params%s     ::= <interpol-data> | <command> \n", colors::BOLD, colors::OFF);
+        xha_printf("      %sinterpol-data%s    ::= \"file:\" <interpol-file> \n", colors::BOLD, colors::OFF);
+        xha_printf("      %scommand%s          ::= \"cmd:\" <interpol-command> \n", colors::BOLD, colors::OFF);
+        xha_printf("      %sinterpol-command%s ::= \"start\" | \"stop\" \n", colors::BOLD, colors::OFF);
+        xha_printf("    where\n");
+        xha_printf("      interpol-file : a QDF file containing interpolation steps.\n");
+        xha_printf("      \"stop\"      : stop interpolation\n");  
+        xha_printf("      \"start\"     : restart interpolation\n");  
+        xha_printf("\n");
 
-        stdprintf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_DUMP, colors::OFF); 
-        stdprintf("      %sevent-params%s   ::= \"flat\" | \"smart\" | \"free\" \n", colors::BOLD, colors::OFF);
-        stdprintf("    Dump the entire state of the simulation.\n");
-        stdprintf("    The dump modes:\n");
-        stdprintf("      flat    copy the linked lists as arrays\n");
-        stdprintf("      smart   save the linked lists by only saving the starts and ends of the active regions (not fully tested)\n");
-        stdprintf("      free    use \"smart\" mode if number of holes exceeds a threshold, other wiswe use \"flat\" mode (not fully tested)\n");
-        stdprintf("\n");
+        xha_printf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_DUMP, colors::OFF); 
+        xha_printf("      %sevent-params%s   ::= \"flat\" | \"smart\" | \"free\" \n", colors::BOLD, colors::OFF);
+        xha_printf("    Dump the entire state of the simulation.\n");
+        xha_printf("    The dump modes:\n");
+        xha_printf("      flat    copy the linked lists as arrays\n");
+        xha_printf("      smart   save the linked lists by only saving the starts and ends of the active regions (not fully tested)\n");
+        xha_printf("      free    use \"smart\" mode if number of holes exceeds a threshold, other wiswe use \"flat\" mode (not fully tested)\n");
+        xha_printf("\n");
 
-        stdprintf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_COMM, colors::OFF);
-        stdprintf("      %sevent-params%s   ::= <cmd-file>  | <command>\n", colors::BOLD, colors::OFF);
-        stdprintf("      %scommand%s        ::= <iter_cmd> | <del_action_cmd> | <mod_pop_cmd> | <event>\n", colors::BOLD, colors::OFF);
-        stdprintf("      %siter_cmd%s       ::= \"%s%s%s:\"<num_iters>\n", colors::BOLD, colors::OFF, colors::BOLD, CMD_SET_ITERS, colors::OFF);
-        stdprintf("      %sdel_action_cmd%s ::= \"%s%s%s:\"<population>:<action_name>\n", colors::BOLD, colors::OFF, colors::BOLD, CMD_REMOVE_ACTION, colors::OFF);
-        stdprintf("      %smod_pop_cmd%s    ::= \"%s%s%s:\"<population>:<param_name>:<value>\n", colors::BOLD, colors::OFF, colors::BOLD, CMD_MOD_POP, colors::OFF);
-        stdprintf("      %sevent%s          : any event description; see definition above\n", colors::BOLD, colors::OFF);
-        stdprintf("      The format of <cmd-file>\n");
-        stdprintf("        %scmd-file%s       ::= <command-line>*\n", colors::BOLD, colors::OFF);
-        stdprintf("        %scommand-line%s   ::= <command> <NL>\n", colors::BOLD, colors::OFF);
-        stdprintf("      If the <cmd-file> has changed since the last triggered time the contents will be executed:\n");
-        stdprintf("        iter_cmd:        set new iteration limit\n");
-        stdprintf("        del_action_cmd:  remove action from prio list\n");
-        stdprintf("        mod_pop_cmd:     hange parameter of population\n");
-        stdprintf("        event:           add event to event manager's list\n");
-        stdprintf("\n");
+        xha_printf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_COMM, colors::OFF);
+        xha_printf("      %sevent-params%s   ::= <cmd-file>  | <command>\n", colors::BOLD, colors::OFF);
+        xha_printf("      %scommand%s        ::= <iter_cmd> | <del_action_cmd> | <mod_pop_cmd> | <event>\n", colors::BOLD, colors::OFF);
+        xha_printf("      %siter_cmd%s       ::= \"%s%s%s:\"<num_iters>\n", colors::BOLD, colors::OFF, colors::BOLD, CMD_SET_ITERS, colors::OFF);
+        xha_printf("      %sdel_action_cmd%s ::= \"%s%s%s:\"<population>:<action_name>\n", colors::BOLD, colors::OFF, colors::BOLD, CMD_REMOVE_ACTION, colors::OFF);
+        xha_printf("      %smod_pop_cmd%s    ::= \"%s%s%s:\"<population>:<param_name>:<value>\n", colors::BOLD, colors::OFF, colors::BOLD, CMD_MOD_POP, colors::OFF);
+        xha_printf("      %sevent%s          : any event description; see definition above\n", colors::BOLD, colors::OFF);
+        xha_printf("      The format of <cmd-file>\n");
+        xha_printf("        %scmd-file%s       ::= <command-line>*\n", colors::BOLD, colors::OFF);
+        xha_printf("        %scommand-line%s   ::= <command> <NL>\n", colors::BOLD, colors::OFF);
+        xha_printf("      If the <cmd-file> has changed since the last triggered time the contents will be executed:\n");
+        xha_printf("        iter_cmd:        set new iteration limit\n");
+        xha_printf("        del_action_cmd:  remove action from prio list\n");
+        xha_printf("        mod_pop_cmd:     hange parameter of population\n");
+        xha_printf("        event:           add event to event manager's list\n");
+        xha_printf("\n");
 
-        stdprintf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_CHECK, colors::OFF); 
-        stdprintf("      %sevent-params%s   ::= <what> [\"+\" <what]*\n", colors::BOLD, colors::OFF);
-        stdprintf("      %swhat%s           ::= \"%s%s%s\"\n",  colors::BOLD, colors::OFF, colors::BOLD, EVENT_PARAM_CHECK_LISTS, colors::OFF);
-        stdprintf("    (Debugging only) \"lists\": check linked lists at specified times\n");
-        stdprintf("\n");
+        xha_printf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_CHECK, colors::OFF); 
+        xha_printf("      %sevent-params%s   ::= <what> [\"+\" <what]*\n", colors::BOLD, colors::OFF);
+        xha_printf("      %swhat%s           ::= \"%s%s%s\"\n",  colors::BOLD, colors::OFF, colors::BOLD, EVENT_PARAM_CHECK_LISTS, colors::OFF);
+        xha_printf("    (Debugging only) \"lists\": check linked lists at specified times\n");
+        xha_printf("\n");
 
-        stdprintf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_USER, colors::OFF); 
-        stdprintf("      %sevent-params%s   ::= <eventid>:<stringdata>\n", colors::BOLD, colors::OFF);
-        stdprintf("      %seventid%s        : an event id in [%d, %d]\n",  colors::BOLD, colors::OFF, EVENT_ID_USR_MIN, EVENT_ID_USR_MAX);
-        stdprintf("      %sstringdata%s     : a string\n",  colors::BOLD, colors::OFF);
-        stdprintf("\n");
+        xha_printf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_USER, colors::OFF); 
+        xha_printf("      %sevent-params%s   ::= <eventid>:<stringdata>\n", colors::BOLD, colors::OFF);
+        xha_printf("      %seventid%s        : an event id in [%d, %d]\n",  colors::BOLD, colors::OFF, EVENT_ID_USR_MIN, EVENT_ID_USR_MAX);
+        xha_printf("      %sstringdata%s     : a string\n",  colors::BOLD, colors::OFF);
+        xha_printf("\n");
 
-        stdprintf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_SCRAMBLE, colors::OFF); 
-        stdprintf("      %sevent-params%s   ::= \"%s\" | \"%s\"\n", colors::BOLD, colors::OFF, EVENT_PARAM_SCRAMBLE_CONN, EVENT_PARAM_SCRAMBLE_ALL);
-        stdprintf("      Scrambles the order of connections between nodes\n");
-        stdprintf("\n");
+        xha_printf("    for <event-type> == \"%s%s%s\":\n", colors::BOLD, EVENT_TYPE_SCRAMBLE, colors::OFF); 
+        xha_printf("      %sevent-params%s   ::= \"%s\" | \"%s\"\n", colors::BOLD, colors::OFF, EVENT_PARAM_SCRAMBLE_CONN, EVENT_PARAM_SCRAMBLE_ALL);
+        xha_printf("      Scrambles the order of connections between nodes\n");
+        xha_printf("\n");
 
-        stdprintf("    Full example:\n");
-        stdprintf("      %s--events='env|geo+climate:map120.qdf@[120],write|pop:GrassLover|grid@5+[20:30]1,comm|REMOVE ACTION sapiens:ConfinedMove@[3000]'%s\n", colors::BOLD, colors::OFF); 
-        stdprintf("    This loads a QDF file containing new geography and climate data\n");
-        stdprintf("    from 'map120.qdf' at step 120, and writes a QDF file containing grid data\n");
-        stdprintf("    and population data for species \"GrassLover\" every 5 steps\n");
-        stdprintf("    and additiionally every step between steps 20 and 30.\n");
-        stdprintf("    At step 3000 the 'ConfinedMove' action of species 'sapiens' is disabled.\n");
+        xha_printf("    Full example:\n");
+        xha_printf("      %s--events='env|geo+climate:map120.qdf@[120],write|pop:GrassLover|grid@5+[20:30]1,comm|REMOVE ACTION sapiens:ConfinedMove@[3000]'%s\n", colors::BOLD, colors::OFF); 
+        xha_printf("    This loads a QDF file containing new geography and climate data\n");
+        xha_printf("    from 'map120.qdf' at step 120, and writes a QDF file containing grid data\n");
+        xha_printf("    and population data for species \"GrassLover\" every 5 steps\n");
+        xha_printf("    and additiionally every step between steps 20 and 30.\n");
+        xha_printf("    At step 3000 the 'ConfinedMove' action of species 'sapiens' is disabled.\n");
         bFound = true;
     } 
 
     //-- topic "start-time"
     if (bAll || (sTopic == "start-time")) {
         printHeaderLine(iL, "start-time");
-        stdprintf("  %s--start-time=<time>%s    set time at step 0\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("                                                     (default: 0)\n");
-        stdprintf("    This way you can set the time for events in natural form, e.g. -85000\n");
+        xha_printf("  %s--start-time=<time>%s    set time at step 0\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("                                                     (default: 0)\n");
+        xha_printf("    This way you can set the time for events in natural form, e.g. -85000\n");
         bFound = true;
     }
 
     //-- topic "interpol-step"
     if (bAll || (sTopic == "interpol-step")) {
         printHeaderLine(iL, "interpol-step");
-        stdprintf("  %s--interpol-step=<step>%s    set interval for interpolation updates 0\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("                                                     (default: 1)\n");
-        stdprintf("    This option only works if you have some interpolation events\n");
+        xha_printf("  %s--interpol-step=<step>%s    set interval for interpolation updates 0\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("                                                     (default: 1)\n");
+        xha_printf("    This option only works if you have some interpolation events\n");
         bFound = true;
     }
 
     //-- topic "interpolation"
     if (bAll || (sTopic == "interpolation")) {
         printHeaderLine(iL, "interpolation");
-        stdprintf("  %s--interpolation=<params%s    set interpolation parametersn", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    This option prepares interpolation of the specified arrays set  at the time steps specified in the file\n");
-        stdprintf("    %sparams%s   ::= <arrays>\":\"<evtfile>\":\"<inter-step>\n", colors::BOLD, colors::OFF);
-        stdprintf("    %sarrays%s   ::= <arrname> [\"+\"<arrname>]*\n", colors::BOLD, colors::OFF);
-        stdprintf("    %sarrname%s  ::= \"alt\" | \"npp\"\n", colors::BOLD, colors::OFF);
+        xha_printf("  %s--interpolation=<params%s    set interpolation parametersn", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    This option prepares interpolation of the specified arrays set  at the time steps specified in the file\n");
+        xha_printf("    %sparams%s   ::= <arrays>\":\"<evtfile>\":\"<inter-step>\n", colors::BOLD, colors::OFF);
+        xha_printf("    %sarrays%s   ::= <arrname> [\"+\"<arrname>]*\n", colors::BOLD, colors::OFF);
+        xha_printf("    %sarrname%s  ::= \"alt\" | \"npp\"\n", colors::BOLD, colors::OFF);
         
-        stdprintf("    If 'alt' is specified, the altitudes will be interpolated\n");
-        stdprintf("    If 'npp' is specified, the NPP will be interpolated\n");
-        stdprintf("    The evtfile is a 'normal' event file (usually the same as used for events)\n");
-        stdprintf("    inter-step is the interpolation interval\n");  
+        xha_printf("    If 'alt' is specified, the altitudes will be interpolated\n");
+        xha_printf("    If 'npp' is specified, the NPP will be interpolated\n");
+        xha_printf("    The evtfile is a 'normal' event file (usually the same as used for events)\n");
+        xha_printf("    inter-step is the interpolation interval\n");  
         bFound = true;
     }
 
     //-- topic "layer-size"
     if (bAll || (sTopic == "layer-size")) {
         printHeaderLine(iL, "layer-size");
-        stdprintf("  %s--layer-size=<size>%s    %s(technical)%s set layer size of data structures\n", colors::BOLDBLUE, colors::OFF, colors::BOLDRED, colors::OFF);
-        stdprintf("                                                     (should be a power of 2; default: %d)\n", DEF_LAYERSIZE);
-        stdprintf("    Only change this option if you know what you are doing\n");
+        xha_printf("  %s--layer-size=<size>%s    %s(technical)%s set layer size of data structures\n", colors::BOLDBLUE, colors::OFF, colors::BOLDRED, colors::OFF);
+        xha_printf("                                                     (should be a power of 2; default: %d)\n", DEF_LAYERSIZE);
+        xha_printf("    Only change this option if you know what you are doing\n");
         bFound = true;
     }
 
     //-- topic "shuffle"
     if (bAll || (sTopic == "shuffle")) {
         printHeaderLine(iL, "shuffle");
-        stdprintf("  %s--shuffle=<num>%s    %s(technical)%s shift random generators' sequence by <num>\n", colors::BOLDBLUE, colors::OFF, colors::BOLDRED, colors::OFF);
-        stdprintf("    This is done by generating <num> random numbers on each random\n");
-        stdprintf("    number generator before the start of the simulation.\n");
-        stdprintf("    I.e., this option can be used to change the random number sequence\n");
+        xha_printf("  %s--shuffle=<num>%s    %s(technical)%s shift random generators' sequence by <num>\n", colors::BOLDBLUE, colors::OFF, colors::BOLDRED, colors::OFF);
+        xha_printf("    This is done by generating <num> random numbers on each random\n");
+        xha_printf("    number generator before the start of the simulation.\n");
+        xha_printf("    I.e., this option can be used to change the random number sequence\n");
         bFound = true;
     } 
 
     //-- topic "seed"
     if (bAll || (sTopic == "seed")) {
         printHeaderLine(iL, "seed");
-        stdprintf("  %s--seed=<seedtype>%s    %s(technical)%s seed the random generators\n", colors::BOLDBLUE, colors::OFF, colors::BOLDRED, colors::OFF);
-        stdprintf("    %sseedtype%s   ::= \"%s%s%s\" | \"%s%s%s\"<sequence> | \"%s%s%s\"<seed-file> | \"%s%s%s\"<arbitrary>\n", colors::BOLD, colors::OFF,
+        xha_printf("  %s--seed=<seedtype>%s    %s(technical)%s seed the random generators\n", colors::BOLDBLUE, colors::OFF, colors::BOLDRED, colors::OFF);
+        xha_printf("    %sseedtype%s   ::= \"%s%s%s\" | \"%s%s%s\"<sequence> | \"%s%s%s\"<seed-file> | \"%s%s%s\"<arbitrary>\n", colors::BOLD, colors::OFF,
                colors::BOLD, SEED_RANDOM, colors::OFF, 
                colors::BOLD, SEED_SEQ, colors::OFF,
                colors::BOLD, SEED_FILE, colors::OFF,
                colors::BOLD, SEED_PHRASE, colors::OFF);
-        stdprintf("    %ssequence%s   ::= (<hexnumber> \"%s,%s\")*\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
-        stdprintf("    %sarbitrary%s  : arbitrary string (enclose in quotes if it contains spaces)\n", colors::BOLD, colors::OFF);
-        stdprintf("    %sseed-file%s  : name of a seed file\n", colors::BOLD, colors::OFF);
-        stdprintf("    If seedType is \"%srandom%s\", the seeds are filled with random numbers\n", colors::BOLD, colors::OFF);
-        stdprintf("    based on the current time\n");
-        stdprintf("    A sequence must be consist of %d comma-separated 8-digit hexnumbers.\n", STATE_SIZE);
-        stdprintf("    If sequence is given, it is passed directly to the random nuber generators.\n");
-        stdprintf("    If an arbitrary string is provided, it is turned into a seed sequence using\n");
-        stdprintf("    a hash function (SHA-512)\n");
-        stdprintf("    If a seed file is specified it must conform to the following format.\n");
-        stdprintf("    The general format of a seed file:\n");
-        stdprintf("      %sseed-file%s ::= <seed-def>*\n", colors::BOLD, colors::OFF);
-        stdprintf("      %sseed-def%s  ::= <header> <seed-line>* <footer>\n", colors::BOLD, colors::OFF);
-        stdprintf("      %sheader%s    ::= \"%s%s%s\"[:<dest>]\n", colors::BOLD, colors::OFF, colors::BOLD, SEED_HEADER, colors::OFF);
-        stdprintf("      %sseed-line%s ::= (<hexnumber> \"%s,%s\")*\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
-        stdprintf("      %sdest%s      :   A string describing which RNG the sequence should be\n", colors::BOLD, colors::OFF);
-        stdprintf("                   passed to (%sNOT IMPLEMENTED YET%s)\n", colors::BOLDRED, colors::OFF);
-        stdprintf("      %sfooter%s    ::= \"%s%s%s\"\n", colors::BOLD, colors::OFF, colors::BOLD, SEED_FOOTER, colors::OFF);
-        stdprintf("    In total, %d 8-digit hex numbers must be given between header and footer\n", STATE_SIZE);
-        stdprintf("    Lines starting with \"%s#%s\" are ignored\n", colors::BOLD, colors::OFF);
+        xha_printf("    %ssequence%s   ::= (<hexnumber> \"%s,%s\")*\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
+        xha_printf("    %sarbitrary%s  : arbitrary string (enclose in quotes if it contains spaces)\n", colors::BOLD, colors::OFF);
+        xha_printf("    %sseed-file%s  : name of a seed file\n", colors::BOLD, colors::OFF);
+        xha_printf("    If seedType is \"%srandom%s\", the seeds are filled with random numbers\n", colors::BOLD, colors::OFF);
+        xha_printf("    based on the current time\n");
+        xha_printf("    A sequence must be consist of %d comma-separated 8-digit hexnumbers.\n", STATE_SIZE);
+        xha_printf("    If sequence is given, it is passed directly to the random nuber generators.\n");
+        xha_printf("    If an arbitrary string is provided, it is turned into a seed sequence using\n");
+        xha_printf("    a hash function (SHA-512)\n");
+        xha_printf("    If a seed file is specified it must conform to the following format.\n");
+        xha_printf("    The general format of a seed file:\n");
+        xha_printf("      %sseed-file%s ::= <seed-def>*\n", colors::BOLD, colors::OFF);
+        xha_printf("      %sseed-def%s  ::= <header> <seed-line>* <footer>\n", colors::BOLD, colors::OFF);
+        xha_printf("      %sheader%s    ::= \"%s%s%s\"[:<dest>]\n", colors::BOLD, colors::OFF, colors::BOLD, SEED_HEADER, colors::OFF);
+        xha_printf("      %sseed-line%s ::= (<hexnumber> \"%s,%s\")*\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
+        xha_printf("      %sdest%s      :   A string describing which RNG the sequence should be\n", colors::BOLD, colors::OFF);
+        xha_printf("                   passed to (%sNOT IMPLEMENTED YET%s)\n", colors::BOLDRED, colors::OFF);
+        xha_printf("      %sfooter%s    ::= \"%s%s%s\"\n", colors::BOLD, colors::OFF, colors::BOLD, SEED_FOOTER, colors::OFF);
+        xha_printf("    In total, %d 8-digit hex numbers must be given between header and footer\n", STATE_SIZE);
+        xha_printf("    Lines starting with \"%s#%s\" are ignored\n", colors::BOLD, colors::OFF);
         bFound = true;
     } 
 
     //-- topic "pop-params"
     if (bAll || (sTopic == "pop-params")) {
         printHeaderLine(iL, "pop-params");
-        stdprintf("  %s--pop-params=<param-strings>%s    set special population parameters\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    %sparam-strings%s   ::= <param-string> [\"%s,%s\" <param-string>]*\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
-        stdprintf("    %sparam-string%s    ::= <popname> \"%s:%s\" <pop-param>\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
-        stdprintf("    The  %spop-param%s strings are passed to the specified populations;\n", colors::BOLD, colors::OFF);
-        stdprintf("    the format of %spop-param%s is specific for the particular population\n", colors::BOLD, colors::OFF);
-        stdprintf("    Data provided this way will be passed to the parameter of the population's setParam(const char *pParam) method.\n");
+        xha_printf("  %s--pop-params=<param-strings>%s    set special population parameters\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    %sparam-strings%s   ::= <param-string> [\"%s,%s\" <param-string>]*\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
+        xha_printf("    %sparam-string%s    ::= <popname> \"%s:%s\" <pop-param>\n", colors::BOLD, colors::OFF, colors::BOLD, colors::OFF);
+        xha_printf("    The  %spop-param%s strings are passed to the specified populations;\n", colors::BOLD, colors::OFF);
+        xha_printf("    the format of %spop-param%s is specific for the particular population\n", colors::BOLD, colors::OFF);
+        xha_printf("    Data provided this way will be passed to the parameter of the population's setParam(const char *pParam) method.\n");
         bFound = true;
     } 
 
     //-- topic "zip-output"
     if (bAll || (sTopic == "zip-output")) {
         printHeaderLine(iL, "zip-output");
-        stdprintf("  %s--zip-output%s    zip all output files\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("  %s--zip-output%s    zip all output files\n", colors::BOLDBLUE, colors::OFF);
         bFound = true;
     }
 
     //-- topic "info-string"
     if (bAll || (sTopic == "info-string")) {
         printHeaderLine(iL, "info-string");
-        stdprintf("  %s--info-string%s=<infostring>\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    Add  <infostring> as the value of the attribute \"info\" of the root group of every output qdf\n");
+        xha_printf("  %s--info-string%s=<infostring>\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    Add  <infostring> as the value of the attribute \"info\" of the root group of every output qdf\n");
         bFound = true;
     }
 
@@ -2711,9 +2711,9 @@ void SimParams::showTopicHelp(const std::string sTopic) {
     //-- topic "scramble"
     if (bAll || (sTopic == "scramble")) {
         printHeaderLine(iL, "scramble");
-        stdprintf("  %s--scramble=<what>%s      %s(technical)%s scramble order of node connections\n", colors::BOLDBLUE, colors::OFF, colors::BOLDRED, colors::OFF);
-        stdprintf("    %swhat%s  : a string\n", colors::BOLD, colors::OFF);
-        stdprintf("    Scramble the order of neighbors of a node using <what> as random seed\n");
+        xha_printf("  %s--scramble=<what>%s      %s(technical)%s scramble order of node connections\n", colors::BOLDBLUE, colors::OFF, colors::BOLDRED, colors::OFF);
+        xha_printf("    %swhat%s  : a string\n", colors::BOLD, colors::OFF);
+        xha_printf("    Scramble the order of neighbors of a node using <what> as random seed\n");
         bFound = true;
     }
     */
@@ -2721,33 +2721,33 @@ void SimParams::showTopicHelp(const std::string sTopic) {
     //-- topic "resume"
     if (bAll || (sTopic == "resume")) {
         printHeaderLine(iL, "resume");
-        stdprintf("  %s--resume%s    resume simulation from previously dumped env and pop files (created by a \"dump\" event)\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    Use the full environment dump as initial grid, and all dumped population qdfs for '--pops='\n");
-        stdprintf("    To have totally exact resume, the number of threads must be the same as in the dumped simulation\n");
+        xha_printf("  %s--resume%s    resume simulation from previously dumped env and pop files (created by a \"dump\" event)\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    Use the full environment dump as initial grid, and all dumped population qdfs for '--pops='\n");
+        xha_printf("    To have totally exact resume, the number of threads must be the same as in the dumped simulation\n");
         bFound = true;
     }
 
     //-- topic "no-merge-pops"
     if (bAll || (sTopic == "no-merge-pops")) {
         printHeaderLine(iL, "no-merge-pops");
-        stdprintf("  %s--no-merge-pop%s    Don't merge compatiple populations.\n", colors::BOLDBLUE, colors::OFF);
-        stdprintf("    Two populations are compatible if they have the same class name, the same species name, the same actions , and the same agent structure.\n");
-        stdprintf("    ATTENTION: currently the population read in more recently overwrites the olde one\n"); 
+        xha_printf("  %s--no-merge-pop%s    Don't merge compatiple populations.\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("    Two populations are compatible if they have the same class name, the same species name, the same actions , and the same agent structure.\n");
+        xha_printf("    ATTENTION: currently the population read in more recently overwrites the olde one\n"); 
         bFound = true;
     }
 
     //-- topic "dump-on-interrupt"
     if (bAll || (sTopic ==  "dump-on-interrupt")) {
         printHeaderLine(iL,  "dump-on-interrupt");
-        stdprintf("  %s--dump-on-interrupt%s  set handler for SIG_INT (Ctrl-C): write dump and exit gracefullly\n", colors::BOLDBLUE, colors::OFF);
+        xha_printf("  %s--dump-on-interrupt%s  set handler for SIG_INT (Ctrl-C): write dump and exit gracefullly\n", colors::BOLDBLUE, colors::OFF);
         bFound = true;
     }
 
     //-- unknown topic
     if (!bFound) {
         printHeaderLine(iL, "");
-        stdprintf("  %s%s%s: %sUnknown topic%s\n", colors::BOLDBLUE, sTopic, colors::OFF, colors::RED, colors::OFF);
-        stdprintf("    select an option from this list\n");
+        xha_printf("  %s%s%s: %sUnknown topic%s\n", colors::BOLDBLUE, sTopic, colors::OFF, colors::RED, colors::OFF);
+        xha_printf("    select an option from this list\n");
         helpParams();
     }
 

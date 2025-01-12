@@ -1,8 +1,8 @@
 #include <hdf5.h>
 #include <cstring>
 
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 
 #include "hdfutils.h"
 
@@ -42,16 +42,16 @@ int extract_numeric_attribute(hid_t hLoc, const std::string sName, uint iNum, vo
             if (status == 0) {
                 iResult = 0;
             } else {
-                stdprintf("read attribute err\n");
+                xha_printf("read attribute err\n");
             } 
         } else {
-            stdprintf("Bad Rank (%d) or bad size %llu (!= %d)\n", rank, dims[0], iNum);
+            xha_printf("Bad Rank (%d) or bad size %llu (!= %d)\n", rank, dims[0], iNum);
         }
         H5Sclose(hAttrSpace);
         H5Aclose(hAttribute);
 
     } else {
-        stdprintf("Attribute [%s] does not exist\n", sName);
+        xha_printf("Attribute [%s] does not exist\n", sName);
     }
     return iResult;
 }
@@ -62,13 +62,13 @@ int extract_numeric_attribute(hid_t hLoc, const std::string sName, uint iNum, vo
 //    string
 //
 std::string extract_string_attribute(hid_t hLoc, const std::string sName) {
-    stdprintf("[extract_string_attribute] name [%s]\n", sName);
+    xha_printf("[extract_string_attribute] name [%s]\n", sName);
     std::string sValue = "";    
     if (attr_exists(hLoc, sName)) {
         hid_t hAttribute = H5Aopen_by_name(hLoc, ".", sName.c_str(), H5P_DEFAULT, H5P_DEFAULT);
         hid_t atype  = H5Aget_type(hAttribute);
         hsize_t size = H5Tget_size (atype);
-        stdprintf("[extract_string_attribute] size is %d\n", size);
+        xha_printf("[extract_string_attribute] size is %d\n", size);
         char *pString = new char[size+1];
         memset(pString, 0, size+1);
         herr_t status = H5Aread(hAttribute, atype, pString);
@@ -78,7 +78,7 @@ std::string extract_string_attribute(hid_t hLoc, const std::string sName) {
         H5Aclose(hAttribute);
         delete[] pString;
     } else {
-        stdprintf("Attribute [%s] does not exist\n", sName);
+        xha_printf("Attribute [%s] does not exist\n", sName);
     }
     return std::string(sValue);
 }

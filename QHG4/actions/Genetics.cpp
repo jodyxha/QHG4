@@ -11,7 +11,7 @@
 
 #include "MessLoggerT.h"
 #include "strutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutilsT.h"
 
 #include "BinomialDist.h"
 #include "ParamProvider2.h"
@@ -117,7 +117,7 @@ Genetics<T,U>::Genetics(SPopulation<T> *pPop,  SCellGrid *pCG, std::string sID, 
     m_pGenomeCreator = new GenomeCreator<U>(m_iNumParents);
 
     // we need to build our own WELLs    
-    stdprintf("[Genetics::Genetics] using %u as seed for WELLs\n", iSeed);
+    xha_printf("[Genetics::Genetics] using %u as seed for WELLs\n", iSeed);
     m_apWELL = WELLUtils::buildWELLs(m_iNumThreads, iSeed);
    
 }
@@ -196,7 +196,7 @@ template<typename T, class U>
 int Genetics<T,U>::init() {
     std::string yes("yes");
     int iResult = -1;
-    stdprintf("init called %s\n",yes);
+    xha_printf("init called %s\n",yes);
     deleteAllocated();
     if ((m_iGenomeSize > 0) && 
         /*(m_dMutationRate >= 0) && */(m_dMutationRate <= 1)) {
@@ -206,7 +206,7 @@ int Genetics<T,U>::init() {
             m_iNumBlocks  = U::numNucs2Blocks(m_iGenomeSize);
 
             // initialize the buffer ...
-            stdprintf("initializing m_aGenome with (%d, %d)\n", m_pAgentController->getLayerSize(), m_iNumParents*m_iGenomeSize);
+            xha_printf("initializing m_aGenome with (%d, %d)\n", m_pAgentController->getLayerSize(), m_iNumParents*m_iGenomeSize);
             m_aGenome.init(m_pAgentController->getLayerSize(), m_iNumParents*m_iNumBlocks);
         
             // ... and add it to the AgentController
@@ -246,21 +246,21 @@ int Genetics<T,U>::init() {
                     
                         iResult = 0;
                     } else {
-                        stdprintf("Couldn't create BinomialDistribution\n");
+                        xha_printf("Couldn't create BinomialDistribution\n");
                     }
                 }
 
                 m_pSeqIO = SequenceIOUtils<ulong>::createInstance(GENOME_DATASET_NAME.c_str(), H5T_NATIVE_ULONG, &m_aGenome, m_pAgentController, m_pvDeadList, m_iNumParents*m_iNumBlocks);
 
             } else {
-                stdprintf("Couldn't add buffer to controller\n");
+                xha_printf("Couldn't add buffer to controller\n");
             }
         } else {
-            stdprintf("[Genetics] This module expects %d bit nucleotides, but the attruibute specifies %d bit nucleotides\n", U::BITSINNUC, m_iBitsPerNuc);
+            xha_printf("[Genetics] This module expects %d bit nucleotides, but the attruibute specifies %d bit nucleotides\n", U::BITSINNUC, m_iBitsPerNuc);
         }
 
     } else {
-        stdprintf("Bad values for genome size or num crossovers or mutation rate\n");
+        xha_printf("Bad values for genome size or num crossovers or mutation rate\n");
     }
 
     return iResult;
@@ -348,7 +348,7 @@ int  Genetics<T,U>::makeOffspring(int iBabyIndex, int iMotherIndex, int iFatherI
 template<typename T, class U>
 int Genetics<T,U>::writeAdditionalDataQDF(hid_t hSpeciesGroup) {
     int iResult = 0;
-    stdprintf("[Genetics<T,U>::writeAdditionalDataQDF] Writing Genomes\n");
+    xha_printf("[Genetics<T,U>::writeAdditionalDataQDF] Writing Genomes\n");
     iResult = m_pSeqIO->writeSequenceDataQDF(hSpeciesGroup,this->m_pPop->getNumAgentsEffective());
     return iResult;
 }
@@ -484,7 +484,7 @@ int Genetics<T,U>::extractAttributesQDF(hid_t hSpeciesGroup) {
         }
     }
     
-    stdprintf("[Genetics] ExtractParamsQDF:res %d\n", iResult);
+    xha_printf("[Genetics] ExtractParamsQDF:res %d\n", iResult);
     
     if (iResult == 0) {
         // we must call init() before callnig readAdditionalDataQDF()
@@ -523,7 +523,7 @@ int Genetics<T,U>::restoreAdditionalDataQDF(hid_t hSpeciesGroup) {
 template<typename T, class U>
 int Genetics<T,U>::dumpStateQDF(hid_t hSpeciesGroup) {
     int iResult = 0;
-    stdprintf("Genetics WELLState before dump\n");
+    xha_printf("Genetics WELLState before dump\n");
     showWELLStates();
 
     if (m_bOwnWELL && (iResult == 0)) {
@@ -543,7 +543,7 @@ int Genetics<T,U>::restoreStateQDF(hid_t hSpeciesGroup) {
     if (m_bOwnWELL) {
         iResult = restoreWELL(m_apWELL, m_iNumThreads, ATTR_GENETICS_NAME, hSpeciesGroup);
     }
-    stdprintf("Genetics WELLState after restore\n");
+    xha_printf("Genetics WELLState after restore\n");
     showWELLStates();
 
     return iResult;
@@ -573,7 +573,7 @@ int Genetics<T,U>::tryGetAttributes(const ModuleComplex *pMC) {
         if (iResult2 == 0) {
             iResult2 = m_pGenomeCreator->determineInitData(sTemp);
             if (iResult2 != 0) {
-                stdprintf("value for [%s] is malformed or unknown: [%s]\n", ATTR_GENETICS_INITIAL_MUTS, sTemp);
+                xha_printf("value for [%s] is malformed or unknown: [%s]\n", ATTR_GENETICS_INITIAL_MUTS, sTemp);
                 iResult = -1;
             } 
         }
@@ -597,11 +597,11 @@ int Genetics<T,U>::createInitialGenomes(int iNumGenomes) {
             m_bCreateNewGenome = false;
             iResult = m_pGenomeCreator->createInitialGenomes(m_iGenomeSize, iNumGenomes, m_aGenome, m_apWELL);
         } else {
-            stdprintf("[Genetics::createInitialGenomes] No new Genome created\n");
+            xha_printf("[Genetics::createInitialGenomes] No new Genome created\n");
             iResult = 0;
         }
     } else {
-        stdprintf("Genetics has not been initialized\n");
+        xha_printf("Genetics has not been initialized\n");
     }   
     return iResult;
 }
@@ -613,12 +613,12 @@ int Genetics<T,U>::createInitialGenomes(int iNumGenomes) {
 template<typename T, class U>
 void Genetics<T,U>::showWELLStates() {
     for (int i = 0; i < m_iNumThreads; i++) {
-        stdprintf("[%08x] ", m_apWELL[i]->getIndex());
+        xha_printf("[%08x] ", m_apWELL[i]->getIndex());
         const uint32_t *p = m_apWELL[i]->getState();
         for (uint j = 0; j < STATE_SIZE;j++) {
-            stdprintf("%08x ", p[j]);
+            xha_printf("%08x ", p[j]);
         }
-        stdprintf("\n");
+        xha_printf("\n");
     }
 }
 

@@ -4,8 +4,8 @@
 #include <hdf5.h>
 
 #include "types.h"
-#include "stdstrutils.h"
-#include "stdstrutilsT.h"
+#include "xha_strutils.h"
+#include "xha_strutilsT.h"
 #include "hdfutils.h"
 #include "HybCollector.h"
 
@@ -94,7 +94,7 @@ HybCollector  *HybCollector::create_instance(const std::string sFile, uint iNumB
 //
 int HybCollector::init(const std::string sFile) { 
     int iResult = -1;
-    //    stdfprintf(stderr, "[init] file [%s]\n", sFile);
+    //    xha_fprintf(stderr, "[init] file [%s]\n", sFile);
     m_hFile = H5Fopen(sFile.c_str(), H5F_ACC_RDONLY,  H5P_DEFAULT);
     if (m_hFile != H5P_DEFAULT) {
         int iNumRegs = 0;
@@ -124,28 +124,28 @@ int HybCollector::init(const std::string sFile) {
  
 
                         } else {
-                            stdfprintf(stderr, "Couldn't collect region names\n");
+                            xha_fprintf(stderr, "Couldn't collect region names\n");
                         }
                         H5Gclose(hCurStep);
                     
                     } else {
-                        stdfprintf(stderr, "Couldn't collect step names\n");
+                        xha_fprintf(stderr, "Couldn't collect step names\n");
                     }
                 } else {
-                    stdfprintf(stderr, "found no sim names\n");
+                    xha_fprintf(stderr, "found no sim names\n");
 		    iResult = -1;
                 }
                 
             } else {
-                stdfprintf(stderr, "Couldn't collect sim names\n");
+                xha_fprintf(stderr, "Couldn't collect sim names\n");
             }
         } else {
-            stdfprintf(stderr, "Couldn't find attribute [%s]\n", ATTR_NUM_REGIONS);
+            xha_fprintf(stderr, "Couldn't find attribute [%s]\n", ATTR_NUM_REGIONS);
         }
         
         
     } else {
-        stdfprintf(stderr, "Couldn't open file [%s]\n", sFile);
+        xha_fprintf(stderr, "Couldn't open file [%s]\n", sFile);
     }
     return iResult;
 }
@@ -208,19 +208,19 @@ int HybCollector::collect_region_names(hid_t hStep) {
 //  show_names
 //
 void HybCollector::show_names() {
-    stdprintf("SimNames (%zd)\n", m_vSimNames.size());
+    xha_printf("SimNames (%zd)\n", m_vSimNames.size());
     for (uint i = 0; i < m_vSimNames.size(); i++) {
-        stdprintf("  %s\n", m_vSimNames[i]);
+        xha_printf("  %s\n", m_vSimNames[i]);
     }
 
-    stdprintf("StepNames (%zd)\n", m_vStepNames.size());
+    xha_printf("StepNames (%zd)\n", m_vStepNames.size());
     for (uint i = 0; i < m_vStepNames.size(); i++) {
-        stdprintf("  %s\n", m_vStepNames[i]);
+        xha_printf("  %s\n", m_vStepNames[i]);
     }
 
-    stdprintf("RegionNames (%zd)\n", m_vRegionNames.size());
+    xha_printf("RegionNames (%zd)\n", m_vRegionNames.size());
     for (uint i = 0; i < m_vRegionNames.size(); i++) {
-        stdprintf("  %s\n", m_vRegionNames[i]);
+        xha_printf("  %s\n", m_vRegionNames[i]);
     }
 }
 
@@ -230,13 +230,13 @@ void HybCollector::show_names() {
 //
 void HybCollector::show_data() {
     for (uint i = 0; i < m_vStepNames.size(); i++) {
-        stdprintf("[%s]\n", m_vStepNames[i]);
+        xha_printf("[%s]\n", m_vStepNames[i]);
         for (uint j = 0; j < m_vRegionNames.size(); j++) {
-            stdprintf("  [%s](%d)\n    ", m_vRegionNames[j], i*m_vRegionNames.size()*m_iNumBins+j*m_iNumBins);
+            xha_printf("  [%s](%d)\n    ", m_vRegionNames[j], i*m_vRegionNames.size()*m_iNumBins+j*m_iNumBins);
             for (uint k = 0; k < m_iNumBins; k++) {
                 printf(" %d", m_aiHisto[i*m_vRegionNames.size()*m_iNumBins+j*m_iNumBins + k]);
             }
-            stdprintf("\n");
+            xha_printf("\n");
         }
     }
 }
@@ -258,7 +258,7 @@ int HybCollector::collect_hybridisations() {
             int iSize = 10000;
             aginfo pBuffer[iSize];
             
-            //            stdfprintf(stderr, "collecting for %s/%s\n", m_vStepNames[i],  m_vRegionNames[j]);
+            //            xha_fprintf(stderr, "collecting for %s/%s\n", m_vStepNames[i],  m_vRegionNames[j]);
             
             iResult = readAgentDataHDF(i, j, hRegion,  pBuffer, iSize);
 
@@ -277,7 +277,7 @@ int HybCollector::collect_hybridisations() {
 //  read attributes to species data
 //
 int  HybCollector::readAgentDataHDF(uint iStep, uint iRegion, hid_t hDataSet, void *pBuffer, uint iBufSize) {
-    //    stdfprintf(stderr, "[HybCollector::readAgentDataHDF]\n");
+    //    xha_fprintf(stderr, "[HybCollector::readAgentDataHDF]\n");
     int iResult = 0;
 
     hid_t hDataSpace = H5Dget_space(hDataSet);
